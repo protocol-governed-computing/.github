@@ -44,7 +44,7 @@ truth.
 ## Status
 
 Bootstrapping. Founding documents (the charter and organization topology) are being
-finalized in `pgc-charter`. Public participation details will follow once the
+finalized in `standards`. Public participation details will follow once the
 first RFCs open.
 
 ---
