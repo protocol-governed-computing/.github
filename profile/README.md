@@ -60,31 +60,33 @@ each stands alone.
 
 | | paper | what it answers |
 |---|---|---|
-| **1** | [An Architecture for Closed-Loop Governed Transformation](../doc/pgc_architecture_closed-loop_governed_transformation_v0.md) | **What evolution must be.** Software evolution as the governed transformation of an executable baseline into the next, rather than as specification authoring. |
-| **2** | [An Architecture for Deterministic Declarative Execution](../doc/pgc_architecture_deterministic_declarative_execution_v0.md) | **What execution must be.** Execution as traversal of a compiled protocol by an interpreter that decides nothing. |
-| **3** | [Realizing the Normative Platform and Its Governed Transformation](../doc/pgc_realizing_the_normative_platform_and_its_governed_transformation_v0.md) | **What it takes to make both real.** The Profiled Normative Platform, the formal treatment of transformation, and what realization surfaces that architecture cannot. |
+| **1** | [An Architecture for Deterministic Declarative Execution](https://omnibachi.org/papers/architecture-deterministic-declarative-execution/) | **What execution must be.** Execution as traversal of a compiled protocol by an interpreter that decides nothing. [DOI](https://doi.org/10.5281/zenodo.21879516) |
+| **2** | [An Architecture for Closed-Loop Governed Transformation](https://omnibachi.org/papers/architecture-closed-loop-governed-transformation/) | **What evolution must be.** Software evolution as the governed transformation of an executable baseline into the next, rather than as specification authoring. [DOI](https://doi.org/10.5281/zenodo.21879948) |
+| **3** | [Realizing the Normative Platform and Its Governed Transformation](https://omnibachi.org/papers/realizing-the-normative-platform/) | **What it takes to make both real.** The Profiled Normative Platform, the formal treatment of transformation, and what realization surfaces that architecture cannot. |
+| **·** | [Field Manual](https://omnibachi.org/papers/field-manual/) | **How the reference implementation is operated.** Doctrine, the artifact ontology, the build lifecycle, and the invariants — the working companion to the three papers above. |
 
 ## Foundations — published, still current
 
-Earlier work under the PGS name that the three papers above assume rather than restate.
+Earlier work under the PGS name that the papers above assume rather than restate.
+Listed in reading order.
 
 | paper | what it covers |
 |---|---|
-| [Architecture Inversion Concepts](../doc/pgs_architecture_inversion_concepts_v1.md) | **Start here if you are new.** Fifteen inversions in four propagating groups — governance, orchestration, engineering, scale — and why each follows from the one above it. The shortest route to why this differs from what you already know. |
-| [A Conceptual Model](../doc/pgs_conceptual_model_v0.md) | The protocol snapshot, the unit of admissibility, the constitutional invariants, the implementation boundary, and the evidence model. The foundation the later papers cite. |
-| [Compiler Conceptual Model](../doc/pgs_compiler_conceptual_model_v1.md) | What the compiler produces, why the runtime is simple, the admissibility boundary contract, and protocol inspection. The dedicated treatment of 𝒞. |
+| [Architecture Inversion Concepts](https://omnibachi.org/papers/architecture-inversion-concepts-v1/) | **Start here if you are new.** Fifteen inversions in four propagating groups — governance, orchestration, engineering, scale — and why each follows from the one above it. The shortest route to why this differs from what you already know. |
+| [A Conceptual Model](https://omnibachi.org/papers/conceptual-model/) | The protocol snapshot, the unit of admissibility, the constitutional invariants, the implementation boundary, and the evidence model. The foundation the later papers cite. |
+| [A Constitutionally Constrained Architecture](https://omnibachi.org/papers/pgs-constitutionally-constrained-architecture/) | The formal treatment: the dual-space model, the protocol-governed abstract machine, the threat model and the classes of vulnerability it makes unrepresentable, and the derivation of O(N + M) governance complexity. The only place the Governance Dividend is derived rather than asserted. |
+| [Compiler Conceptual Model](https://omnibachi.org/papers/compiler-conceptual-model/) | What the compiler produces, why the runtime is simple, the admissibility boundary contract, and protocol inspection. The dedicated treatment of 𝒞. |
+| [Runtime Conceptual Model](https://omnibachi.org/papers/runtime-conceptual-model/) | What the runtime does with a sealed snapshot, and the multi-runtime certification method Paper 1 cites as the route to demonstrated runtime independence. The dedicated treatment of Φ. |
 
 ## Historic
 
-Superseded work, retained for lineage rather than for reference. Kept in
-[`bachipeachy/pgs_workspace`](https://github.com/bachipeachy/pgs_workspace/tree/main/doc).
+Every paper a later paper has replaced. DOI-published and permanently citable, kept for
+lineage rather than for reference: <https://omnibachi.org/papers/working_papers/>.
 
-- **Closed-Loop Governed Evolution** — superseded by Paper 1. Note that it describes the
+- **Closed-Loop Governed Evolution** — superseded by Paper 2. Note that it describes the
   transformation pipeline in *stage* vocabulary, which the implementation has since
   renamed to *phases* (P0–P8) to avoid collision with the compiler's own stages.
-- **Protocol-Governed Systems technical paper**, v1 and v2 — a correct account of
-  construction and execution, frozen. Nothing in the current papers retracts it; a
-  realization layer now sits above the model it formalizes.
+- **Architecture Inversion Concepts v0** — superseded by the v1 listed above.
 - The earlier **PGS working paper series** — governance and authoring, protocol as law,
   deterministic enforcement, pure computation and governed mutation, the inversion of
   trust, and the three dividends.
@@ -100,7 +102,6 @@ architecture is explicit about.
 
 | repository | role |
 |---|---|
-| `standards` | Standards documents, specification fragments, the governance charter |
 | `software_governance` | The governance surface: capability transforms and side effects |
 | `conformance_workloads` | Workloads that prove conformance |
 | `business_domains` | Business domains built on the platform |
