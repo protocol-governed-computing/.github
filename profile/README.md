@@ -24,10 +24,11 @@ A governed system's life is three governed compilations over one architecture:
    Φ  execution        realizes it             the snapshot produces result + evidence
 ```
 
-Transformation is **partial** — not every problem yields a next baseline — while the
-transformation *process* is **total**: every failure is reported at a named stage rather
-than left undefined. That is what makes governed evolution auditable rather than merely
-careful.
+Not every proposed change has a legitimate successor. When one doesn't, the pipeline stops
+and says which phase refused it and under which rule — it does not produce a weaker baseline
+instead. A refusal is an artifact of the process, not an absence of one, and because a
+baseline only becomes a snapshot at 𝒞, a change that is refused never reaches the running
+system. That is what makes governed evolution auditable rather than merely careful.
 
 ## Five authorities
 
@@ -113,10 +114,15 @@ architecture is explicit about.
 | `transformation` | The transformation lifecycle: design compiler and construction compiler |
 
 ```
-   protocol artifacts ──▶ protocol_compiler ──▶ domain projections
+   transformation ──▶ protocol artifacts ──▶ protocol_compiler ──▶ domain projections
         ──▶ snapshot_assembler ──▶ immutable snapshot
         ──▶ protocol_runtime ──▶ execution ──▶ trace / evidence
 ```
+
+Two repositories deliberately sit off this line. `protocol_transport` is the boundary at
+either end of execution — governed ingress and egress contracts, protocol-neutral and not
+stages in the lifecycle. `snapshot_inspector` reads the sealed snapshot and takes no part in
+producing it.
 
 The snapshot is sealed at build time and the runtime consumes it unchanged. **No behavior
 enters at execution time that was not present in the snapshot.**
