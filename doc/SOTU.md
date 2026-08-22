@@ -814,11 +814,17 @@ gates every further spec edit, including the `8a` §6 change already made.
 
 **Task A, the ruling pass, and `draft-2` are done. Every remaining finding is realization-side.**
 
-**Task C is delivered.** `software_governance/doc/HUMAN_BLOCK_TEMPLATE.md` states the three-layer
-split — normative standard (what PGC requires) → human realization document (how this artifact
-realizes it) → machine block (what the implementation consumes) — and the three rules that keep the
-middle layer from becoming a second specification: **cite never restate**, **never restate a
-machine-block value**, **say what is not claimed**.
+**Task C is delivered, and its doctrine lives in the Field Manual rather than the repo.** The
+three-layer split — normative standard (what PGC requires) → human realization document (how this
+artifact realizes it) → machine block (what the implementation consumes) — and the three rules that
+keep the middle layer from becoming a second specification (**cite never restate**, **never restate a
+machine-block value**, **say what is not claimed**) are §4 *The human block* of
+`~/omnibachi-site/content/papers/pgc_field_manual_v1.md`.
+
+**Nothing in the workspace restates it.** The policy is the governed artifact
+`vocabulary::VOCAB_HUMAN_BLOCK_CONSTRAINTS_V0` — compiled, sealed, schema-validated, read by the
+check from the composition. There is no `doc/HUMAN_BLOCK_TEMPLATE.md`: a file whose only content is
+a forwarding address is an orphan with extra steps.
 
 Applied: **216 `## Header` blocks removed** (~1,265 duplicated lines), 44 prose `Version History`
 sections dropped, 224 normative-sounding sections renamed. `.github/process/human_block_fidelity.py`

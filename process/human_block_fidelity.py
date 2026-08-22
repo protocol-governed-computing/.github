@@ -1,20 +1,24 @@
 #!/usr/bin/env python3
 """Human-block fidelity — the prose beside a machine block declares nothing.
 
-Enforces what is mechanically checkable in `software_governance/doc/HUMAN_BLOCK_TEMPLATE.md`:
+The policy is `vocabulary::VOCAB_HUMAN_BLOCK_CONSTRAINTS_V0`, read from the sealed composition.
+This module is a mechanism and carries no copy of it: adding a forbidden section name is an
+authoring act on that artifact, sealed and attested, never an edit here.
 
-  1. no `## Header` block                       — every fact in it is in the machine block
-  2. no prose line restating a machine-block key — two copies can disagree; one cannot
-  3. no normative-sounding section name          — a realization document states no rules
+  1. no section whose name is in `forbidden_section_names`
+  2. no prose line restating a VALUE the machine block declares, for a label in
+     `restated_machine_keys`
 
-What it does not check is whether a sentence is a citation or a restatement (template §3.1). That
-is a reading rather than a pattern, and it is a review obligation. Saying so is the template's own
-§3.3 applied to this check.
+What it does not check is whether a sentence is a citation or a restatement. That is a reading
+rather than a pattern, and it is a review obligation — see the artifact's own bound, and the
+Field Manual section `The human block` for the reasoning.
 
 Exit 0 when every artifact's prose declares nothing, 1 otherwise.
 """
 from __future__ import annotations
 
+import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -27,20 +31,28 @@ YAML_BLOCK = re.compile(r"```yaml.*?```", re.S)
 SECTION = re.compile(r"^##+\s+(.+?)\s*$", re.M)
 BOLD_FIELD = re.compile(r"^\s*[-*]\s*\*\*([^:*]+):\*\*", re.M)
 
-# Section names that announce a rule is being stated. A realization document states none.
-FORBIDDEN_SECTIONS = {
-    "header", "header (mandatory)", "rule", "rule statement", "rules",
-    "requirements", "validation rules", "enforcement scope", "version history",
-    "status",
-}
+VOCAB_FQDN = "vocabulary::VOCAB_HUMAN_BLOCK_CONSTRAINTS_V0"
+SNAPSHOT = Path(os.environ.get("PGC_SNAPSHOT_ROOT", "snapshot"))
 
-# Prose field labels that name a machine-block key. A label alone is not a finding — a glossary
-# entry may legitimately define "Namespace". What makes it one is the prose carrying the same VALUE
-# the machine block declares, which is the thing that can drift out of agreement.
-RESTATED = {
-    "artifact code", "artifact kind", "governed by", "version", "status",
-    "supersedes", "superseded by", "fqdn", "authority", "concern", "namespace",
-}
+
+def _policy() -> tuple[set[str], set[str]]:
+    """The two closed sets, from the sealed composition. No fallback: a missing policy refuses."""
+    for path in (SNAPSHOT / "canonical").rglob("*.json"):
+        if path.name == "metadata.json":
+            continue
+        data = json.loads(path.read_text())
+        if data.get("fqdn_id") != VOCAB_FQDN:
+            continue
+        fm = data.get("frontmatter") or {}
+        forbidden = {e.lower() for e in fm["forbidden_section_names"]["entries"]}
+        restated = {e.lower() for e in fm["restated_machine_keys"]["entries"]}
+        return forbidden, restated
+    raise SystemExit(
+        f"{VOCAB_FQDN} is not in the composition at {SNAPSHOT} — the policy this check enforces "
+        f"is not in force. Build and assemble before running it."
+    )
+
+
 BOLD_FIELD_VALUE = re.compile(r"^\s*[-*]\s*\*\*([^:*]+):\*\*\s*(.*)$", re.M)
 
 
@@ -79,6 +91,7 @@ def prose_of(text: str) -> str:
 
 
 def main() -> int:
+    FORBIDDEN_SECTIONS, RESTATED = _policy()
     findings: list[tuple[Path, str, str]] = []
     files = artifacts()
 
@@ -119,7 +132,8 @@ def main() -> int:
 
     print(f"\nHUMAN BLOCK FIDELITY FAILED — {len(findings)} finding(s) "
           f"across {len(by_file)} of {len(files)} artifacts")
-    print("See software_governance/doc/HUMAN_BLOCK_TEMPLATE.md §3, §4.")
+    print(f"Policy: {VOCAB_FQDN} — add a forbidden name there, not here.")
+    print("Reasoning: Field Manual, 'The human block'.")
     return 1
 
 
