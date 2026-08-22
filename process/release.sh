@@ -37,8 +37,8 @@ case "${1:-}" in
   *) echo "unknown argument: $1 (usage: release.sh [--check])" >&2; exit 2 ;;
 esac
 
-RELEASE=9          # the release being cut  — branch dev/$RELEASE must exist and be current
-NEXT=10            # the cycle to open next — branch dev/$NEXT will be created from main
+RELEASE=10         # the release being cut  — branch dev/$RELEASE must exist and be current
+NEXT=11            # the cycle to open next — branch dev/$NEXT will be created from main
 
 WORKSPACE="$HOME/protocol-governed-computing"
 
