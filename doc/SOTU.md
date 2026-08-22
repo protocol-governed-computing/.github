@@ -1,148 +1,131 @@
 # SOTU Handoff
 
-## dev/9 is complete — the Open PGC Standard is drafted in full
+## dev/9 is closed. The standard is drafted and now lives in its own repository.
 
-**31 documents in `doc/spec/`.** Part 0 (4, non-normative), Parts I–VII (26 normative), Annex (1,
-non-normative). Nothing in the build path changed this cycle; the snapshot is untouched since
-release 8. Working tree is clean.
+Read this cold: it is self-contained.
 
-**dev/9's purpose is served.** The next cycle is a repository split, not more drafting.
+### Where things stand
 
-### The document set
+**The Open PGC Standard is complete as `draft-1`** — 31 documents — and is no longer part of the
+composition. `standards/` was re-initialized with clean history and pushed to a recreated remote.
+Its `VERSION` is `draft-1`, deliberately not the composition integer.
 
-```
-0a-0c  Part 0   non-normative front matter          0z  document set map
-1a-1c  I        Model                               4a-4e  IV  Construction & Transformation
-2a-2f  II       Governance                          5a-5b  V   Interchange
-3a-3e  III      Execution                           6a-6c  VI  Profiles
-                                                    7a-7b  VII Conformance
-                                                    8a     Annex (non-normative)
-```
-
-A file identifier is an **address, not an identity** — a digit for the part, a letter for position.
-Documents refer to one another **by name**; invariant prefixes never encode a file identifier.
-
-| Part | Invariant ranges |
-|---|---|
-| I | SM-1…12 · AI-1…17 |
-| II | GS-1…9 · GO-1…12 · MB-1…14 · KV-1…9 · CA-1…12 · EN-1…13 |
-| III | EX-1…15 · SN-1…13 · RT-1…12 · CP-1…11 · EV-1…16 |
-| IV | GC-1…14 · PJ-1…12 · ID-1…15 · TR-1…24 · SU-1…10 |
-| V | IB-1…15 · IN-1…14 |
-| VI | NP-1…11 · EE-1…8 · DP-1…11 |
-| VII | CF-1…13 · CD-1…16 |
-
-**Parts I–VII are drafted and reviewed. Revise only by explicit ruling**, not by drift.
-
-### Rulings this cycle
-
-1. **Genesis recurs, and every document presuming a predecessor must address it.** `1b` §11 →
-   `3b` §11 → `4d` §12 → `5a` §13 → `7b` §9. `4d` forbade genesis outright until caught. Check this
-   in any new document.
-2. **Kind enumeration is a profile's, not the family's** (KV-9). Now folded into
-   `REFERENCE_PLATFORM_PROFILE_V1` as `declared_vocabulary.kinds`.
-3. **Determinative vs observational evidence** (`3e` §5) — the distinction MUST be declared, not
-   inferred. Diverges from paper 1's "identical trace" deliberately.
-4. **Conformance sections stay in each document**; `7a` states discharge, not obligation. Four
-   discharge classes: observational, structural, comparative, derivational (`7a` §7).
-5. **The namespace model is superseded, not absorbed** — premise contradicted by `2b` §7.2 and
-   `4c` §5. Map retained as parked material.
-6. **The charter is retired.** It contradicted the family twice: the executable overriding the
-   document (`0z` §3 says the opposite), and conformance as reference-trace matching (`7a` §5,
-   `8a` §2 say resemblance establishes nothing). Both resolved for the family; recorded in
-   `parked_rulings.md`. Its one live subject — revision lifecycle — is now `0z` §5.1 in ten lines.
-7. **A rule set is not evidence that its rules can fail** — `2f` §4.2 → `4d` §5.1 → `7b` §4. The
-   family's recurring test: can it refuse? can they fail? can the claim be disproven?
-8. **`REFERENCE_PLATFORM_PROFILE_V1`** replaces `NORMATIVE_PLATFORM_PROFILE_BASELINE_V1`. "Baseline"
-   claimed minimality that `6a` §8 denies, and the file contradicted itself two lines apart.
-   V1 now declares `supersedes: NORMATIVE_PLATFORM_PROFILE_BASELINE_V0` by exact identity; V0
-   retained per SU-7.
-
-### Changes Made
-
-- `doc/spec/` — 31 documents. Parts IV–VII, Part 0, and `4e_supersession.md` completed this cycle.
-- `doc/spec/00_…open_standard.md` — **deleted**, split into `0a` (motivation), `0b` (principles),
-  `0z` (map, derivation rule, editorial rules, membership, revision).
-- `doc/RFC-0000-charter.md` — **deleted**, see ruling 6.
-- `doc/NAMESPACE_MODEL.md` — **moved** to `doc/spec/holding/namespace_map.md`.
-- `doc/SUPERSESSION_MODEL.md` — **deleted**, subsumed by `4e`; its live migration finding moved to
-  `parked_rulings.md`.
-- `specification_plan.md` — **deleted**; its twelve open questions audited against the spec set and
-  the residue recorded in `parked_rulings.md`.
-- `doc/parkinglot/`, `.DS_Store`, `doc/.idea/` — **deleted**.
-- `doc/spec/holding/` — reduced to `namespace_map.md` and `parked_rulings.md`.
-  `governance_definitions.txt` and `kind_vocabulary.md` subsumed and deleted.
-- `snapshot_profiles/REFERENCE_PLATFORM_PROFILE_V1.md` — renamed, self-contradictions fixed,
-  `declared_vocabulary` added, supersession declared.
-
-### Build & Test Status
-
-**PASSING.** Documentation-only cycle; no build participant changed.
+**The composition is ten repos.** `standards` was removed from `REPOS` in `release.sh`.
+`.github` absorbed the workspace process, the reference profile, and this handoff.
 
 ```
-python standards/process/pgc_env_check.py          PGC ENVIRONMENT CHECK PASSED — no RI-0 reachable
-python standards/process/implementation_closure.py IMPLEMENTATION CLOSURE PASSED — 27 transforms
+standards/          the standard, alone      spec/ (31 docs), README, LICENSE, NOTICE
+.github/            org + workspace          process/ (release.sh, 5 checks, RUNBOOK, notes/)
+                                             doc/ (SOTU, parked_rulings, assembly contract)
+                                             snapshot_profiles/
+software_governance/doc/namespace_map.md     the fb.* migration plan, beside its ruling
 ```
 
-Build gate not run and not needed. Snapshot unchanged from release 8 (`7b6f2699…`).
+**Everything is committed and clean.** Checks pass from their new location:
+
+```
+python .github/process/pgc_env_check.py           PASSED — no RI-0 reachable
+python .github/process/implementation_closure.py  PASSED — 27 transforms
+.github/process/release.sh --check                build gate ok, snapshot 7b6f2699…
+                                                  composition PASSED, 5 rules / 398 artifacts
+                                                  fails only on missing release-9 notes
+```
+
+### The standard, in one screen
+
+```
+spec/0a-0c   Part 0    why this exists                       non-normative
+spec/0z      Part 0    document set map, derivation rule, editorial rules, revision semantics
+spec/1a-1c   I         Model              SM-1…12 · AI-1…17
+spec/2a-2f   II        Governance         GS · GO · MB · KV · CA · EN
+spec/3a-3e   III       Execution          EX · SN · RT · CP · EV
+spec/4a-4e   IV        Construction       GC · PJ · ID · TR · SU
+spec/5a-5b   V         Interchange        IB · IN
+spec/6a-6c   VI        Profiles           NP · EE · DP
+spec/7a-7b   VII       Conformance        CF · CD
+spec/8a      Annex     Implementation Guidance               non-normative
+```
+
+A file identifier is an **address, not an identity**. Documents reference one another **by name**;
+invariant prefixes never encode a file identifier. `spec/0z` is authoritative on structure — read it
+before editing anything.
+
+**Parts I–VII are drafted and reviewed. Revise only by explicit ruling** — and a revision is
+supersession (`4e` §9): declared against a named predecessor, stating what it changes and what that
+invalidates.
+
+### dev/10 — agreed scope, in dependency order
+
+1. **Repo split** — **done this session.**
+2. **The realization map** (`8a` §6). Map each normative document to where the reference realization
+   demonstrates it. This *is* the spec↔RI validation, and it tells you which requirements the RI
+   cannot currently meet **before** anything is migrated.
+3. **Namespace migration** — `fb.*` / `pgc::`. `AUTHORITY_VS_CONCERN_RULING` step 2 (canonical
+   representation) is unblocked by `2b` §7.2. Plan is `software_governance/doc/namespace_map.md`.
+   Scale: 1,407 occurrences, 532 files, 6 repos.
+4. **Human-block template** — standardize the non-normative block across artifacts. Last, because
+   the map tells you what artifacts need to say.
+
+**Direction is not symmetric.** Validate the **RI against the spec**, never the reverse. `0z` §3: a
+realization "informs this family by exposing concepts that were missing, distinctions that were
+conflated, and requirements that could not be met; **it never supplies authority.** Where a document
+and a realization disagree, the document governs and the disagreement is resolved by ruling."
+
+**Constraint on item 4:** `MB-1` makes the machine block the *sole* normative declaration surface —
+everything outside it "MUST NOT determine anything." A human-block template must carry nothing
+load-bearing, or the thing meant to bring artifacts into conformance breaches MB-1.
 
 ### Open Issues
 
-1. **`standards/VERSION` is `9` — the composition version.** `7a` §2 states a standard's revision
-   "does not identify an implementation revision, a platform version, or a software release." The
-   standard is currently versioned by the reference implementation's release cadence, which inverts
-   the rule it states. **This is the load-bearing reason for the split.**
-2. **`standards` is a member of `REPOS` in `process/release.sh:51`.** When the standard leaves the
-   composition this must be removed, or the release gate looks for an absent member.
-3. **`2747b18 added github recovery codes` is in this repo's history and reached the remote.**
-   Deleting and recreating the remote is the remediation — cleaner than `filter-repo`, and
-   archiving would preserve the secret rather than remove it.
-4. **`fb.*` / `pgc::` remains parked.** `2b` §7.2 + GO-11 + MB-7 + ID-12 state the requirement; the
-   implementation violates it (1,407 occurrences, 532 files, 6 repos). `namespace_map.md` is the
-   migration plan and is needed for dev/10.
-5. **Identity authority conflict** — `2c` MB-6, `4c` ID-1/ID-9 require declared identity
-   authoritative over position; discovery remains filename-driven. `4c` §10 supplies the settling
-   test: relocation.
-6. **`blockchain` composition carries three references to a superseded workflow.** Under SU-5 it
-   does not compile. Recorded in `parked_rulings.md`; the rule finds a real defect on first run.
-7. **Standard↔implementation comparison is document-level only.** AI-4, AI-7, AI-14, AI-16 have no
-   counterpart in the implementation's invariant list. Unverified against code.
-8. **The realization map is unparked but unwritten** (`8a` §6). Both sides now exist; it is
-   outstanding work, and `8a` is its home.
+1. **Release 9 is uncut and now warranted.** Only the notes file is missing. It would mark the first
+   composition without `standards` — `.github` absorbing the process, `software_governance` gaining
+   the namespace map. No governed content changed; snapshot id is unchanged from release 8. Decide:
+   cut it as the boundary marker, or roll into a later release once dev/10 work lands.
+2. **`fb.*` / `pgc::` violation stands.** `2b` §7.2, GO-11, MB-7, ID-12 state the requirement; the
+   implementation violates it. Ruled finding — the standard does not bend.
+3. **Identity authority conflict.** `2c` MB-6 and `4c` ID-1/ID-9 require declared identity
+   authoritative over position; discovery remains filename-driven. `4c` §10 gives the settling test:
+   **relocation** — move a thing without changing declarations, and nothing about its identity,
+   governance, or any composite identity may change.
+4. **`blockchain` carries three references to a superseded workflow.** Under SU-5 it will not compile
+   once referential closure is enforced. Detail in `.github/doc/parked_rulings.md`.
+5. **Four architectural invariants have no counterpart** in the implementation's invariant list:
+   AI-4 (determination precedes effect), AI-7 (refusal dominates), AI-14 (every determination
+   evidenced, including refusals), AI-16 (evidence checkable without its producer). Unverified
+   against code — the comparison to date is document-level only.
+6. **Two Part-II questions deliberately open**: whether Evidential is a peer semantic category, and
+   whether provenance remains an independent axis. **Federation** is treated as a relation among
+   authorities with its ontological status open.
 
 ### Architectural Concerns
 
-- **The repo split is the dev/10 opening move.** `standards/` currently mixes four purposes: the
-  standard, the composition release process, reference-platform profiles, and internal working
-  material. A public repo with singular purpose carries only the first.
-- **`snapshot_profiles/` in the standards repo privileges the reference profile by location.**
-  `6a` §11: no profile is privileged. Shipping exactly one inside the standard implies it is part
-  of it.
-- **`holding/namespace_map.md` must land somewhere tracked and durable** — `software_governance/doc/`
-  beside `AUTHORITY_VS_CONCERN_RULING.md`, which it is the migration plan for.
-- **The standard needs its own revision scheme** once it stops being `9`. `0z` §5.1 states revision
-  semantics; the scheme itself is undecided.
+- **Item 2 will find defects in the spec, not only in the RI.** That is its purpose. Each is a
+  finding resolved by ruling (`0z` §3), and a spec change is a revision superseding `draft-1` — so
+  `draft-1` must stay marked and unedited as the predecessor.
+- **`8a` §6 states the map's second purpose**: a normative document with no demonstration is either
+  unimplemented or unimplementable, and the map makes which one visible. Expect it to expose both.
+- **The map must not become a specification.** It is evidence about one realization; `8a` §2 governs
+  what such evidence establishes — notably that resembling the reference realization establishes
+  nothing.
+- **`parked_rulings.md` is the ruling record.** It carries the charter contradictions, the kind
+  enumeration ruling, the conformance-section ruling, the transformation comparison runs, and the
+  specification-plan residue. Read it before reopening anything that looks unsettled.
 
 ### Next Session Should Start With
 
-**Execute the repository split, as the first act of dev/10.**
+**Begin the realization map (`8a` §6)** — dev/10 item 2, and the prerequisite for items 3 and 4.
 
-Decided: delete and recreate the remote rather than archive — losing releases 2–8 composition
-reconstructibility is an accepted cost (the standards member contributed documentation only; the
-snapshot id did not move), and deletion is the remediation for Open Issue 3. Verified: no other
-repo references `standards.git`, no submodules, no pins. Published DOIs cite the **org**, not this
-repo, so external links survive.
+Work document by document through `standards/spec/`, and for each record: which declarations,
+construction path, region of the sealed representation, or evidence demonstrates it — and where
+nothing does, whether that is *unimplemented* or *unimplementable*. The second class is a finding
+against the specification.
 
-Sequence:
+Start where the correspondence is densest and best understood: `3b` Snapshot against `snapshot/`,
+`4a` Governed Construction against `protocol_compiler/compiler/stages/`, `5b` Governed Inspection
+against the `si.*` operations. Those three will establish the map's shape before the harder ones.
 
-1. Commit dev/9 as the first complete draft — the last thing the old remote is for.
-2. Delete the remote, and with it the recovery-codes commit.
-3. Create `protocol-governed-computing/standard` — singular name, singular purpose.
-4. Seed with `doc/spec/` only, plus README, LICENSE, NOTICE, and its **own** revision identity.
-5. Relocate: `process/` and `SOTU.md` → workspace process; `snapshot_profiles/` → the realization;
-   `holding/namespace_map.md` → `software_governance/doc/`.
-6. Remove `standards` from `REPOS` in `release.sh` and drop `standards/VERSION` from the lockstep —
-   Open Issues 1 and 2 fixed rather than carried.
+Before touching anything: **decide Open Issue 1** — whether release 9 is cut now as the
+composition boundary, or deferred.
 
 ---
 
