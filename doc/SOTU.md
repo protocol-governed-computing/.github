@@ -501,7 +501,33 @@ reject a realization discharging several in one operation.
    as the predecessor. **A revision in `VERSION` and not in `revisions.md` has not been declared** —
    that rule is now in `standards/CLAUDE.md`.
 
-2. **`fb.*` / `pgc::` violation stands.** `2b` §7.2, GO-11, MB-7, ID-12 state the requirement; the
+2. **Task B steps 2 and 3 are DELIVERED and green** — `software_governance/doc/CANONICAL_REPRESENTATION.md`
+   §8–§10. Two declared carriers (`authority`, `concern`) — not three; measurement showed `owner`
+   would hold the same string as `concern` everywhere. All 391 artifacts carry them, three generators
+   emit them, the three `module_path` derivation sites now read the declaration, and **map finding 19
+   is closed**. Both ruling-obligated predicates exist and were **observed to refuse**. Snapshot
+   `7557b3a8…`, composition PASSED over 400 artifacts, full suite green including
+   `construction_acceptance` 93/93 and all four domain execution suites.
+   **Step 4 is delivered too**: 1,402 occurrences across 490 files, zero `fb.*` left, 34 → 32
+   namespaces as the two split concerns merged (`capability_transforms` 12+6=18,
+   `capability_side_effects` 6+5=11). Snapshot `884ffd0b…`, composition PASSED over 400 artifacts,
+   full suite green including all six execution suites against real state.
+   **The plan's baseline expectation was wrong and is corrected in §11 of that document**: all 16
+   pins are stale and almost none owes a re-pin — a delivered dossier is judged against the
+   composition it was designed against, and re-pinning it forward destroys its record (TR-15).
+   **Only `rule_effectivity` is in flight and legitimately re-pinnable, and that is a gate, not an
+   edit.** Original note:
+
+2b. **Task B step 2 background** — `software_governance/doc/CANONICAL_REPRESENTATION.md`.
+   Three declared carriers (`authority`, `concern`, `owner`) replace what the namespace and
+   `module_path` currently carry; four of CA-1's seven dimensions already have carriers and need
+   nothing. **Two of the plan's preconditions are now discharged**: `STRUCTURE_IDENTITY_V0`'s
+   `method: module_path` is read by nothing, so migration edits declarations only and moves no
+   directories; and the `blockchain` supersession references are the SU-3 declarations `draft-2`
+   explicitly permits, so nothing blocks compilation. **Awaiting a decision before any artifact
+   changes.** The original finding, unchanged:
+
+2b. **`fb.*` / `pgc::` violation stands.** `2b` §7.2, GO-11, MB-7, ID-12 state the requirement; the
    implementation violates it. Ruled finding — the standard does not bend. Task B; plan in
    `software_governance/doc/namespace_map.md`, ruling in `AUTHORITY_VS_CONCERN_RULING.md`
    (**unratified**). Sequence is ruling → canonical representation → enforcement predicates →

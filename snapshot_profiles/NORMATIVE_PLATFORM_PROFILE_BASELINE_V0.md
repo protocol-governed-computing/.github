@@ -43,8 +43,8 @@ snapshot_profile:
       - fb.constitution::CONSTITUTION_ASSERT_V0
       - fb.constitution::CONSTITUTION_COMPILER_V0
       - fb.constitution::CONSTITUTION_FEDERATION_BOUNDARY_V0
-      - fb.vocabulary::CONSTITUTION_VOCABULARY_V0
-      - fb.authority::CONSTITUTION_AUTHORITY_GOVERNANCE_V0
+      - vocabulary::CONSTITUTION_VOCABULARY_V0
+      - authority::CONSTITUTION_AUTHORITY_GOVERNANCE_V0
       # Execution semantics — what a workflow is and how it is bound and run.
       - fb.topology::CONSTITUTION_WORKFLOW_V0
       - fb.topology::CONSTITUTION_EXECUTION_V0
@@ -55,10 +55,10 @@ snapshot_profile:
       - fb.topology::CONSTITUTION_RUNTIME_BINDING_V0
       - fb.topology::CONSTITUTION_TRACE_EXECUTION_V0
       # Governed boundary — admission and egress as first-class contracts.
-      - fb.transport::CONSTITUTION_ADMISSION_V0
-      - fb.transport::CONSTITUTION_TRANSPORT_ENVELOPE_V0
-      - fb.transport::CONSTITUTION_TRANSPORT_INGRESS_V0
-      - fb.transport::CONSTITUTION_TRANSPORT_EGRESS_V0
+      - transport::CONSTITUTION_ADMISSION_V0
+      - transport::CONSTITUTION_TRANSPORT_ENVELOPE_V0
+      - transport::CONSTITUTION_TRANSPORT_INGRESS_V0
+      - transport::CONSTITUTION_TRANSPORT_EGRESS_V0
       # Structural bootstrap — how the surface is discovered, identified, and dispatched.
       - fb.constitution::STRUCTURE_DISCOVERY_V0
       - fb.constitution::STRUCTURE_IDENTITY_V0
@@ -67,7 +67,7 @@ snapshot_profile:
       - fb.constitution::STRUCTURE_SCHEMA_DISPATCH_V0
       - fb.topology::STRUCTURE_RUNTIME_EXECUTION_V0
       - fb.topology::STRUCTURE_CT_IR_CONTRACT_V0
-      - fb.conformance::STRUCTURE_CONFORMANCE_POLICY_V0
+      - conformance::STRUCTURE_CONFORMANCE_POLICY_V0
 
   required_compiler:
     capabilities:
@@ -117,8 +117,8 @@ decorative — each one below names what settles it.
 
 | Claim | Asserts | Discharged by |
 |---|---|---|
-| `TRANSPORT_PROTOCOL_INDEPENDENCE` | An Operation Identity is stable across wire protocols; no protocol detail reaches workflow semantics. | `fb.transport::INVARIANT_TRANSPORT_OPERATION_IDENTITY_INDEPENDENCE_V0`, `fb.transport::INVARIANT_TRANSPORT_RESULT_CLASS_PROTOCOL_INDEPENDENCE_V0`, `fb.topology::INVARIANT_TOPOLOGY_TRANSPORT_ORTHOGONAL_V0` |
-| `COMPILED_INVOCATION_RESOLUTION` | Operation identity resolves to a governed executable target at compile time; nothing is routed at runtime. | `fb.transport::INVARIANT_TRANSPORT_TARGET_EXISTS_V0`, `fb.transport::INVARIANT_TRANSPORT_NO_DYNAMIC_ROUTING_V0` |
+| `TRANSPORT_PROTOCOL_INDEPENDENCE` | An Operation Identity is stable across wire protocols; no protocol detail reaches workflow semantics. | `transport::INVARIANT_TRANSPORT_OPERATION_IDENTITY_INDEPENDENCE_V0`, `transport::INVARIANT_TRANSPORT_RESULT_CLASS_PROTOCOL_INDEPENDENCE_V0`, `fb.topology::INVARIANT_TOPOLOGY_TRANSPORT_ORTHOGONAL_V0` |
+| `COMPILED_INVOCATION_RESOLUTION` | Operation identity resolves to a governed executable target at compile time; nothing is routed at runtime. | `transport::INVARIANT_TRANSPORT_TARGET_EXISTS_V0`, `transport::INVARIANT_TRANSPORT_NO_DYNAMIC_ROUTING_V0` |
 | `SNAPSHOT_IMMUTABILITY` | The assembled snapshot is sealed; no behavior enters at execution time that was not present at build time. | `fb.topology::INVARIANT_TOPOLOGY_IMMUTABLE_AFTER_COMPILATION_V0`; manifest `composite_hash` round-trip verification at assembly |
 | `DETERMINISTIC_EXECUTION` | The same snapshot and payload always produce the same result and the same graph addresses. | Compiler verify stage (round-trip + determinism check); per-domain `graph_address_hash` stability across recompiles; runtime determinism tests |
 
