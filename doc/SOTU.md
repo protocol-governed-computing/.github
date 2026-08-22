@@ -814,6 +814,23 @@ gates every further spec edit, including the `8a` §6 change already made.
 
 **Task A, the ruling pass, and `draft-2` are done. Every remaining finding is realization-side.**
 
+**Task C is delivered.** `software_governance/doc/HUMAN_BLOCK_TEMPLATE.md` states the three-layer
+split — normative standard (what PGC requires) → human realization document (how this artifact
+realizes it) → machine block (what the implementation consumes) — and the three rules that keep the
+middle layer from becoming a second specification: **cite never restate**, **never restate a
+machine-block value**, **say what is not claimed**.
+
+Applied: **216 `## Header` blocks removed** (~1,265 duplicated lines), 44 prose `Version History`
+sections dropped, 224 normative-sounding sections renamed. `.github/process/human_block_fidelity.py`
+enforces what is checkable and is in the runbook; it was **red on arrival at 1,761 findings across
+340 of 393 artifacts** and both its rules are proved by probe. §3.1 — whether a sentence cites or
+restates — is a reading, not a pattern, and is stated as a review obligation rather than claimed.
+
+**One recorded exception to "nothing outside a machine block is read by any mechanism":** TEST_DATA
+declares its cases in per-case fenced yaml blocks that `assert_ct_test_data_outcome_declared_v0`
+parses out of the body. That is a governance determination reading a second surface (MB-1). Not
+fixed here — moving those cases is a change to governed content, not to prose.
+
 **Start with Task B**, which the map now equips. GO-11, MB-7, ID-12 and **CA-1** are all recorded with what
 the realization does instead; CA-1 is the operative constraint — seven things separately determinable,
 and the current identifier carries at least three. Add the profiles to the migration's blast radius

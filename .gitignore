@@ -5,6 +5,12 @@
 Icon?
 ._*
 
+# Python cruft (this repo carries NO python; guard against accidental copies)
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+
 # Windows
 Thumbs.db
 ehthumbs.db

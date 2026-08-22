@@ -46,6 +46,7 @@ first.
 ```bash
 # generators agree with what they produce
 python ~/protocol-governed-computing/.github/process/governance_closure.py
+python ~/protocol-governed-computing/.github/process/human_block_fidelity.py
 python ~/protocol-governed-computing/transformation/scripts/emit_rule_sets.py --check
 python ~/protocol-governed-computing/transformation/scripts/testbed/build_payloads.py --check
 PYTHONPATH=~/protocol-governed-computing/snapshot_inspector \
@@ -119,6 +120,7 @@ Rows are in the order the block runs them.
 | Check | Result |
 |---|---|
 | `governance_closure.py` | `GOVERNANCE CLOSURE PASSED` — every compiler handler is named by an invariant, and no layer is declared two ways |
+| `human_block_fidelity.py` | `HUMAN BLOCK FIDELITY PASSED` — the prose beside a machine block declares nothing. A `RESTATED` line means delete the prose copy, never edit the machine block; a `SECTION` line means the section is named as if it states a rule. Doctrine in `software_governance/doc/HUMAN_BLOCK_TEMPLATE.md` |
 | `emit_rule_sets.py --check` | every phase `OK` — the sealed rule set matches the declared one |
 | `build_payloads.py --check` | `OK` — every phase payload matches the corpus document it is cut from. A `DRIFTED` line is a hand-edited payload; fix the source document and regenerate |
 | `author_transport_contracts.py --check` | `OK` — every `si.` boundary contract matches the declaration that generates it. A `DRIFTED` line is a hand-edited artifact; fix the declaration, never the artifact |
