@@ -5,13 +5,16 @@
 #   development on dev/<N>  →  squash-merge to main  →  tag release-<N>
 #                           →  archive history as tag history-<N>
 #                           →  delete local branch  →  open dev/<N+1>
+#                           →  declare VERSION <N+1> on every repo
 #
 # To cut the next release, change RELEASE and NEXT below. Nothing else varies.
 #
 # PGC versions the COMPOSITION, not each repo independently: all repos release together and the
 # governance closure forces lockstep, so one monotonic integer names which composition a repo
 # belongs to. The single declaration is each repo's `VERSION` file — pyproject and the Python
-# version constants derive from it. Never hand-edit a version anywhere else.
+# version constants derive from it. Never hand-edit a version anywhere else: step 4 writes it,
+# because ten repos declaring one composition is one act, and ten hand-edits is ten chances to
+# leave a repo declaring the release it was just cut out of.
 #
 # Read this before running it. It pushes and deletes remote refs.
 #
@@ -33,12 +36,12 @@ CHECK_ONLY=0
 case "${1:-}" in
   "")       ;;
   --check)  CHECK_ONLY=1 ;;
-  -h|--help) sed -n '2,28p' "$0"; exit 0 ;;
+  -h|--help) sed -n '2,32p' "$0"; exit 0 ;;
   *) echo "unknown argument: $1 (usage: release.sh [--check])" >&2; exit 2 ;;
 esac
 
-RELEASE=9          # the release being cut  — branch dev/$RELEASE must exist and be current
-NEXT=10            # the cycle to open next — branch dev/$NEXT will be created from main
+RELEASE=10         # the release being cut  — branch dev/$RELEASE must exist and be current
+NEXT=11            # the cycle to open next — branch dev/$NEXT will be created from main
 
 WORKSPACE="$HOME/protocol-governed-computing"
 
@@ -240,12 +243,33 @@ for r in $REPOS; do
 done
 
 # ---------------------------------------------------------------------------
-# 4. Verify
+# 4. Declare the cycle just opened
+#
+#    `VERSION` is the single declaration of which composition a repo belongs to, so dev/$NEXT is
+#    not honestly open until every repo on it reads $NEXT. Doing it here rather than by hand means
+#    the first commit of the new cycle is work rather than bookkeeping, and no repo is left
+#    declaring the composition it has already been released out of.
+#
+#    This runs only after step 3 has completed for EVERY repo. `set -e` aborts the script at the
+#    first failure anywhere above, so a partially cut release never reaches this point — which is
+#    the intent: unresolved release problems must not be papered over by moving versions forward.
+#    A release that half-succeeded is repaired by hand, and the bump is then part of that repair.
 # ---------------------------------------------------------------------------
 for r in $REPOS; do
-  printf "%-22s on %-8s tags: %s\n" "$r" \
+  printf '%s\n' "$NEXT" > "$r/VERSION"
+  git -C "$r" add VERSION
+  git -C "$r" commit -m "VERSION bump to $NEXT"
+  git -C "$r" push origin "dev/$NEXT"
+done
+
+# ---------------------------------------------------------------------------
+# 5. Verify
+# ---------------------------------------------------------------------------
+for r in $REPOS; do
+  printf "%-22s on %-8s VERSION %-4s tags: %s\n" "$r" \
     "$(git -C "$r" branch --show-current)" \
+    "$(cat "$r/VERSION")" \
     "$(git -C "$r" tag --list "release-$RELEASE" "history-$RELEASE" | tr '\n' ' ')"
 done
 echo
-echo "Next cycle: bump each VERSION to $NEXT, reinstall editable packages, rebuild clean."
+echo "Next cycle: reinstall editable packages, rebuild clean."

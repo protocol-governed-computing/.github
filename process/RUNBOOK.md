@@ -37,6 +37,25 @@ source and no compiled output, the assembler refused, and every runtime check af
 snapshot that had never been written. A build list that omits a domain is indistinguishable from a
 domain that declares no source, which is why the assembler names the command rather than proceeding.
 
+**A rebuild reproduces its identity, and that is worth checking when anything near the assembler or
+the attestation changes.** Recompile one domain and reassemble twice; the `snapshot_id` must not move.
+
+```bash
+for i in 1 2; do
+  rm -rf transformation/snapshot/compiled
+  protocol_compiler/compile_domain.sh transformation >/dev/null
+  snapshot_assembler/assemble.sh | grep snapshot_id
+done
+```
+
+Two different identities means something the composition carries changed without the source changing.
+It was true for a long time: an attestation recorded when it was signed, to the microsecond, and the
+identity was taken over that — so a composition's identity was a function of *when it was built*, every
+pin in the workspace expired on the next rebuild, and a genuine alteration was indistinguishable from a
+no-op recompile. `cryptographic_trust::CONSTITUTION_CRYPTOGRAPHIC_TRUST_V0` now declares which of an
+attestation's fields constitute the composition and which merely accompany it, and the assembler reads
+that division in both the enumerator and the verifier.
+
 ## Check
 
 Paste the whole block. It runs from a clean state every time --- the domain validations accumulate
@@ -46,6 +65,11 @@ first.
 ```bash
 # generators agree with what they produce
 python ~/protocol-governed-computing/.github/process/governance_closure.py
+python ~/protocol-governed-computing/.github/process/governance_chain_closure.py
+python ~/protocol-governed-computing/.github/process/supersession_agreement.py
+python ~/protocol-governed-computing/.github/process/human_block_fidelity.py
+python ~/protocol-governed-computing/.github/process/evidence_determinism.py
+python ~/protocol-governed-computing/.github/process/admission_contract_fidelity.py
 python ~/protocol-governed-computing/transformation/scripts/emit_rule_sets.py --check
 python ~/protocol-governed-computing/transformation/scripts/testbed/build_payloads.py --check
 PYTHONPATH=~/protocol-governed-computing/snapshot_inspector \
@@ -119,6 +143,11 @@ Rows are in the order the block runs them.
 | Check | Result |
 |---|---|
 | `governance_closure.py` | `GOVERNANCE CLOSURE PASSED` — every compiler handler is named by an invariant, and no layer is declared two ways |
+| `governance_chain_closure.py` | `GOVERNANCE CHAIN PASSED` — every authored invariant is named by a constitution rule, and every authoring build reaches the chain. An `orphan invariant` line means an obligation nobody's constitution names: author the rule, or the obligation is ungoverned rather than leniently governed |
+| `supersession_agreement.py` | `SUPERSESSION AGREEMENT PASSED — N relation(s), both sides agree on each` — the relation is stated twice, on the successor and on the predecessor, and this compares them. **It does not close SU-3**, which asks for it once with the other side derived; what it closes is a disagreement nothing would report. `superseded_by` is written as a list by construction and may be written as one identity by hand: both spellings are one declaration and the closure handler normalizes them |
+| `human_block_fidelity.py` | `HUMAN BLOCK FIDELITY PASSED` — the prose beside a machine block declares nothing. A `RESTATED` line means delete the prose copy, never edit the machine block; a `SECTION` line means the section is named as if it states a rule. The policy is `vocabulary::VOCAB_HUMAN_BLOCK_CONSTRAINTS_V0`, read from the sealed composition — add a forbidden name there, never here. Reasoning: Field Manual, *The human block* |
+| `evidence_determinism.py` | **Give `PGC_SNAPSHOT_ROOT` an absolute path or leave it unset** — this check shells out to `run.sh`, which resolves a relative one against its own directory and fails in a way that reads like a determinism defect. `EVIDENCE DETERMINISM PASSED` — one workflow run twice; determinative content identical, observational content differs. A `DETERMINATIVE CONTENT DIFFERS` line means something non-deterministic is classified determinative; a `vacuous` line means nothing observational varies, so the split is untested. Policy: `vocabulary::VOCAB_EVIDENCE_CONTENT_CLASSIFICATION_V0` |
+| `admission_contract_fidelity.py` | `ADMISSION CONTRACT FIDELITY PASSED` — every IN gate's declared contract matches what its workflow binds. `OVER-DECLARED` means the gate requires a field nothing consumes, so a correct payload is refused; `UNDER-DECLARED` means the gate admits a payload the workflow cannot resolve. **Currently red on 31 findings, all deliberate**: other domains' business, plus `IN_REGISTER_BOOK_V0`'s `subject`, deferred with its ground in `cr_04_catalog` P3 Q1 — correcting it moves every caller, which that change's seed forbids |
 | `emit_rule_sets.py --check` | every phase `OK` — the sealed rule set matches the declared one |
 | `build_payloads.py --check` | `OK` — every phase payload matches the corpus document it is cut from. A `DRIFTED` line is a hand-edited payload; fix the source document and regenerate |
 | `author_transport_contracts.py --check` | `OK` — every `si.` boundary contract matches the declaration that generates it. A `DRIFTED` line is a hand-edited artifact; fix the declaration, never the artifact |
@@ -127,7 +156,7 @@ Rows are in the order the block runs them.
 | `differential.py` | `DIFFERENTIAL PASSED` — the sealed rule set and the declared one agree on every corpus document |
 | `e2e_phases_test.py` | `E2E PASSED` — every phase, both admissible and inadmissible, through the runtime |
 | `projection_test.py` | `PROJECTION PASSED` — reproducible, general, and refusing an inadmissible prior |
-| `construction_acceptance.py` | `93/93 artifacts reproduced across 2 domain(s) (0 field difference(s))` — `book_library_mgmt` from maintained fixtures, `blockchain` from its delivered dossiers |
+| `construction_acceptance.py` | `99/99 artifacts reproduced across 4 domain(s) (0 field difference(s))` — `book_library_mgmt` from maintained fixtures, `blockchain` and the two base-code roots from their delivered dossiers. A base-code root carries **no order**, so the harness takes its dossiers as a set and refuses if two of them determine one artifact; a partial registry reports its undetermined tail rather than counting it as reproduced. An `UNCOVERED` line is a dossier root determining artifacts that nothing compares — add it to `DOMAINS`, or say why not |
 | `implementation_closure.py` | `IMPLEMENTATION CLOSURE PASSED` — every transform module named by an artifact, every named module present |
 | `test_inspector.py` | `PASSED: 121/121` |
 | `pgc_env_check.py` | `PGC ENVIRONMENT CHECK PASSED` — no RI-0 dependency reachable |

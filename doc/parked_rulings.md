@@ -3,7 +3,14 @@
 Rulings made about the standard family, and items considered for it and deliberately not admitted
 yet. An item is here because it is not driven by a use case, not because it is wrong.
 
-## Spec → reference-implementation roadmap
+## Spec → reference-implementation roadmap — DELIVERED
+
+**Unparked and delivered** as `standards/doc/realization_map.md`: complete over all twenty-five
+normative documents, ~280 invariants, 43 findings, four probes. It went to `doc/` rather than `spec/`
+so that a change in a codebase cannot move the standard's revision identity, and it is stated against
+a named subject — snapshot `7b6f2699…`, `draft-1` — so it does not age into being wrong. `8a` §6 was
+rewritten to name it. The original parking note follows, unedited, because its stated reason for
+parking is the reason it could be unparked.
 
 **What it is.** A mapping from each normative document to where the reference realization
 demonstrates it — which artifacts, which compile path, which snapshot region, which trace.
@@ -236,3 +243,160 @@ against — is now `0z` §5.1.
   conformance is by accident. A floor is derived from the model, not the other way round.
 - **"Getting Started" / "Hello World."** A tutorial. Belongs with the reference realization's
   own documentation, not in the standard family.
+
+
+---
+
+# Rulings from the realization-map pass
+
+Three findings against the documents were opened by the map and are ruled here. Two are resolved
+against the finding; one is narrowed and upheld. Each states what changes and what that invalidates,
+per `4e` §9.
+
+## SU-5 vs SU-3 — supersession is impossible as written
+
+**The finding.** SU-3 requires the successor to declare the relation, which necessarily names the
+predecessor's identity. SU-5 forbids anything in the governed system referencing the predecessor, and
+`4e` §4 forecloses the obvious narrowing: *"The requirement is **strict**: no reference, not no
+executable reference. A system that mentions a retired identity has not finished retiring it."* Read
+literally, the two cannot both be satisfied and no supersession conforms.
+
+**Ruled: the finding holds. SU-5 is over-broad and is narrowed.**
+
+SU-5's subject is **dependency**, not mention. §4's strictness clause exists to defeat a different
+evasion — the claim that a non-executable reference is harmless — and it overshot into forbidding the
+declaration SU-3 mandates.
+
+**The decisive evidence is not textual.** The reference realization enforces SU-5 with a handler that
+walks an artifact's entire machine block for references — deliberately total, on the stated grounds
+that "a handler that looked only where references are *expected* would miss the one place a design put
+an identity nobody anticipated." That handler carries:
+
+```python
+DECLARATION_KEYS = {"supersedes", "superseded_by"}
+...
+if key in DECLARATION_KEYS:
+    continue
+```
+
+An independent implementer, enforcing SU-5 as written, hit the contradiction and carved out exactly
+this exception — because without it nothing can ever be superseded. That is `0z` §3's case precisely:
+a realization exposing a requirement that could not be met.
+
+**What changes.** SU-5 gains the exception, and §4 states its own scope:
+
+> **SU-5.** Where `X` supersedes `Y`, nothing in the governed system MUST reference `Y` **other than
+> the supersession declaration SU-3 requires**, and the closure MUST be determined during
+> construction.
+
+§4's strictness paragraph gains a sentence distinguishing a **dependency** on the predecessor from the
+**record** of its retirement — the first is what referential closure forbids, the second is what makes
+the retirement declarable at all.
+
+**What it invalidates.** Nothing discharged: no conformance claim exists. Blast radius is SU-5's text
+and one paragraph of §4. No other invariant cites SU-5. The realization needs no change — it already
+implements the corrected rule.
+
+## IN-13's scope — reads by parties, or by any process?
+
+**The finding.** IN-13 requires that no read path exist outside a declared read operation. The
+realization has several direct readers of the sealed snapshot. The map recorded the scope as unsettled
+and asked whether "read path" reaches the system's own construction and checking tooling.
+
+**Ruled: the finding does not hold. `5b` settles it, and the answer is broad.**
+
+The map read IN-13 in isolation. Read with §2, §12 and IN-14 the document is unambiguous, and it
+answers *against* the convenient reading:
+
+- §2 forecloses the tooling exemption by name: inspection "is not a debugging affordance, a developer
+  convenience, an administrative back door, or **a tool that happens to read files**," and the reason
+  given is that a read path "will be used — **by tooling**, by operators, by other systems."
+- §12 closes the observability route: "a side channel opened for observation is an ungoverned read
+  path, and §2 applies to it exactly as to any other."
+
+**So tooling is in scope. IN-14 is what bounds it, and cleanly:** *inspection MUST NOT be performed
+against a representation that has not been sealed.* A pre-seal read is therefore not inspection at
+all — it is construction, governed by Part IV. That gives a criterion needing no judgment call:
+
+| Read | Under | Why |
+|---|---|---|
+| construction reading its own in-flight state (`s8_verify`) | Part IV | pre-seal; IN-14 puts it outside `5b` |
+| acceptance verifying a snapshot (`verify_snapshot`, `warm_boot`) | `3b` §7 | a governed determination *about* a snapshot, not a question asked *of* it |
+| anything reading a **sealed** representation | `5b` | inspection, whoever performs it |
+
+**This converts a finding against the document into a finding against the realization**, with two
+named instances:
+
+- **`protocol_runtime examine`** — reads the sealed snapshot through its own `locator`/`parser`/
+  `reporter` and answers questions about it to a person. No `si.` operation is involved. This is the
+  side channel §12 describes.
+- **`.github/process/frontmatter_fidelity.py`** — reads `snapshot/` directly.
+
+**And the realization already demonstrates the correct pattern.** `transformation/design/sealed.py`
+needed a sealed rule set and went through `inspector.api.query("si.artifact.show", …)` rather than
+opening the file; when the observation pipeline could not supply what a check needed, the answer was
+to author `si.rule_set.list` — a new declared read operation — rather than to open a side channel.
+That is §12's rule followed exactly, by the same codebase that breaks it twice elsewhere.
+
+**What changes.** Nothing in the family. The map's entry is corrected: IN-13 moves from *unsettled*
+to **violated by the realization**, and IN-14 from *partial* to demonstrated for the `si.` surface.
+Two work items are created, and `runtime examine` is the larger — it is a whole read surface that
+should be expressed as `si.` operations.
+
+**Worth stating because it is uncomfortable:** the reading that exonerated the realization was the
+one the map reached first, and it was wrong. The document was clearer than the finding claimed.
+
+## Is `4d` over-specified? — narrowed and upheld
+
+**The finding.** `4d` introduces eleven terms, none defined in Part I, all the vocabulary of
+`transformation/`; it carries twenty-four invariants, the largest set in the family; several
+correspond to specific lessons this workspace learned and recorded. The concern is `0z` §3's
+prohibition on describing an implementation and declaring the description to be the standard.
+
+**Ruled: the general finding does not hold. One clause is over-specified and is narrowed.**
+
+**The vocabulary concern does not survive its own test.** `8a` §4.7 asks whether an alternative model
+satisfying the semantics can be shown to conform, and for the introduced terms it plainly can:
+
+| Term | The semantic requirement under it | An alternative may |
+|---|---|---|
+| **register** | governed content lives in a bounded declared surface, never in prose (TR-2) | use typed records, tables, forms — any bounded declared shape |
+| **rung** | business-level statements must not name constructed identities (TR-6) | have two levels instead of nine, and call them anything |
+| **phase**, **gate** | admissibility and acceptance are distinct determinations (TR-12) | have one phase; TR-14 is then vacuous, not violated |
+
+Each names a real distinction. `0z` §5 permits a document to define its own terms, and renaming is not
+an escape from the requirement.
+
+**One clause fails the test.** TR-17, via §13:
+
+> Sufficiency MUST be measured before realization — **as the proportion of required facts the design
+> states** — and realization MUST refuse below the declared threshold.
+
+The parenthetical specifies *how* sufficiency is computed (a ratio) and the clause presumes a scalar
+with an ordering (a threshold). **Neither is the meaning**, and §13 states the meaning one line
+later: *"A generator that supplies a fact the design omits is a second, ungoverned design authority."*
+
+A conforming alternative could discharge that by **per-artifact determinability** — for each artifact
+to be realized, does the design fix every field it needs? — refusing on the first that does not, with
+no proportion and no threshold anywhere. Under `4d` as written that alternative does not conform,
+though it satisfies the requirement more directly than a ratio does.
+
+**The realization is itself the evidence.** `tc construction emit --require` defaults to **100.0** —
+the point at which the proportion carries no information and the measure is equivalent to
+per-artifact determinability. The scalar is not load-bearing in the only system that implements it.
+
+**What changes.** TR-17 and §13's first bullet are restated over the requirement rather than the
+mechanism: *realization MUST NOT proceed from a design that does not fix every fact the realization
+needs, and the determination MUST be made before anything is written.* How sufficiency is measured,
+and whether it is measured as a proportion at all, becomes a realization's choice.
+
+**What it invalidates.** Nothing discharged. TR-18 (a realized artifact is a function of the design
+alone) is unaffected and carries the weight. The realization needs no change; its default already sits
+at the semantic reading.
+
+**What is not ruled, and stays open.** Whether `4d` was *derived* from the realization is not settled
+by finding one over-specified clause, and it is not a defect on its own — `0z` §5.1 says experience
+from a realization may occasion a revision, only that it may not decide one. **`4d` carries the
+highest inverse-derivation risk in the family and is the document to re-review clause-by-clause
+against `8a` §4.7.** TR-17 is the demonstrated instance; the review is what would establish whether it
+is the only one.
