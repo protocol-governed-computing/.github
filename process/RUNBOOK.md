@@ -9,10 +9,17 @@ The phase count grows; the runbook does not.
 
 ## Build
 
+**Neither tool defaults.** `compile.sh` requires the STRUCTURE and `assemble.sh` requires the
+profile, because a platform is whatever a build config declares and none is minimal by nature
+(`6a` §8), and a snapshot must **name** the profile it claims (`1b` §11, SN-5) — a default would
+have the assembler supply the one condition genesis takes from outside itself. Both refuse with the
+clause they enforce.
+
 ```bash
 cd ~/protocol-governed-computing
+export PGC_SNAPSHOT_PROFILE=REFERENCE_PLATFORM_PROFILE_V1
 
-~/protocol-governed-computing/protocol_compiler/compile.sh
+~/protocol-governed-computing/protocol_compiler/compile.sh STRUCTURE_BUILD_PLATFORM_CONFIG_V1
 
 ~/protocol-governed-computing/protocol_compiler/compile_domain.sh ~/protocol-governed-computing/conformance_workloads/workloads/collatz
 
@@ -26,7 +33,7 @@ cd ~/protocol-governed-computing
 
 ~/protocol-governed-computing/protocol_compiler/compile_domain.sh ~/protocol-governed-computing/business_domains/blockchain
 
-~/protocol-governed-computing/snapshot_assembler/assemble.sh
+PGC_SNAPSHOT_PROFILE=REFERENCE_PLATFORM_PROFILE_V1 ~/protocol-governed-computing/snapshot_assembler/assemble.sh
 ```
 
 Every domain that declares source must be compiled — the assembler refuses otherwise rather than
@@ -44,7 +51,7 @@ the attestation changes.** Recompile one domain and reassemble twice; the `snaps
 for i in 1 2; do
   rm -rf transformation/snapshot/compiled
   protocol_compiler/compile_domain.sh transformation >/dev/null
-  snapshot_assembler/assemble.sh | grep snapshot_id
+  PGC_SNAPSHOT_PROFILE=REFERENCE_PLATFORM_PROFILE_V1 snapshot_assembler/assemble.sh | grep snapshot_id
 done
 ```
 
@@ -405,7 +412,7 @@ rsync -rc ~/protocol-governed-computing/data/transformation/construction/registr
 python ~/protocol-governed-computing/transformation/scripts/testbed/construction_acceptance.py
 
 ~/protocol-governed-computing/protocol_compiler/compile_domain.sh ~/protocol-governed-computing/business_domains/book_library_mgmt
-~/protocol-governed-computing/snapshot_assembler/assemble.sh
+PGC_SNAPSHOT_PROFILE=REFERENCE_PLATFORM_PROFILE_V1 ~/protocol-governed-computing/snapshot_assembler/assemble.sh
 
 python ~/protocol-governed-computing/business_domains/book_library_mgmt/testbed/catalog/execution_validation.py
 python ~/protocol-governed-computing/business_domains/book_library_mgmt/testbed/catalog/execution_validation_cr02.py
@@ -580,7 +587,7 @@ W=~/protocol-governed-computing
 # 2. Hand-author registry/structures/STRUCTURE_BUILD_<DOMAIN>_CONFIG_V0.md — without it the
 #    compiler cannot discover the domain at all.
 $W/protocol_compiler/compile_domain.sh $W/business_domains/<domain>
-$W/snapshot_assembler/assemble.sh
+PGC_SNAPSHOT_PROFILE=REFERENCE_PLATFORM_PROFILE_V1 $W/snapshot_assembler/assemble.sh
 ```
 
 **What it costs.** No design means no P7, and no P7 means none of the composition-integrity rules
@@ -614,13 +621,21 @@ tc phase project --phase p1 --out $CR/p1_change_request_${DOM}_identity_v0.md $C
 tc phase check --phase p7 --snapshot $W/snapshot \
    --prior p5=$CR/p5_*.md --prior p6=$CR/p6_*.md $CR/p7_*.md
 
-# 3. Emit. Writes the artifacts AND the domain's build manifest, which no phase designs —
-#    every field of it is compiler configuration, so it is generated from the mandate.
+# 3. Emit. Writes the artifacts the mandate schedules — and NOT the build manifest.
+#    Construction stopped founding one: every field of a manifest is compiler configuration and no
+#    register states any of them, so writing one meant inferring the domain from the namespace of
+#    the first scheduled artifact — invisible for a business domain where the two are one word,
+#    wrong for the platform. Ruled: manifest production is construction machinery, not scheduled by
+#    design; and a manifest appearing where a glob finds it confers no authority to introduce a
+#    domain — `2e` §6, nothing is admitted by being present. Adding a domain is a governed
+#    transformation against an existing baseline (`6c` §10); a domain MUST NOT claim genesis (DP-11).
+#    So --root must already carry a STRUCTURE_BUILD_*_CONFIG, hand-authored as in the simple path
+#    above. `construction emit` refuses otherwise rather than founding one by inference.
 tc construction emit $CR --root $W/business_domains/$DOM
 
 # 4. Compile the domain against the compiled platform surface, then assemble.
 $W/protocol_compiler/compile_domain.sh $W/business_domains/$DOM
-$W/snapshot_assembler/assemble.sh
+PGC_SNAPSHOT_PROFILE=REFERENCE_PLATFORM_PROFILE_V1 $W/snapshot_assembler/assemble.sh
 
 # 5. Re-pin and re-approve — the composition now contains the domain, so the old pin is stale.
 tc baseline show --snapshot $W/snapshot > $CR/baseline.json
@@ -632,7 +647,7 @@ That is correct: a change request that says *create these* cannot be judged agai
 that already holds them. To re-check or amend it, roll the composition back first:
 
 ```bash
-rm -rf $W/business_domains/$DOM/{registry,snapshot} && $W/snapshot_assembler/assemble.sh
+rm -rf $W/business_domains/$DOM/{registry,snapshot} && PGC_SNAPSHOT_PROFILE=REFERENCE_PLATFORM_PROFILE_V1 $W/snapshot_assembler/assemble.sh
 ```
 
 Editing an artifact already sealed into a released composition is a `REPLACE` in a governed change
@@ -710,7 +725,7 @@ rm -rf $W/snapshot $W/data \
        $W/business_domains/*/snapshot $W/conformance_workloads/workloads/*/snapshot
 
 # 2. Platform first — a domain resolves its references against the compiled governance surface.
-$W/protocol_compiler/compile.sh
+$W/protocol_compiler/compile.sh STRUCTURE_BUILD_PLATFORM_CONFIG_V1
 
 # 3. Every domain in the composition. Omitting one assembles it from stale output that no longer exists.
 for d in $W/transformation $W/snapshot_inspector $W/conformance_workloads/workloads/collatz \
@@ -719,7 +734,7 @@ for d in $W/transformation $W/snapshot_inspector $W/conformance_workloads/worklo
   $W/protocol_compiler/compile_domain.sh $d
 done
 
-$W/snapshot_assembler/assemble.sh
+PGC_SNAPSHOT_PROFILE=REFERENCE_PLATFORM_PROFILE_V1 $W/snapshot_assembler/assemble.sh
 ```
 
 **The snapshot_id must be the one you started with.** It is content-derived over each domain's
@@ -776,7 +791,7 @@ evaluating different rule sets:
 ```bash
 python ~/protocol-governed-computing/transformation/scripts/emit_rule_sets.py           # re-seal
 ~/protocol-governed-computing/protocol_compiler/compile_domain.sh ~/protocol-governed-computing/transformation
-~/protocol-governed-computing/snapshot_assembler/assemble.sh
+PGC_SNAPSHOT_PROFILE=REFERENCE_PLATFORM_PROFILE_V1 ~/protocol-governed-computing/snapshot_assembler/assemble.sh
 python ~/protocol-governed-computing/transformation/scripts/testbed/build_fixtures.py   # derive
 python ~/protocol-governed-computing/transformation/scripts/testbed/build_payloads.py
 ```
@@ -857,7 +872,7 @@ S=$(mktemp -d); OUT=/tmp/pgc_cr02_design_baseline
 ~/protocol-governed-computing/protocol_compiler/compile_domain.sh $S/book_library_mgmt
 W=~/protocol-governed-computing; rm -rf $OUT
 PGC_SOURCE_ROOTS="$W/software_governance/snapshot/compiled:$W/conformance_workloads/workloads/collatz/snapshot/compiled:$W/business_domains/ai_governance/snapshot/compiled:$W/snapshot_inspector/snapshot/compiled:$W/transformation/snapshot/compiled:$S/book_library_mgmt/snapshot/compiled" \
-  PGC_SNAPSHOT_OUT=$OUT ~/protocol-governed-computing/snapshot_assembler/assemble.sh
+  PGC_SNAPSHOT_OUT=$OUT PGC_SNAPSHOT_PROFILE=REFERENCE_PLATFORM_PROFILE_V1 ~/protocol-governed-computing/snapshot_assembler/assemble.sh
 ```
 
 Expect **336 artifacts** — the composition of 345 less the nine CR-2 authored. CR-1's baseline is

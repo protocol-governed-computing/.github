@@ -400,3 +400,146 @@ from a realization may occasion a revision, only that it may not decide one. **`
 highest inverse-derivation risk in the family and is the document to re-review clause-by-clause
 against `8a` §4.7.** TR-17 is the demonstrated instance; the review is what would establish whether it
 is the only one.
+
+---
+
+# Rulings from the dev/10 close-out and the release-10 cut
+
+Four rulings, recorded so the positions stop being re-derived. Two ratify a determination a dossier
+already made; two are new. The fifth standing question — whether approvals against expired pins stand
+— is stated at the end as proposed and is not ruled here.
+
+## An attestation both constitutes and accompanies — RATIFIED
+
+**The finding.** A composition's identity counted when it was built. Two compiles of unchanged source
+wrote ninety-one files each, ninety byte-identical; the ninety-first differed only in `signed_at`.
+
+**What is ruled.** `composition_identity` P3 Q1 stands as written: *"an attestation both constitutes
+and accompanies, and the file is the wrong unit to decide about."* Two of its fields bind what was
+built — the projection and a value over it — and the runtime refuses a composition whose projection
+does not match them; those constitute. The field recording when signing happened is read by nothing
+and changes every build; that accompanies. **The exclusion is of a field, not of a file.**
+
+**Why not the alternative.** Excluding the whole file would drop a binding the runtime enforces from
+the identity — weakening it in the direction opposite to the fix.
+
+**What it invalidates.** Nothing. No circularity arises today: signature, algorithm and key reference
+are placeholders. Map finding 13 defers making the signature real as its own change, and that is
+where circularity has to be resolved.
+
+## A default is not a fact the design determined — SETTLED
+
+**What is ruled.** `construction_determinacy` P3 stands: overridability is a difference in remedy, not
+in what happened. A value a renderer supplies from a default was not stated by the design, and
+Construction Completeness must not count it as though it were.
+
+**What it invalidates.** Nothing discharged. This ruling is what took the change from two facts to
+five. Do not reopen absent an actual contradiction elsewhere in the family.
+
+## The build manifest, and what admits a domain — RULED
+
+Two propositions, resolving in opposite directions. Evidence in `.github/doc/e0_ruling_3_brief.md`.
+
+**1. Manifest production is construction machinery, not scheduled by design.** Every field of a build
+manifest is compiler configuration and no design register determines any of them. Treating the whole
+manifest as designed obliged a subdomain change to restate fifty-one derived facts and invent a
+fifty-second. **Do not create a manifest design artifact kind.**
+
+**2. Domain founding remains governed.** A manifest appearing where a glob finds it cannot constitute
+authority to introduce a domain. **This requires no revision:** `2e` §6 already holds that *"nothing
+is admitted by being present, discoverable, referenced, or expected,"* and `2e` §2 tabulates
+Admission-conflated-with-presence as a known failure — *"being found is being admitted."* `6c` §1
+refers a domain's authority determination to `2e`. **The realization performs exactly that
+conflation**, which makes this a realization finding and not a document defect.
+
+**The separation.** A design determines that a domain is *admitted*; construction materializes its
+compiler configuration; the manifest makes an admitted domain *discoverable*. **The manifest is
+evidence and materialization of a governed admission, never the authority for it.**
+
+**What stays open.** What governed act admits a domain, and where its determination and evidence
+live. `6c` is the candidate home, and no domain profile exists for any of the six domains.
+
+## A build-tool version does not constitute a composition — RULED
+
+**The finding.** Cutting release 10 moved the snapshot identity with no governed artifact changed.
+`COMPILER_VERSION` derives from `VERSION` and is written into each domain's canonical `metadata.json`,
+which the assembler covers by a hash of its bytes.
+
+**What is ruled.** Build-tool version metadata is not constituent content of snapshot identity. It has
+no discriminating power over governed content and no governed determination depends on it: a tool
+change that changes governed output already changes the identity-bearing content, and a tool change
+that does not **must not manufacture a new identity**.
+
+**Not affected.** Schema versions, and any other version field on which a conforming reader or runtime
+can refuse or make a governed determination, stay in the identity — `evidence_reader.py` refuses an
+unsupported `schema_version`. **The test is not what a field is called.** A field belongs in identity
+only when variation in it can distinguish the governed object or alter a governed determination.
+
+**Not a document defect.** `4c` already decides it — *"leave every constituent unchanged and [the
+composite identity] does not [change]"* — and the compiler already implements the principle:
+`compute_projection_hash` excludes envelope fields. The assembler's byte-level hashing inadvertently
+includes it. **An RI inconsistency with an established rule, not a new semantic decision.**
+
+**Resolution.** A CR removing the redundant copies from identity-bearing canonical content, preserving
+them in provenance where they remain useful. `provenance.compiler_versions` already records all seven
+domains and is already outside the identity.
+
+## Approvals against expired pins — RULED
+
+**The question.** Do approvals recorded against a pin that no longer verifies still stand?
+
+**Why it is not one question.** Pins have expired for three distinct reasons, and the answer differs
+by ground.
+
+**What is ruled — per ground, not globally:**
+
+| Why the pin expired | Ground | Disposition |
+|---|---|---|
+| The identity measured the clock (dev/10) | a defect in the identity mechanism, since fixed | **approval stands** — nothing approved changed |
+| The version bump at the release cut | stable but immaterial | **approval stands**; the CR above removes the cause |
+| A governed artifact actually changed | legitimate | **re-approval required** — the composition genuinely differs |
+
+**The principle.** An approval anchors to the identity **at the time of approval**. It is not
+invalidated because a later identity representation changed for a reason unrelated to what was
+approved. **This preserves the distinction between a bad identity mechanism and a genuinely changed
+governed object** — the two produce the same symptom and are not the same event.
+
+**What it invalidates.** Nothing recorded. The three dossiers whose pins expired under the first two
+grounds keep their approvals; only a dossier whose composition changed in a governed artifact
+re-approves. This does not license re-pinning: **whether a dossier may be re-pinned turns on whether
+it has delivered, not on whether its approval stands** (TR-15). A delivered dossier's pin mismatch is
+the pin working.
+
+**What must not be inferred.** This does not make an approval permanent. It makes the *ground* of an
+identity change the thing that decides, which is a determination someone has to make and record — not
+a default that lets an expired pin pass unexamined.
+
+## Profile authorship independence under NP-7 — RULED
+
+**The question.** What constitutes sufficient independence of authorship for a profile under NP-7?
+
+**The test is the standard's, and it is about authority rather than location.** `6a` §6: *"Externality
+is a property of **authorship**, not of storage. A profile may be carried anywhere, including within a
+system's own repository; **what matters is that changing it is not within the authority of the system
+that claims it.**"*
+
+**Applied, three statements are true and are recorded as the realization's honest status:**
+
+1. **`REFERENCE_PLATFORM_PROFILE_V1` is not an independent profile under NP-7.** It changes by the
+   same act, the same authority and the same release process as the platform it constrains. It fails
+   the §6 test on the exact criterion that sentence states — not marginally.
+2. **The realization cannot make a conforming genesis claim.** `7b` CD-14 requires a genesis claim to
+   *demonstrate* that the claimed profile was not authored by what claims it. **The thing to be
+   demonstrated is not true**, so no check closes it and none should be written.
+3. **This is declared a limitation of the current realization, not of the standard.** The rule is
+   stated in five places — `1b` §11 and SM-11, `3b` SN-7, `4d` TR-15a, `6a` §6 and NP-7 — and made
+   demonstrable by CD-14. The family is not at fault; this realization does not satisfy it.
+
+**What is ruled.** The realization **makes no genesis claim** and says so. An externally authored
+profile is pursued in parallel, because E5 requires one regardless of this ruling. **A separation of
+authority declared inside the project was considered and refused** — it is the option most likely to
+produce the appearance of externality without the substance, and §6's test would still be failed by
+whoever can change both.
+
+**What it does not block.** Draft-2. Statements 1 and 2 are facts about the realization, not about
+the standard, and `0z` §3 forbids amending a document to match what was built.

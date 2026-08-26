@@ -12,6 +12,20 @@ any compiler or runtime, is the seat of authority. PGC is deliberately independe
 of any one compiler, runtime, or language, in the same way SQL is independent of
 any one database and JVM bytecode is independent of any one JVM.
 
+## The standard
+
+The normative specification lives in **[`standards`](https://github.com/protocol-governed-computing/standards)** — thirty-two documents in seven parts, at revision `draft-3`, frozen. It states what a
+governed system must mean and do, independently of anything built here.
+
+**It is seeking critical review, not adoption.** What is claimed, what would falsify it, what has not
+yet been established, and the one thing this project cannot supply for itself are stated in the
+[call for review](https://github.com/protocol-governed-computing/standards/blob/main/doc/call_for_review.md).
+[`0d`](https://github.com/protocol-governed-computing/standards/blob/draft-3/spec/0d_visual_representation_of_the_standard.md)
+draws the model in seven figures and is the shortest way in.
+
+**The specification governs; the realization demonstrates.** Where a document of the family and any
+implementation disagree, the document governs — including every implementation in this organization.
+
 ## The model, in three functions
 
 A governed system's life is three governed compilations over one architecture:
@@ -43,9 +57,10 @@ each authority is bound by the ones above it.
 | Reference Implementation | *demonstrates* |
 | Independent Implementations | *validate* |
 
-The center of gravity is not prose: **the Genesis Snapshot plus the conformance
-definition *is* the standard.** The prose papers explain it; they are not its ground
-truth.
+The center of gravity is the normative family, not the papers and not any artifact a build
+produces: **the standard is the specification, and a realization demonstrates that it is
+satisfiable rather than defining what conformance requires.** The prose papers argue for it; they
+are not its ground truth, and neither is anything in this organization's code.
 
 ---
 
@@ -96,7 +111,9 @@ lineage rather than for reference: <https://omnibachi.org/papers/working_papers/
 
 # Repositories
 
-The composition is built from repositories that each own one concern. **A platform is a
+**These are the reference implementation.** The standard itself is not among them — it is
+[`standards`](https://github.com/protocol-governed-computing/standards), and it is authored against
+no implementation. The composition below is built from repositories that each own one concern. **A platform is a
 composition under a conformance profile, never a repository** — the repository boundary
 and the platform boundary are orthogonal, and conflating them is a category error the
 architecture is explicit about.
@@ -142,5 +159,7 @@ than a name.
 
 ---
 
-*Nothing here is final until it is ratified through the standard's own amendment
-process.*
+*A revision of the standard is **declared, not inferred** — proposed against a named predecessor,
+stating what it changes and what that invalidates. Every declared change is recorded in
+[`doc/revisions.md`](https://github.com/protocol-governed-computing/standards/blob/main/doc/revisions.md),
+including the findings considered and declined.*

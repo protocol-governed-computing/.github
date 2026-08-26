@@ -32,9 +32,11 @@ snapshot_profile:
   supersedes: NORMATIVE_PLATFORM_PROFILE_BASELINE_V0
 
   description: >
-    Baseline normative platform profile. Defines the minimum set of governance artifacts,
-    component capabilities, workloads, and conformance claims a snapshot SHALL provide in order
-    to demonstrate protocol-governed execution end to end.
+    The profile the reference realization is developed and demonstrated against. Selects a
+    single-node, unsigned, locally-stored configuration and requires the governance artifacts,
+    component capabilities, workloads and conformance claims that exercise the full governed
+    path end to end. A usable configuration for that purpose, not a floor: minimality is
+    relative to a profile (6a §8), and this profile is not privileged (6a §11).
 
   declared_vocabulary:
     # The closed set of artifact kinds admissible under this profile (KV-1, KV-2).

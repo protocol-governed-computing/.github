@@ -1,0 +1,181 @@
+# NOVA — a realization of PGC standard
+
+**Codename NOVA.** An independent PGC realization built from the published standard by a worker with
+no knowledge of the reference implementation, to answer two questions at once: *is the standard
+sufficient to build from*, and *can a PGC system govern its own evolution*.
+
+NOVA is not a rewrite. The reference realization is the control; NOVA is the second sample. Their
+disagreement is the evidence.
+
+## What is under test
+
+| | Proposition |
+|---|---|
+| **G0** | An independent author can produce a valid `6a` profile from the standard alone. |
+| **G1** | The experiment itself can be governed before it is run. |
+| **G2** | An independent realization can be built from standard + profile alone. |
+| **G3** | Two independent realizations can discharge the same conformance claim. |
+| **G4** | A PGC realization can govern its own evolution by transformation, not rebuild. |
+
+## Gates
+
+Each gate produces an artifact and a finding set. **No gate starts until the one before it has
+both** — otherwise the next gate silently converts a finding into a design decision.
+
+- **G0 — Independent Profile Authoring Commission.** The clean `6a` profile is an unproven
+  prerequisite, not preparation. Neither existing candidate qualifies: one is self-described as
+  what the reference realization is developed against, which `6c` §1 forbids; the other is written
+  in vocabulary the standard does not have. Output: an authored profile at a named revision,
+  committed as an independent artifact, plus the ledgers below.
+- **Revision freeze.** Between G0 and G1. See *The revision target* below.
+- **G1 — Independent Realization Experiment Protocol.** Permitted inputs, firewall, decision
+  taxonomy, required findings, success and failure criteria — fixed *before* NOVA begins, so the
+  validation exercise is not itself ungoverned. **Hard exit criterion: G1 MUST identify the
+  normative basis by which G2's conformance claim will be discharged. If no such basis exists, G2
+  MUST NOT start and the absence is recorded as a finding.**
+- **G2 — NOVA.** Independent realization. Output: the system, its conformance evidence, and the
+  registers.
+- **G3 — Comparative conformance.** Reference and NOVA against the same profile and revision. Not
+  source equivalence: `7a` §10 makes equivalence relative to profile and revision, never
+  architecture. `7a` §7.3's comparative discharge classes and RT-12 are stated over exactly this and
+  are currently unexercised. **The standard and the profile are the oracle. The reference and NOVA
+  are two observations against it** — see *Reading a disagreement*.
+- **G4 — Governed transformation.** NOVA's own baseline snapshot plus a purpose — add a business
+  domain — through its own transformation semantics. The snapshot is the correct input *here* and
+  contamination anywhere earlier.
+
+## Finding classes
+
+Every decision a worker makes is classified. This is what keeps the exercise from degenerating into
+*the model made choices, therefore the standard is incomplete*.
+
+| Class | Meaning | Is it a finding? |
+|---|---|---|
+| **1 — realization freedom** | the standard deliberately leaves it open | no; record and move on |
+| **2 — profile-governed** | the standard defers it and the profile answers | no; correct behaviour |
+| **3 — ambiguity** | two readings produce incompatible systems | yes |
+| **4 — omission** | a required determination has no normative source | yes, serious |
+| **5 — reference-shaped assumption** | cannot proceed without reconstructing something knowable only from the reference | yes, the most valuable |
+
+**The rule that makes it work:** every assumption affecting externally observable PGC semantics must
+trace to a permitted input or be reported. Every choice that does not affect them must be explicitly
+classified as realization freedom.
+
+## The revision target
+
+`7a` CF-1 requires a claim to name a revision, so NOVA needs an immutable target. It does not need
+one yet.
+
+**`draft-4` is the candidate fixed input for G0 — fixed for the trial, not yet frozen.** Freezing
+before G0 risks discovering a G0-invalidating defect immediately after the revision is sealed;
+leaving it open through G2 makes NOVA chase a moving standard. So:
+
+```
+draft-4 as candidate  →  G0 trial  →  findings disposition  →  freeze and tag  →  G1 names it  →  G2
+```
+
+A G0 finding that proves a normative defect is repaired first and the affected G0 work repeated. A
+finding that turns out to be a profile-authoring or realization matter occasions no repair.
+
+**The rule, stated so the name is not what matters:** NOVA's target is *the first frozen revision
+incorporating the terminology and ownership repairs, plus any G0 finding that proves a normative
+defect.* That is very likely `draft-4`.
+
+`draft-3` is a poor target and not because of its semantics — Change 1 altered no obligation, and
+`1a` §14 binds documents rather than implementations, so a realization conforming to `draft-3`
+conforms to `draft-4` unchanged. It is a poor target because NOVA consumes the standard as **build
+input**, and `draft-3` is known to carry twelve untrue declarations, a term `1a` uses and does not
+define, and one term defined twice. A cold worker meets those directly.
+
+## Reading a disagreement
+
+The reference realization is **not** the oracle. Where NOVA and the reference differ:
+
+```
+NOVA ≠ reference
+   └─ within permitted realization freedom?
+        ├── yes → not a conformance disagreement; record as Class 1
+        └── no  → does the standard determine one result?
+                   ├── yes → one realization has a defect
+                   └── no  → specification ambiguity or omission (Class 3 / Class 4)
+```
+
+Disagreement triggers investigation. It is never by itself evidence that either system is wrong.
+
+## Firewall
+
+Permitted: the frozen `spec/` at a named revision; the normative conformance material; general
+technical knowledge unrelated to the reference.
+
+Prohibited: reference source, repo history, snapshots, architecture papers, prior implementation
+discussion, existing profile candidates, and prior agent memory.
+
+Contamination routes that have already bitten, and are guarded explicitly:
+
+- a commissioning reply quoted back as normative text;
+- the worker patching its own copy of the standard;
+- profile *shape* leaking architecture even when it names nothing.
+
+**One route is structural and no commission wording closes it.** The standard names its own subject,
+so a worker that has read `1a` §4 can find an existing realization by searching for that name. The
+prohibitions cover what is *offered* to a worker; they do not cover curiosity.
+
+**Settled: network restriction, by the cheapest mechanism each gate allows.** The mechanism differs
+because what the worker needs differs, and a single regime would either fail to bind G0 or make G2
+impossible.
+
+| Gate | The worker needs | Regime |
+|---|---|---|
+| **G0** authoring | to read `spec/` and write documents | **tool restriction.** No `Bash`, no web tools, no subagents. Reading and writing files is the whole task, so the network-capable surface can be removed outright rather than policed. |
+| **G2** realization | to write, build, and run code | **environment isolation.** A worker that can execute can reach the network; nothing at tool level binds it. An offline container or VM, with dependencies staged in advance. |
+| **G3, G4** | — | none. Run by the commissioning side with full context; there is nothing to protect. |
+
+**G0 carries no residual worth stating.** A worker with no execution and no web tools has no route
+to an existing realization, whatever it is curious about.
+
+**G2's residual is the staging step.** Dependencies have to enter the isolated environment somehow,
+and whatever carries them in is a channel. Stage them before the worker starts, from a manifest
+fixed in advance, and record what was staged as part of the run.
+
+What must not happen is assuming G0's guarantee covers G2. It does not: the gate that most needs
+isolation is the one where tool restriction stops working.
+
+**The worker is a fresh session, and never the one that authored the standard's changes.**
+Externality is a property of authorship, not of model weights.
+
+## Open before G0 closes
+
+- **Which revision does NOVA claim against?** `7a` CF-1 requires a named revision. `draft-4` is open
+  with one change declared; `draft-3` is frozen and tagged but carries the twelve untrue
+  declarations Change 1 repaired. Freezing `draft-4` first is the clean answer and is a decision,
+  not a formality.
+- **There is no conformance suite.** `7b` specifies demonstrations; Finding **B** records that it
+  specifies none for the *specification* subject class, and no executable suite exists. A worker
+  required to produce conformance evidence currently has nothing to run. **G0 exposes this boundary
+  and does not solve it; G1 must dispose of it** in exactly one of three ways:
+
+  | | Disposition | Consequence |
+  |---|---|---|
+  | **A** | existing normative demonstrations suffice | name them, and state how NOVA uses them |
+  | **B** | the standard requires an instrument it does not let you build | specification finding; repair before G2 |
+  | **C** | a suite is deliberately outside the family | G1 redefines G2's discharge method; it does not pretend a suite exists |
+
+  What must not happen is *"build NOVA and demonstrate conformance"* with the worker inventing the
+  test oracle. That creates precisely the second undeclared authority the experiment exists to
+  detect.
+
+## Gate contract
+
+| Gate | Cannot close without |
+|---|---|
+| **G0** | profile artifact · decision ledger · findings · disposition |
+| **freeze** | named and tagged revision |
+| **G1** | protocol · firewall · permitted inputs · conformance discharge basis |
+| **G2** | realization · assumption register · findings · evidence |
+| **G3** | comparative results · disagreement dispositions |
+| **G4** | baseline · transformation evidence · resulting governed state |
+
+## What NOVA is not
+
+Not a competitor to the reference. Not a migration. Not a judgement on the reference's quality — a
+realization may be excellent and still reveal that the standard did not determine it.

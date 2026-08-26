@@ -40,10 +40,15 @@ case "${1:-}" in
   *) echo "unknown argument: $1 (usage: release.sh [--check])" >&2; exit 2 ;;
 esac
 
-RELEASE=10         # the release being cut  — branch dev/$RELEASE must exist and be current
-NEXT=11            # the cycle to open next — branch dev/$NEXT will be created from main
+RELEASE=11         # the release being cut  — branch dev/$RELEASE must exist and be current
+NEXT=12            # the cycle to open next — branch dev/$NEXT will be created from main
 
 WORKSPACE="$HOME/protocol-governed-computing"
+
+# What the build gate builds and claims. Named rather than defaulted, because neither tool has a
+# default and neither should: no profile is privileged (6a §11) and no platform is minimal (6a §8).
+GATE_STRUCTURE="STRUCTURE_BUILD_PLATFORM_CONFIG_V1"
+GATE_PROFILE="REFERENCE_PLATFORM_PROFILE_V1"
 
 # The composition — every repo that compiles, assembles, is assembled into a snapshot, reads one,
 # or transforms one into the next. `snapshot_inspector` joined at release 3 (it missed release 2
@@ -164,14 +169,17 @@ else
   rm -rf snapshot
 
   BUILD_OK=1
-  protocol_compiler/compile.sh >/tmp/pgc_rel_build.log 2>&1 || BUILD_OK=0
+  # The gate NAMES what it builds. compile.sh and assemble.sh have no defaults: a platform is
+  # whatever a build config declares (6a §8) and a snapshot must name the profile it claims
+  # (1b §11). Naming them here is the act those rules require, not boilerplate.
+  protocol_compiler/compile.sh "$GATE_STRUCTURE" >/tmp/pgc_rel_build.log 2>&1 || BUILD_OK=0
   if [[ $BUILD_OK -eq 1 ]]; then
     for root in "${BUILDABLE[@]}"; do
       [[ "$root" == "$WORKSPACE/software_governance" ]] && continue   # compile.sh builds the platform
       protocol_compiler/compile_domain.sh "$root" >>/tmp/pgc_rel_build.log 2>&1 || { BUILD_OK=0; break; }
     done
   fi
-  if [[ $BUILD_OK -eq 1 ]] && snapshot_assembler/assemble.sh >>/tmp/pgc_rel_build.log 2>&1; then
+  if [[ $BUILD_OK -eq 1 ]] && PGC_SNAPSHOT_PROFILE="$GATE_PROFILE" snapshot_assembler/assemble.sh >>/tmp/pgc_rel_build.log 2>&1; then
     ok "clean rebuild + assemble + composition conformance"
     grep -E "^\[conformance\]|snapshot_id" /tmp/pgc_rel_build.log | sed 's/^/        /'
   else
