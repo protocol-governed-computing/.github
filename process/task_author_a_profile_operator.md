@@ -37,17 +37,30 @@ Build it from the **named candidate revision**, not from the working tree:
 
 ```sh
 SANDBOX=~/g0-run            # outside the workspace; no CLAUDE.md above it
-cd standards
-git worktree add /tmp/g0-src <candidate-revision>   # a tag or commit, never a branch
-mkdir -p "$SANDBOX/spec"
-cp /tmp/g0-src/spec/*.md "$SANDBOX/spec/"
-cp ../.github/process/task_author_a_profile.md "$SANDBOX/"
+REV=<candidate-revision>    # a tag or commit, never a branch
+
+mkdir -p "$SANDBOX"
+git -C standards archive "$REV" spec | tar -x -C "$SANDBOX"
+cp .github/process/task_author_a_profile.md "$SANDBOX/"
+git -C standards rev-parse "$REV" > "$SANDBOX/REVISION"
 chmod -R a-w "$SANDBOX/spec"       # the family is read, never written
-git -C /tmp/g0-src rev-parse HEAD > "$SANDBOX/REVISION"
 ```
 
-Confirm nothing above the sandbox carries context: `ls ~/CLAUDE.md` and check the worker's own
-agent-configuration directory has been archived, or the run inherits a memory of this work.
+`git archive` rather than a worktree: it is read-only, registers nothing in the source repository,
+and leaves no second checkout to clean up. It also carries only what the revision tracked under
+`spec/`, so an untracked file sitting in the working tree cannot ride along.
+
+Then confirm the sandbox is what it should be, and that nothing around it is not:
+
+```sh
+find "$SANDBOX" -type f | wc -l          # 34: REVISION, the task, 32 spec documents
+grep -rlE 'protocol_compiler|snapshot_assembler|protocol_runtime|software_governance|PNP' "$SANDBOX"
+ls ~/CLAUDE.md                           # must not exist
+ls -d ~/.claude                          # must be archived, or the run inherits a memory of this work
+```
+
+The second command must print nothing. The count is the cheaper check of the two: anything that
+raises it arrived by a route nobody intended.
 
 `$SANDBOX/REVISION` is what the profile and every finding cite. A branch name is not a revision: it
 moves, and a finding against a moving target names nothing (`7a` CF-1).
@@ -65,8 +78,8 @@ particular:
 
 A whole-directory copy leaks every one of these. Copy the files named above, individually.
 
-To refresh the copy after a spec edit: `chmod -R u+w "$SANDBOX/spec"`, re-copy, re-lock, and
-`diff -rq /tmp/g0-src/spec "$SANDBOX/spec"` to confirm.
+A run does not outlive a spec edit. If the standard is repaired, the candidate revision has changed:
+tear the sandbox down and rebuild it from the new commit rather than refreshing in place.
 
 **The lock is not paranoia.** In the first run the worker patched its own copy of the standard in
 response to a review — including inserting a section and renumbering everything after it, which
