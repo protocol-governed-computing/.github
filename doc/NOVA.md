@@ -44,7 +44,12 @@ both** — otherwise the next gate silently converts a finding into a design dec
   are two observations against it** — see *Reading a disagreement*.
 - **G4 — Governed transformation.** NOVA's own baseline snapshot plus a purpose — add a business
   domain — through its own transformation semantics. The snapshot is the correct input *here* and
-  contamination anywhere earlier.
+  contamination anywhere earlier. **Recorded, not required for this claim:** a later transformation
+  performed by an operator who did not build NOVA would test the premise harder. G4 asks whether a
+  realization can govern its own evolution, and the premise is that behavior travels in the snapshot
+  while the runtime is replaceable. If a transformation needs the builder's memory, the governed
+  state did not carry what evolution required — and only a different operator can show that. It is a
+  stronger follow-on, not a condition of the current claim.
 
 ## Finding classes
 
@@ -161,8 +166,30 @@ fixed in advance, and record what was staged as part of the run.
 What must not happen is assuming G0's guarantee covers G2. It does not: the gate that most needs
 isolation is the one where tool restriction stops working.
 
-**The worker is a fresh session, and never the one that authored the standard's changes.**
-Externality is a property of authorship, not of model weights.
+## Who must be independent of whom
+
+Independence is required at the boundaries a claim rests on, and nowhere else. Rotating workers
+between gates for its own sake buys nothing and is not how any standards programme runs.
+
+**Two boundaries, and only two:**
+
+- **`NPP-E`'s author must not build NOVA.** `6a` §6 — externality is a property of authorship, and a
+  system claiming a profile it wrote is the collapse the standard forbids.
+- **NOVA's builder must not have had access to G0's findings**, nor to any excluded PGC material.
+  G0's registers map the terrain G2 surveys; a builder told in advance where the standard's edges
+  are will route around them rather than discover them.
+
+**A single worker may perform G2 and G4.** No fresh-worker requirement stands between them. G4
+transforms the system G2 built, and asking someone who has never seen it to do so tests nothing G4
+is about.
+
+**G3 is not a worker task.** It is a commissioning-side comparative evaluation — two systems'
+discharge against one profile, read by the party that commissioned both. Like the classification of
+G0's registers, it is done with full context because there is nothing to protect.
+
+The real-world separation this mirrors is **standard author ≠ profile author ≠ implementer ≠
+certifier**, which is how every standards body works. An implementer building a system and then
+evolving it is not a separation anyone requires; it is the ordinary case.
 
 ## Open before G0 closes
 

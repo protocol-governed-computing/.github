@@ -32,7 +32,7 @@ presented to a governed state". A Part I document using the term to define one o
 concept is family-wide. Had construction owned it, `1b` would rest on a Part IV term — the same
 defect this change repaired for `step`.
 
-### Changes made — `.github`, uncommitted
+### Changes made — `.github`
 
 | File | What |
 |---|---|
@@ -42,6 +42,12 @@ defect this change repaired for `step`.
 | `doc/SOTU.md`, `doc/` | nine resolved `draft-3` working files removed; the `draft-2`-era entry trimmed. `parked_rulings.md` kept — deferred, not resolved, and cited three times from `standards/doc/realization_map.md`. |
 | `doc/NOVA.md`, `process/task_author_a_profile_operator.md` | **the G1 network regime, settled per gate.** Not one policy: **G0** removes the network-capable surface outright — no `Bash`, no web tools, no subagents, because reading `spec/` and writing documents needs none of them, leaving no residual. **G2** cannot be bound that way, since a worker that executes can reach the network; it needs an offline container, with dependencies staged in advance from a fixed manifest and recorded. **G3/G4** need nothing. The trap named explicitly: G0's guarantee does not cover G2, and G2 is the gate that most needs isolation. |
 | `process/task_author_a_profile_operator.md` | **the sandbox moves out of the workspace tree.** It was specified at `standards/sandbox/`; an agent session inherits the `CLAUDE.md` files above its working directory, and the workspace root's names every repository, the build lifecycle and the platform composition. A sandbox inside the tree hands over the whole reference architecture before the worker reads one document — contaminated by its own location. Now `~/g0-run`, with a check that nothing above it carries context and that the worker's agent-configuration directory has been archived. |
+| `process/g1_realization_protocol.md` | **new.** G1 — what a realization worker may see, must produce, and is judged by. Its hard exit criterion is discharged: **disposition C**, a conformance suite is deliberately outside the family, so G2's claim discharges by demonstration with declared fixtures — including negative ones — obtainable by a party that did not build the system. `7b` §6's obtainability rule is the operative constraint, not a schema. |
+| `process/task_build_a_realization.md` | **new.** The G2 worker commission, derived from G1. Its §6 carries the finding G2 exists to produce: an author can leave a question open on the page and a builder cannot, so every gap is filled with something, that something works, and a working system feels like evidence the choice was right. It is not evidence the standard determined it. |
+| `doc/NOVA.md`, `process/g1_realization_protocol.md` | **independence scoped to the boundaries that carry it.** Two only: `NPP-E`'s author must not build NOVA (`6a` §6), and NOVA's builder must not have had access to G0's findings. **A single worker may perform G2 and G4** — no fresh-worker rule between them, since G4 transforms the system G2 built. **G3 is a commissioning-side comparative evaluation**, not a worker task. Mirrors the real separation: standard author ≠ profile author ≠ implementer ≠ certifier. |
+| `process/g1_realization_protocol.md` | **the claim types are bridged to the classes.** The worker-facing documents carry no class reference at all — five claim types for the worker, classes for the evaluator — and nothing said how one became the other. G1 §7 now maps *claim type × source basis* to class, and states what the record alone cannot settle: class 5 and class 6 differ by whether the worker chose freely among workable options or had to arrive at a shape for anything to fit. Class 6 is never named to a worker, because naming it says a realization exists. |
+| `doc/NOVA.md` | **G4's stronger follow-on, recorded and not required.** A transformation by an operator who did not build NOVA would test the premise harder: if evolution needs the builder's memory, the governed state did not carry what it required. Not a condition of the current claim. |
+| `projections/`, `tools/` *(in `standards`)* | **the `1c` omission closed** — see below. |
 | `process/notes/release-11.md` | **new.** *A declaration is not a definition* — the release note for this cycle. Deliberately echoes release 10's *declared ≠ implemented ≠ enforced ≠ demonstrated*: the same shape of finding one level up, an instrument turned on the standard instead of on the realization. Carries the extractor's own failure as a full section, because a note reporting 124 defects without saying 111 were its own blindness reads as self-serving. Documents are named by role, not file identifier, matching release 10's register. |
 
 ### Changes made — `snapshot_assembler` and `protocol_runtime`, uncommitted
@@ -79,8 +85,10 @@ declines to determine cannot be a canonical axis of its ontology. **Not carried 
 **Two repairs to the commission, both held.** Class 0 for commissioner-supplied scope, and the
 taxonomy withdrawn from the worker in favour of a provenance record — *source basis*, *claim type* —
 with all interpretive labelling done by the evaluator after the run. A third rule was added when the
-carry-over was found: **use a worker that has not performed a previous run, in a context that holds
-none of one.** The existing prohibition covered what is handed over, not what is remembered.
+carry-over was found, scoped to authoring runs: **use a worker that has not performed a previous
+authoring run, in a context that holds none of one.** The existing prohibition covered what is
+handed over, not what is remembered. It does not reach forward to G2 and G4, where the boundaries
+are `NPP-E`'s authorship and access to G0's findings, and nothing more.
 
 **The rule that outlives G0:** an experiment may constrain the task, but it must not supply the
 distinction whose derivability it is measuring.
@@ -279,7 +287,10 @@ G1 settled three things so they are not re-derived at G2:
 - the **staging manifest**, declared by the worker before isolation and closed once the run starts.
   A later request is granted if it must be, and recorded as a break in the isolation with its
   reason and moment;
-- a **worker that has performed no previous NOVA run**, in a context holding none of one.
+- a **worker satisfying the two independence boundaries, and no more than those**: it must not be
+  the author of `NPP-E` (`6a` §6), and must not have had access to G0's findings or other excluded
+  material. **The same worker may then perform G4** — no fresh-worker requirement stands between
+  the gates, and G4 transforms the system G2 built.
 
 **The commission's §6 carries the finding G2 exists to produce.** An author can leave a question
 open on the page; a builder cannot — code does not run with a hole in it. Every gap must be filled

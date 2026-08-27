@@ -47,9 +47,14 @@ ordinary engineering answers and the surface is wider:
 - **anything found by going looking.** The standard names its own subject; searching for that name
   may reach an existing realization. Do not search for one; stop if you encounter one.
 
-**The worker must not have performed a previous NOVA run**, in a context holding none of one. G0
-run `NPP-D` demonstrated why: it inherited its predecessor's vocabulary through shared context, and
-the prohibition on handed-over material does not reach what a worker remembers.
+**Two independence boundaries apply, and no others:** the author of `NPP-E` must not build the
+system, and the builder must not have had access to G0's findings or to any excluded material. G0
+run `NPP-D` showed why the second cannot be met by prohibition alone — it inherited its
+predecessor's vocabulary through shared context, and a rule about handed-over material does not
+reach what a worker remembers.
+
+**No fresh-worker requirement stands between G2 and G4.** The same worker may do both, and normally
+should: G4 transforms the system G2 built.
 
 ## 4. The firewall is environmental, not tool-level
 
@@ -133,6 +138,28 @@ The commissioning side classifies. The worker is given none of this.
 | **4 — ambiguity** | two readings, incompatible systems | **yes** |
 | **5 — omission** | no normative source at all | **yes**, serious |
 | **6 — reference-shaped assumption** | needed something knowable only from an existing realization | **yes**, the most valuable |
+
+**The worker never sees this table.** It records five claim types and a source basis; you assign the
+class. Nothing in the worker's commission names a class, and that is deliberate — naming class 6 to
+a worker tells it an existing realization exists.
+
+**How a record becomes a class:**
+
+| Claim type recorded | Source basis | Class |
+|---|---|---|
+| expressly required by source | the standard or `NPP-E` | **2** |
+| expressly required by source | this protocol or the scope register | **0** |
+| expressly permitted by source | the standard or `NPP-E` | **1** |
+| inferred from source | cited, but the text does not say it | **3** or **4** |
+| unresolved | cited, and the source delegates without deciding | **3** |
+| unresolved | cited, and the readings conflict | **4** |
+| unresolved | none | **5** |
+| chosen by author | none, *and* proceeding required reconstructing a convention | **6** |
+
+**Class 5 and class 6 are separated by one question**, and the record alone will not answer it: did
+the worker choose freely among workable options, or was there a shape it had to arrive at for
+anything to fit? The second means something outside the standard was determining the answer. Read
+the reasoning, not the label.
 
 **Audit classes 0, 1 and 2 hardest** — the ones about to be recorded as *not* findings. Read claim
 type against source basis: *expressly required* citing text that does not require it, or *inferred*
