@@ -97,6 +97,12 @@ against its own text.
   a sentence from a reply to the worker's pre-questions appeared in the profile attributed to `6a`
   §7. Assume anything you write will be quoted back with a document number attached.
 - **Do not show the worker a previous run's deliverables, log, or evaluation.**
+- **Use a worker that has not performed a previous run, in a context that holds none of one.** The
+  rule above covers what you hand over; it does not cover what the worker already remembers. Runs
+  `NPP-C` and `NPP-D` were performed by one worker in one context, and the second reproduced the
+  first's answers and carried a phrase from the first's commission into its own findings. A worker
+  restating itself establishes nothing about what the standard leads a reader to, and a distinction
+  it was given in an earlier run is not one it derived in this one.
 - **Run the worker without `Bash`, without web tools, and without subagents.** The reference
   realization is discoverable by name from the standard alone, and the prohibitions in the task
   cover what is offered to a worker rather than what it goes looking for. This task is reading

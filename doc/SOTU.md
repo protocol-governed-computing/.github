@@ -1,6 +1,6 @@
 # SOTU Handoff
 
-## dev/12. **`draft-4` Change 1 declared · the vocabulary is closed and self-checking · NOVA opened · next: run G0.**
+## dev/12. **`draft-4` Change 1 declared · NOVA opened and G0 run three times · Findings A and F answered · next: close G0.**
 
 The whole cycle came from one instrument: **a terminology index derived over the family and checked
 against `1a` §12** — the first instrument pointed at the family's own vocabulary rather than at a
@@ -53,6 +53,37 @@ belongs with the component it governs, not in org config. Its header carried two
 `spec/01_machine_block.md`, an RI-0 path. **Neither was used by the body** — both words appeared only
 in that line — so they were replaced with what actually governs assembly, `3b` and `4b`, rather than
 translated. The `Status:`/authoring-note bullet was dropped.
+
+### NOVA G0 — three runs, two instrument repairs
+
+The profile-authoring trial ran three times against byte-identical `spec/`. **Two of the three
+failed as experiments, and each failure was the instrument rather than the author.**
+
+| Run | Condition | What it established |
+|---|---|---|
+| `NPP-C` | commission supplied a six-class taxonomy | nothing about **A** — the taxonomy named the very distinction A says the family lacks. Ledger inflated: 7 of 12 class-2 entries cited the commission as authority |
+| `NPP-D` | repaired commission, **same worker, same context** | nothing about **A** — carried the withdrawn phrase *reference-shaped assumption* forward, a term absent from its own commission and present in the previous one |
+| `NPP-E` | repaired commission, **fresh session, zero carry-over** | **A answered.** Eleven determinations *expressly permitted by source*, eight *unresolved by family* — the distinction drawn from the text alone |
+
+**Finding A — ANSWERED.** What rules out recall is that `NPP-E` extended the claim-type vocabulary
+as `NPP-D` had, but with *different constructions for the same distinction*. Recall reproduces
+phrasing; derivation reproduces structure.
+
+**Finding F — SETTLED, and not as expected.** Three closures from one text under one scope: `NPP-C`
+and `NPP-D` closed four kinds each and match one another — which is the carry-over, not agreement.
+`NPP-E`, the run that could not remember, closed **five** and diverged from both, reaching
+**workflow** and **capability contract**. The result is not *four rather than nine*: **the standard
+determines no vocabulary at all**, and `2d` §1 says it must not. A set the family deliberately
+declines to determine cannot be a canonical axis of its ontology. **Not carried into `2b`.**
+
+**Two repairs to the commission, both held.** Class 0 for commissioner-supplied scope, and the
+taxonomy withdrawn from the worker in favour of a provenance record — *source basis*, *claim type* —
+with all interpretive labelling done by the evaluator after the run. A third rule was added when the
+carry-over was found: **use a worker that has not performed a previous run, in a context that holds
+none of one.** The existing prohibition covered what is handed over, not what is remembered.
+
+**The rule that outlives G0:** an experiment may constrain the task, but it must not supply the
+distinction whose derivability it is measuring.
 
 ### Build & test status — **PASSING**
 
@@ -147,6 +178,24 @@ sealed before it, because G0 may expose a defect that must be repaired first. Re
 than a realization that can discharge a claim against the frozen revision.
 
 ### Next session should start with
+
+**Close G0 — it is not closed.** Three runs produced artefacts; the gate's own conditions are not
+met. Outstanding, in order:
+
+1. **Classify and disposition `NPP-E`'s eight findings.** Untouched. They include *no artifact-kind
+   taxonomy supplied*, *identity syntax and canonicalization unspecified*, *no family-defined outcome
+   names*, and *demonstration fixtures not supplied* — the last being Finding **B** reached from the
+   author's side.
+2. **Disposition `NPP-D`'s F-1, F-2, F-3** — no canonical profile representation, no trust-root
+   verification mechanism, no payload grammar for profile-defined kinds. Identified, carryable,
+   undispositioned. All three are one absence in different places: **the family specifies meaning
+   and specifies no form**, and every mechanical check needs a form.
+3. **Repair whatever those dispositions prove to be normative defects**, and repeat any G0 work they
+   invalidate.
+4. **Freeze and tag `draft-4`.** Only then may G1 name it.
+
+**Superseded:** the original instruction to run the commission. It has run three times. The standing
+technical item below is unchanged.
 
 **NOVA G0 — run the profile-authoring commission.** Everything it needs is written; two things must
 be supplied at commission time: a run identity never used before (`6a` §9), and the candidate
