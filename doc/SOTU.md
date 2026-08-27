@@ -1,6 +1,6 @@
 # SOTU Handoff
 
-## dev/12. **`draft-4` Change 1 declared · NOVA opened and G0 run three times · Findings A and F answered · next: close G0.**
+## dev/12. **`draft-4` Change 1 declared · NOVA G0 closed · Findings A and F answered, seventeen candidates dispositioned, no spec repair follows · next: G1.**
 
 The whole cycle came from one instrument: **a terminology index derived over the family and checked
 against `1a` §12** — the first instrument pointed at the family's own vocabulary rather than at a
@@ -54,7 +54,7 @@ belongs with the component it governs, not in org config. Its header carried two
 in that line — so they were replaced with what actually governs assembly, `3b` and `4b`, rather than
 translated. The `Status:`/authoring-note bullet was dropped.
 
-### NOVA G0 — three runs, two instrument repairs
+### NOVA G0 — three runs, three instrument repairs
 
 The profile-authoring trial ran three times against byte-identical `spec/`. **Two of the three
 failed as experiments, and each failure was the instrument rather than the author.**
@@ -84,6 +84,43 @@ none of one.** The existing prohibition covered what is handed over, not what is
 
 **The rule that outlives G0:** an experiment may constrain the task, but it must not supply the
 distinction whose derivability it is measuring.
+
+### G0 is closed
+
+All conditions met: three profiles, their registers, every entry classified, every finding
+dispositioned. **No freeze** — that moved behind G2 (below).
+
+**Seventeen candidate findings across three runs. Zero undeclared gaps.**
+
+| Run | Candidates | Carried |
+|---|---|---|
+| `NPP-C` | 9, reclassified to 7 | 0 |
+| `NPP-D` | 3 checked | 0 |
+| `NPP-E` | 8 | 0 |
+
+Every one landed on something the family had already marked — `6a` §7 and §11, `4c` §8, `2d` §1,
+`2b` §10, `3e` §12, `3d` §7, `7b` §6, `2c`. Three authoring passes probing for the standard's edges
+found only edges it had already drawn. **That the exercise changed no specification text is the
+result, not a shortfall**: the *does-not-specify* apparatus held under three attempts to find its
+seams.
+
+**The seventeen are one position held consistently: the family specifies meaning and declines
+form.** Encoding, syntax, canonicalization, schema, signature mechanism, publication, fixtures —
+each named somewhere as a realization's or a profile's to choose. The consequence the authors kept
+reaching is real and is the design: **a profile claim cannot be checked mechanically from the
+family alone.**
+
+**That settles G1's hard exit criterion in advance.** Of the three permitted dispositions for the
+missing conformance suite, the answer is **C — a suite is deliberately outside the family.** G1 must
+define G2's discharge in those terms. `7b` §6's obtainability rule is the operative constraint on
+G2, not a schema: *"a demonstration against material an evaluator cannot obtain is not a
+demonstration to that evaluator."*
+
+**A third instrument repair**, from `NPP-E`: the commission asks for *"matters left unresolved"* and
+never says **unresolved by whom**. That author read it as *unresolved by the family* — which is what
+delegation is — and filed eight family delegations as findings. Run `NPP-C` inflated in the opposite
+direction, filing commissioner scope as family delegation. Registers must be named by who is left
+holding the question, not by where the silence originated.
 
 ### Build & test status — **PASSING**
 
@@ -171,46 +208,42 @@ conformance obligation, so a realization conforming to `draft-3` conforms to `dr
 
 **Release 11 is cut from this cycle** — `process/notes/release-11.md`. The order from dev/11 is
 superseded in one respect: *re-trial* is no longer a loose next step but **NOVA G0**, a gate that
-cannot close without a profile, a decision ledger, findings, and a disposition for each. The freeze
-moves behind it deliberately — `draft-4` is G0's **candidate** input, fixed for the trial and not
-sealed before it, because G0 may expose a defect that must be repaired first. Revised order:
-**G0 → disposition → freeze and tag → close the `1c` omission → G1 → G2**, with `1.0` no earlier
+cannot close without a profile, its registers, a classification and a disposition for each entry.
+**The freeze moves behind G2, not behind G0.** CF-1 binds the *claim*, which is made at G3; G1 and
+G2 need only a pinned commit, and a commit is immutable already. `draft-4` stays open through G2 so
+that what a realization finds can be repaired in the revision opened to receive it — its own record
+lists *a second independent realization* among the things it is waiting for. Revised order:
+**G0 → G1 → G2 → repairs → freeze and tag → G3**, with the `1c` omission closed before the
+freeze, with `1.0` no earlier
 than a realization that can discharge a claim against the frozen revision.
 
 ### Next session should start with
 
-**Close G0 — it is not closed.** Three runs produced artefacts; the gate's own conditions are not
-met. Outstanding, in order:
+**Write G1 — the Independent Realization Experiment Protocol.** G0 is closed and G1 is the only gate
+that can start.
 
-1. **Classify and disposition `NPP-E`'s eight findings.** Untouched. They include *no artifact-kind
-   taxonomy supplied*, *identity syntax and canonicalization unspecified*, *no family-defined outcome
-   names*, and *demonstration fixtures not supplied* — the last being Finding **B** reached from the
-   author's side.
-2. **Disposition `NPP-D`'s F-1, F-2, F-3** — no canonical profile representation, no trust-root
-   verification mechanism, no payload grammar for profile-defined kinds. Identified, carryable,
-   undispositioned. All three are one absence in different places: **the family specifies meaning
-   and specifies no form**, and every mechanical check needs a form.
-3. **Repair whatever those dispositions prove to be normative defects**, and repeat any G0 work they
-   invalidate.
-4. **Freeze and tag `draft-4`.** Only then may G1 name it.
+Three of its inputs are already settled and should not be re-derived:
 
-**Superseded:** the original instruction to run the commission. It has run three times. The standing
-technical item below is unchanged.
+1. **The conformance-discharge basis is disposition C** — a suite is deliberately outside the
+   family. G1 states G2's discharge in terms of demonstrations and evidence an outside party can
+   obtain and check, per `7b` §6. It must not invent a test oracle.
+2. **The network regime is settled per gate.** G2 needs environment isolation, not tool restriction:
+   a worker that can execute can reach the network. Dependencies staged in advance from a fixed
+   manifest, and recorded.
+3. **The revision target is a pinned commit, not a frozen revision.** The freeze is after G2.
 
-**NOVA G0 — run the profile-authoring commission.** Everything it needs is written; two things must
-be supplied at commission time: a run identity never used before (`6a` §9), and the candidate
-revision. `draft-4` is the candidate — fixed for the trial, **not frozen before it**, because G0 may
-expose a defect that has to be repaired before the freeze.
+G1's own remaining work is the permitted-input set for a *realization* rather than a profile, the
+assumption register, and the success and failure criteria. The four commission repairs from G0 —
+class 0, the provenance record, the fresh-worker rule, and the register naming — carry forward.
 
-G0 is the instrument for three open findings at once: **A** (whether `6a` lets an author tell a
-deliberate silence from an omission), **B** (whether a demonstration can be constructed at all), and
-**F** (whether the domain-neutral spaces are canonical or one realization's artifacts). For **F**,
-compare the author's closed vocabulary against the reference set *only after* the run.
+**The profile G2 builds against is `NPP-E`** — the only run of the three that was uncontaminated..
 
-The standing technical item behind it is unchanged: **the requirement projection omits `1c`**, which
-states AI-1 … AI-17 as `### AI-1 — …` headings while every other document uses `- **XX-1.**`
-bullets. Apply the pattern this session proved — re-harvest, then verify with a counting script that
-shares no code with the extractor.
+**Standing technical item, unchanged:** the requirement projection omits `1c`, which states its
+invariants as `### AI-1 — …` headings while every other document uses `- **XX-1.**` bullets. Apply
+the pattern this session proved — re-harvest, then verify with a counting script that shares no
+code with the extractor. Close it before the freeze.
+
+---
 
 ## dev/11. **`draft-3` at Change 10 · independent-authoring trial run once · next: the requirement projection omits `1c`.**
 

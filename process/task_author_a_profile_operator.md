@@ -19,7 +19,7 @@ It does **not** establish that the resulting profile is external to anything tha
 
 **As G0 it also carries the programme's gate obligations.** It cannot close without the profile,
 its three registers, your classification of every entry in them, and a **disposition** for each you
-classify 3–6. Only then is the target revision frozen and tagged, and only then may G1 name it.
+classify 3–6. G1 may then name the pinned candidate revision; the freeze comes later, after G2.
 
 ## 2. Setting up a run
 
@@ -205,7 +205,8 @@ teardown:
 3. Classify every entry, then record each 3–6 against the target revision in `revisions.md`, with a
    disposition: a normative defect to repair, or a matter that occasions no repair, with the reason.
 4. Repair the defects, and repeat whatever G0 work they invalidate.
-5. Only then freeze and tag the target revision.
 
-**G0 closes at step 5, not at step 1.** A profile in hand with findings undisposed is an open gate,
-and starting G1 against it is how a finding becomes a design decision nobody declared.
+**G0 closes at step 4, not at step 1.** A profile in hand with findings undisposed is an open gate,
+and starting G1 against it is how a finding becomes a design decision nobody declared. **The freeze
+is not part of closing G0** — the candidate revision stays open through G2, so that what a
+realization finds can still be repaired in it.

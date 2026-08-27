@@ -27,7 +27,8 @@ both** — otherwise the next gate silently converts a finding into a design dec
   what the reference realization is developed against, which `6c` §1 forbids; the other is written
   in vocabulary the standard does not have. Output: an authored profile at a named revision,
   committed as an independent artifact, plus the ledgers below.
-- **Revision freeze.** Between G0 and G1. See *The revision target* below.
+- **Revision freeze.** After G2's findings are dispositioned and repaired, before G3. See *The
+  revision target* below.
 - **G1 — Independent Realization Experiment Protocol.** Permitted inputs, firewall, decision
   taxonomy, required findings, success and failure criteria — fixed *before* NOVA begins, so the
   validation exercise is not itself ungoverned. **Hard exit criterion: G1 MUST identify the
@@ -82,11 +83,19 @@ before G0 risks discovering a G0-invalidating defect immediately after the revis
 leaving it open through G2 makes NOVA chase a moving standard. So:
 
 ```
-draft-4 as candidate  →  G0 trial  →  findings disposition  →  freeze and tag  →  G1 names it  →  G2
+draft-4 pinned  →  G0  →  G1  →  G2  →  repairs  →  freeze and tag  →  G3 claims against it
 ```
 
-A G0 finding that proves a normative defect is repaired first and the affected G0 work repeated. A
-finding that turns out to be a profile-authoring or realization matter occasions no repair.
+**The freeze comes after G2, not before G1.** CF-1 binds the *claim* — *"a conformance claim MUST
+name its subject, its profile, its revision, and its claimant"* — and the claim is made at G3.
+G1 and G2 need an immutable target, and a pinned commit already is one; all three G0 runs ran
+against a pinned commit with no freeze. Freezing earlier would send every defect G2 finds into a
+successor revision, when absorbing exactly those is what `draft-4` was opened for: its own record
+lists **a second independent realization** among the things it is waiting for.
+
+A finding that proves a normative defect is repaired in `draft-4` while it is open, and whatever
+gate work it invalidates is repeated. A finding that turns out to be a profile-authoring or
+realization matter occasions no repair.
 
 **The rule, stated so the name is not what matters:** NOVA's target is *the first frozen revision
 incorporating the terminology and ownership repairs, plus any G0 finding that proves a normative
@@ -180,7 +189,7 @@ Externality is a property of authorship, not of model weights.
 | Gate | Cannot close without |
 |---|---|
 | **G0** | profile artifact · three registers · classification · disposition |
-| **freeze** | named and tagged revision |
+| **freeze** | G2's findings dispositioned · repairs made · named and tagged revision |
 | **G1** | protocol · firewall · permitted inputs · conformance discharge basis |
 | **G2** | realization · assumption register · findings · evidence |
 | **G3** | comparative results · disagreement dispositions |
