@@ -29,11 +29,12 @@ both** — otherwise the next gate silently converts a finding into a design dec
   committed as an independent artifact, plus the ledgers below.
 - **Revision freeze.** After G2's findings are dispositioned and repaired, before G3. See *The
   revision target* below.
-- **G1 — Independent Realization Experiment Protocol.** Permitted inputs, firewall, decision
-  taxonomy, required findings, success and failure criteria — fixed *before* NOVA begins, so the
-  validation exercise is not itself ungoverned. **Hard exit criterion: G1 MUST identify the
-  normative basis by which G2's conformance claim will be discharged. If no such basis exists, G2
-  MUST NOT start and the absence is recorded as a finding.**
+- **G1 — Independent Realization Experiment Protocol.** **Written**, at
+  `process/g1_realization_protocol.md`. Permitted inputs, firewall, provenance record,
+  classification, success and failure criteria — fixed before G2 begins, so the validation exercise
+  is not itself ungoverned. Its hard exit criterion is discharged: the normative basis for G2's
+  claim is **disposition C**, and the claim is discharged as `7a` and `7b` specify — demonstrations
+  with declared fixtures, including negative ones, obtainable by a party that did not build it.
 - **G2 — NOVA.** Independent realization. Output: the system, its conformance evidence, and the
   registers.
 - **G3 — Comparative conformance.** Reference and NOVA against the same profile and revision. Not

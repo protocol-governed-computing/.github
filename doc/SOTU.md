@@ -1,6 +1,6 @@
 # SOTU Handoff
 
-## dev/12. **`draft-4` Change 1 declared · NOVA G0 closed · Findings A and F answered, seventeen candidates dispositioned, no spec repair follows · next: G1.**
+## dev/12. **`draft-4` Change 1 declared · NOVA G0 closed, G1 and the G2 commission written · Findings A and F answered, seventeen candidates dispositioned, no spec repair follows · next: run G2.**
 
 The whole cycle came from one instrument: **a terminology index derived over the family and checked
 against `1a` §12** — the first instrument pointed at the family's own vocabulary rather than at a
@@ -219,10 +219,11 @@ than a realization that can discharge a claim against the frozen revision.
 
 ### Next session should start with
 
-**Write G1 — the Independent Realization Experiment Protocol.** G0 is closed and G1 is the only gate
-that can start.
+**Run G2 — the independent realization.** G0 is closed, G1 is written
+(`process/g1_realization_protocol.md`), and the worker commission derived from it is written
+(`process/task_build_a_realization.md`). Nothing remains to author; what remains is setup.
 
-Three of its inputs are already settled and should not be re-derived:
+G1 settled three things so they are not re-derived at G2:
 
 1. **The conformance-discharge basis is disposition C** — a suite is deliberately outside the
    family. G1 states G2's discharge in terms of demonstrations and evidence an outside party can
@@ -232,9 +233,27 @@ Three of its inputs are already settled and should not be re-derived:
    manifest, and recorded.
 3. **The revision target is a pinned commit, not a frozen revision.** The freeze is after G2.
 
-G1's own remaining work is the permitted-input set for a *realization* rather than a profile, the
-assumption register, and the success and failure criteria. The four commission repairs from G0 —
-class 0, the provenance record, the fresh-worker rule, and the register naming — carry forward.
+**G2's remaining setup, all of it mechanical:**
+
+- an **offline container or VM** — G0's tool restriction cannot bind a worker that executes;
+- ~~`NPP-E`'s scope register renamed to `NPP-E-scope.md`~~ — **done.** It was returned as the
+  extension-less `list_assumptions`; the commission tells the worker to read it *before* the
+  profile, since without it a commissioning constraint reads as a family requirement. The
+  deliverables' own text was left unedited and the rename is recorded in the run's README;
+- the **staging manifest**, declared by the worker before isolation and closed once the run starts.
+  A later request is granted if it must be, and recorded as a break in the isolation with its
+  reason and moment;
+- a **worker that has performed no previous NOVA run**, in a context holding none of one.
+
+**The commission's §6 carries the finding G2 exists to produce.** An author can leave a question
+open on the page; a builder cannot — code does not run with a hole in it. Every gap must be filled
+with something to proceed, that something will work, and a working system feels like evidence the
+choice was right. It is not evidence the standard determined it. The test given to the worker is one
+question: *can I quote what determined this, by document and section?*
+
+**Watch for class 6.** G0 produced none, and authoring a profile does not press on the standard the
+way building does. Either outcome at G2 is informative; several would be the most valuable findings
+the programme can generate.
 
 **The profile G2 builds against is `NPP-E`** — the only run of the three that was uncontaminated..
 
