@@ -46,16 +46,27 @@ both** — otherwise the next gate silently converts a finding into a design dec
 
 ## Finding classes
 
-Every decision a worker makes is classified. This is what keeps the exercise from degenerating into
-*the model made choices, therefore the standard is incomplete*.
+Every decision a worker makes is classified after the run. This is what keeps the exercise from
+degenerating into *the model made choices, therefore the standard is incomplete*.
 
-| Class | Meaning | Is it a finding? |
+| Class | The entry shows | Finding? |
 |---|---|---|
-| **1 — realization freedom** | the standard deliberately leaves it open | no; record and move on |
-| **2 — profile-governed** | the standard defers it and the profile answers | no; correct behaviour |
-| **3 — ambiguity** | two readings produce incompatible systems | yes |
-| **4 — omission** | a required determination has no normative source | yes, serious |
-| **5 — reference-shaped assumption** | cannot proceed without reconstructing something knowable only from the reference | yes, the most valuable |
+| **0 — commissioner scope** | the commission fixed it, not the family | no, and no evidence either way |
+| **1 — realization freedom** | the standard deliberately leaves it open | no |
+| **2 — profile decision, specified** | the family delegated it and supplied enough | no |
+| **3 — profile decision, underspecified** | delegated without enough to decide it | **yes** |
+| **4 — ambiguity** | two readings, incompatible results | **yes** |
+| **5 — omission** | no normative source at all | **yes**, serious |
+| **6 — reference-shaped assumption** | needed something knowable only from a realization | **yes**, the most valuable |
+
+**The worker does not classify; the commissioning side does, after the run.** A commission that
+hands over the taxonomy answers Finding **A** in advance — the log then shows the commission works
+and says nothing about the family. The one exception is the worker's own mark for an assumption it
+could not trace, which is a different question and worth prompting for.
+
+**Class 0 exists because run `NPP-C` lacked it.** Seven of that run's twelve class 2 entries cited
+the commission as their authority. Without a class of their own, decisions the commission made read
+as evidence the family delegates well, and the commission ends up measuring itself.
 
 **The rule that makes it work:** every assumption affecting externally observable PGC semantics must
 trace to a permitted input or be reported. Every choice that does not affect them must be explicitly
@@ -168,7 +179,7 @@ Externality is a property of authorship, not of model weights.
 
 | Gate | Cannot close without |
 |---|---|
-| **G0** | profile artifact · decision ledger · findings · disposition |
+| **G0** | profile artifact · three registers · classification · disposition |
 | **freeze** | named and tagged revision |
 | **G1** | protocol · firewall · permitted inputs · conformance discharge basis |
 | **G2** | realization · assumption register · findings · evidence |

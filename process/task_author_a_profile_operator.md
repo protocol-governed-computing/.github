@@ -17,9 +17,9 @@ usability the family can obtain.
 It does **not** establish that the resulting profile is external to anything that later claims it
 (`6a` §6) — that is a question about authority, decided separately.
 
-**As G0 it also carries the programme's gate obligations.** It cannot close without four things:
-the profile, the decision ledger, the findings register, and a **disposition** for every class 3–6
-finding. Only then is the target revision frozen and tagged, and only then may G1 name it.
+**As G0 it also carries the programme's gate obligations.** It cannot close without the profile,
+its three registers, your classification of every entry in them, and a **disposition** for each you
+classify 3–6. Only then is the target revision frozen and tagged, and only then may G1 name it.
 
 ## 2. Setting up a run
 
@@ -110,20 +110,43 @@ against its own text.
 Two documents come back: the profile and the questions log. **The log is the instrument** — the
 profile is the occasion for producing it.
 
-Classify each logged question into the six classes the worker document names. **Classes 1 and 2 are
-not findings** — realization freedom and a profile decision the standard specified. **Classes 3 to 6
-are**, and they are not equally interesting:
+**You classify; the worker does not.** The worker returns three registers — determinations, matters
+left unresolved, and scope this commission fixed — each entry carrying a source basis, a claim type,
+reasoning and a confidence. That is provenance, not interpretation. Assigning classes is your job,
+done after the run.
 
-| Class | Read it as |
-|---|---|
-| **3 — profile decision, underspecified** | the family delegated without supplying enough; usually a `6a` §7 gap |
-| **4 — ambiguity** | two readings, incompatible results; check the author actually named both |
-| **5 — omission** | no normative source at all; the strongest ordinary finding |
-| **6 — reference-shaped assumption** | the author could not proceed without reconstructing something knowable only from a realization — **the result this trial exists to produce** |
+Read claim type against source basis first. *Expressly required* with a citation that does not
+require it, or *inferred* where the text is plain, are the entries that move classes.
 
-**Audit the class 1 and 2 entries hardest.** A capable author files a genuine omission as
-"realization freedom" without noticing, because it filled the gap from engineering instinct and the
-answer felt obvious. For each, check the claimed delegating text actually delegates it.
+This is deliberate. Finding **A** records that `6a` gives an author no way to tell a deliberate
+silence from an omission. A commission that hands over that distinction answers the finding in
+advance: the log then shows that the *commission* works, and says nothing about whether `6a` does.
+**Nothing is prompted for, not even class 6.** Asking a worker to mark what it *"could not decide
+without knowing how an existing system does it"* tells the worker such a system exists. The provenance
+record reaches the same place without saying so: an entry whose source basis is *none* and whose claim
+type is *chosen by author* is a class 6 candidate, and you decide whether it is one.
+
+| Class | The entry shows | Finding? |
+|---|---|---|
+| **0 — commissioner scope** | the commission's §2 fixed it, not the family | **No**, and not evidence either way about the family |
+| **1 — realization freedom** | the standard deliberately leaves it open | **No.** Check the cited text actually leaves it open |
+| **2 — profile decision, specified** | the family delegated it and supplied enough to decide | **No.** That is the task working |
+| **3 — profile decision, underspecified** | the family delegated without supplying enough | **Yes.** Usually a `6a` §7 gap |
+| **4 — ambiguity** | two readings, incompatible results | **Yes.** Check both readings are actually named |
+| **5 — omission** | no normative source at all | **Yes.** The strongest ordinary finding |
+| **6 — reference-shaped assumption** | could not proceed without reconstructing something knowable only from a realization | **Yes — the result this trial exists to produce** |
+
+**Class 0 exists because run `NPP-C` did not have it.** Seven of that run's twelve class 2 entries
+cited the commission as their authority — identity, scope, one tenant, no replication, no external
+boundary. Those are the commission's decisions, recorded as though the family had delegated them
+well. Without a class of their own they inflate the evidence that the standard is independently
+usable, and the commission ends up measuring itself.
+
+**Audit the class 0, 1 and 2 entries hardest** — the ones you are about to record as *not* findings.
+A capable author resolves a genuine omission from engineering instinct and reports it as something
+the standard left open, because the answer felt obvious. For each, read the cited text and check it
+delegates or frees what is claimed. An entry whose only authority is the commission is class 0, not
+class 2, however the worker framed it.
 
 **Two failure modes in reading the log:**
 
@@ -170,10 +193,10 @@ claiming a transformation item; validating it needs a different exercise.
 Trial 1's deliverables no longer exist because the sandbox was untracked and deleted. Before
 teardown:
 
-1. Copy the profile, the decision ledger, and the findings register out of the sandbox.
+1. Copy the profile and its three registers out of the sandbox.
 2. Commit the profile as an independent artifact, carrying its identity (`6a` §9) and the revision
    from `$SANDBOX/REVISION`. **Not into `spec/`** — a profile is not a document of the family.
-3. Record every class 3–6 finding against the target revision in `revisions.md`, each with a
+3. Classify every entry, then record each 3–6 against the target revision in `revisions.md`, with a
    disposition: a normative defect to repair, or a matter that occasions no repair, with the reason.
 4. Repair the defects, and repeat whatever G0 work they invalidate.
 5. Only then freeze and tag the target revision.

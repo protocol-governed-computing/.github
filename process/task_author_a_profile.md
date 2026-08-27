@@ -161,40 +161,39 @@ A single document declaring, at minimum:
 on why it went this way is worth more than the decision alone, and it is what makes the profile
 reviewable rather than merely followed.
 
-## 6. Keep a questions log — this is half the deliverable
+## 6. Record where every determination came from — this is half the deliverable
 
-Record **every question you had to answer that the standard did not answer for you.** For each:
+The profile is the occasion. **What is being collected is the provenance of each decision in it**:
+what the standard determined, what it permitted, what you inferred, and what you simply chose
+because nothing told you.
 
-| Record | |
-|---|---|
-| the question | as you asked it |
-| where you looked | which documents and sections |
-| what you did | the decision you made, and on what basis |
+**Record every determination in this shape:**
 
-**Classify each one into exactly one of the classes below.** The classification is the instrument.
-Without
-it, every choice you made looks like evidence the standard was incomplete, and the exercise
-degenerates into *the author made decisions, therefore the standard has holes.*
+```
+Matter:        what had to be decided
+Source basis:  exact citation(s) by document and section — the standard, this
+               commission, or none
+Claim type:    expressly required by source | expressly permitted by source |
+               inferred from source | chosen by author | unresolved
+Reasoning:     why the source does or does not determine the matter
+Confidence:    high | medium | low
+```
 
-| Class | You encountered | Finding? |
-|---|---|---|
-| **1 — realization freedom** | a choice the standard deliberately leaves open: encoding, file format, tooling, internal structure | **No.** Record it and say which text leaves it open. |
-| **2 — profile decision, specified** | the standard delegated it to you and gave you what you needed to decide | **No.** That is this task. |
-| **3 — profile decision, underspecified** | the standard delegated it to you and did not give you enough to decide it | **Yes.** A profile-authoring finding. |
-| **4 — ambiguity** | two defensible readings of the text produce incompatible profiles | **Yes.** Name both readings and the sections. |
-| **5 — omission** | a determination you were required to make has no normative source at all | **Yes**, and serious. |
-| **6 — reference-shaped assumption** | you could not proceed without reconstructing something apparently knowable only from an existing realization | **Yes — the most valuable result this task can produce.** |
+**Source basis and claim type are the whole instrument.** A determination traceable to a document
+and section is a different thing from one you reached by inference, and both differ from one you
+simply chose. Say which, for each. **Plausibility is not a source** — an answer that felt obvious
+still has claim type *chosen by author* unless you can quote what determined it.
 
-**Do not smooth over classes 3 to 6.** A question you resolved by picking something sensible is
-still a finding if the standard should have decided it.
+**Do not characterize what you did not find.** Record what you looked for, where you looked, and
+that you did not find it. Whether an absence is deliberate or defective is not yours to label here,
+and a record that labels it has answered a question this exercise is asking.
 
-**Class 6 is what you are really hunting.** It is also the hardest to notice, because a capable
-author fills such a gap from general engineering instinct without registering that it happened. The
-test: *can I trace this to a document and section?* If not, it is a finding, whatever its
-plausibility. **Plausibility is not a normative source.**
+**Keep commission-supplied scope in its own register.** This task hands you a scope in §2 — what to
+profile, and several constraints on it. Those are neither the standard's determinations nor yours.
+Recorded among your own, they would read as evidence the family settled something it did not.
 
-Keep these as **separate registers**, not one list — a decision ledger for classes 1 and 2, and a
-findings register for classes 3 to 6. They are read by different people for different purposes.
+Three registers, then: **determinations** in the shape above, **matters left unresolved** in the same
+shape, and **scope this commission fixed**, each citing the commission provision it comes from.
 
 ## 7. Where you cannot discharge a claim, say so
 
@@ -251,12 +250,13 @@ is written.**
 ## 10. What counts as success and failure
 
 **Success is not a profile that looks good.** This task succeeds when the profile is testable
-against NP-1 … NP-12 by reading, every decision is classified, and every class 3–6 finding is
-traceable to a named document and section.
+against NP-1 … NP-12 by reading, every determination appears in one of the three registers, and
+every one carries a source basis and a claim type.
 
 **It fails** if a decision appears in the profile that appears in no register; if a citation cannot
-be quoted from the family by document and section; if any prohibited input was consulted; or if a
-class 3–6 finding was resolved silently rather than recorded.
+be quoted from the family by document and section; if any prohibited input was consulted; if a
+determination carries a source basis it does not support; or if something you chose is recorded as
+something the source required.
 
 **A blocked task with a precise account of the blockage is a success.** A complete profile with an
 empty findings register is the outcome to be most suspicious of.
