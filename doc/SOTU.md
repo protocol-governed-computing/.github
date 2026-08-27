@@ -1,6 +1,6 @@
 # SOTU Handoff
 
-## dev/12. **`draft-4` Change 1 declared · NOVA G0 closed, G1 and the G2 commission written · Findings A and F answered, seventeen candidates dispositioned, no spec repair follows · next: run G2.**
+## dev/12. **`draft-4` Change 1 declared · NOVA G0 closed, G1 and the G2 commission written · the `1c` omission closed · next: run G2.**
 
 The whole cycle came from one instrument: **a terminology index derived over the family and checked
 against `1a` §12** — the first instrument pointed at the family's own vocabulary rather than at a
@@ -122,6 +122,42 @@ delegation is — and filed eight family delegations as findings. Run `NPP-C` in
 direction, filing commissioner scope as family delegation. Registers must be named by who is left
 holding the question, not by where the silence originated.
 
+### The `1c` omission — closed
+
+Carried since dev/11 and blocking the freeze. The requirement projection reported **317 requirements
+across 24 documents**; the family carries **356 across 26**.
+
+**It was short by two whole documents, not one.** The extractor knew only the bullet form
+`- **GS-1.** …`, so `1c` — which states AI-1 … AI-17 as `### AI-1 — …` headings and uses no bullets
+— read as carrying nothing. `1a` was the second, and had nothing to find until Change 1 gave it
+CM-1 … CM-8.
+
+`tools/requirement_index.py` is new and harvests both forms. `projections/requirement_index.md` is
+published, and the contract that declared it since `draft-3` finally has a projection behind it.
+
+**The guard is the part that matters.** dev/11 recorded that the old count check *"did not fire,
+because the independent count was derived the same way"*. `tools/check_requirement_count.py` shares
+no code with the extractor and counts against a **different artifact** — `0z` §2's declared ranges.
+
+**It fired twice before it agreed**, and both were real defects in the guard, found by running it
+rather than reasoning about it:
+
+1. `1b` and `4d` each over by three. A range like `SM-1 … SM-12` names twelve positions, and those
+   documents carry `SM-5a, SM-7a, SM-7b` and `TR-3a, TR-5a, TR-15a`. **Range notation cannot express
+   a suffixed identifier.**
+2. The suffix scan then counted `SM-7a` in `6b` and `TR-15a` in `6c` and `7b` — cross-references,
+   not owned invariants. Restricted to each document's own prefix, which `0z` already names.
+
+```
+356 requirements · 26 documents · 339 bullet · 17 heading
+0z §2 declares 350, plus 6 suffixed identifiers = 356 · agreed
+re-derivation byte-identical (PJ-2, PJ-9)
+```
+
+**One thing surfaced and left open:** `0z` §2's ranges understate the family by six, because range
+notation cannot carry a suffix. The guard reports the six explicitly rather than absorbing them.
+Whether `0z` should state counts rather than ranges is a question for the freeze, not for tooling.
+
 ### Build & test status — **PASSING**
 
 Run from `standards/`:
@@ -157,11 +193,11 @@ do not agree.
 
 ### Open issues
 
-1. **`projections/requirement_projection_contract.md:80` still records `317 requirements · 24
-   documents` and still omits `1c`.** Carried unchanged from dev/11. This session built the fix
-   pattern but did not apply it: the terminology projection's guard was run as a **separate script
-   sharing no code with the extractor**, which is what dev/11 identified as missing — there, the
-   independent count was derived the same way as the extractor, so the guard could not fire.
+1. ~~The requirement projection omits `1c`.~~ **Closed this session** — published at 356
+   requirements across 26 documents, with a count guard that reads `0z` §2 rather than re-deriving
+   from the documents. What it surfaced and left open: **`0z` §2's ranges understate the family by
+   six**, because a range cannot express `SM-7a`. Whether `0z` should state counts rather than
+   ranges is a freeze question.
 2. **Finding E — nothing says when a word must become a term.** Six are declared, defined, and used
    nowhere: `Promotion` (`1a`), `construction disposition` (`2c`), `projection source` (`4b`),
    `protocol adapter` (`5a`), `profile derivation` (`6a`), `demonstration coverage` (`7b`). Evidence
@@ -257,10 +293,9 @@ the programme can generate.
 
 **The profile G2 builds against is `NPP-E`** — the only run of the three that was uncontaminated..
 
-**Standing technical item, unchanged:** the requirement projection omits `1c`, which states its
-invariants as `### AI-1 — …` headings while every other document uses `- **XX-1.**` bullets. Apply
-the pattern this session proved — re-harvest, then verify with a counting script that shares no
-code with the extractor. Close it before the freeze.
+**The standing technical item is closed.** The requirement projection is published at 356
+requirements across 26 documents, with an independent count guard. What remains for the freeze is
+whether `0z` §2 should state counts rather than ranges, since a range cannot express `SM-7a`.
 
 ---
 
