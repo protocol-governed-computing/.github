@@ -61,13 +61,19 @@ should: G4 transforms the system G2 built.
 G0 could remove the network-capable surface outright — authoring needs no execution. **G2 cannot.**
 A worker that can build and run can reach the network, and no tool restriction binds it.
 
-**G2 runs in an offline container or VM.** Dependencies are staged in advance and the staging is
-itself governed:
+**G2 runs in an offline container or VM, from before the worker reads a line.** The reading is the
+longest stretch of the run and the one where curiosity most easily reaches for a search box; nothing
+in reading, or in writing a manifest, needs a network. Staging dependencies *between* reading and
+building would leave that whole period outside the firewall.
 
-- the worker declares what it needs **before isolation begins**, as a manifest;
+Dependencies are staged into the running environment, and the staging is itself governed:
+
+- the worker reads first, then declares what it needs as a manifest — it cannot say what it needs
+  to build with until it knows what it is building;
 - the manifest is recorded as a realization-freedom decision — *what it chose*, not *what we
   supplied*;
-- the commissioning side stages exactly the manifest and records what was staged;
+- the commissioning side stages exactly the manifest **into the environment the worker is
+  already in**, and records what was staged;
 - **a mid-run staging request is a finding about the environment, not a licence.** Grant it, and
   record that the isolation was broken and when.
 

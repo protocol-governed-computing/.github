@@ -58,14 +58,19 @@ from `spec/` or from `NPP-E` by document and section. If you cannot quote it, yo
 
 ## 4. Dependencies and the environment
 
-You will build **offline**. Declare what you need **before** isolation begins:
+**You are offline from the outset**, including while you read. Nothing about this task requires a
+network, and the reading is where the temptation is greatest.
 
-1. Write `staging_manifest.md` — the languages, runtimes, libraries and tools you want, each with a
-   one-line reason. Choosing them is yours; nothing in the standard constrains the stack.
-2. The commissioning side stages exactly that, and records what was staged.
-3. **Once you start, the manifest is closed.** If you find you need something else, ask — but know
-   that granting it is recorded as a break in the isolation, with the reason and the moment. Ask
-   when you must; do not ask casually.
+1. **Read first.** The standard, `NPP-E-scope.md`, then `NPP-E.md`. You cannot say what you need to
+   build with until you know what you are building.
+2. **Then write `staging_manifest.md`** — the languages, runtimes, libraries and tools you want,
+   each with a one-line reason. Choosing them is yours; nothing in the standard constrains the
+   stack. Hand it back and pause.
+3. The commissioning side stages exactly that **into the environment you are already in**, and
+   records what was staged.
+4. **The manifest is then closed.** If you find you need something else, ask — but know that
+   granting it is recorded as a break in the isolation, with the reason and the moment. Ask when you
+   must; do not ask casually.
 
 ## 5. The deliverables
 

@@ -72,9 +72,17 @@ sweep by one author does not surface them, a single run cannot say.
 
 ## A finding the reclassification surfaced
 
-**The family uses `tenant` in `6b` and `5a` and defines it nowhere.** `6b` names tenants as an
-environmental constraint — load-bearing usage — and `1a` §2 holds that a term not defined in Part I
-is not a PGC term.
+**The family uses `tenant` in `6b` and `5a` and defines it nowhere.**
+
+**Dispositioned since, and declined — the reading below was wrong.** Both usages are illustrative
+lists. `6b` §11 names *"replication, reachability, bounded staleness, agreement about which snapshot
+is current, isolation between tenants"* among things an environment profile **may** require, and
+`5a` §12 lists *"a version, a tenant, an authority context"* as scopes. `tenant` sits beside other
+words the family neither defines nor needs to. `6b` requires that whatever a profile constrains be
+*declared* — a requirement about declaration, not about tenants. Recorded in `revisions.md`.
+
+The original reading, left as written: `6b` names tenants as an environmental constraint —
+load-bearing usage — and `1a` §2 holds that a term not defined in Part I is not a PGC term.
 
 The terminology projection cannot see this: it tracks terms a document *declares*, and nothing
 declares `tenant`. It is the same shape as Finding **E** approached from the other side — E asks
