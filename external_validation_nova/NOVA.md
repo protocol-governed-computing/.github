@@ -30,7 +30,7 @@ both** — otherwise the next gate silently converts a finding into a design dec
 - **Revision freeze.** After G2's findings are dispositioned and repaired, before G3. See *The
   revision target* below.
 - **G1 — Independent Realization Experiment Protocol.** **Written**, at
-  `process/g1_realization_protocol.md`. Permitted inputs, firewall, provenance record,
+  `external_validation_nova/instruments/g1_realization_protocol.md`. Permitted inputs, firewall, provenance record,
   classification, success and failure criteria — fixed before G2 begins, so the validation exercise
   is not itself ungoverned. Its hard exit criterion is discharged: the normative basis for G2's
   claim is **disposition C**, and the claim is discharged as `7a` and `7b` specify — demonstrations

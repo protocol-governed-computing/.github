@@ -26,9 +26,9 @@ REV=$(git -C standards rev-parse HEAD)
 
 mkdir -p "$SANDBOX"
 git -C standards archive "$REV" spec | tar -x -C "$SANDBOX"
-cp .github/doc/g0_run_NPP-E/NPP-E.md        "$SANDBOX/"
-cp .github/doc/g0_run_NPP-E/NPP-E-scope.md  "$SANDBOX/"
-cp .github/process/task_build_a_realization.md "$SANDBOX/"
+cp external_validation_nova/runs/g0_run_NPP-E/NPP-E.md        "$SANDBOX/"
+cp external_validation_nova/runs/g0_run_NPP-E/NPP-E-scope.md  "$SANDBOX/"
+cp external_validation_nova/instruments/task_build_a_realization.md "$SANDBOX/"
 echo "$REV" > "$SANDBOX/REVISION"
 
 find "$SANDBOX" -type f | wc -l          # 36 — 32 spec documents and 4 others

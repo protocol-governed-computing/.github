@@ -5,7 +5,7 @@ nothing else from this document.
 
 ## 1. What changes when the worker is external
 
-The regime settled in `doc/NOVA.md` assumed a locally run agent whose tools could be restricted. An
+The regime settled in `external_validation_nova/NOVA.md` assumed a locally run agent whose tools could be restricted. An
 external party's tooling is outside your control, so **G0's firewall becomes honour-based.** That is
 a trade, not a downgrade:
 
@@ -29,7 +29,7 @@ REV=e736800df3388dfb4ed403a494089e1320064017
 
 mkdir -p "$SANDBOX"
 git -C standards archive "$REV" spec | tar -x -C "$SANDBOX"
-cp .github/process/task_author_a_profile.md "$SANDBOX/"
+cp external_validation_nova/instruments/task_author_a_profile.md "$SANDBOX/"
 echo "$REV" > "$SANDBOX/REVISION"
 
 find "$SANDBOX" -type f | wc -l    # 34 — REVISION, the task, 32 documents

@@ -41,7 +41,7 @@ REV=<candidate-revision>    # a tag or commit, never a branch
 
 mkdir -p "$SANDBOX"
 git -C standards archive "$REV" spec | tar -x -C "$SANDBOX"
-cp .github/process/task_author_a_profile.md "$SANDBOX/"
+cp external_validation_nova/instruments/task_author_a_profile.md "$SANDBOX/"
 git -C standards rev-parse "$REV" > "$SANDBOX/REVISION"
 chmod -R a-w "$SANDBOX/spec"       # the family is read, never written
 ```

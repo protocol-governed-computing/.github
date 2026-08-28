@@ -1,6 +1,6 @@
 # SOTU Handoff
 
-## dev/12. **`draft-4` Change 1 declared · NOVA G0 closed, G1 and the G2 commission written · the `1c` omission closed · next: run G2.**
+## dev/12. **`draft-4` Change 1 declared · NOVA cycle 1 at a natural stop — G0, G1, G2, G4 done, G3 blocked · no repair to the standard follows · next: `3a` and `3d`, or G3's third profile.**
 
 The whole cycle came from one instrument: **a terminology index derived over the family and checked
 against `1a` §12** — the first instrument pointed at the family's own vocabulary rather than at a
@@ -13,7 +13,8 @@ were untrue.
 |---|---|---|
 | `dae8476` | 27 files, +2061/−37 | **`draft-4` Change 1.** Seven terms gained a definition where their document already declared them; four struck; `step` moved to `1a` §8. **Five refinements declared — the first in the family**, CM-2 having required the mechanism since `draft-1` with nothing exercising it. **CM-8 added** (`1a` §1, §12, §13, §14; `0z` §2 row now `CM-1 … CM-8`). Finding **E** recorded, not carried. New `tools/vocab_index.py`; new `projections/` at root; `revisions.md` moved to root beside `VERSION`. |
 
-**Terms struck rather than defined — 4.** `3c` `execution agent` (`1a` §8 already defines **Runtime**
+**Terms struck rather than defined — 4.** `3c` `execution agent` (`1a` §8 already defines
+**Runtime**
 as "the agent that performs execution"; a second name for one concept is what CM-3 forbids); `4a`
 `admissibility determination` (a compound of **Admissibility** `1a` §7 and **determination** `1b`
 §4); `6c` `platform-owned governance` and `domain-owned governance` (§3 names the distinction in its
@@ -36,27 +37,30 @@ defect this change repaired for `step`.
 
 | File | What |
 |---|---|
-| `doc/NOVA.md` | **new.** The NOVA programme: a second PGC realization built from the standard alone by a cold worker, to test specification sufficiency and governed self-evolution at once. Five gates — **G0** profile authoring, **G1** experiment protocol, **G2** the realization, **G3** comparative conformance, **G4** governed transformation — and no gate starts until the prior one has *both* its artifact and its findings. Six finding classes, with **class 6, reference-shaped assumption**, as the result the programme exists to produce. |
-| `process/task_author_a_profile.md` | revised for **G0**. Frozen candidate revision; existing profile candidates prohibited *including their shape and field names*; any concern or prefix taxonomy from a realization prohibited *including how many there are*; three finding classes become six; a sixth deliverable — close the kind vocabulary from the family alone; new sections on not inventing a conformance oracle, and on success and failure. |
-| `process/task_author_a_profile_operator.md` | brought into line. Sandbox now built from a named revision via `git worktree`, with an exclusion table — `projections/` and `revisions.md` moved to the `standards` root this session and a whole-directory copy would leak both. New closing procedure: capture outputs, disposition findings, *then* freeze. **Fixed a broken path** — the setup script copied the worker document from `.github/doc/`, where it does not live. |
+| `external_validation_nova/NOVA.md` | **new.** The NOVA programme: a second PGC realization built from the standard alone by a cold worker, to test specification sufficiency and governed self-evolution at once. Five gates — **G0** profile authoring, **G1** experiment protocol, **G2** the realization, **G3** comparative conformance, **G4** governed transformation — and no gate starts until the prior one has *both* its artifact and its findings. Six finding classes, with **class 6, reference-shaped assumption**, as the result the programme exists to produce. |
+| `external_validation_nova/instruments/task_author_a_profile.md` | revised for **G0**. Frozen candidate revision; existing profile candidates prohibited *including their shape and field names*; any concern or prefix taxonomy from a realization prohibited *including how many there are*; three finding classes become six; a sixth deliverable — close the kind vocabulary from the family alone; new sections on not inventing a conformance oracle, and on success and failure. |
+| `external_validation_nova/instruments/task_author_a_profile_operator.md` | brought into line. Sandbox now built from a named revision via `git worktree`, with an exclusion table — `projections/` and `revisions.md` moved to the `standards` root this session and a whole-directory copy would leak both. New closing procedure: capture outputs, disposition findings, *then* freeze. **Fixed a broken path** — the setup script copied the worker document from `.github/doc/`, where it does not live. |
 | `doc/SOTU.md`, `doc/` | nine resolved `draft-3` working files removed; the `draft-2`-era entry trimmed. `parked_rulings.md` kept — deferred, not resolved, and cited three times from `standards/doc/realization_map.md`. |
-| `doc/NOVA.md`, `process/task_author_a_profile_operator.md` | **the G1 network regime, settled per gate.** Not one policy: **G0** removes the network-capable surface outright — no `Bash`, no web tools, no subagents, because reading `spec/` and writing documents needs none of them, leaving no residual. **G2** cannot be bound that way, since a worker that executes can reach the network; it needs an offline container, with dependencies staged in advance from a fixed manifest and recorded. **G3/G4** need nothing. The trap named explicitly: G0's guarantee does not cover G2, and G2 is the gate that most needs isolation. |
-| `process/task_author_a_profile_operator.md` | **the sandbox moves out of the workspace tree.** It was specified at `standards/sandbox/`; an agent session inherits the `CLAUDE.md` files above its working directory, and the workspace root's names every repository, the build lifecycle and the platform composition. A sandbox inside the tree hands over the whole reference architecture before the worker reads one document — contaminated by its own location. Now `~/g0-run`, with a check that nothing above it carries context and that the worker's agent-configuration directory has been archived. |
-| `process/g1_realization_protocol.md` | **new.** G1 — what a realization worker may see, must produce, and is judged by. Its hard exit criterion is discharged: **disposition C**, a conformance suite is deliberately outside the family, so G2's claim discharges by demonstration with declared fixtures — including negative ones — obtainable by a party that did not build the system. `7b` §6's obtainability rule is the operative constraint, not a schema. |
-| `process/task_build_a_realization.md` | **new.** The G2 worker commission, derived from G1. Its §6 carries the finding G2 exists to produce: an author can leave a question open on the page and a builder cannot, so every gap is filled with something, that something works, and a working system feels like evidence the choice was right. It is not evidence the standard determined it. |
-| `doc/NOVA.md`, `process/g1_realization_protocol.md` | **independence scoped to the boundaries that carry it.** Two only: `NPP-E`'s author must not build NOVA (`6a` §6), and NOVA's builder must not have had access to G0's findings. **A single worker may perform G2 and G4** — no fresh-worker rule between them, since G4 transforms the system G2 built. **G3 is a commissioning-side comparative evaluation**, not a worker task. Mirrors the real separation: standard author ≠ profile author ≠ implementer ≠ certifier. |
-| `process/g1_realization_protocol.md` | **the claim types are bridged to the classes.** The worker-facing documents carry no class reference at all — five claim types for the worker, classes for the evaluator — and nothing said how one became the other. G1 §7 now maps *claim type × source basis* to class, and states what the record alone cannot settle: class 5 and class 6 differ by whether the worker chose freely among workable options or had to arrive at a shape for anything to fit. Class 6 is never named to a worker, because naming it says a realization exists. |
-| `doc/NOVA.md` | **G4's stronger follow-on, recorded and not required.** A transformation by an operator who did not build NOVA would test the premise harder: if evolution needs the builder's memory, the governed state did not carry what it required. Not a condition of the current claim. |
+| `external_validation_nova/NOVA.md`, `external_validation_nova/instruments/task_author_a_profile_operator.md` | **the G1 network regime, settled per gate.** Not one policy: **G0** removes the network-capable surface outright — no `Bash`, no web tools, no subagents, because reading `spec/` and writing documents needs none of them, leaving no residual. **G2** cannot be bound that way, since a worker that executes can reach the network; it needs an offline container, with dependencies staged in advance from a fixed manifest and recorded. **G3/G4** need nothing. The trap named explicitly: G0's guarantee does not cover G2, and G2 is the gate that most needs isolation. |
+| `external_validation_nova/instruments/task_author_a_profile_operator.md` | **the sandbox moves out of the workspace tree.** It was specified at `standards/sandbox/`; an agent session inherits the `CLAUDE.md` files above its working directory, and the workspace root's names every repository, the build lifecycle and the platform composition. A sandbox inside the tree hands over the whole reference architecture before the worker reads one document — contaminated by its own location. Now `~/g0-run`, with a check that nothing above it carries context and that the worker's agent-configuration directory has been archived. |
+| `external_validation_nova/instruments/g1_realization_protocol.md` | **new.** G1 — what a realization worker may see, must produce, and is judged by. Its hard exit criterion is discharged: **disposition C**, a conformance suite is deliberately outside the family, so G2's claim discharges by demonstration with declared fixtures — including negative ones — obtainable by a party that did not build the system. `7b` §6's obtainability rule is the operative constraint, not a schema. |
+| `external_validation_nova/instruments/task_build_a_realization.md` | **new.** The G2 worker commission, derived from G1. Its §6 carries the finding G2 exists to produce: an author can leave a question open on the page and a builder cannot, so every gap is filled with something, that something works, and a working system feels like evidence the choice was right. It is not evidence the standard determined it. |
+| `external_validation_nova/NOVA.md`, `external_validation_nova/instruments/g1_realization_protocol.md` | **independence scoped to the boundaries that carry it.** Two only: `NPP-E`'s author must not build NOVA (`6a` §6), and NOVA's builder must not have had access to G0's findings. **A single worker may perform G2 and G4** — no fresh-worker rule between them, since G4 transforms the system G2 built. **G3 is a commissioning-side comparative evaluation**, not a worker task. Mirrors the real separation: standard author ≠ profile author ≠ implementer ≠ certifier. |
+| `external_validation_nova/instruments/g1_realization_protocol.md` | **the claim types are bridged to the classes.** The worker-facing documents carry no class reference at all — five claim types for the worker, classes for the evaluator — and nothing said how one became the other. G1 §7 now maps *claim type × source basis* to class, and states what the record alone cannot settle: class 5 and class 6 differ by whether the worker chose freely among workable options or had to arrive at a shape for anything to fit. Class 6 is never named to a worker, because naming it says a realization exists. |
+| `external_validation_nova/NOVA.md` | **G4's stronger follow-on, recorded and not required.** A transformation by an operator who did not build NOVA would test the premise harder: if evolution needs the builder's memory, the governed state did not carry what it required. Not a condition of the current claim. |
 | `projections/`, `tools/` *(in `standards`)* | **the `1c` omission closed** — see below. |
+| `external_validation_nova/` | **new tree, SoC.** The whole programme out of `doc/` and `process/`: `NOVA.md`, `instruments/` (7 commissions and protocols), `runs/` (11 — three G0 trials, G2, G4, with evaluations and dispositions), plus `README.md` and `CYCLE-1.md`. Twenty stale cross-references rewritten and verified to resolve. `doc/` keeps SOTU, `parked_rulings.md`, `e0_ruling_3_brief.md`; `process/` keeps the runbook, release script, checks, and the `6b` environment-profile trial — which is *not* NOVA and stays put. |
 | `process/notes/release-11.md` | **new.** *A declaration is not a definition* — the release note for this cycle. Deliberately echoes release 10's *declared ≠ implemented ≠ enforced ≠ demonstrated*: the same shape of finding one level up, an instrument turned on the standard instead of on the realization. Carries the extractor's own failure as a full section, because a note reporting 124 defects without saying 111 were its own blindness reads as self-serving. Documents are named by role, not file identifier, matching release 10's register. |
 
 ### Changes made — `snapshot_assembler` and `protocol_runtime`, uncommitted
 
 `SNAPSHOT_ASSEMBLY_CONTRACT.md` moved from `.github/doc/` to `snapshot_assembler/doc/`. Four modules
-cite it — `assembler/{__init__,core}.py`, `runtime/{boot,loader}.py` — and an implementation contract
+cite it — `assembler/{__init__,core}.py`, `runtime/{boot,loader}.py` — and an implementation
+contract
 belongs with the component it governs, not in org config. Its header carried two dead references:
 `NAMESPACE_MODEL.md`, which exists nowhere in the workspace or in RI-0 and has no successor, and
-`spec/01_machine_block.md`, an RI-0 path. **Neither was used by the body** — both words appeared only
+`spec/01_machine_block.md`, an RI-0 path. **Neither was used by the body** — both words appeared
+only
 in that line — so they were replaced with what actually governs assembly, `3b` and `4b`, rather than
 translated. The `Status:`/authoring-note bullet was dropped.
 
@@ -166,6 +170,36 @@ re-derivation byte-identical (PJ-2, PJ-9)
 notation cannot carry a suffix. The guard reports the six explicitly rather than absorbing them.
 Whether `0z` should state counts rather than ranges is a question for the freeze, not for tooling.
 
+### NOVA — cycle 1 complete except G3
+
+Full account in `external_validation_nova/CYCLE-1.md`, written for the expert loop. In brief:
+
+| Gate | | |
+|---|---|---|
+| **G0** profile authoring | run ×3 | `NPP-C`, `NPP-D`, `NPP-E` |
+| **G1** protocol | written | governs G2 |
+| **G2** realization | run | claims `NPP-E`, discharges 1 of its 8 claims |
+| **G3** comparative conformance | **blocked** | `NPP-E` §12 excludes the reference by construction; `7a` §10 makes systems under different profiles incomparable. Needs a third profile both can claim — a design question, not a run |
+| **G4** transformation | run | a lending domain added to G2's own baseline, grounded by identity |
+
+**No repair to the standard follows from any gate.** Seventeen G0 candidates, nine G2
+determinations with **none** carrying source basis `none`, and a G4 transformation that grounds by
+querying the baseline rather than assuming it. **No class 6 anywhere.**
+
+**Two evidence gaps, identical in shape, both found only by mutation testing.** `NPP-E` mandates a
+SHA-256 digest and substituting MD5 passed all six G2 demonstrations; the G4 baseline-grounding
+guard was correct and disabling it passed all fifteen. Both times a property the profile requires
+was implemented, asserted *about*, and never demonstrated by anything that could fail. **A passing
+suite is not evidence a demonstration could fail.** Both closed on the first pass after being named.
+
+**The instrument failed three times and each repair is now in the commissions**: the taxonomy
+answered the question it measured, commissioner scope was counted as family delegation, and a
+worker's memory is not covered by a rule about handed-over material. The rule that outlives the
+programme: *an experiment may constrain the task, but it must not supply the distinction whose
+derivability it is measuring.*
+
+**Untested:** `3a` execution and `3d` capability have been read and never built against.
+
 ### Build & test status — **PASSING**
 
 Run from `standards/`:
@@ -209,7 +243,8 @@ do not agree.
 2. **Finding E — nothing says when a word must become a term.** Six are declared, defined, and used
    nowhere: `Promotion` (`1a`), `construction disposition` (`2c`), `projection source` (`4b`),
    `protocol adapter` (`5a`), `profile derivation` (`6a`), `demonstration coverage` (`7b`). Evidence
-   in `projections/vocabulary_locality.md`. Not carried — a CM-9 would have to be discharged by every
+   in `projections/vocabulary_locality.md`. Not carried — a CM-9 would have to be discharged by
+every
    document, and the obvious formulation is contradicted by the evidence.
 3. **Finding D narrowed, not closed.** First measurement: `4d` owns 11 terms, 4 local, **all 4 cited
    by a `4d` invariant** — it did not invent idle vocabulary. What survives is whether its subject
@@ -224,9 +259,11 @@ do not agree.
 
 ### Architectural concerns
 
-- **A definition does not create a use.** `6c`'s pair was reported as declared-and-unused; the triage
+- **A definition does not create a use.** `6c`'s pair was reported as declared-and-unused; the
+triage
   judged that §3 names the distinction and defined them rather than striking them. They were then
-  declared, defined, and *still* unused, and were struck. Writing a definition is the tempting remedy
+  declared, defined, and *still* unused, and were struck. Writing a definition is the tempting
+remedy
   for an unused declaration and it is the wrong one. Recorded inside Finding E.
 - **CM-8 cannot be checked by tooling and the contract says so.** Whether a term sits with the
   document whose subject matter establishes it is a semantic determination — settling it for
@@ -240,13 +277,15 @@ do not agree.
   (`terminology_index.md`, `vocabulary_violations.md`); five are written — the README, both PJ-3
   contracts, and the two readings. A contract cannot be generated by the tool it governs. Documented
   in `projections/README.md` after this caused a false alarm.
-- **`spec/` was held clean.** Projections stay out of it: a file identifier confers family membership
+- **`spec/` was held clean.** Projections stay out of it: a file identifier confers family
+membership
   (`0z` §2), and a regenerated file inside a family built on declared supersession contradicts
   `4e` §9. `doc/` was reduced to what has no more specific home.
 
 ### Release posture
 
-**Not yet `1.0`.** `VERSION` is `draft-4`, **one change declared**. The draft-4 block header now reads
+**Not yet `1.0`.** `VERSION` is `draft-4`, **one change declared**. The draft-4 block header now
+reads
 "One change is declared" rather than "No change is declared yet". Nothing this session altered a
 conformance obligation, so a realization conforming to `draft-3` conforms to `draft-4` unchanged.
 
@@ -264,8 +303,10 @@ than a realization that can discharge a claim against the frozen revision.
 ### Next session should start with
 
 **Run G2 — the independent realization.** G0 is closed, G1 is written
-(`process/g1_realization_protocol.md`), and the worker commission derived from it is written
-(`process/task_build_a_realization.md`). Nothing remains to author; what remains is setup.
+(`external_validation_nova/instruments/g1_realization_protocol.md`), and the worker commission
+derived from it is written
+(`external_validation_nova/instruments/task_build_a_realization.md`). Nothing remains to author;
+what remains is setup.
 
 G1 settled three things so they are not re-derived at G2:
 
@@ -330,7 +371,7 @@ did not.
 
 | Commit | What |
 |---|---|
-| `df47ac5`, `7787623`, `19d9c70` | `process/task_author_a_profile.md` — the trial instrument, salvaged out of the deleted sandbox and hardened: per-run identity (never reused, `6a` §9); **the standard is read, never written**; no previous run's outputs; **do not ask the commissioning party to decide anything**; everything cited must be quotable by document and section. Plus `process/task_author_a_profile_operator.md` — JIT sandbox setup, operator rules, how to read the log, and the Changes 4–7 pass criteria, **deliberately not in the worker's copy.** |
+| `df47ac5`, `7787623`, `19d9c70` | `external_validation_nova/instruments/task_author_a_profile.md` — the trial instrument, salvaged out of the deleted sandbox and hardened: per-run identity (never reused, `6a` §9); **the standard is read, never written**; no previous run's outputs; **do not ask the commissioning party to decide anything**; everything cited must be quotable by document and section. Plus `external_validation_nova/instruments/task_author_a_profile_operator.md` — JIT sandbox setup, operator rules, how to read the log, and the Changes 4–7 pass criteria, **deliberately not in the worker's copy.** |
 
 ### Build & test status — **PASSING**
 
@@ -343,22 +384,49 @@ all 25 mapped invariant ranges agree with 0z §2
 
 ### Open issues
 
-1. **`doc/requirement_projection_contract.md` records `317 requirements · 24 documents`. The family has 25 invariant-bearing documents and the projection omits `1c` entirely.** `1c` states AI-1 … AI-17 as `### AI-1 — …` section headings; every other document uses `- **XX-1.**` bullets, and the extractor matches the bullet convention. The contract's *Verification* section names the count check as *"the guard against silent convention drift"* — the guard did not fire, because the independent count was derived the same way. `draft-3` Change 1 declared this rendering a projection under `4b`, so this is a faithfulness question (PJ-4, PJ-9) about the family's projection of itself. **Correct figures: 342 total; the projection covered 317 of the then-334.**
-2. **`7b` has no specification-subject section.** `7a` §3 names **specification** as a conformance subject class evaluated by `1a` and `1b`; both now carry invariants; `7b` does not mention the class and specifies no demonstration for it. Recorded as outstanding in Change 10.
-3. **`0z` states three MUSTs — including the derivation rule — and carries no invariants.** Same shape as the `1a` gap just closed; weaker case, left open in Change 10.
-4. **`4d` TR-2 / TR-4 presume per-phase register documents**, excluding a model that records each decision as a separately identified declaration. `draft-2` Change 6 settled a finding's location as register/entry/field one revision ago; not reopened on review alone. Recorded as outstanding against `draft-3` in Change 8.
-5. **`1a` has two sections named *Conformance*** — §11 (the concepts) and §14 (the document's own clause). Predates this session. One-line fix if wanted.
+1. **`doc/requirement_projection_contract.md` records `317 requirements · 24 documents`. The
+family has 25 invariant-bearing documents and the projection omits `1c` entirely.** `1c` states
+AI-1 … AI-17 as `### AI-1 — …` section headings; every other document uses `- **XX-1.**` bullets,
+and the extractor matches the bullet convention. The contract's *Verification* section names the
+count check as *"the guard against silent convention drift"* — the guard did not fire, because the
+independent count was derived the same way. `draft-3` Change 1 declared this rendering a
+projection under `4b`, so this is a faithfulness question (PJ-4, PJ-9) about the family's
+projection of itself. **Correct figures: 342 total; the projection covered 317 of the then-334.**
+2. **`7b` has no specification-subject section.** `7a` §3 names **specification** as a conformance
+subject class evaluated by `1a` and `1b`; both now carry invariants; `7b` does not mention the
+class and specifies no demonstration for it. Recorded as outstanding in Change 10.
+3. **`0z` states three MUSTs — including the derivation rule — and carries no invariants.** Same
+shape as the `1a` gap just closed; weaker case, left open in Change 10.
+4. **`4d` TR-2 / TR-4 presume per-phase register documents**, excluding a model that records each
+decision as a separately identified declaration. `draft-2` Change 6 settled a finding's location
+as register/entry/field one revision ago; not reopened on review alone. Recorded as outstanding
+against `draft-3` in Change 8.
+5. **`1a` has two sections named *Conformance*** — §11 (the concepts) and §14 (the document's own
+clause). Predates this session. One-line fix if wanted.
 
 ### Architectural concerns
 
-- **The trial has been run once and its fixes have never been tested.** Changes 4–7 exist because one cold reader fell into holes the family did not catch. Whether NP-12, the two-systems test, and the caller gloss actually catch it is unknown. Pass criteria are written; the run is not done.
-- **The trial cannot be run by this assistant.** It authored Changes 4–10; a trial it also authors establishes nothing. It has to be a separate worker, driven by the user, per the task's own §8 on externality being a property of authorship.
-- **The first run's artifacts are gone.** `standards/sandbox/` was untracked and deleted. The profile, its questions log, and the evaluation exist only as prose in `revisions.md` Changes 4–8. No artifact-to-artifact diff between runs is possible.
-- **Two contamination routes are closed in the task doc but untested**: a commissioner's reply being cited as normative text (it happened — a sentence from a chat reply appeared in the profile attributed to `6a` §7), and the worker patching its own copy of the standard (it happened — including a section insertion that renumbered everything after it).
+- **The trial has been run once and its fixes have never been tested.** Changes 4–7 exist because
+one cold reader fell into holes the family did not catch. Whether NP-12, the two-systems test, and
+the caller gloss actually catch it is unknown. Pass criteria are written; the run is not done.
+- **The trial cannot be run by this assistant.** It authored Changes 4–10; a trial it also authors
+establishes nothing. It has to be a separate worker, driven by the user, per the task's own §8 on
+externality being a property of authorship.
+- **The first run's artifacts are gone.** `standards/sandbox/` was untracked and deleted. The
+profile, its questions log, and the evaluation exist only as prose in `revisions.md` Changes 4–8.
+No artifact-to-artifact diff between runs is possible.
+- **Two contamination routes are closed in the task doc but untested**: a commissioner's reply
+being cited as normative text (it happened — a sentence from a chat reply appeared in the profile
+attributed to `6a` §7), and the worker patching its own copy of the standard (it happened —
+including a section insertion that renumbered everything after it).
 
 ### Release posture
 
-**Not yet `1.0`.** `VERSION` is `draft-3`, ten changes declared, **no freeze section**. `standards/CLAUDE.md` is explicit that `VERSION` is a revision identity, not a release version, and that bumping it declares nothing. Order agreed: **re-trial → close open issue 1 → freeze `draft-3` → declare `1.0 supersedes draft-3`** (identity only, occasioned by adoption, invalidating nothing).
+**Not yet `1.0`.** `VERSION` is `draft-3`, ten changes declared, **no freeze section**.
+`standards/CLAUDE.md` is explicit that `VERSION` is a revision identity, not a release version,
+and that bumping it declares nothing. Order agreed: **re-trial → close open issue 1 → freeze
+`draft-3` → declare `1.0 supersedes draft-3`** (identity only, occasioned by adoption,
+invalidating nothing).
 
 ### Next session should start with
 
