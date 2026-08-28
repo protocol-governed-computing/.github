@@ -1,0 +1,25 @@
+# Optional domain dependencies — NOT required by the PGC core (compiler, assembler,
+# runtime, inspector, transport). Needed only when domain capability transforms that
+# perform cryptography or HTTP are installed into the platform surface.
+#
+#   pip install -r .github/process/requirements-domains.txt
+#
+# Superset by design: carried over from RI-0 so domain CTs can be re-admitted without
+# re-deriving the dependency set. Installing more than is used is harmless; the core
+# compile path imports none of these.
+
+PyNaCl==1.6.2
+bip_utils==2.12.1
+bitarray==3.8.2
+cbor2==5.9.0
+coincurve==21.0.0
+crcmod==1.7
+cryptography==49.0.0
+ecdsa==0.19.2
+ed25519-blake2b-fork==1.4.2
+py-sr25519-bindings==0.2.4
+pycryptodome==3.23.0
+pycryptodomex==3.23.0
+pytoniq-core-fork==0.1.48
+requests==2.34.2
+x25519==0.0.2
