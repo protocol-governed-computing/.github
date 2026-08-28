@@ -1,6 +1,6 @@
 # SOTU Handoff
 
-## dev/12. **`draft-4` Change 1 declared · NOVA cycle 1 closed — three claims discharged, a snapshot emitted and independently verified, three candidate spec findings recorded · next: G3's third profile, and it must fix a form.**
+## dev/12. **`v0` declared, superseding `draft-3` · NOVA cycle 1 closed and seven findings dispositioned · the standard leaves draft and goes public · next: publish, and wait for a reader who was not part of this.**
 
 The whole cycle came from one instrument: **a terminology index derived over the family and checked
 against `1a` §12** — the first instrument pointed at the family's own vocabulary rather than at a
@@ -326,23 +326,42 @@ membership
   (`0z` §2), and a regenerated file inside a family built on declared supersession contradicts
   `4e` §9. `doc/` was reduced to what has no more specific home.
 
-### Release posture
+### Release — `v0`
 
-**Not yet `1.0`.** `VERSION` is `draft-4`, **one change declared**. The draft-4 block header now
-reads
-"One change is declared" rather than "No change is declared yet". Nothing this session altered a
-conformance obligation, so a realization conforming to `draft-3` conforms to `draft-4` unchanged.
+**`VERSION` is `v0`, declared as superseding `draft-3`.** The version is a single number starting at
+zero — ground zero, the first identity anyone may build against or name in a claim. Not semantic:
+no major, minor or patch, because `4e` §9 holds that a revision is *declared* rather than inferred
+from a number.
 
-**Release 11 is cut from this cycle** — `process/notes/release-11.md`. The order from dev/11 is
-superseded in one respect: *re-trial* is no longer a loose next step but **NOVA G0**, a gate that
-cannot close without a profile, its registers, a classification and a disposition for each entry.
-**The freeze moves behind G2, not behind G0.** CF-1 binds the *claim*, which is made at G3; G1 and
-G2 need only a pinned commit, and a commit is immutable already. `draft-4` stays open through G2 so
-that what a realization finds can be repaired in the revision opened to receive it — its own record
-lists *a second independent realization* among the things it is waiting for. Revised order:
-**G0 → G1 → G2 → repairs → freeze and tag → G3**, with the `1c` omission closed before the
-freeze, with `1.0` no earlier
-than a realization that can discharge a claim against the frozen revision.
+**`draft-4` was the working name and is gone.** It was never frozen, never tagged, no claim was made
+against it, and nothing outside the repository named it — checked before collapsing it, so the
+rename rewrote no external reference. The single supersession is `draft-3` → `v0`, and Change 1 is
+its content.
+
+**Occasioned by exposure, not by a defect.** Four gates of independent authoring, realization,
+execution and transformation produced no undeclared gap; the terminology and requirement projections
+run clean. **What the programme cannot manufacture is a reader who has not been part of it**, and a
+draft identity now costs more than it buys.
+
+**It invalidates nothing.** Change 1 altered no obligation on a realization — CM-8 binds documents
+of
+the family, not systems. A realization conforming to `draft-3` conforms to `v0` unchanged.
+
+**Five findings are carried into `v0` and published with it**, each with what would settle it:
+**B**,
+**C**, **C-1**, **C-2**, **C-3**. Two of them — C-1 and C-2 — **would change what conformance
+costs**
+if carried. Claims against `v0` survive under `0z` §5.1, but a successor may ask more. That is said
+in the declaration rather than left to be discovered.
+
+**Also this cycle:** `call_for_review.md` reframed from a tasking document to a review invitation —
+*"read it and say where it is wrong"* — with Discussions, Issues and email as channels, all eight
+links repointed to `blob/v0/`, and the profile-authority ask demoted to a standing need stated
+separately from the review. `CITATION.cff` added, carrying `version: v0`.
+
+**Release 11 remains this cycle's composition release** — `process/notes/release-11.md`. It is
+independent of the standard's revision identity: release 9 removed the standard from the composition
+so it could be versioned on its own.
 
 ### Next session should start with
 
