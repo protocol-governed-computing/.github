@@ -7,7 +7,7 @@
 #                           →  delete local branch  →  open dev/<N+1>
 #                           →  declare VERSION <N+1> on every repo
 #
-# To cut the next release, change RELEASE and NEXT below. Nothing else varies.
+# The release ordinal is read from `.github/VERSION` — there is nothing to edit here to cut one.
 #
 # PGC versions the COMPOSITION, not each repo independently: all repos release together and the
 # governance closure forces lockstep, so one monotonic integer names which composition a repo
@@ -40,10 +40,25 @@ case "${1:-}" in
   *) echo "unknown argument: $1 (usage: release.sh [--check])" >&2; exit 2 ;;
 esac
 
-RELEASE=11         # the release being cut  — branch dev/$RELEASE must exist and be current
-NEXT=12            # the cycle to open next — branch dev/$NEXT will be created from main
-
 WORKSPACE="$HOME/protocol-governed-computing"
+
+# The release ordinal is DERIVED, never declared here. `VERSION` is the single declaration of which
+# composition a repo belongs to, and this script already refuses any repo whose VERSION disagrees —
+# so a second copy of that number kept here was a second declaration of the same fact, maintained by
+# hand, with nothing to catch it going stale. It did: release 11 was cut and these constants were
+# not bumped, so the next preflight expected every repo to be on dev/11 and reported eighty failures
+# describing a release that had already shipped.
+#
+# Deriving it removes the step that can be missed. `.github/VERSION` is the reference copy because
+# `.github` is one of the released repos and carries the notes; the other nine are still compared
+# against it, so lockstep is checked exactly as before — what is no longer checkable is whether the
+# reference itself is wrong, and there was never anything to check it against. The branch and tag
+# preconditions catch a VERSION bumped without a cycle behind it.
+RELEASE="$(cat "$WORKSPACE/.github/VERSION" 2>/dev/null || true)"
+case "$RELEASE" in
+  ''|*[!0-9]*) echo "cannot derive the release ordinal: $WORKSPACE/.github/VERSION is '${RELEASE:-<missing>}', expected a positive integer" >&2; exit 2 ;;
+esac
+NEXT=$((RELEASE + 1))
 
 # What the build gate builds and claims. Named rather than defaulted, because neither tool has a
 # default and neither should: no profile is privileged (6a §11) and no platform is minimal (6a §8).
