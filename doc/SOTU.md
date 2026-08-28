@@ -1,6 +1,6 @@
 # SOTU Handoff
 
-## `standards` `draft/4` — **`v0` carried into the repository: the requirement projection joins the terminology projection, `0d` gains a drawn form, a profile template derived from `6a`, `CITATION.cff`, and the call for review rewritten as an invitation to disagree.** Next: nothing further to specify — publish, and wait for a reader who was not part of this.
+## `standards` `draft/4` — **`v0` carried into the repository: the requirement projection joins the terminology projection, `0d` gains a drawn form, a profile template derived from `6a`, `CITATION.cff`, and the call for review rewritten as an invitation to disagree.** Release 12 notes written and the release ordinal derived rather than declared; the cut deferred, since the composition it would seal is the one release 11 already sealed. Next: publish, and wait for a reader who was not part of this.
 
 The previous entry declared `v0` in `.github`. This session carried it into `standards` itself:
 `VERSION` is `v0`, `revisions.md` holds the `draft-3` → `v0` supersession and the five findings
@@ -30,6 +30,41 @@ profile takes, so the template *"is not part of the family and carries no author
 standard alone leads an author to produce. Three independently authored profiles organising the same
 content three ways is the evidence that the structure was not determined; supplying the structure
 answers that in advance and destroys the result.
+
+### Changes made — `.github`, branch `dev/12`, uncommitted
+
+| File | What |
+|---|---|
+| `process/notes/release-12.md` | **new, 153 lines.** *A passing suite is not evidence a demonstration could fail.* The release note for NOVA cycle 1: the SHA-256→MD5 substitution that passed all six demonstrations and the disabled baseline guard that passed all fifteen; execution asked for twice; the three times the instrument measured itself; three authors closing three different kind sets from byte-identical text; why G3 is blocked; what went untested. Continues release 10's line — `declared ≠ implemented ≠ enforced ≠ demonstrated` ends at *demonstrated*, and this cycle finds that *demonstrated* has an inside. |
+| `process/release.sh` | **The release ordinal is derived from `.github/VERSION` rather than declared.** Was `RELEASE=11 / NEXT=12`, hand-set, and never bumped after release 11 was cut — so preflight expected every repo on `dev/11` and reported **eighty failures describing a release that had already shipped**. Now read from VERSION with a guard refusing empty, missing or non-integer, and `NEXT=$((RELEASE + 1))`. |
+
+**The script had been keeping a second copy of the one thing it says must never be copied.** Its own
+header holds that `VERSION` is the single declaration of which composition a repo belongs to and that
+a version must never be hand-edited anywhere else — while `RELEASE` was exactly that, a hand-edited
+second declaration with nothing to catch it going stale. The bump is now the write the script already
+performs at step 4, so the step that can be missed no longer exists. What is no longer checkable is
+whether the reference copy itself is wrong; there was never anything to check it against, the other
+nine repos are still compared to it, and a VERSION bumped without a cycle behind it still fails the
+branch and tag preconditions.
+
+### Release 12 is written and deliberately not cut
+
+Preflight passes but for the two uncommitted files above. **The cut was declined on the ground that
+the composition has not moved.** Nine of the ten repositories carry one commit since `release-11` —
+the version bump itself. The whole content of release 12 is in `.github`: NOVA cycle 1 end to end,
+three G0 runs, G1, G2, G4, the instruments and the dispositions. None of it enters the snapshot.
+
+**The manifest states the case exactly.** `compiler_version` is stamped into every domain projection;
+it read `11` in the pre-session snapshot and reads `12` now. The `snapshot_id` therefore moved since
+release 11 — **only because the version number is recorded inside the thing the version names.** The
+governed content is identical. Cutting would mint a second composition identity over one composition,
+which is the inverse of the defect the family polices everywhere else, where an identity must stand
+in a declared relation to what actually changed.
+
+So `dev/12` stays open and the note accumulates. Its opening was rewritten for that: the first draft
+asserted *"nine of the ten repositories changed nothing this release"*, true only if the cut happened
+that day and falsified by the next commit to land. The NOVA substance is untouched and holds whatever
+lands next.
 
 ### Build and test status
 
@@ -130,19 +165,35 @@ that, and neither is under this project's control once issued.
 
 **Publish, and stop specifying.** `v0` is declared, carried into `standards` and pushed; the call for
 review is written; every instrument that examines the family runs clean; the workspace is at its
-documented state with all nine repositories clean at `dev/12`. The one red check is deliberate and
-recorded in `RUNBOOK.md:157`. There is no repair queued and no gap the project can close for itself.
+documented state. The one red check is deliberate and recorded in `RUNBOOK.md:157`. There is no
+repair queued and no gap the project can close for itself.
 
 What it cannot manufacture is a reader who was not part of it, and the two instruments aimed at that
 are already written and merely unissued: `standards/doc/call_for_review.md`, and its closing section
 asking for **a party willing to author and own a conformance profile this project cannot change**.
 Issue them.
 
-**Resist the pull to build instead.** This session twice mistook settled matters for open ones — the
-31 admission findings, dispositioned in the runbook; and domain composition, which `6c` §11 declines
-to specify — and each time the reflex was to start a repair. Both were reverted at no cost, but the
-pattern is the risk: with nothing left to specify, an idle instrument finds work that is not there.
-The standard is not waiting on another change. It is waiting on someone outside it.
+**Then work that would actually move the composition, on `dev/12`.** The release cuts when there is
+something to seal, not on a schedule. In descending order of what it would establish:
+
+1. **Mutation-test the reference realization.** C-1 is the finding release 12 is named for, and
+   nothing has ever removed a guard from the reference to see whether a test notices. NOVA had that
+   blind spot in two places and neither was visible to a passing suite, its author, or a reading of
+   its evidence. There is no reason to assume the reference is different, and this is the one piece
+   of work pointed at this system rather than at more text.
+2. **Unblock G3** — a third profile both NOVA and the reference can claim, narrow enough for the one
+   and permissive enough for the other. The cycle summary calls it a design question, not a run.
+3. **The effecting path** — no capability with an external effect has ever been exercised, the
+   largest untested surface the cycle names.
+4. **Transport** — Phase 1 frozen in `protocol_transport/doc/TRANSPORT_STANDARD_V0.md`; constitutions
+   and adapters await authorization.
+
+**Resist the pull to build instead of publishing.** This session three times mistook a settled matter
+for an open one — the 31 admission findings, dispositioned in the runbook; domain composition, which
+`6c` §11 declines to specify; and the release cut itself, which the user stopped. Each was reverted
+or declined at no cost, but the pattern is the risk: with nothing left to specify, an idle instrument
+finds work that is not there. The standard is not waiting on another change. It is waiting on someone
+outside it.
 
 ---
 

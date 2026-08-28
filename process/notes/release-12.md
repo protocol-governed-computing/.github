@@ -1,14 +1,10 @@
 release 12 — a passing suite is not evidence a demonstration could fail
 
-**Nine of the ten repositories changed nothing this release.** Their only commit is the version bump
-that names the composition they belong to. The platform compiled, assembled and executed exactly as
-it did at release 11, and the snapshot it produces is the same snapshot.
-
-What changed is the apparatus pointed at it. Release 10 measured the realization against the
-standard. Release 11 turned the same kind of instrument on the standard's own vocabulary. This
-release runs the instrument the previous two were building toward: **independent parties authoring
-against the standard alone, building a system from it, driving that system from what it sealed, and
-evolving it through its own transformation semantics.**
+This cycle's work is validation, not construction. Release 10 measured the realization against the
+standard. Release 11 turned the same kind of instrument on the standard's own vocabulary. This one
+runs the instrument the previous two were building toward: **independent parties authoring against
+the standard alone, building a system from it, driving that system from what it sealed, and evolving
+it through its own transformation semantics.**
 
 Four gates of five ran. The standard needed no repair. That is the result, and the reason it is
 stated carefully below is that a result of this shape is very easy to over-read.
@@ -150,8 +146,8 @@ conformance costs. Systems claiming `v0` keep their claims; a successor may ask 
 
 ## What this release is for
 
-Nothing here is a repair. The composition is unchanged, the standard needed none, and the one red
-check in the workspace is red deliberately and recorded as such.
+Nothing here is a repair. The standard needed none, and the one red check in the workspace is red
+deliberately and recorded as such.
 
 What this release does is close the last thing the project could do to itself. Every remaining
 instrument requires someone who was not part of building it.
