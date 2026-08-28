@@ -1,5 +1,151 @@
 # SOTU Handoff
 
+## `standards` `draft/4` — **`v0` carried into the repository: the requirement projection joins the terminology projection, `0d` gains a drawn form, a profile template derived from `6a`, `CITATION.cff`, and the call for review rewritten as an invitation to disagree.** Next: nothing further to specify — publish, and wait for a reader who was not part of this.
+
+The previous entry declared `v0` in `.github`. This session carried it into `standards` itself:
+`VERSION` is `v0`, `revisions.md` holds the `draft-3` → `v0` supersession and the five findings
+published with it, and the public-facing surface — the call for review, the citation record — now
+says the same thing the record does.
+
+### Changes made — `standards`, branch `draft/4`, three commits, working tree clean, pushed
+
+| Commit | Files | What |
+|---|---|---|
+| `35065ce` | 11 files, +1238/−220 | **The requirement projection.** New `tools/requirement_index.py` derives `projections/requirement_index.md` — **356 requirements across 26 documents**. New `doc/profile_template.md`, derived from `6a` and adding nothing to it. `spec/0d` rewritten and given `0d_…​.svg` — the family's first drawn form. |
+| `2fc8c36` | 8 files, +228/−42 | **`v0` in the repository.** `VERSION` → `v0`; `revisions.md` +134 lines carrying the supersession declaration, the five findings **B, C, C-1, C-2, C-3**, and the statement that Change 1 invalidates nothing. New `CITATION.cff` — *cite the revision you read*. Both projection contracts and the `projections/README` brought into line. |
+| `870d7e5` | 1 file, +37/−41 | **`doc/call_for_review.md`.** Retitled *Call for Review* → **"an invitation to read, and to disagree"**. Body reflowed. The document ends on **a standing need, separate from review**: `6a` §6 requires that a profile not be authored by the system claiming it, no external profile authority exists, and a separation declared inside this project was **considered and refused as appearance without substance**. |
+
+**The count guard shares no code with the extractor, on purpose.** `tools/check_requirement_count.py`
+counts by a second route — `0z` §2 declares each document's invariant range, and the sum of those
+ranges is what the family says it carries; the index is what the documents actually yield. It
+reports **350 declared across 26 documents, plus 6 suffixed identifiers a range cannot express**
+(`1b` SM-5a/7a/7b, `4d` TR-3a/5a/15a) = **356**, agreeing with the index. The first requirement
+projection derived its guard the same way it derived the index, so a convention the extractor
+stopped recognizing produced a smaller count every other check accepted. A guard that fails the same
+way as the thing it guards is not a guard.
+
+**`profile_template.md` carries its own prohibition.** `6a` §11 declines to specify the form a
+profile takes, so the template *"is not part of the family and carries no authority"* — and it says
+**do not give this to an authoring trial**, because the point of such a trial is to find what the
+standard alone leads an author to produce. Three independently authored profiles organising the same
+content three ways is the evidence that the structure was not determined; supplying the structure
+answers that in advance and destroys the result.
+
+### Build and test status
+
+**Standards projections — PASSING**, and both regenerate byte-identical (`git status` clean after
+running them).
+
+| Check | Result |
+|---|---|
+| `tools/check_requirement_count.py` | exit 0 — 356 expected, 356 carried, every mapped range plus its suffixed identifiers agrees |
+| `tools/requirement_index.py --check` | exit 0 — 356 requirements, 26 documents, all contract checks passed |
+| `tools/vocab_index.py --check` | exit 0 — 167 terms, 32 documents, **0 defects, 44 warnings** |
+
+**Workspace — PARTIAL.** Environment clean; seven of eight conformance checks pass; one fails.
+
+| Check | Result |
+|---|---|
+| `pgc_env_check.py` | PASSED — no RI-0 dependency reachable |
+| `governance_closure` · `governance_chain_closure` | PASSED |
+| `implementation_closure` | PASSED — 28 transforms, every module named and present |
+| `frontmatter_fidelity` · `human_block_fidelity` | PASSED — 404 artifacts, prose declares nothing |
+| `supersession_agreement` | PASSED — 7 relations, both sides agree |
+| `evidence_determinism` | PASSED — `3e` EV-6, EV-7 |
+| `admission_contract_fidelity` | **FAILED — 31 findings over 31 gates** |
+
+All nine platform repositories are clean at `dev/12`; `.github` is clean at `dev/12`. **No platform
+code was touched this session**, so the admission failure is not a regression from it — it stands
+against the snapshot built the previous session (`snapshot/`, 2026-08-26).
+
+### Open issues
+
+**`admission_contract_fidelity` is red on 31 findings, and that is the documented expected state** —
+`RUNBOOK.md:157` records them as *"all deliberate"*: other domains' business, plus
+`IN_REGISTER_BOOK_V0`'s `subject`, deferred with its ground in `cr_04_catalog` P3 Q1, because
+correcting it moves every caller and that change's seed forbids it. **Not an open issue.** A first
+pass through this session's check run read the red as new and as the leading next action; it is
+neither.
+
+**Five findings carried into `v0` and published with it** — `revisions.md`: **B** (no demonstration
+for the specification subject class), **C** (`0z` states MUSTs and carries no invariants), **C-1** (a
+demonstration must be capable of failing; nothing requires showing which one does), **C-2** (`3a`
+does not name the case distinguishing read routing from hard-coded routing that matches), **C-3** (a
+profile exclusion bars comparability and `7a` §10 does not say so). **C-1 and C-2 would change what
+conformance costs** if carried — said in the record rather than left to be discovered.
+
+**The workspace-root `CLAUDE.md` repository table is stale.** It describes `business_domains` as
+"business domains (ai_governance — untested)". Three domains are on disk and in the snapshot —
+`ai_governance`, `blockchain`, `book_library_mgmt` — and 30 of the 31 admission findings are in the
+two the table does not mention.
+
+### Architectural concerns
+
+**The 31 gates are in scope, and the profile settles it rather than raising it.** A first reading
+took the failure for a scoping question — `blockchain` is named by no profile, so perhaps the check
+should not be looking at it. It should. `REFERENCE_PLATFORM_PROFILE_V1` §6: *"A profile states
+requirements, never an inventory. A snapshot may contain more than the profile requires and still
+conform."* The same rule is in the superseded `NORMATIVE_PLATFORM_PROFILE_BASELINE_V0` §6, so it
+predates both the current profile and this session. A profile pins governance identities, the closed
+kind vocabulary, entry workflows and claims; **it selects no domains and is not meant to.** Domain
+composition by discovery is not in tension with it, and there is no domain selection for a check to
+narrow against. The findings are defects against `3a` EX-7 in content the sealed snapshot properly
+carries.
+
+**A declared snapshot composition was built, tried, and reverted — considered and declined.** The
+observation was that membership in a composition is a fact about the filesystem: `core.py:51` takes
+whatever sits under `tokenized/`, `assemble.sh:47` and `release.sh:157` glob `business_domains/*`.
+Set against `6c` §10 — adding a domain is a governed transformation (TR-1) and a domain MUST NOT
+claim genesis — that reads like a gap, since adding a domain today is `mkdir` plus a build config.
+
+**It was declined because nothing requires it and nothing was failing.** `6c` §11 explicitly does not
+specify *"what domains a system has, or how many"* or *"how domains are arranged — in repositories,
+packages, or deployments"*, so the family asks for no composition artifact. `6c` §10 requires domain
+addition to be a transformation; discovery does not make that false, it only declines to enforce it.
+No check was red on it. The gap is between doctrine and mechanism, not a demonstrated defect, and it
+was an architectural reading rather than a measured finding.
+
+**Two things the attempt established, worth keeping.** A `STRUCTURE_SNAPSHOT_COMPOSITION_V0` pairing
+each domain with its build STRUCTURE **was refused by the compiler** — `ASSERT_PROTOCOL_SURFACE_CLOSED_V0`,
+six violations, one per non-platform pairing. The governance surface compiles before domains, so a
+platform artifact naming a domain's artifact cannot resolve. **The platform cannot bind domain
+identities**, and any future attempt at this must bind them at assembly, the only point where every
+compiled domain is in hand. Second, deleting the artifact and rebuilding without cleaning surfaced
+`E402_UNDECLARED_OUTPUT` on the orphaned JSON — compiled output with no source declaring it is
+already refused, which is the property a composition declaration would have been partly duplicating.
+
+**Including every domain is not a defect and should not be undone.** `release.sh:148` gives the
+reason: an omitted domain is assembled from whatever stale output is on disk, and its compile against
+the current governance closure is never proven. Seven domains exercise closure over 404 artifacts
+rather than one, which is the only available evidence that platform governance is domain-neutral
+(`6c` §3 — the platform governs the *form* of governance, the domain governs its own *subjects*).
+
+**`v0` is declared and nothing external has read it.** The programme produced four gates of
+independent authoring, realization, execution and transformation, and every instrument that examines
+the text runs clean. What none of it manufactures is a reader who was not part of it. The call for
+review and the standing need for an external profile authority are the two instruments aimed at
+that, and neither is under this project's control once issued.
+
+### Next session should start with
+
+**Publish, and stop specifying.** `v0` is declared, carried into `standards` and pushed; the call for
+review is written; every instrument that examines the family runs clean; the workspace is at its
+documented state with all nine repositories clean at `dev/12`. The one red check is deliberate and
+recorded in `RUNBOOK.md:157`. There is no repair queued and no gap the project can close for itself.
+
+What it cannot manufacture is a reader who was not part of it, and the two instruments aimed at that
+are already written and merely unissued: `standards/doc/call_for_review.md`, and its closing section
+asking for **a party willing to author and own a conformance profile this project cannot change**.
+Issue them.
+
+**Resist the pull to build instead.** This session twice mistook settled matters for open ones — the
+31 admission findings, dispositioned in the runbook; and domain composition, which `6c` §11 declines
+to specify — and each time the reflex was to start a repair. Both were reverted at no cost, but the
+pattern is the risk: with nothing left to specify, an idle instrument finds work that is not there.
+The standard is not waiting on another change. It is waiting on someone outside it.
+
+---
+
 ## dev/12. **`v0` declared, superseding `draft-3` · NOVA cycle 1 closed and seven findings dispositioned · the standard leaves draft and goes public · next: publish, and wait for a reader who was not part of this.**
 
 The whole cycle came from one instrument: **a terminology index derived over the family and checked
