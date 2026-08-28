@@ -17,10 +17,10 @@ any one database and JVM bytecode is independent of any one JVM.
 The normative specification lives in **[`standards`](https://github.com/protocol-governed-computing/standards)** — thirty-two documents in seven parts, at revision `draft-3`, frozen. It states what a
 governed system must mean and do, independently of anything built here.
 
-**It is seeking critical review, not adoption.** What is claimed, what would falsify it, what has not
-yet been established, and the one thing this project cannot supply for itself are stated in the
+**It is seeking critical review, not adoption.** What is claimed, what would falsify it, and what has
+not yet been established are stated in the
 [call for review](https://github.com/protocol-governed-computing/standards/blob/main/doc/call_for_review.md).
-[`0d`](https://github.com/protocol-governed-computing/standards/blob/draft-3/spec/0d_visual_representation_of_the_standard.md)
+[`0d`](https://github.com/protocol-governed-computing/standards/blob/v0/spec/0d_visual_representation_of_the_standard.md)
 draws the model in seven figures and is the shortest way in.
 
 **The specification governs; the realization demonstrates.** Where a document of the family and any
