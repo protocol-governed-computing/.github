@@ -51,7 +51,11 @@ def sufficient_design() -> dict[str, Any]:
                 "refusal": "copy_already_on_loan",
             }, {
                 "address": "workflow:lending",
-                "steps": ["lend-copy-to-member"],
+                "steps": [{
+                    "id": "lend-copy-to-member",
+                    "capability": "record_loan",
+                    "routes": {"completed": "loan-recorded", "failed": "loan-rejected"},
+                }],
                 "start": "lend-copy-to-member",
             }, {
                 "address": "read:loan-status",
@@ -160,19 +164,54 @@ class LibraryRuntime:
         self.inspection = npp_e.Inspection(snapshot)
         self.loans: dict[str, dict[str, str]] = {}
         artifacts = self.inspection.enumerate_artifacts()
+        if not any(item["kind"] == "workflow" for item in artifacts):
+            raise npp_e.Refusal(cause="rule_refusal", reason="missing_workflow", proposal=snapshot, subject="execution", rules=["EX-1"])
         if not any(item["kind"] == "capability-contract" and item["declaration"]["effect"] == "record_loan" for item in artifacts):
             raise ValueError("snapshot has no lending capability")
         if not any(item["kind"] == "read-operation" and item["declaration"]["answer"] == "current loan record for named copy" for item in artifacts):
             raise ValueError("snapshot has no loan-status read operation")
 
-    def lend(self, copy_id: str, member_id: str) -> dict[str, str]:
+    def _dispatch(self, capability: dict[str, Any], copy_id: str, member_id: str) -> tuple[str, dict[str, str] | None]:
+        if capability["declaration"]["effect"] != "record_loan":
+            raise npp_e.Refusal(cause="rule_refusal", reason="unresolved_capability_binding", proposal=capability, subject="execution", rules=["EX-7"])
         if not copy_id or not member_id:
-            raise npp_e.Refusal(cause="rule_refusal", reason="malformed_lend_request", proposal={"copy_id": copy_id, "member_id": member_id}, subject="loan", rules=["LIB-1"])
+            return "failed", None
         if copy_id in self.loans:
-            raise npp_e.Refusal(cause="rule_refusal", reason="copy_already_on_loan", proposal={"copy_id": copy_id, "member_id": member_id}, subject="loan", rules=["LIB-2"])
+            return "failed", None
         record = {"copy_id": copy_id, "member_id": member_id}
         self.loans[copy_id] = record
-        return deepcopy(record)
+        return "completed", deepcopy(record)
+
+    def execute(self, copy_id: str, member_id: str) -> dict[str, Any]:
+        artifacts = self.inspection.enumerate_artifacts()
+        workflow = next(item for item in artifacts if item["kind"] == "workflow")
+        capabilities = {item["declaration"]["effect"]: item for item in artifacts if item["kind"] == "capability-contract"}
+        steps = {step["id"]: step for step in workflow["declaration"]["steps"]}
+        current = workflow["declaration"]["start"]
+        path: list[str] = []
+        while current in steps:
+            step = steps[current]
+            path.append(current)
+            capability = capabilities.get(step["capability"])
+            if capability is None:
+                raise npp_e.Refusal(cause="rule_refusal", reason="unresolved_capability_binding", proposal=step, subject="execution", rules=["EX-7"])
+            outcome, output = self._dispatch(capability, copy_id, member_id)
+            if outcome not in capability["declaration"]["outcomes"]:
+                raise npp_e.Refusal(cause="rule_refusal", reason="undeclared_outcome", proposal={"step": current, "outcome": outcome}, subject="execution", rules=["EX-5"])
+            if outcome not in step["routes"]:
+                raise npp_e.Refusal(cause="rule_refusal", reason="unrouted_outcome", proposal={"step": current, "outcome": outcome}, subject="execution", rules=["EX-5"])
+            current = step["routes"][outcome]
+        if current != "loan-recorded" and current != "loan-rejected":
+            raise npp_e.Refusal(cause="rule_refusal", reason="unresolved_route_target", proposal={"target": current}, subject="execution", rules=["EX-7"])
+        return {"outcome": "completed" if current == "loan-recorded" else "failed", "output": output, "path": path, "terminal": current}
+
+    def lend(self, copy_id: str, member_id: str) -> dict[str, str]:
+        result = self.execute(copy_id, member_id)
+        if result["outcome"] == "failed":
+            reason = "malformed_lend_request" if not copy_id or not member_id else "copy_already_on_loan"
+            rule = "LIB-1" if reason == "malformed_lend_request" else "LIB-2"
+            raise npp_e.Refusal(cause="rule_refusal", reason=reason, proposal={"copy_id": copy_id, "member_id": member_id}, subject="loan", rules=[rule])
+        return result["output"]
 
     def loan_status(self, copy_id: str) -> dict[str, Any]:
         if not copy_id:

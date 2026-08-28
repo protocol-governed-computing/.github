@@ -1,6 +1,6 @@
 # SOTU Handoff
 
-## dev/12. **`draft-4` Change 1 declared · NOVA cycle 1 at a natural stop — G0, G1, G2, G4 done, G3 blocked · no repair to the standard follows · next: `3a` and `3d`, or G3's third profile.**
+## dev/12. **`draft-4` Change 1 declared · NOVA cycle 1 closed — three claims discharged, a snapshot emitted and independently verified, three candidate spec findings recorded · next: G3's third profile, and it must fix a form.**
 
 The whole cycle came from one instrument: **a terminology index derived over the family and checked
 against `1a` §12** — the first instrument pointed at the family's own vocabulary rather than at a
@@ -198,7 +198,51 @@ worker's memory is not covered by a rule about handed-over material. The rule th
 programme: *an experiment may constrain the task, but it must not supply the distinction whose
 derivability it is measuring.*
 
-**Untested:** `3a` execution and `3d` capability have been read and never built against.
+**`3a` has since been built against.** The transformation's first delivery declared a workflow
+carrying an outcome vocabulary that **nothing read** — the rule lived in a method, and deleting the
+workflow artifact left behaviour unchanged. Asked to discharge the Runtime and execution claim, the
+builder drove traversal from the sealed declarations. The decisive mutation — replacing
+`step["routes"][outcome]` with the behaviourally equivalent hard-coded branch — **now fails a
+test**, which is the only check a well-formed fixture cannot make.
+
+**Three of `NPP-E`'s eight claims are discharged**, not two. An earlier draft miscounted:
+the transformation is a claimed and discharged claim, not evidence for another. The summary now
+carries a claim ledger distinguishing **discharged** (2, 4, 5), **exercised but not claimed**
+(3, 6, 7) and **not claimed** (1, 8). The correction came from the builder.
+
+**Three candidate findings against the standard — the first the programme has produced.** None from
+being blocked; all from the builder's reflection. Recorded, not carried:
+
+- **C-1** — `7b` requires a demonstration *capable* of failing, not that you show *which one* fails.
+  Two correctly implemented guards broke no test and were invisible to everything but mutation.
+- **C-2** — `3a` does not distinguish a route followed, a route absent, a route retargeted, and
+  **hard-coded routing ignoring a changed declaration.** The fourth is the decisive architectural
+  test and is unnamed in the text.
+- **C-3** — `7a` §10 says systems under different profiles are not comparable; it does not say a
+  **profile exclusion** bars comparability, which is exactly why G3 is blocked.
+
+**One implementation limitation recorded**, also from the builder: `3d` CP-9 requires a declared
+binding, and the realization dispatches on the capability's `effect` value as an implicit one.
+
+**A snapshot exists and verifies independently.** NOVA had produced three snapshot identities and
+no snapshot — nothing wrote one to disk, and the sealed content lived only in memory for the length
+of a process. Reproducible, but not obtainable in `7b` §6's sense. The builder emitted
+`snapshot.json`, archived at `runs/g4_run/`.
+
+**Verified without using any of the realization's code**: `whole_integrity` recomputed from the
+fields it declares it covers matches; `id` is `snapshot:` + that digest; **all five artifact
+identities verify as content-derived.** That is `3b`'s *"verifiable — its integrity and identity can
+be checked by a party that did not build it"*, satisfied rather than asserted, and it is the
+strongest artifact the programme has produced.
+
+Three things that could have been wrong and were not: `whole_integrity_covers` lists itself while
+excluding `id` and `whole_integrity`, so the self-reference is handled; `constituents` carries whole
+artifact objects rather than identities, so the snapshot is self-contained; and `governance-element`
+is admitted by the vocabulary and absent from the snapshot, which is correct — a closed vocabulary
+states what may exist, not what must.
+
+**Still untested:** `3d`'s effecting path — no capability with an external effect, and `NPP-E` §2
+selects no interaction boundary, so it may not be reachable under this profile at all.
 
 ### Build & test status — **PASSING**
 
