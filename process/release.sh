@@ -29,12 +29,27 @@
 # because ten repos declaring one composition is one act, and ten hand-edits is ten chances to
 # leave a repo declaring the release it was just cut out of.
 #
+# THE COMPOSITION IS A SECOND PHASE. `pgc_release` publishes the sealed snapshot and names the
+# nine component version DOIs as `hasPart`. Those DOIs do not exist until Zenodo has minted
+# them, and Zenodo mints only after this script has pushed each component tag and a GitHub
+# release has fired. So the composition cannot be assembled in the pass that publishes its
+# parts — its inputs are not in the world yet. It is not in REPOS for the same reason it is
+# `main`-only: it holds an OUTPUT, has no dev cycle, and must never be built from.
+#
+#   release.sh --publish              nine repos + .github published; Zenodo mints
+#   (wait for the mints)
+#   release.sh --publish-composition  compose, commit, tag, push; Zenodo mints the bundle
+#
 # Read this before running it. It pushes and deletes remote refs.
 #
 # Usage:
 #   release.sh              preflight, then cut the cycle (local only — touches no remote)
 #   release.sh --publish    cut the cycle AND publish it under .github/PUBLIC_VERSION
 #   release.sh --check      preflight only — changes nothing, safe to run any time
+#   release.sh --publish-composition
+#                           SECOND PHASE, run after Zenodo has minted the component DOIs:
+#                           regenerate pgc_release from the sealed snapshot, then commit,
+#                           tag and push it. See THE COMPOSITION IS A SECOND PHASE below.
 #   SKIP_BUILD=1 release.sh skip the clean-rebuild gate (only when iterating; never to release)
 #
 # The squash message is CONTENT that changes every cycle; this script is PROCESS that does not. It
@@ -48,12 +63,14 @@ set -euo pipefail
 
 CHECK_ONLY=0
 PUBLISH=0
+COMPOSE=0
 case "${1:-}" in
   "")        ;;
   --check)   CHECK_ONLY=1 ;;
   --publish) PUBLISH=1 ;;
-  -h|--help) sed -n '2,45p' "$0"; exit 0 ;;
-  *) echo "unknown argument: $1 (usage: release.sh [--check|--publish])" >&2; exit 2 ;;
+  --publish-composition) COMPOSE=1 ;;
+  -h|--help) sed -n '2,55p' "$0"; exit 0 ;;
+  *) echo "unknown argument: $1 (usage: release.sh [--check|--publish|--publish-composition])" >&2; exit 2 ;;
 esac
 
 WORKSPACE="$HOME/protocol-governed-computing"
@@ -107,6 +124,62 @@ GATE_PROFILE="REFERENCE_PLATFORM_PROFILE_V1"
 # carries no earlier tag. `.github` was excluded while it held only the org profile page; it now
 # also holds the snapshot assembly contract that `snapshot_assembler` and `protocol_runtime` cite
 # as the contract they implement, so it carries composition surface and releases in lockstep.
+# ---------------------------------------------------------------------------
+# THE COMPOSITION — second phase, and a complete act on its own
+#
+#   Runs after --publish, once Zenodo has minted the nine component DOIs. It reads them from
+#   Zenodo rather than from a list kept here, so there is no second copy of a fact to go stale,
+#   and it refuses to compose while any part is unminted.
+#
+#   Exits when done. This is not a cut: no dev branch, no history tag, no VERSION bump. pgc_release
+#   holds an output and has no cycle to advance.
+# ---------------------------------------------------------------------------
+if [ "$COMPOSE" -eq 1 ]; then
+  COMP="$WORKSPACE/pgc_release"
+  [ -d "$COMP/.git" ] || { echo "no repo at $COMP" >&2; exit 2; }
+
+  # The trap that cost a release: enabling a repo on Zenodo takes TWO steps — select it into the
+  # enabled list, then flip the switch. A release published before the webhook exists is lost
+  # silently, because Zenodo never receives the event. The webhook is the only signal visible from
+  # outside, so it is checked before anything is pushed rather than discovered afterwards.
+  hooks="$(gh api "repos/protocol-governed-computing/pgc_release/hooks" --jq '[.[]|select(.events[]=="release")]|length' 2>/dev/null || echo 0)"
+  [ "${hooks:-0}" -ge 1 ] || {
+    echo "ABORT: pgc_release has no Zenodo release webhook — the release would mint nothing." >&2
+    echo "  Enable it at https://zenodo.org/account/settings/github/ (select the repo, THEN" >&2
+    echo "  flip the switch; syncing alone does nothing), and re-run." >&2
+    exit 1; }
+
+  git -C "$COMP" rev-parse --verify -q "refs/tags/$PUBLIC" >/dev/null 2>&1     && { echo "ABORT: pgc_release already has tag $PUBLIC" >&2; exit 1; }
+
+  python3 "$WORKSPACE/.github/process/compose_release.py" || exit 1
+
+  echo
+  git -C "$COMP" add -A
+  git -C "$COMP" status --short | head -20
+  echo
+  read -r -p "Publish this composition as $PUBLIC? [y/N] " reply
+  [ "$reply" = "y" ] || { echo "aborted; pgc_release left staged, nothing pushed"; exit 1; }
+
+  git -C "$COMP" commit -q -m "Protocol-Governed Computing — $PUBLIC
+
+The composed platform for public identity $PUBLIC: the sealed snapshot as assembled,
+with the manifest naming the components it was built from."
+  git -C "$COMP" tag -a "$PUBLIC" -m "Protocol-Governed Computing $PUBLIC"
+  git -C "$COMP" push -q origin main
+  git -C "$COMP" push -q origin "$PUBLIC"
+
+  # Publishing the RELEASE is what fires the webhook; pushing the tag alone does not.
+  gh release create "$PUBLIC" -R protocol-governed-computing/pgc_release \
+    --title "Protocol-Governed Computing — $PUBLIC" \
+    --notes "The composed platform, sealed. Component DOIs in MANIFEST.md."
+
+  echo
+  echo "Composition published as $PUBLIC. Zenodo mints within a minute or two; confirm with:"
+  echo "  curl -s 'https://zenodo.org/api/records?q=%22composed+platform%22&sort=newest&size=1' | python3 -m json.tool | grep -m1 doi"
+  echo "Then cite the VERSION DOI (not the concept DOI) in the paper."
+  exit 0
+fi
+
 REPOS="software_governance conformance_workloads business_domains protocol_compiler \
 protocol_runtime snapshot_assembler protocol_transport snapshot_inspector \
 transformation .github"
