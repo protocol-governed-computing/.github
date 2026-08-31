@@ -45,3 +45,26 @@ lineage — a point that is unanswerable in five years if it is not written down
 `VERSION`, currently `v0`, counting revisions of the specification. A specification revision and a
 platform publication are different subjects and their numbers are unrelated. A system claiming
 conformance names the specification revision it claims, never this identity.
+
+---
+
+## `v2` — the first citable publication
+
+**Supersedes `v1`.** Same ten repositories, same composition, same governance surface. What changed
+is not what the platform is but whether it can be named from outside.
+
+**Published at composition ordinal 13.** The ordinal advanced when cycle 12 was cut; `v1` was
+published at ordinal 12 and the cycle that carried it has since closed. The publication therefore
+carries cycle 12's work — the NOVA cycle 1 validation result, recorded in that cycle's release
+note — and nothing of cycle 13 beyond the ordinal itself.
+
+**Why it was issued.** `v1` was archivable and not citable. Every repository now declares its own
+deposit metadata in `.zenodo.json`, so an archive of this publication is attributed under a stated
+identity — title, author, ORCID, licence — rather than under whatever a hosting platform infers from
+a repository name. A publication that cannot be named by someone outside the project is not
+available to the instruments the project cannot run on itself.
+
+**What it does not assert.** The identity counts publications and nothing else. `v2` does not claim
+more conformance than `v1`, does not supersede any specification revision, and stands in no declared
+relation to the standard's `v0` — which counts revisions of a different subject and advances on its
+own occasions.
