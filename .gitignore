@@ -1,0 +1,44 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+
+# Python cruft (this repo carries NO python; guard against accidental copies)
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+.directory
+.Trash-*
+
+# Editors / IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+.\#*
+\#*\#
+
+# Backup / temp files
+*.bak
+*.tmp
+*.orig
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+# Session handoff - kept locally, never published
+doc/SOTU.md
