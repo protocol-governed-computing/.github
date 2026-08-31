@@ -11,6 +11,7 @@ that profile, and evolve that system through its own transformation semantics.
 | `NOVA.md` | the programme: five gates, the finding classes, the firewall, who must be independent of whom |
 | `instruments/` | the commissions and protocols each gate is run under |
 | `runs/` | what each run produced, and the commissioning side's reading of it |
+| `runs/run_conditions.md` | which model performed which role, and what the separation does and does not establish |
 
 ## Instruments
 
