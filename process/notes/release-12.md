@@ -144,6 +144,14 @@ The specification left draft this cycle and is declared at `v0`, carrying five f
 with it — the three above and two from the previous cycle. Two of them, if carried, would change what
 conformance costs. Systems claiming `v0` keep their claims; a successor may ask more.
 
+**The cycle's artifacts became citable.** The specification's `v0` is archived and carries a version
+DOI, `10.5281/zenodo.22150616`, distinct from the concept DOI that resolves to whatever the family
+becomes; a claim names the revision, so it names the version. Every repository now declares its own
+deposit metadata, so the release archives under a stated identity rather than under whatever the
+hosting platform infers. This is the smallest of the cycle's changes and the one the closing
+paragraph depends on: an instrument held by someone who was not part of building this has to be able
+to name what it examined.
+
 ## What this release is for
 
 Nothing here is a repair. The standard needed none, and the one red check in the workspace is red
