@@ -1,0 +1,386 @@
+{
+  "artifacts": [
+    {
+      "declaration": {
+        "start": "lend-copy-to-member",
+        "steps": [
+          {
+            "capability": "record_loan",
+            "id": "lend-copy-to-member",
+            "routes": {
+              "completed": "loan-recorded",
+              "failed": "loan-rejected"
+            }
+          }
+        ]
+      },
+      "governance": {
+        "authority": "constitution",
+        "scope": "NPP-E.system"
+      },
+      "id": "artifact:44d8d12c3738fee2923f2ef7ffcd378f67abe01a70220eddab963fbdab0d28c1",
+      "kind": "workflow",
+      "version": "1"
+    },
+    {
+      "declaration": {
+        "effect": "record_loan",
+        "inputs": [
+          "copy_id",
+          "member_id"
+        ],
+        "outcomes": [
+          "completed",
+          "failed"
+        ],
+        "outputs": [
+          "loan_record"
+        ]
+      },
+      "governance": {
+        "authority": "constitution",
+        "scope": "NPP-E.system"
+      },
+      "id": "artifact:56dc8fdcc6645b859851987456b621d1df54603700125f97fb05e6c77af6aef5",
+      "kind": "capability-contract",
+      "version": "1"
+    },
+    {
+      "declaration": {
+        "purpose": "demonstrate NPP-E vocabulary and inspection",
+        "vocabulary": "NPP-E.artifacts"
+      },
+      "governance": null,
+      "id": "artifact:93386f38c741419fb48f2109a330ae57b399e3f575397616be5159bf6fc4800f",
+      "kind": "constitution",
+      "version": "1"
+    },
+    {
+      "declaration": {
+        "answer": "current loan record for named copy",
+        "class": "read",
+        "refusal": "malformed or absent copy identity"
+      },
+      "governance": {
+        "authority": "constitution",
+        "scope": "NPP-E.system"
+      },
+      "id": "artifact:ac0eaeeea3591d1731281a4f46c413e4e1c8e50bcd58fc42be2e0b42129b4787",
+      "kind": "read-operation",
+      "version": "1"
+    },
+    {
+      "declaration": {
+        "answer": "named artifact",
+        "class": "read",
+        "refusal": "malformed or absent request"
+      },
+      "governance": {
+        "authority": "constitution",
+        "scope": "NPP-E.system"
+      },
+      "id": "artifact:caa3ca8237644e5f8e27613d6b2cbb6f24966d6254d0c76be6f434528f00f237",
+      "kind": "read-operation",
+      "version": "1"
+    }
+  ],
+  "constituents": [
+    {
+      "id": "artifact:44d8d12c3738fee2923f2ef7ffcd378f67abe01a70220eddab963fbdab0d28c1",
+      "integrity": "05fa2c8494801230c3356fce396233650d4c29b9db3e6b9148df345538e253db"
+    },
+    {
+      "id": "artifact:56dc8fdcc6645b859851987456b621d1df54603700125f97fb05e6c77af6aef5",
+      "integrity": "c4e824d6d2ac9266359cb7d438a3c1cbf2c1228e58215d84b7977602c6229d7b"
+    },
+    {
+      "id": "artifact:93386f38c741419fb48f2109a330ae57b399e3f575397616be5159bf6fc4800f",
+      "integrity": "75457a674a36593e2426288473c6fb3d7a8d6de512d98ea3de8b7f1a97cb6ba2"
+    },
+    {
+      "id": "artifact:ac0eaeeea3591d1731281a4f46c413e4e1c8e50bcd58fc42be2e0b42129b4787",
+      "integrity": "786c396d6c00beb6f2d5df25c69e07fa118aae63a2dbfa485f2ae3694d59f3b4"
+    },
+    {
+      "id": "artifact:caa3ca8237644e5f8e27613d6b2cbb6f24966d6254d0c76be6f434528f00f237",
+      "integrity": "0c7b607f29188412f4f42a9970cd75258db3d30137b65691259a4e1861014e8c"
+    }
+  ],
+  "evidence": [
+    {
+      "cause": "rule_evaluation",
+      "closure": {
+        "authority": "NPP-E",
+        "scope": "NPP-E.system",
+        "status": "established"
+      },
+      "consequence": "admit",
+      "determinative_fields": [
+        "subject",
+        "proposal",
+        "closure",
+        "rules",
+        "predicate_results",
+        "consequence",
+        "cause",
+        "nothing_proceeded"
+      ],
+      "evidence_id": "evidence:3a195a8c6bf8b638bfb9948e25bfaabd4beecd08837e36481625cb901d897bd4",
+      "nothing_proceeded": false,
+      "observational_fields": [],
+      "predicate_results": {
+        "envelope_closed": true,
+        "kind_registered": true,
+        "kind_surface_closed": true
+      },
+      "proposal": {
+        "declaration": {
+          "purpose": "demonstrate NPP-E vocabulary and inspection",
+          "vocabulary": "NPP-E.artifacts"
+        },
+        "governance": null,
+        "id": "artifact:93386f38c741419fb48f2109a330ae57b399e3f575397616be5159bf6fc4800f",
+        "kind": "constitution",
+        "version": "1"
+      },
+      "rules": [
+        "KV-2",
+        "KV-4",
+        "MB-5",
+        "MB-8",
+        "MB-11"
+      ],
+      "subject": "artifact:93386f38c741419fb48f2109a330ae57b399e3f575397616be5159bf6fc4800f"
+    },
+    {
+      "cause": "rule_evaluation",
+      "closure": {
+        "authority": "NPP-E",
+        "scope": "NPP-E.system",
+        "status": "established"
+      },
+      "consequence": "admit",
+      "determinative_fields": [
+        "subject",
+        "proposal",
+        "closure",
+        "rules",
+        "predicate_results",
+        "consequence",
+        "cause",
+        "nothing_proceeded"
+      ],
+      "evidence_id": "evidence:5068e5b46a5a9bc8c8aad740ea29a98967de5d65636e8eef306bc4db6ea0d7a0",
+      "nothing_proceeded": false,
+      "observational_fields": [],
+      "predicate_results": {
+        "envelope_closed": true,
+        "kind_registered": true,
+        "kind_surface_closed": true
+      },
+      "proposal": {
+        "declaration": {
+          "answer": "named artifact",
+          "class": "read",
+          "refusal": "malformed or absent request"
+        },
+        "governance": {
+          "authority": "constitution",
+          "scope": "NPP-E.system"
+        },
+        "id": "artifact:caa3ca8237644e5f8e27613d6b2cbb6f24966d6254d0c76be6f434528f00f237",
+        "kind": "read-operation",
+        "version": "1"
+      },
+      "rules": [
+        "KV-2",
+        "KV-4",
+        "MB-5",
+        "MB-8",
+        "MB-11"
+      ],
+      "subject": "artifact:caa3ca8237644e5f8e27613d6b2cbb6f24966d6254d0c76be6f434528f00f237"
+    },
+    {
+      "cause": "rule_evaluation",
+      "closure": {
+        "authority": "NPP-E",
+        "scope": "NPP-E.system",
+        "status": "established"
+      },
+      "consequence": "admit",
+      "determinative_fields": [
+        "subject",
+        "proposal",
+        "closure",
+        "rules",
+        "predicate_results",
+        "consequence",
+        "cause",
+        "nothing_proceeded"
+      ],
+      "evidence_id": "evidence:2efc15f1b8fff2b77b01fc604fcea6506f121c2e6b18a3f3ada3c3ba841cd7ad",
+      "nothing_proceeded": false,
+      "observational_fields": [],
+      "predicate_results": {
+        "envelope_closed": true,
+        "kind_registered": true,
+        "kind_surface_closed": true
+      },
+      "proposal": {
+        "declaration": {
+          "effect": "record_loan",
+          "inputs": [
+            "copy_id",
+            "member_id"
+          ],
+          "outcomes": [
+            "completed",
+            "failed"
+          ],
+          "outputs": [
+            "loan_record"
+          ]
+        },
+        "governance": {
+          "authority": "constitution",
+          "scope": "NPP-E.system"
+        },
+        "id": "artifact:56dc8fdcc6645b859851987456b621d1df54603700125f97fb05e6c77af6aef5",
+        "kind": "capability-contract",
+        "version": "1"
+      },
+      "rules": [
+        "KV-2",
+        "KV-4",
+        "MB-5",
+        "MB-8",
+        "MB-11"
+      ],
+      "subject": "artifact:56dc8fdcc6645b859851987456b621d1df54603700125f97fb05e6c77af6aef5"
+    },
+    {
+      "cause": "rule_evaluation",
+      "closure": {
+        "authority": "NPP-E",
+        "scope": "NPP-E.system",
+        "status": "established"
+      },
+      "consequence": "admit",
+      "determinative_fields": [
+        "subject",
+        "proposal",
+        "closure",
+        "rules",
+        "predicate_results",
+        "consequence",
+        "cause",
+        "nothing_proceeded"
+      ],
+      "evidence_id": "evidence:533097e3d9977d2af264da346cc044336961c5943db118bfc19d1b499a696c43",
+      "nothing_proceeded": false,
+      "observational_fields": [],
+      "predicate_results": {
+        "envelope_closed": true,
+        "kind_registered": true,
+        "kind_surface_closed": true
+      },
+      "proposal": {
+        "declaration": {
+          "start": "lend-copy-to-member",
+          "steps": [
+            {
+              "capability": "record_loan",
+              "id": "lend-copy-to-member",
+              "routes": {
+                "completed": "loan-recorded",
+                "failed": "loan-rejected"
+              }
+            }
+          ]
+        },
+        "governance": {
+          "authority": "constitution",
+          "scope": "NPP-E.system"
+        },
+        "id": "artifact:44d8d12c3738fee2923f2ef7ffcd378f67abe01a70220eddab963fbdab0d28c1",
+        "kind": "workflow",
+        "version": "1"
+      },
+      "rules": [
+        "KV-2",
+        "KV-4",
+        "MB-5",
+        "MB-8",
+        "MB-11"
+      ],
+      "subject": "artifact:44d8d12c3738fee2923f2ef7ffcd378f67abe01a70220eddab963fbdab0d28c1"
+    },
+    {
+      "cause": "rule_evaluation",
+      "closure": {
+        "authority": "NPP-E",
+        "scope": "NPP-E.system",
+        "status": "established"
+      },
+      "consequence": "admit",
+      "determinative_fields": [
+        "subject",
+        "proposal",
+        "closure",
+        "rules",
+        "predicate_results",
+        "consequence",
+        "cause",
+        "nothing_proceeded"
+      ],
+      "evidence_id": "evidence:f0ebf72d8682c63ae3a8ecb5fa4847f6829b781e31ec12d688ed615c9d644fee",
+      "nothing_proceeded": false,
+      "observational_fields": [],
+      "predicate_results": {
+        "envelope_closed": true,
+        "kind_registered": true,
+        "kind_surface_closed": true
+      },
+      "proposal": {
+        "declaration": {
+          "answer": "current loan record for named copy",
+          "class": "read",
+          "refusal": "malformed or absent copy identity"
+        },
+        "governance": {
+          "authority": "constitution",
+          "scope": "NPP-E.system"
+        },
+        "id": "artifact:ac0eaeeea3591d1731281a4f46c413e4e1c8e50bcd58fc42be2e0b42129b4787",
+        "kind": "read-operation",
+        "version": "1"
+      },
+      "rules": [
+        "KV-2",
+        "KV-4",
+        "MB-5",
+        "MB-8",
+        "MB-11"
+      ],
+      "subject": "artifact:ac0eaeeea3591d1731281a4f46c413e4e1c8e50bcd58fc42be2e0b42129b4787"
+    }
+  ],
+  "family_revision": "f476ea5c06506a3efba1d773a5d42818c9190601",
+  "id": "snapshot:48fd5a4dcf23cebfe5b993a1d576080857a8a7012c5bfcfb83b468b7f7908d5f",
+  "profile": "NPP-E",
+  "provenance": {
+    "derivation": "npp_e_standard_library_constructor",
+    "source": "declared_machine_blocks"
+  },
+  "whole_integrity": "48fd5a4dcf23cebfe5b993a1d576080857a8a7012c5bfcfb83b468b7f7908d5f",
+  "whole_integrity_covers": [
+    "profile",
+    "family_revision",
+    "artifacts",
+    "constituents",
+    "provenance",
+    "evidence",
+    "whole_integrity_covers"
+  ]
+}
