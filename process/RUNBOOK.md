@@ -7,6 +7,47 @@ The phase count grows; the runbook does not.
 
 ---
 
+## Run it all: `regression.sh`
+
+Everything below, scripted.
+
+```bash
+bash ~/protocol-governed-computing/.github/process/regression.sh --all
+```
+
+| Invocation | Runs |
+|---|---|
+| `regression.sh` | the execution block only — fastest, and assumes a built snapshot |
+| `regression.sh --build` | clean rebuild, then the execution block |
+| `regression.sh --all` | build, then every check, then execution |
+
+**Prefer it to pasting.** The commands below are long and single-line by necessity, and a terminal
+that wraps one splits an argument from its flag: `--payload` loses its value, the shell tries to
+execute a JSON path, and the result reads like a test failure rather than the shell error it is.
+That has cost two clean runs.
+
+**It is not a substitute for reading `## Expected`.** The script reports what each step printed; it
+does not judge. One check is red by design — `admission_contract_fidelity`, 31 findings, all
+deliberate — so a run that is *entirely* green means something stopped reporting.
+
+**Prerequisite for a rebuild.** `--build` and `--all` assume the workspace venv has every package
+editable-installed under its current distribution name. After a rename or a fresh clone:
+
+```bash
+cd ~/protocol-governed-computing
+find . -maxdepth 2 \( -name build -o -name '*.egg-info' \) -not -path './.venv/*' -exec rm -rf {} +
+for r in protocol_compiler snapshot_assembler protocol_runtime snapshot_inspector \
+         transformation software_governance conformance_workloads; do .venv/bin/pip install -e "$r"; done
+python .github/process/pgc_env_check.py
+```
+
+Stale `.egg-info` under a superseded name is the failure mode here: setuptools may read it in
+preference to the current metadata, and the run then exercises a package that no longer exists.
+
+The sections below are the same sequence by hand, and remain the reference for what each step is for.
+
+---
+
 ## Build
 
 **Neither tool defaults.** `compile.sh` requires the STRUCTURE and `assemble.sh` requires the
