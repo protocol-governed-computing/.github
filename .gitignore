@@ -40,5 +40,5 @@ Desktop.ini
 .env
 .env.*
 !.env.example
-# Session handoff - kept locally, never published
-doc/SOTU.md
+# Session handoff — tracked: one master SOTU for all PGC work, in this repo.
+# Note this repository is PUBLIC; the handoff is published with it.
