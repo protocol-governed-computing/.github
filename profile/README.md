@@ -12,6 +12,13 @@ any compiler or runtime, is the seat of authority. PGC is deliberately independe
 of any one compiler, runtime, or language, in the same way SQL is independent of
 any one database and JVM bytecode is independent of any one JVM.
 
+What that buys, in practice, is a lifecycle a machine can carry end to end: **a stated business
+problem becomes analysis, design, constructed artifacts, a sealed snapshot and a running system
+without a human writing the intervening code** — while scope, the governing profile and promotion
+stay outside the automated span. [From a stated problem to running
+software](#from-a-stated-problem-to-running-software) sets out how, and what is deliberately left
+out.
+
 ## The standard
 
 The normative specification lives in **[`standards`](https://github.com/protocol-governed-computing/standards)** — thirty-two documents in seven parts, at revision `draft-3`, frozen. It states what a
@@ -43,6 +50,54 @@ and says which phase refused it and under which rule — it does not produce a w
 instead. A refusal is an artifact of the process, not an absence of one, and because a
 baseline only becomes a snapshot at 𝒞, a change that is refused never reaches the running
 system. That is what makes governed evolution auditable rather than merely careful.
+
+## From a stated problem to running software
+
+The three functions above begin at `(Bₙ, P)` — a baseline and a proposal. The proposal does not
+arrive from nowhere. `𝒯` is itself a governed lifecycle of nine declared phases, and it starts at a
+business problem stated in plain language.
+
+```
+   P0  Change Seed              the stated problem, as given
+   P1  Change Request           what is being asked of the system
+   P2  Domain Model Verification   beliefs confronted with what the baseline actually contains
+   P3  Analysis Loop            what the change touches, and on what evidence
+   P4  Business Model           what exists, modelled
+        │
+   P5  Business Intent          what the business seeks          ─┐
+   P6  Governance Intent        what is permitted                 │  each cites P0 directly,
+   P7  Design Intent            how permitted behaviour is built  │  not the analysis
+   P8  Authoring Mandate        what may be constructed, in order ─┘
+        │
+        ▼  construction → admission → sealing → a runtime that traverses the result
+```
+
+Each phase declares the priors it consumes and the rules it is judged against, and a phase that
+cannot be satisfied refuses rather than producing a weaker artifact. The intent phases cite the
+original seed rather than the analysis performed on it, so what the business asked for cannot be
+quietly redefined by the work of finding out what exists.
+
+**Every step in that span is machine-performable.** From a problem statement to a sealed snapshot a
+runtime executes — analysis, domain modelling, intent, design, authoring mandate, construction,
+admission, sealing — and then, for the next change, transformation of that sealed state into its
+successor rather than a rebuild from nothing. This is not a design notation that stops at the
+diagram, nor a policy engine that starts at the deployment boundary. It is one toolchain across the
+whole lifecycle, and the reference implementation carries a governed change through it end to end.
+
+**Three things are deliberately outside that span**, and they are the reason the automation is worth
+having rather than worth fearing:
+
+| outside the span | why |
+|---|---|
+| **Scope** | what is governed is decided before the lifecycle opens |
+| **The normative profile** | a system may not author the rules it is then judged against |
+| **Promotion** | producing a candidate is not the same act as authorizing it to become the next baseline |
+
+An agent can perform the engineering work of the entire lifecycle without acquiring authority over
+what the resulting software is permitted to do, because that authority never sat in any of the steps
+it performed. **Autonomy over the work; no authority over the software.** That separation is the
+claim the architecture exists to make good on, and it is what the conformance suite and the external
+validation runs are for.
 
 ## Five authorities
 
