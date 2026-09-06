@@ -1,5 +1,96 @@
 # SOTU Handoff
 
+## PyPI family published, four external-boundary defects fixed, ASE paper reconciled and pinned to ordinal 15 — 2026-09-05
+
+Two threads ran together: publishing the `pgc-*` distributions, which exposed real defects at the
+boundary where PGC code loads external code; and a full reconciliation of the ASE paper against two
+independent reviews.
+
+### Changes Made
+
+**`protocol_runtime`** — `runtime/ct_executor.py`: guarded `importlib.import_module` and `getattr`
+on sealed handler_refs; added `CTArtifactNotFound` (`CT_ARTIFACT_NOT_FOUND`). Distinguishes an absent
+handler module from an absent *dependency* of one, via `ModuleNotFoundError.name`.
+`runtime/dispatcher.py`: same guards for the CS path plus the constructor and `execute()` call, with
+`CSExecutionError` (`CS_EXECUTION_FAILED`); added `_violation_payload`; `_execute_ct_step` no longer
+returns `VIOLATION, {}` — it had been discarding every CT refusal message. `pyproject.toml` → 2.0.1.
+
+**`snapshot_assembler`** — `pyproject.toml`: `dependencies = ["pyyaml"]` (was `[]` while
+`core.py:313` imports yaml on the `verify_snapshot` path); → 2.0.1.
+
+**`business_domains`** — `pyproject.toml`: `pycryptodome` moved to a `blockchain` extra; → 2.0.1.
+
+**`pgc_install`** — `pyproject.toml`: pins moved to 2.0.1 for assembler/runtime/domains; added a
+`blockchain` extra passing through to `pgc-domains[blockchain]`. **Uncommitted.**
+
+**`~/omnibachi-site/doc/`** (committed, branch `release/5`) — ASE paper reconciled against
+`review_luna_ase_draft.md` and `review_expert_ase_draft.md`; author block and 16-entry References
+added; re-pinned to composition ordinal 15 / `3e81773b…`; appendices made free-standing and
+renumbered. 14 figure SVG+PDF pairs updated.
+
+### Build & Test Status
+
+**PASSING.**
+
+- `pgc_env_check.py` — PASSED, no RI-0 dependency reachable
+- `implementation_closure.py` — PASSED, 28 transforms
+- G4 suite (`test_transform_npp_e` + `test_npp_e`) — **22 tests OK**
+- Runtime warm reboot — 7 domains resident and hash-verified, `3e81773b…`
+- `release.sh --check` — build gate **ok** (clean rebuild + assemble + composition conformance
+  PASSED, 5 rules over 410 artifacts). **Preflight FAILS on one item: release notes missing.**
+
+All ten workspace repos on `dev/15`, VERSION 15, clean. `pgc_install` on `main`, one modified file.
+
+### PyPI
+
+Eight component distributions published; three at 2.0.1 (`pgc-assembler`, `pgc-runtime`,
+`pgc-domains`), five at 2.0.0. `pgc` meta-package **not yet uploaded** — new-project rate limit, due
+when the 24h window opens. Loose `>=` pins between components mean no cascade was needed. Local
+`dist/` cleaned in the eight pushed repos; `pgc_install/dist` preserved for the pending upload.
+
+### Open Issues
+
+1. **`.github/process/notes/release-15.md` does not exist** — the only preflight blocker. Content,
+   author's to write.
+2. **`pgc` upload pending**, then `release.sh --publish`, then wait for Zenodo mints, then
+   `release.sh --publish-composition`.
+3. **`pgc_release/snapshot` holds `4a1e8896…` at assembler_version 13** — two cycles stale until the
+   composition phase runs.
+4. **`dispatcher.py` CS lane and `ct_executor.py` are fixed; no other dynamic-import site exists** in
+   the five packaged repos. The ~25 unguarded `json.load`/`yaml.safe_load` hits are in `scripts/`,
+   which ships in no wheel — verified against the built artifact.
+5. **ASE paper**: `zenodo.21879516` unverified before citation; the anchor's v1/v3 label; Zenodo
+   affiliation change to *Independent Researcher* across ~22 records.
+6. **Reference venue strings unverified** — authors/titles/venues recorded, but page numbers, DOIs and
+   proceedings strings need checking against published records at bibliography time.
+
+### Architectural Concerns
+
+**Promotion is not an enforced transition, and the paper now says so.** No `promote` callable exists
+anywhere in the toolchain. Admission is enforced by compilation; sealing is enforced against admission
+by `assembler/core.py::_domain_identity`. Promotion is the operator's act of running assembly. This
+propagated into §5.5, §8.2, §11, Table 4 (split into Admission / Promotion / Sealing rows) and Figs.
+3, 4, 8, 10, 12, where every promotion transition is now dashed and labelled *operator adoption*.
+
+**Four count errors were found by reading the implementation rather than the prose.** Table 3 had
+P2=10, P4=11, P5=10 registers; the templates carry 8, 7, 8. P7 names four inspection operations, not
+three. Separately, the demonstration total was 15→16 in the run's evaluation record but 21→22 in the
+retained files; the artifacts won and the discrepancy is documented rather than reconciled.
+
+**The G4 successor identity in `transformation_evidence.md` is stale.** It records `f4220813…`; the
+retained code reproduces `48fd5a4d…`. There is no two-snapshot chain — `LibraryRuntime` is constructed
+from `transform()`'s return value. The workflow gained routes during the execution work and the
+evidence note was never restated.
+
+### Next Session Should Start With
+
+**Write `.github/process/notes/release-15.md`.** It is the only thing standing between the current
+state and `release.sh --publish`, and the recommended order is: upload `pgc` → write and commit the
+notes → `--publish` → wait for mints → `--publish-composition`. Publishing before the `pgc` upload
+would put seven READMEs promising `pip install pgc` onto `main` while that command 404s.
+
+---
+
 ## ASE paper — figures and tables drawn, no prose. **14 figures and 5 tables built for *Protocol-Governed Human–AI Software Engineering: Autonomy Without Authority*, targeting Springer ASE. Reading `rules.py` changed the paper's central structure.** Next: six decisions listed below, then prose.
 
 Figure-first authoring, deliberately. Nothing is drafted; the spec says what each section must contain
