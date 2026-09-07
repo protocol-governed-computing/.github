@@ -55,17 +55,33 @@ def die(msg):
     sys.exit(1)
 
 
+# Zenodo caps an unauthenticated page at 25 records and rejects anything larger with a 400. This
+# asked for 100 in one request, which worked until the cap was introduced and then failed the whole
+# composition with "cannot reach Zenodo". Paging is the fix; the author's record count only grows.
+ZENODO_PAGE = 25
+ZENODO_MAX_PAGES = 40
+
+
 def zenodo_records(orcid):
-    """Every record for this author, newest first. One request, then matched locally."""
-    q = urllib.parse.urlencode(
-        {"q": f'creators.orcid:"{orcid}"', "sort": "newest", "size": "100"}
-    )
-    url = f"https://zenodo.org/api/records?{q}"
-    try:
-        with urllib.request.urlopen(url, timeout=30) as r:
-            return json.load(r).get("hits", {}).get("hits", [])
-    except Exception as e:
-        die(f"cannot reach Zenodo: {e}")
+    """Every record for this author, newest first. Paged, then matched locally."""
+    out, page = [], 1
+    while page <= ZENODO_MAX_PAGES:
+        q = urllib.parse.urlencode(
+            {"q": f'creators.orcid:"{orcid}"', "sort": "newest",
+             "size": str(ZENODO_PAGE), "page": str(page)}
+        )
+        try:
+            with urllib.request.urlopen(f"https://zenodo.org/api/records?{q}", timeout=30) as r:
+                body = json.load(r)
+        except Exception as e:
+            die(f"cannot reach Zenodo: {e}")
+        hits = body.get("hits", {}).get("hits", [])
+        out += hits
+        total = body.get("hits", {}).get("total", 0)
+        if len(hits) < ZENODO_PAGE or len(out) >= total:
+            return out
+        page += 1
+    die(f"Zenodo returned more than {ZENODO_PAGE * ZENODO_MAX_PAGES} records; raise the page cap")
 
 
 def component_dois(public, records):
@@ -99,17 +115,25 @@ def component_dois(public, records):
     return found
 
 
-def standard_doi(records):
-    hit = next(
-        (
-            h
-            for h in records
-            if h.get("conceptdoi") == STANDARD_CONCEPT
-        ),
-        None,
+def standard_doi():
+    """The standard's current version DOI, resolved from its concept DOI.
+
+    Queried directly rather than filtered out of the author's records. The standard is authored
+    against no implementation and sits outside this release cycle, so its creator metadata is not
+    the composition's business — and depending on it meant a missing ORCID on that deposit failed
+    the whole composition. A concept DOI names one deposit; ask Zenodo for it.
+    """
+    q = urllib.parse.urlencode(
+        {"q": f'conceptdoi:"{STANDARD_CONCEPT}"', "sort": "newest", "size": "1"}
     )
-    if hit is None:
+    try:
+        with urllib.request.urlopen(f"https://zenodo.org/api/records?{q}", timeout=30) as r:
+            hits = json.load(r).get("hits", {}).get("hits", [])
+    except Exception as e:
+        die(f"cannot reach Zenodo: {e}")
+    if not hits:
         die(f"no Zenodo record found under the standard's concept DOI {STANDARD_CONCEPT}")
+    hit = hits[0]
     return hit["doi"], hit.get("metadata", {}).get("version", "?")
 
 
@@ -139,7 +163,7 @@ def main():
 
     records = zenodo_records(ORCID)
     dois = component_dois(public, records)
-    std_doi, std_ver = standard_doi(records)
+    std_doi, std_ver = standard_doi()
 
     # --- snapshot: replace wholesale, so a retired artifact cannot survive into a release -----
     staged = target / "snapshot"
