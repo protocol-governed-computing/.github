@@ -1,5 +1,64 @@
 # SOTU Handoff
 
+## v3 published end to end — the reference implementation is frozen here — 2026-09-06
+
+**This is the last SOTU entry for the PGC implementation.** The platform is published as `v3` and the
+work that follows is documentation, papers and standards. Those live in their own repositories and
+carry their own handoffs; this file stops here rather than going stale inside a frozen repo.
+
+### What was published
+
+**Nine distributions on PyPI at 3.0.0** — eight components plus `protocol-governed-computing`, which
+pins them into one composition. `pip install protocol-governed-computing` obtains the toolchain in one
+command; the governance surface is still a separate step by design.
+
+**Ten repositories published as `v3`**, each carrying one orphan commit on `main` at composition
+ordinal 15, snapshot `3e81773b…`. Nine Zenodo component DOIs minted. The composition deposit is
+`10.5281/zenodo.22578424`, naming those nine as `hasPart` and referencing the standard at
+`10.5281/zenodo.22150616`.
+
+### Three things a later reader will need
+
+**The deposit's ordinal runs one ahead of its components.** `pgc_release` v3 seals ordinal 16;
+the component `v3` tags declare 15. All seven graph addresses are byte-identical across the two, over
+the same 595 constituents and 410 artifacts — only the embedded ordinal differs, and the ordinal is a
+constituent. Cause: `release.sh --publish` increments `VERSION` as its last act, and the workspace was
+rebuilt after that and before composing. `pgc_release/MANIFEST.md` records it in full. Avoid it next
+time by composing before rebuilding, or from a tree checked out at the tag.
+
+**`v2` could not be reused, and that is recorded in `publications.md`.** The distributions published
+under 2.0.x were built from cycle 15 and carry the runtime refusal guards; the commit tagged `v2` is
+cycle 13's and does not. The documented mapping had already broken before this cycle declared
+anything.
+
+**Two release-tooling fixes were needed and both are on `dev/16` only.** Zenodo now caps an
+unauthenticated page at 25 records, so the single 100-record request in `compose_release.py` failed
+the whole composition; it pages now. And the standard was located by filtering author-scoped records,
+which failed because that deposit carries no ORCID — it is resolved by concept DOI directly. Neither
+fix is in the published `v3` tree, which was sealed before they were written.
+
+### Build & Test Status
+
+**PASSING** at the point of freeze. `pgc_env_check` clean · `implementation_closure` 28 transforms ·
+G4 suite 22 tests · warm reboot 7 domains hash-verified · composition conformance PASSED, 5 rules over
+410 artifacts · `pip install protocol-governed-computing==3.0.0` resolves all nine and runs.
+
+### Where work continues
+
+`~/omnibachi-site` — the paper series, including the ASE submission in `doc/`. Its own handoff.
+
+`standards` — the normative specification, outside this release cycle and on its own revision track.
+Its own handoff. Moving it beside `omnibachi-site` is under consideration; nothing in the tooling
+references it by path, only by concept DOI.
+
+### State at freeze
+
+Ten repositories on `dev/16` at `VERSION 16` — a cycle cut and deliberately not published, the same
+pattern as cycles 12 and 14. `PUBLIC_VERSION` is `v3`. `pgc_install` and `pgc_release` are `main`-only.
+The public surface is one commit and one tag per repository.
+
+---
+
 ## v3 declared, family renamed and rebuilt at 3.0.0, ASE paper style pass — 2026-09-06
 
 Everything below is committed-ready and **nothing has been published yet**. The nine distributions
