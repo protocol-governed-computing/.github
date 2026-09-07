@@ -1,5 +1,73 @@
 # SOTU Handoff
 
+## v3 declared, family renamed and rebuilt at 3.0.0, ASE paper style pass — 2026-09-06
+
+Everything below is committed-ready and **nothing has been published yet**. The nine distributions
+are built at 3.0.0 and await upload; `release.sh --publish` awaits the commits.
+
+### Changes Made
+
+**Nine `pyproject.toml` → 3.0.0.** The family had drifted to a 2.0.0/2.0.1 split, which contradicted
+the lockstep claim its own READMEs make. One version across all nine restores it.
+
+**`pgc_install` publishes as `protocol-governed-computing`.** PyPI rejects the short name outright —
+*"The name 'pgc' isn't allowed"* — so the composition takes the full project name. The import package
+and the `pgc` command are unchanged, and this removes the need for the separate alias package that
+was previously planned: one name, held by the meta-package itself.
+
+**`.github/PUBLIC_VERSION` → v3.** See below for why v2 could not be reused.
+
+**Collateral swept.** Ten files named the old distribution or the old public identity: seven component
+READMEs (`pip install pgc`), `pgc_install/README.md`, the workspace `CLAUDE.md`, and
+`process/notes/release-15.md`, which shipped a claim that the meta-package was held by a rate limit.
+Eight READMEs also declared *"`v2` is `2.0.0`"* and *"the platform is at `v2`"*. All corrected.
+`pgc_release/.zenodo.json` carried `"version": "v2"` — Zenodo reads that when the tag push fires the
+mint, so a `v3` deposit would have carried `v2` metadata.
+
+**ASE paper** (`~/omnibachi-site`, separate repo): reconciled against a 15-patch compression review,
+converted to Springer decimal headings, name-year citations and a 17-entry alphabetized reference
+list, exhibits renumbered to consecutive citation order, mutation-testing lineage cited, AI-tools
+disclosure added to §3.3, and a two-pass direct-style edit taking passive voice from 26% to 22%.
+
+### Build & Test Status
+
+**PASSING.** `pgc_env_check` clean · `implementation_closure` 28 transforms · G4 suite 22 tests OK ·
+runtime warm reboot 7 domains hash-verified at `3e81773b…` · `twine check` 18/18 artifacts.
+
+`release.sh --check` fails only on uncommitted changes in nine repos — the expected state before
+committing.
+
+### Open Issues
+
+1. **Eleven repos uncommitted**, then upload nine to PyPI, then `--publish`. Order matters: publishing
+   first would push READMEs advertising 3.0.0 while PyPI still serves 2.0.x.
+2. **PyPI 2.0.x remains published** and now names no public identity. Harmless, and cheaper than the
+   alternative of reusing v2.
+3. **Appendix B.1 of the paper cites dev SHAs that are not publicly reachable.** `release.sh`
+   publishes an orphan commit and keeps `history-N` local, so `7848e70` and its nine siblings resolve
+   nowhere. After `--publish`, B.1 must be re-pinned to the `v3` tag and the orphan SHAs.
+4. Preprint DOI before Springer submission; then the submission itself.
+
+### Architectural Concerns
+
+**v2 could not be reused, and the reason is the project's own doctrine.** The publish guard blocks it
+mechanically — the tag exists locally and on origin for every repo. But the substantive reason is
+stronger: git `v2` is release 13's orphan and contains no `CSExecutionError`, while PyPI 2.0.1 ships
+it. The documented mapping *"`v2` is `2.0.0`"* was **already false** before this cycle. Republishing
+different content under `v2` would make a minted DOI resolve to something other than what it named —
+the exact integrity failure content-derived identity exists to prevent.
+
+**The reproducibility surface has a gap the paper inherits.** Development SHAs are not publishable by
+design, so any document that pins a repository by dev revision cites something no reader can fetch.
+The public tag and the orphan commit are the citable pair.
+
+### Next Session Should Start With
+
+**Commit the eleven repos, then `twine upload */dist/*`, then `release.sh --publish`.** After the
+mints, `--publish-composition`, then re-pin Appendix B.1 to the published `v3` tag and orphan SHAs.
+
+---
+
 ## PyPI family published, four external-boundary defects fixed, ASE paper reconciled and pinned to ordinal 15 — 2026-09-05
 
 Two threads ran together: publishing the `pgc-*` distributions, which exposed real defects at the

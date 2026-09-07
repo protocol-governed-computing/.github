@@ -16,9 +16,9 @@ platform executes code it does not own.
 
 **Eight distributions published.** `pgc-governance`, `pgc-compiler`, `pgc-assembler`, `pgc-runtime`,
 `pgc-inspector`, `pgc-transformation`, `pgc-workloads`, `pgc-domains`, each with a wheel and an
-sdist under the public identity `v2`. Three carry a patch bump to 2.0.1 for the repairs below. The
-`pgc` meta-package, which pins the family to one composition, is held by PyPI's new-project rate
-limit and follows.
+sdist under the public identity `v2`. Three carry a patch bump to 2.0.1 for the repairs below. A ninth,
+`protocol-governed-computing`, pins all eight to one composition: PyPI prohibits the short name
+`pgc`, so the composition carries the full project name and installs the command `pgc`.
 
 **The assembler declared no dependencies and imported one.** `assembler/core.py` parses the claimed
 profile's YAML block, on the path `verify_snapshot → verify_profile → _profile_declaration`. The
@@ -42,7 +42,7 @@ branches now render a structured refusal into the step result through one payloa
 the channel the reach refusal has always used.
 
 **Domain cryptography became an extra.** `pgc-domains` required `pycryptodome` unconditionally, so
-`pip install pgc` pulled cryptography for everyone. Exactly one capability transform needs it, and
+installing the composition pulled cryptography for everyone. Exactly one capability transform needs it, and
 the workspace has said since RI-0 that domain crypto is optional and never on the core compile path.
 The declaration now matches the policy: `pip install "pgc-domains[blockchain]"`.
 
