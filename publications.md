@@ -68,3 +68,42 @@ available to the instruments the project cannot run on itself.
 more conformance than `v1`, does not supersede any specification revision, and stands in no declared
 relation to the standard's `v0` — which counts revisions of a different subject and advances on its
 own occasions.
+
+---
+
+## `v3` — the first obtainable publication
+
+**Supersedes `v2`.** Same ten repositories and the same governance surface. What changed is not what
+the platform determines but whether someone outside the project can obtain it and run it, and
+whether its boundary failures are governed outcomes rather than exceptions.
+
+**Published at composition ordinal 15.** `v2` was published at ordinal 13. Cycle 14 was cut and not
+published — it prepared the repositories as distributions and recorded why an editable install could
+not establish that a wheel works. This publication therefore carries the work of cycles 14 and 15
+together, recorded in those cycles' release notes.
+
+**Why it was issued.** Two reasons, and the second is why `v2` could not simply be re-cut.
+
+Nine distributions are published on PyPI at `3.0.0`: eight component packages and
+`protocol-governed-computing`, which pins them to one composition, so the toolchain is obtained in
+one command. PyPI prohibits the short name `pgc`, so the composition carries the full project name;
+the import package and the `pgc` command are unchanged.
+
+And the runtime changed. Loading a sealed handler reference ran code the platform does not own, at
+two sites that were unguarded: a missing module or a missing optional dependency escaped as a Python
+exception rather than a declared refusal, and a refusal that did reach the caller carried no account
+of itself. Both now refuse using codes the trace schema already admits. That is a change to governed
+execution, not to packaging.
+
+**Why `v2` was not reused.** The distributions published under `2.0.x` were built from cycle 15 and
+carry the refusal guards; the commit tagged `v2` is cycle 13's and does not. The documented relation
+between the public identity and the published version had therefore already broken before this cycle
+declared anything. Re-publishing different content under `v2` would have left a minted identity
+naming material other than what it was minted for, which is the failure that content-derived identity
+exists to prevent. A new identity was the only honest option.
+
+**What it does not assert.** The identity counts publications and nothing else. `v3` does not claim
+more conformance than `v2`, supersedes no specification revision, and stands in no declared relation
+to the standard's own revision identity. The published version `3.0.0` names this publication and is
+not a semantic-versioning claim about compatibility.
+
