@@ -72,8 +72,12 @@ if [[ "$MODE" == "--all" ]]; then
   python "$W/.github/process/implementation_closure.py"
   PYTHONPATH="$W/snapshot_inspector" python "$W/snapshot_inspector/scripts/testbed/test_inspector.py"
 
-  # Suites that existed but were never run here. Two of them are currently red, and were red
-  # unnoticed for exactly that reason — see RUNBOOK "## Expected".
+  # The domain-authoring path pgc_install/README.md documents, executed. Prose about a build path
+  # rots the moment the build changes, and nothing notices.
+  echo "--- domain_authoring.py"; python "$W/.github/process/domain_authoring.py"
+
+  # Suites that existed but were never run here. Two of them were red, and were red unnoticed for
+  # exactly that reason — see RUNBOOK "## Expected".
   for t in "$W/snapshot_assembler/scripts/testbed/test_indexes.py" \
            "$W/protocol_compiler/scripts/testbed/test_compiler_atoms.py" \
            "$W/protocol_compiler/scripts/test_governance_provenance.py" \

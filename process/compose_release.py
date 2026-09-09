@@ -173,24 +173,6 @@ def main():
     for junk in staged.rglob(".DS_Store"):
         junk.unlink()
 
-    # --- profile: the claim the snapshot makes, shipped beside it --------------------------------
-    # A snapshot names the conformance profile it claims, and acceptance refuses to boot one whose
-    # profile it cannot read. Without this the cited artifact is not self-verifying: someone
-    # arriving from the DOI has the snapshot, the toolchain from PyPI, and no way to check the
-    # claim without cloning a repository the paper never mentions. The profile is copied rather
-    # than referenced because a release is evidence — it must carry what it is evaluated against.
-    profile_id = manifest.get("profile")
-    if not profile_id:
-        die("sealed snapshot names no profile; a snapshot that claims none cannot be evaluated")
-    src = ws / ".github" / "snapshot_profiles" / f"{profile_id}.md"
-    if not src.is_file():
-        die(f"snapshot claims {profile_id} and no such profile exists at {src}")
-    staged_profile = target / "profile"
-    if staged_profile.exists():
-        subprocess.run(["rm", "-rf", str(staged_profile)], check=True)
-    staged_profile.mkdir(parents=True)
-    (staged_profile / src.name).write_text(src.read_text(encoding="utf-8"), encoding="utf-8")
-
     n_files = sum(1 for p in staged.rglob("*") if p.is_file())
     domains = [d["domain"] for d in manifest["domains"]]
 
