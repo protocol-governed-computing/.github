@@ -442,6 +442,33 @@ hand-edited literals, which is how `3.0.0` came to name two byte sets. The comme
 preflight now **asserts** each pyproject's major against `PUBLIC_VERSION`, so a repo left on the
 previous identity's number fails the cut instead of reaching PyPI.
 
+### `doc/` carries only what is still open
+
+`doc/` holds ephemera awaiting disposition — nothing in it is read by code or cited by a paper, and
+that was verified rather than assumed for all three files it held.
+
+`parked_rulings.md` had drifted: 545 lines, eighteen entries, of which **thirteen were settled** —
+DELIVERED, RATIFIED, SETTLED, RULED, narrowed and upheld. A parking lot and a rulings archive sharing
+one filename. The settled thirteen are removed and the file is 176 lines over five open items.
+
+**Each deletion was verified absorbed before it was made**, because a settled ruling can carry a
+standing constraint and deleting an unapplied one would destroy the only record that the spec is
+wrong. Four needed checking against the standard and all four had shipped: `SU-5`'s narrowing is at
+`4e:205` in the exact words the ruling prescribed; `IN-14` sits at `5b:337` as the ruling described;
+twenty-six normative documents carry the conformance section the ruling required; and `2d` §1 states
+the kind-enumeration ruling verbatim.
+
+`e0_ruling_3_brief.md` is deleted. It was evidence for a ruling that has since been made and recorded,
+so it was residue rather than a pending item.
+
+**One live item was rescued from a deleted ruling.** The kind-enumeration ruling carried a
+forward-pointer: the canonical-kind list stays working material *until a normative platform profile
+exists*. `GOVERNANCE_SURFACE_PROFILE_V0` now exists and declares `required_governance.artifact_kinds`,
+so the trigger has fired. It is re-parked in its own right rather than lost inside a deletion.
+
+Deleting also orphaned the `# Rulings from the realization-map pass` header, which introduced three
+rulings that no longer exist; it is removed.
+
 ### Start here next session
 
 **The mock upload to TestPyPI — prerequisite 6.** It is the only remaining thing testable before a

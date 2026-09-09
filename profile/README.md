@@ -12,6 +12,15 @@ any compiler or runtime, is the seat of authority. PGC is deliberately independe
 of any one compiler, runtime, or language, in the same way SQL is independent of
 any one database and JVM bytecode is independent of any one JVM.
 
+**If you read no further:**
+
+1. **Behaviour is declared and governed before it runs.** A change is admitted or refused as a
+   governed act; nothing reaches execution by being written.
+2. **The implementation realizes that behaviour; it does not define its authority.** The standard
+   specifies, a realization demonstrates, and where they disagree the standard governs.
+3. **One governance model spans the whole life of a system** — construction, execution, and
+   evolution into the next version — rather than stopping at deployment.
+
 What that buys, in practice, is a lifecycle a machine can carry end to end: **a stated business
 problem becomes analysis, design, constructed artifacts, a sealed snapshot and a running system
 without a human writing the intervening code** — while scope, the governing profile and promotion
@@ -35,7 +44,9 @@ implementation disagree, the document governs — including every implementation
 
 ## The model, in three functions
 
-A governed system's life is three governed compilations over one architecture:
+A governed system's life is three governed compilations over one architecture. In plain terms: a
+proposed change becomes a new baseline, the baseline is sealed into a snapshot, and the snapshot is
+executed.
 
 ```
    (Bₙ, P) ──𝒯──▶ Bₙ₊₁ ──𝒞──▶ Sₙ₊₁ ──Φ──▶ (R, T)
@@ -72,17 +83,15 @@ business problem stated in plain language.
         ▼  construction → admission → sealing → a runtime that traverses the result
 ```
 
-Each phase declares the priors it consumes and the rules it is judged against, and a phase that
-cannot be satisfied refuses rather than producing a weaker artifact. The intent phases cite the
-original seed rather than the analysis performed on it, so what the business asked for cannot be
-quietly redefined by the work of finding out what exists.
+A phase that cannot be satisfied refuses rather than producing a weaker artifact. The intent phases
+cite the original seed rather than the analysis performed on it, so what the business asked for
+cannot be quietly redefined by the work of finding out what exists.
 
-**Every step in that span is machine-performable.** From a problem statement to a sealed snapshot a
-runtime executes — analysis, domain modelling, intent, design, authoring mandate, construction,
-admission, sealing — and then, for the next change, transformation of that sealed state into its
-successor rather than a rebuild from nothing. This is not a design notation that stops at the
-diagram, nor a policy engine that starts at the deployment boundary. It is one toolchain across the
-whole lifecycle, and the reference implementation carries a governed change through it end to end.
+**Every step in that span is machine-performable** — problem statement through construction, sealing,
+and then transformation of that sealed state into its successor rather than a rebuild from nothing.
+This is not a design notation that stops at the diagram, nor a policy engine that starts at the
+deployment boundary: it is one toolchain across the whole lifecycle, and the reference implementation
+carries a governed change through it end to end.
 
 **Three things are deliberately outside that span**, and they are the reason the automation is worth
 having rather than worth fearing:
@@ -119,12 +128,12 @@ are not its ground truth, and neither is anything in this organization's code.
 
 ---
 
-# Documentation
+## Documentation
 
 *Papers predating the PGC name describe the same substrate as **Protocol-Governed
 Systems (PGS)**. The name changed; the architecture did not.*
 
-## Current — Protocol-Governed Computing
+### Current — Protocol-Governed Computing
 
 The three papers that state the architecture and its realization. Read in any order;
 each stands alone.
@@ -136,42 +145,36 @@ each stands alone.
 | **3** | [Realizing the Normative Platform and Its Governed Transformation](https://omnibachi.org/papers/realizing-the-normative-platform/) | **What it takes to make both real.** The Profiled Normative Platform, the formal treatment of transformation, and what realization surfaces that architecture cannot. |
 | **·** | [Field Manual](https://omnibachi.org/papers/field-manual/) | **How the reference implementation is operated.** Doctrine, the artifact ontology, the build lifecycle, and the invariants — the working companion to the three papers above. |
 
-## Foundations — published, still current
+### Foundations — published, still current
 
 Earlier work under the PGS name that the papers above assume rather than restate.
-Listed in reading order.
+
+**[Architecture Inversion Concepts](https://omnibachi.org/papers/architecture-inversion-concepts-v1/)
+— start here if you are new.** Fifteen inversions in four propagating groups, and why each follows
+from the one above it. The shortest route to why this differs from what you already know.
 
 | paper | what it covers |
 |---|---|
-| [Architecture Inversion Concepts](https://omnibachi.org/papers/architecture-inversion-concepts-v1/) | **Start here if you are new.** Fifteen inversions in four propagating groups — governance, orchestration, engineering, scale — and why each follows from the one above it. The shortest route to why this differs from what you already know. |
-| [A Conceptual Model](https://omnibachi.org/papers/conceptual-model/) | The protocol snapshot, the unit of admissibility, the constitutional invariants, the implementation boundary, and the evidence model. The foundation the later papers cite. |
-| [A Constitutionally Constrained Architecture](https://omnibachi.org/papers/pgs-constitutionally-constrained-architecture/) | The formal treatment: the dual-space model, the protocol-governed abstract machine, the threat model and the classes of vulnerability it makes unrepresentable, and the derivation of O(N + M) governance complexity. The only place the Governance Dividend is derived rather than asserted. |
-| [Compiler Conceptual Model](https://omnibachi.org/papers/compiler-conceptual-model/) | What the compiler produces, why the runtime is simple, the admissibility boundary contract, and protocol inspection. The dedicated treatment of 𝒞. |
-| [Runtime Conceptual Model](https://omnibachi.org/papers/runtime-conceptual-model/) | What the runtime does with a sealed snapshot, and the multi-runtime certification method Paper 1 cites as the route to demonstrated runtime independence. The dedicated treatment of Φ. |
+| [A Conceptual Model](https://omnibachi.org/papers/conceptual-model/) | The protocol snapshot, the unit of admissibility, the constitutional invariants, the implementation boundary, and the evidence model |
+| [A Constitutionally Constrained Architecture](https://omnibachi.org/papers/pgs-constitutionally-constrained-architecture/) | The formal treatment: the dual-space model, the abstract machine, the threat model, and the derivation of O(N + M) governance complexity — the only place the Governance Dividend is derived rather than asserted |
+| [Compiler Conceptual Model](https://omnibachi.org/papers/compiler-conceptual-model/) | What the compiler produces and why the runtime is simple. The dedicated treatment of 𝒞 |
+| [Runtime Conceptual Model](https://omnibachi.org/papers/runtime-conceptual-model/) | What the runtime does with a sealed snapshot, and the multi-runtime certification method. The dedicated treatment of Φ |
 
-## Historic
+### Historic
 
-Every paper a later paper has replaced. DOI-published and permanently citable, kept for
-lineage rather than for reference: <https://omnibachi.org/papers/working_papers/>.
-
-- **Closed-Loop Governed Evolution** — superseded by Paper 2. Note that it describes the
-  transformation pipeline in *stage* vocabulary, which the implementation has since
-  renamed to *phases* (P0–P8) to avoid collision with the compiler's own stages.
-- **Architecture Inversion Concepts v0** — superseded by the v1 listed above.
-- The earlier **PGS working paper series** — governance and authoring, protocol as law,
-  deterministic enforcement, pure computation and governed mutation, the inversion of
-  trust, and the three dividends.
+Every paper a later paper has replaced, DOI-published and permanently citable, kept for lineage
+rather than for reference: <https://omnibachi.org/papers/working_papers/>. One naming note if you
+read them: the transformation pipeline appears there in *stage* vocabulary, which the implementation
+has since renamed to *phases* (P0–P8) to avoid collision with the compiler's own stages.
 
 ---
 
-# Repositories
+## Repositories
 
 **These are the reference implementation.** The standard itself is not among them — it is
 [`standards`](https://github.com/protocol-governed-computing/standards), and it is authored against
-no implementation. The composition below is built from repositories that each own one concern. **A platform is a
-composition under a conformance profile, never a repository** — the repository boundary
-and the platform boundary are orthogonal, and conflating them is a category error the
-architecture is explicit about.
+no implementation. The composition below is built from repositories that each own one concern. **A PGC platform is
+assembled from these components under a conformance profile; no single repository is the platform.**
 
 | repository | role |
 |---|---|
@@ -199,7 +202,7 @@ producing it.
 The snapshot is sealed at build time and the runtime consumes it unchanged. **No behavior
 enters at execution time that was not present in the snapshot.**
 
-## PGC and PGS
+### PGC and PGS
 
 - **PGC** — this ecosystem: the architecture papers, the standards, the conformance
   suite, and the governance process.
@@ -207,10 +210,8 @@ enters at execution time that was not present in the snapshot.**
   first developed and validated, now **frozen**. It is retained for lineage and is not
   where work continues.
 
-The repositories in this organization are **the reference implementation of PGC**. They
-demonstrate one conforming realization; they do not define the standard — that distinction
-is the whole point of the table above, and it is why the implementation is a role rather
-than a name.
+These repositories are **one reference realization of PGC**. The standards define PGC; the
+implementation demonstrates it.
 
 ---
 
