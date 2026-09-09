@@ -216,6 +216,23 @@ else
 fi
 echo
 
+# The interpreter, before anything that depends on it. The build gate shells out to `compile.sh`,
+# which runs bare `python`; without the workspace venv on PATH that surfaces as
+# `exec: python: not found` from inside a build log — a preflight whose job is catching problems
+# early reporting the least legible one it can. Asserting the venv is the workspace's own, not
+# merely that some venv is active: RI-0 has a venv too, and building PGC with it is the failure
+# `pgc_env_check` exists to prevent.
+echo "Interpreter:"
+PY_BIN="$(command -v python || true)"
+if [ -z "$PY_BIN" ]; then
+  fail "no \`python\` on PATH — activate the workspace venv:  source $WORKSPACE/.venv/bin/activate"
+elif [ "$PY_BIN" != "$WORKSPACE/.venv/bin/python" ]; then
+  fail "\`python\` is $PY_BIN, expected $WORKSPACE/.venv/bin/python — wrong venv is active"
+else
+  ok "$PY_BIN"
+fi
+echo
+
 echo "Release notes:"
 if [ -z "$(printf '%s' "$MSG" | tr -d '[:space:]')" ]; then
   fail "no release notes — write $NOTES"
@@ -242,8 +259,13 @@ for r in $REPOS; do
   # distribution publishes `<N>.<minor>.<patch>`, so the major must equal N. Nothing derives this,
   # so nothing else would notice a repo left on the previous identity's number — and a wheel
   # uploaded under a version that already exists on PyPI cannot be replaced.
-  if [ -f "$r/pyproject.toml" ]; then
-    pv="$(sed -n 's/^version *= *"\([^"]*\)".*/\1/p' "$r/pyproject.toml" | head -1)"
+  #
+  # Only a STATIC literal is checked. `protocol_transport` declares `dynamic = ["version"]` reading
+  # `VERSION`, so its version is the composition ordinal rather than a public identity — it is the
+  # one repo that does what this file's comment used to claim they all do, and it publishes nothing
+  # to PyPI. A repo with no literal has no published version for this rule to be about.
+  pv="$(sed -n 's/^version *= *"\([^"]*\)".*/\1/p' "$r/pyproject.toml" 2>/dev/null | head -1)"
+  if [ -n "$pv" ]; then
     case "$pv" in
       "${PUBLIC#v}".*) : ;;
       *) fail "$r/pyproject.toml declares version '$pv'; $PUBLIC requires major '${PUBLIC#v}'" ;;
