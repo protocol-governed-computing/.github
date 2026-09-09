@@ -24,10 +24,16 @@
 #
 # PGC versions the COMPOSITION, not each repo independently: all repos release together and the
 # governance closure forces lockstep, so one monotonic integer names which composition a repo
-# belongs to. The single declaration is each repo's `VERSION` file — pyproject and the Python
-# version constants derive from it. Never hand-edit a version anywhere else: step 4 writes it,
-# because ten repos declaring one composition is one act, and ten hand-edits is ten chances to
+# belongs to. `VERSION` is the single declaration of the ORDINAL, and step 4 writes it across every
+# repo, because ten repos declaring one composition is one act and ten hand-edits is ten chances to
 # leave a repo declaring the release it was just cut out of.
+#
+# The PUBLISHED version is a different number and is NOT derived from anything. Each pyproject
+# carries a hand-edited literal, and nothing computed it from `VERSION` or from `PUBLIC_VERSION`.
+# This comment previously claimed pyproject derived from `VERSION`; it never did, and the gap is how
+# `3.0.0` came to name two different byte sets — the wheels on PyPI, and anything built from a later
+# cycle that had not been bumped. The preflight below now asserts the mapping instead of asserting
+# it in prose.
 #
 # THE COMPOSITION IS A SECOND PHASE. `pgc_release` publishes the sealed snapshot and names the
 # nine component version DOIs as `hasPart`. Those DOIs do not exist until Zenodo has minted
@@ -231,6 +237,18 @@ for r in $REPOS; do
 
   [ -f "$r/VERSION" ] && [ "$(cat "$r/VERSION")" = "$RELEASE" ] \
     || fail "$r/VERSION is '$(cat "$r/VERSION" 2>/dev/null)', expected '$RELEASE'"
+
+  # The published version, checked rather than trusted. `PUBLIC_VERSION` is `v<N>` and each
+  # distribution publishes `<N>.<minor>.<patch>`, so the major must equal N. Nothing derives this,
+  # so nothing else would notice a repo left on the previous identity's number — and a wheel
+  # uploaded under a version that already exists on PyPI cannot be replaced.
+  if [ -f "$r/pyproject.toml" ]; then
+    pv="$(sed -n 's/^version *= *"\([^"]*\)".*/\1/p' "$r/pyproject.toml" | head -1)"
+    case "$pv" in
+      "${PUBLIC#v}".*) : ;;
+      *) fail "$r/pyproject.toml declares version '$pv'; $PUBLIC requires major '${PUBLIC#v}'" ;;
+    esac
+  fi
 
   # NO origin/dev check. Development is local: the remotes carry a published commit and its tag,
   # nothing else. `history-$RELEASE` is what preserves the cycle, and it is a local tag.

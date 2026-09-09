@@ -131,44 +131,35 @@ from `dev/16`.
 **Environment.** A `.DS_Store` written into a sealed snapshot makes it unbootable — correctly refused
 at acceptance under 3b §6, but it means opening a snapshot in Finder breaks it until the file is removed.
 
-### Committed on `dev/16` — seven repositories, working trees clean
+### Committed on `dev/16` — ten repositories, working trees clean
 
-| repo | commit | what |
-|---|---|---|
-| `software_governance` | `fa1e4b2` | `pyproject.toml` — `packages.find` excludes the nested `registry/` trees; `package-data` scoped to `capability_side_effects.implementation` |
-| `conformance_workloads` | `e09ac9e` | `pyproject.toml` — excludes `snapshot*`, `registry*`, `test_payloads*`; `package-data` block dropped. `README.md` profile rename |
-| `snapshot_assembler` | `1177b4e` | `assembler/indexes.py` — `_load_canonical` prefers the authoring copy; `scripts/testbed/test_indexes.py` +2 cases; `ARCHITECTURE.md` profile rename |
-| `.github` | `3e7f2d9` | `GOVERNANCE_SURFACE_PROFILE_V0.md` added; two profiles deleted; `REFERENCE_PLATFORM_PROFILE_V1.md` amended; `RUNBOOK.md`, `regression.sh`, `release.sh`, `SOTU.md` |
-| `protocol_compiler` | `de29b20` | `scripts/test_governance_provenance.py` profile rename |
-| `transformation` | `522bcac` | `README.md`, `scripts/testbed/e2e_phases_test.py` profile renames |
-| `pgc_install` | `264c647` | `README.md` — install guide, four repositories, six-anchor table, rough edges. On `main`, as that repo requires |
+All twelve repositories are clean. Ten carry the mop-up under one message,
+`v4 mop-up: documentation, packaging, and check corrections`; `pgc_release` was untouched and
+`pgc_install` is on `main` and pushed.
 
-**Version literals were reverted to `3.0.0` before committing** and are unchanged in all nine
-pyprojects. The bump goes to `4.0.0` as the last act before release, not `3.0.1` — the composition
-changes, so it is not a patch.
-
-**Two commit messages picked up surrounding prose** and read poorly: `1177b4e` and `fa1e4b2` both
-carry a fragment of the sentence that introduced the suggestion. Nothing is pushed, so
-`git commit --amend` still fixes them.
+Version literals remain `3.0.0` in all nine pyprojects. The bump goes to `4.0.0` as the last act
+before release — the composition changes, so it is not a patch.
 
 ### Build and test status — PASSING
 
-`regression.sh --all`, run at handoff on the committed tree, exit 0. Seven domains compiled and
-attested, assembled to `1194598a…`, composition conformance PASSED over 410 artifacts.
+`regression.sh --all` on the committed tree, exit 0, snapshot `d92b447f…`, composition conformance
+PASSED over 410 artifacts. The run exercised the new full cleanup for the first time and the sealed
+release survived it — `pgc_release/snapshot` intact at 604 files, git clean, boots healthy.
 
-Green: governance closure, governance chain, supersession agreement (7 relations), human block
-fidelity (404 artifacts), evidence determinism, frontmatter fidelity, meta (822 rules), differential
-(83 documents), e2e (83 cases), projection, construction acceptance 99/99, implementation closure
-(28 transforms), inspector 121/121, environment check. Execution: collatz SUCCESS, both
-`ai_governance` workflows SUCCESS, `book_library_mgmt` 23/23 and 21/21, `blockchain` identity 15/15
-and wallet 9/9.
+Green: governance closure (95 named / 89 registry, 0 orphans), governance chain, supersession (7),
+human block (404), evidence determinism, frontmatter, meta (822 rules), differential (83 documents),
+e2e (83 cases), projection, construction acceptance 99/99, implementation closure (28), inspector
+121/121, indexes 13/13, compiler atoms 9/9, provenance 4/4, reference collatz, warm boot 6/6,
+environment check. Execution: collatz, both `ai_governance` workflows, `book_library_mgmt` 23/23 and
+21/21, `blockchain` 15/15 and 9/9.
 
 Red by design, both expected: `admission_contract_fidelity` at 31 findings, and the advisory half of
-`si snapshot validate` — `valid: True`, 10 checks, no non-advisory failure, with
-`republished_copies_agree` at 15 and `bound_paths_declared_as_stores` at 1.
+`si snapshot validate` — `valid: True`, no non-advisory failure, `republished_copies_agree` at 15 and
+`bound_paths_declared_as_stores` at 1.
 
-`snapshot_assembler/scripts/testbed/test_indexes.py` is 13/13 and is **not run by `regression.sh`** —
-it must be run explicitly.
+**Determinism was demonstrated rather than asserted**: two consecutive full teardowns and rebuilds
+produced byte-identical snapshot identities, and the identity moved only when a declaration actually
+changed.
 
 ### The skinny profile
 
@@ -356,29 +347,110 @@ Module origins were checked rather than assumed: `compiler`, `assembler`, `runti
 composition including a business domain. It still says nothing about installing from PyPI itself, or
 about any platform or Python other than macOS/arm64 on 3.12.
 
+### Five test suites existed that nothing ran, and two of them were red
+
+`regression.sh` invoked ten checks and left five test files on disk unrun. Two were failing, and had
+been failing unnoticed for exactly that reason. All five are now in the check block.
+
+**`test_governance_provenance.py` — 2 of 4 red, and the system was right.** `content_hash` is taken
+over the machine block *parsed and canonically serialised*, so prose declares nothing (MB-1) and a
+YAML comment is invisible to it. The test perturbed by appending a comment, so the governance-closure
+hash could not move: `SENSITIVITY` failed, and `ENFORCEMENT` failed as a consequence because there
+was no drift for assembly to catch. Finding a working perturbation took three attempts and each
+failure was informative — an added key is refused by `ASSERT_SCHEMA_CONFORMANCE_V0`
+(`additionalProperties: false`), and so is a repeated enum member. **No semantically-inert
+perturbation of an invariant exists**, because the schema is closed and every declared field carries
+meaning. The test now changes a real declared value, `core.violation_response`
+`FAIL_IMMEDIATELY` → `WARN`, restored immediately. 4/4 pass.
+
+**`test_warm_boot.py` — 2 failures, one stale test and one real defect.** The stale one asserted that
+`_composite_hash(manifest["domains"])` equals the manifest's claim, using a runtime helper boot had
+already stopped calling: the assembler's composite covers constituents and the claimed profile as
+well, so the runtime's weaker version could never match. Removed, along with `_identity_view`, and
+`assembler.core.compute_composite_hash` which was a third unused duplicate of the same
+determination.
+
+The real one: **acceptance evaluated `snapshot_id` and never `composite_hash`**, so a manifest could
+carry two contradictory identity claims and boot. Measured, not hypothesised — `composite_hash` set
+to `deadbeef…` was accepted, while `snapshot_id` and `profile` were both refused. `verify_snapshot`
+now evaluates both. 6/6 pass.
+
+### The closure check had a blind spot, and the first fix for it was wrong
+
+`governance_closure` reported *"89 in the registry, 97 named by an invariant"* and passed, because it
+only computes `live − named`. The other direction looked like eight dangling handler names, seven
+under `pgs_governance.*` — which read as RI-0 residue surviving the severance.
+
+**It was not.** `pgs_governance.registry.handlers.*` is the live key namespace of the current
+compiler: all 89 entries in `HANDLER_REGISTRY` use it. It is a string key, not an import path, and
+`pgc_env_check` is right that nothing imports `pgs_*`. Adding the obvious `named − live` check would
+have failed eight times, at least five of them false, because the extractor deliberately records both
+the `handler:` override and the convention-derived name and only one need resolve.
+
+Two of the eight were real, and both were the same bug: the extractor read raw file text. `workflow:`
+came from a **violation example** in `INVARIANT_SUPERSEDED_NOT_REFERENCED_V0` — an illustration of
+what not to do — and `constitution_invariants_v0` from a substring match on a constitution's prose.
+It now parses the `## Machine` block, as the compiler does. That fix broke the check on first
+attempt (orphans 0 → 3): the `handler:` override lives under `assert_projection`, and reading raw
+text had made the nesting invisible. 97 → 95 named, orphans 0.
+
+Also removed: a duplicated `rules[]` row in `CONSTITUTION_ASSERT_V0` declaring one obligation twice.
+That is a real declaration change, so the snapshot identity moved — `1194598a…` → `d92b447f…`. A
+stable identity there would have meant the edit was not reaching the snapshot.
+
+`INVARIANT_ASSERT_CAPABLE_OF_REFUSING_V0` has no handler and needs none: it declares
+`enforcement_stage: [declared_not_enforced]` with `enforced_by` naming the constitution that carries
+the obligation where the build does not.
+
+### The regression now cleans what it claims to clean
+
+`--build` deleted only `$W/snapshot`, so a domain's stale `compiled/` survived and was reported by S8
+as an undeclared output — which reads as a compiler defect rather than as stale state. It now removes
+every generated snapshot.
+
+`pgc_release/snapshot` is excluded **and the exclusion is asserted**: the script aborts, naming
+`git restore`, if the cleanup ever removes it. That directory was deleted once by a hand-typed
+command during this cycle and recovered only because it is committed. It is not reproducible — the
+claimed profile changed and the assembler's index changed, both of which feed identity.
+
+`.DS_Store` is now swept workspace-wide. macOS writes one into any directory Finder opens; acceptance
+then refuses the snapshot as carrying undeclared content (3b §6), which makes a DOI-cited release look
+corrupt when nothing about it changed. It broke a boot three times in one day, twice on
+`pgc_release/snapshot`. Thirty-two existed at the time of the sweep and none is tracked in any repo,
+so removing them can destroy nothing.
+
+### Documentation aligned, and `doc/` is ephemera only
+
+Seven component READMEs shared one paragraph crediting `PGC_BUILD_ROOT` with keeping the governance
+repo read-only. Nothing reads it. Replaced with the anchors that matter, the `PGC_DOMAIN_ROOTS` depth
+trap, the per-domain `PGC_SNAPSHOT_ROOT` rule, and a pointer to `pgc_install`.
+
+Documents cited by code moved out of `doc/`: `snapshot_assembler/CONTRACT.md`,
+`protocol_transport/TRANSPORT_STANDARD_V0.md`, `transformation/THE_SHAPE_OF_A_CHANGE_V0.md`,
+`software_governance/rulings/` and `software_governance/surface_map/`. Twenty-one files had citations
+rewritten. Two spent plan addenda were deleted. What remains under `doc/` is pending-decision
+analysis — `MACHINE_BLOCK_CLOSURE.md` and `REGISTER_COVERAGE_VERIFICATION.md` — plus `.github/doc/`.
+
+`release.sh` claimed pyproject versions derive from `VERSION`. They never did — all nine are
+hand-edited literals, which is how `3.0.0` came to name two byte sets. The comment is corrected and
+preflight now **asserts** each pyproject's major against `PUBLIC_VERSION`, so a repo left on the
+previous identity's number fails the cut instead of reaching PyPI.
+
 ### Start here next session
 
-**Review the packaging of the seven pyprojects nobody has looked at** — prerequisite 3. Two of nine
-were fixed because they leaked declarations into their wheels; the other seven were never examined,
-and `pgc-domains` is the one wheel shipping business-domain implementations with no review at all.
-It needs no decision from anyone, and it is a precondition for both remaining test items: knowing
-what the domains wheel contains comes before exercising it from a wheel (4), and before a mock
-upload (6).
+**The mock upload to TestPyPI — prerequisite 6.** It is the only remaining thing testable before a
+version number is committed to, and the one path nothing else exercises: metadata acceptance, name
+resolution, and whether the nine `==` pins resolve against a live index rather than `--find-links`.
+It needs a TestPyPI account and token.
 
-The alternative first move is prerequisite 2, but it opens with a design question — whether a
-consuming domain should publish under the authoring identity at all — so it wants deliberate
-attention rather than a sweep.
+Two items remain decisions rather than work, and both can wait: whether anything should read the
+profile's §3 obligations (`GS-1`–`GS-3` are stated and unchecked, because `verify_profile` reads only
+`required_governance` and `required_workloads`), and whether a consuming domain should publish under
+the authoring identity at all — the duplication whose symptom is fixed and whose cause is not.
+`bound_paths_declared_as_stores` is still undiagnosed.
 
-Do not start with the version bump. It is last for a reason: every item above it can still move a
-snapshot identity.
-
----
-
-## v3 published end to end — the reference implementation is frozen here — 2026-09-06
-
-**This is the last SOTU entry for the PGC implementation.** The platform is published as `v3` and the
-work that follows is documentation, papers and standards. Those live in their own repositories and
-carry their own handoffs; this file stops here rather than going stale inside a frozen repo.
+The version bump is last, and preflight now enforces that: it refuses any pyproject whose major
+disagrees with `PUBLIC_VERSION`.
 
 ### What was published
 
