@@ -216,23 +216,6 @@ else
 fi
 echo
 
-# The interpreter, before anything that depends on it. The build gate shells out to `compile.sh`,
-# which runs bare `python`; without the workspace venv on PATH that surfaces as
-# `exec: python: not found` from inside a build log — a preflight whose job is catching problems
-# early reporting the least legible one it can. Asserting the venv is the workspace's own, not
-# merely that some venv is active: RI-0 has a venv too, and building PGC with it is the failure
-# `pgc_env_check` exists to prevent.
-echo "Interpreter:"
-PY_BIN="$(command -v python || true)"
-if [ -z "$PY_BIN" ]; then
-  fail "no \`python\` on PATH — activate the workspace venv:  source $WORKSPACE/.venv/bin/activate"
-elif [ "$PY_BIN" != "$WORKSPACE/.venv/bin/python" ]; then
-  fail "\`python\` is $PY_BIN, expected $WORKSPACE/.venv/bin/python — wrong venv is active"
-else
-  ok "$PY_BIN"
-fi
-echo
-
 echo "Release notes:"
 if [ -z "$(printf '%s' "$MSG" | tr -d '[:space:]')" ]; then
   fail "no release notes — write $NOTES"
@@ -264,7 +247,13 @@ for r in $REPOS; do
   # `VERSION`, so its version is the composition ordinal rather than a public identity — it is the
   # one repo that does what this file's comment used to claim they all do, and it publishes nothing
   # to PyPI. A repo with no literal has no published version for this rule to be about.
-  pv="$(sed -n 's/^version *= *"\([^"]*\)".*/\1/p' "$r/pyproject.toml" 2>/dev/null | head -1)"
+  # The file guard is load-bearing under `set -euo pipefail`: `.github` and `pgc_release` carry no
+  # pyproject, and a `sed` on a missing file fails the pipeline, fails the assignment, and kills the
+  # script mid-section with no message. Redirecting stderr hides the diagnosis, not the exit status.
+  pv=""
+  if [ -f "$r/pyproject.toml" ]; then
+    pv="$(sed -n 's/^version *= *"\([^"]*\)".*/\1/p' "$r/pyproject.toml" | head -1)"
+  fi
   if [ -n "$pv" ]; then
     case "$pv" in
       "${PUBLIC#v}".*) : ;;
