@@ -137,8 +137,14 @@ All twelve repositories are clean. Ten carry the mop-up under one message,
 `v4 mop-up: documentation, packaging, and check corrections`; `pgc_release` was untouched and
 `pgc_install` is on `main` and pushed.
 
-Version literals remain `3.0.0` in all nine pyprojects. The bump goes to `4.0.0` as the last act
-before release — the composition changes, so it is not a patch.
+**Bumped to `v4` / `4.0.0`.** Eighteen literals across nine pyprojects (nine versions, eight pins,
+one optional extra), `.github/PUBLIC_VERSION`, seven component READMEs, the `pgc_install` versioning
+section, and a `v4` entry in `publications.md` — which preflight requires by name before it will cut.
+
+It is a new identity rather than a patch because the composition changed what it *answers*: an
+identity published by more than one domain now resolves to its authoring copy instead of to whichever
+sorted last. The wheels also stopped shipping declarations and acceptance now evaluates both identity
+claims a manifest carries, but either alone would have been a patch.
 
 ### Build and test status — PASSING
 

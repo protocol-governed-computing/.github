@@ -107,3 +107,51 @@ more conformance than `v2`, supersedes no specification revision, and stands in 
 to the standard's own revision identity. The published version `3.0.0` names this publication and is
 not a semantic-versioning claim about compatibility.
 
+---
+
+## `v4` — what the composition answers, corrected
+
+**Supersedes `v3`.** The same ten repositories and the same governance surface. What changed is what
+a snapshot resolves an identity to, what a wheel contains, and which profile a composition claims.
+
+**Published at composition ordinal 16.** `v3` was published at ordinal 15.
+
+**Why it was issued.** Three reasons. Only the first would have justified a patch release; the second
+is why this is a new identity.
+
+*An identity published twice resolved by accident.* A domain that consumes a platform capability
+carries it as an execution binding, so one identity is published by more than one domain. The
+artifact index kept whichever copy a sorted walk saw last, which made resolution depend on the
+alphabetical order of the consuming domain's name: `workload` and `transformation` sort after
+`platform` and won; `ai_governance` and `blockchain` sort before it and lost. Three of fifteen
+affected identities resolved to an execution binding carrying no authored content, where
+`si.artifact.show` promises the artifact as authored. The index now prefers the authoring copy.
+**This changes what the composition answers, and renaming a domain could previously have changed it
+again.**
+
+*The wheels shipped declarations.* `pgc-governance` carried two nested `registry/` trees and
+`pgc-workloads` carried a compiled snapshot, `registry/` and `test_payloads/` — in both cases
+contradicting the comment directly above the packaging rule that admitted them. The compiler resolves
+declarations from `PGC_PLATFORM_ROOT` and never read them, so nothing behaved differently; but a
+registry inside a wheel is a second governance surface, and the distribution asserted it carried none.
+
+*Acceptance evaluated one of two identity claims.* A manifest states its identity twice, as
+`snapshot_id` and as `composite_hash`. Only the first was checked, so a manifest could carry two
+contradictory identities and be accepted. Both are now evaluated.
+
+**The profile in force changed.** `GOVERNANCE_SURFACE_PROFILE_V0` supersedes
+`REFERENCE_PLATFORM_PROFILE_V1` and requires no entry workflow: a conformance workload composes like
+any other domain rather than being a condition of conformance. The obligation retained is that the
+governance surface be *able* to govern a workflow, not that one be present. `REFERENCE_PLATFORM_PROFILE_V1`
+is retained unaltered, because the `v3` snapshot claims it and a superseded profile does not
+retroactively alter claims discharged under it.
+
+**Why `v3` could not be reused.** `3.0.0` is published and immutable. Beyond that, the material
+differs in what it determines rather than only in how it is packaged, so republishing under `v3`
+would name material other than what that identity was minted for.
+
+**What it does not assert.** The identity counts publications and nothing else. `v4` does not claim
+more conformance than `v3`, supersedes no specification revision, and stands in no declared relation
+to the standard's own revision identity. The published version `4.0.0` names this publication and is
+not a semantic-versioning claim about compatibility.
+
