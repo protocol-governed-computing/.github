@@ -17,10 +17,18 @@ emitted evidence.
 derivation is declared by the deriving profile, naming its base by identity (6a §10), and this
 profile makes no claim on profiles that have not named it.
 
-**Supersession.** This profile supersedes `NORMATIVE_PLATFORM_PROFILE_BASELINE_V0` by that exact
-identity (4e §2). The predecessor is retained and remains readable; nothing may reference it
-(SU-5, SU-7). The differing names are immaterial — supersession is a declared relation between
-identities, never derived from a naming convention (SU-2, ID-6).
+**Superseded.** This profile is superseded by `GOVERNANCE_SURFACE_PROFILE_V0`, which requires no
+entry workflow: under it a conformance workload composes like any other domain rather than being a
+condition of conformance.
+
+**It is retained because a sealed snapshot claims it.** The `v3` release names this identity in its
+manifest, and a profile is resolved by identity when that snapshot is read — so deleting this file
+would make a published, DOI-cited release unreadable: *"a claim nobody can read is not a claim"*
+(3b SN-7). A superseded profile does not retroactively alter claims discharged under it (SU-10), and
+this file is what lets that claim still be evaluated.
+
+Its own predecessor has been deleted — a deliberate act, not supersession, which deletes nothing
+(4e §6).
 
 ---
 
@@ -29,7 +37,8 @@ identities, never derived from a naming convention (SU-2, ID-6).
 ```yaml
 snapshot_profile:
   identity: REFERENCE_PLATFORM_PROFILE_V1
-  supersedes: NORMATIVE_PLATFORM_PROFILE_BASELINE_V0
+  supersedes: null
+  superseded_by: GOVERNANCE_SURFACE_PROFILE_V0
 
   description: >
     The profile the reference realization is developed and demonstrated against. Selects a

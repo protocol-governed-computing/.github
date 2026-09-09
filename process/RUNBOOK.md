@@ -21,14 +21,37 @@ bash ~/protocol-governed-computing/.github/process/regression.sh --all
 | `regression.sh --build` | clean rebuild, then the execution block |
 | `regression.sh --all` | build, then every check, then execution |
 
+**One run checks one profile.** A snapshot claims exactly one profile identity, and the run claims
+`GOVERNANCE_SURFACE_PROFILE_V0` — the profile in force, which supersedes
+`REFERENCE_PLATFORM_PROFILE_V1`. `PGC_SNAPSHOT_PROFILE` overrides it, which is how a candidate
+profile is read against the composition before it is put in force.
+
+A default run answers whether the profile is *satisfiable* over the reference composition: seven
+domains, one of them a workload. It does not establish the narrower claim the profile is written for
+— a profile requiring no workload is not tested by a snapshot containing one. For that, restrict the
+sources and send the result elsewhere, so the composition the rest of this runbook assumes is left
+intact:
+
+```bash
+PGC_SNAPSHOT_PROFILE=GOVERNANCE_SURFACE_PROFILE_V0 \
+PGC_SOURCE_ROOTS="$PWD/software_governance/snapshot/compiled:$PWD/snapshot_inspector/snapshot/compiled" \
+PGC_SNAPSHOT_OUT="$PWD/snapshot_skinny" \
+  ./snapshot_assembler/assemble.sh
+```
+
+`assemble.sh` refuses by default when a domain declares source but has no compiled output, precisely
+so a skipped compile cannot silently narrow a composition. `PGC_SOURCE_ROOTS` is the deliberate way
+to narrow one, and bypasses that guard — which is the point, and the reason to be explicit about it.
+
 **Prefer it to pasting.** The commands below are long and single-line by necessity, and a terminal
 that wraps one splits an argument from its flag: `--payload` loses its value, the shell tries to
 execute a JSON path, and the result reads like a test failure rather than the shell error it is.
 That has cost two clean runs.
 
 **It is not a substitute for reading `## Expected`.** The script reports what each step printed; it
-does not judge. One check is red by design — `admission_contract_fidelity`, 31 findings, all
-deliberate — so a run that is *entirely* green means something stopped reporting.
+does not judge. Two things are red by design — `admission_contract_fidelity` at 31 findings, and the
+advisory half of `si snapshot validate` — so a run that is *entirely* green means something stopped
+reporting.
 
 **Prerequisite for a rebuild.** `--build` and `--all` assume the workspace venv has every package
 editable-installed under its current distribution name. After a rename or a fresh clone:
@@ -58,7 +81,7 @@ clause they enforce.
 
 ```bash
 cd ~/protocol-governed-computing
-export PGC_SNAPSHOT_PROFILE=REFERENCE_PLATFORM_PROFILE_V1
+export PGC_SNAPSHOT_PROFILE=GOVERNANCE_SURFACE_PROFILE_V0
 
 ~/protocol-governed-computing/protocol_compiler/compile.sh STRUCTURE_BUILD_PLATFORM_CONFIG_V1
 
@@ -74,7 +97,7 @@ export PGC_SNAPSHOT_PROFILE=REFERENCE_PLATFORM_PROFILE_V1
 
 ~/protocol-governed-computing/protocol_compiler/compile_domain.sh ~/protocol-governed-computing/business_domains/blockchain
 
-PGC_SNAPSHOT_PROFILE=REFERENCE_PLATFORM_PROFILE_V1 ~/protocol-governed-computing/snapshot_assembler/assemble.sh
+PGC_SNAPSHOT_PROFILE=GOVERNANCE_SURFACE_PROFILE_V0 ~/protocol-governed-computing/snapshot_assembler/assemble.sh
 ```
 
 Every domain that declares source must be compiled — the assembler refuses otherwise rather than
@@ -92,7 +115,7 @@ the attestation changes.** Recompile one domain and reassemble twice; the `snaps
 for i in 1 2; do
   rm -rf transformation/snapshot/compiled
   protocol_compiler/compile_domain.sh transformation >/dev/null
-  PGC_SNAPSHOT_PROFILE=REFERENCE_PLATFORM_PROFILE_V1 snapshot_assembler/assemble.sh | grep snapshot_id
+  PGC_SNAPSHOT_PROFILE=GOVERNANCE_SURFACE_PROFILE_V0 snapshot_assembler/assemble.sh | grep snapshot_id
 done
 ```
 
@@ -207,6 +230,7 @@ Rows are in the order the block runs them.
 | `construction_acceptance.py` | `99/99 artifacts reproduced across 4 domain(s) (0 field difference(s))` — `book_library_mgmt` from maintained fixtures, `blockchain` and the two base-code roots from their delivered dossiers. A base-code root carries **no order**, so the harness takes its dossiers as a set and refuses if two of them determine one artifact; a partial registry reports its undetermined tail rather than counting it as reproduced. An `UNCOVERED` line is a dossier root determining artifacts that nothing compares — add it to `DOMAINS`, or say why not |
 | `implementation_closure.py` | `IMPLEMENTATION CLOSURE PASSED` — every transform module named by an artifact, every named module present |
 | `test_inspector.py` | `PASSED: 121/121` |
+| `si snapshot validate` | Reads **the snapshot just assembled**, which `test_inspector.py` does not — that runs against fixtures. Non-advisory checks must all pass. Two advisory checks are **currently red**: `republished_copies_agree`, 15 violations, every `capability_side_effects` artifact published twice (once as the platform's authoring copy, once as a consuming domain's execution binding) diverging on `content`, `layer_code`, `references`, `version` — the count scales with domains composed; and `bound_paths_declared_as_stores`, 1 violation, `ai_governance::RB_AGENT_GOVERNANCE_BINDINGS_V0` binding `CS_REGISTRY_V0` to a path no store declares. Advisory failures exit 0; `--strict` turns them red. A **non-advisory** failure here is a real defect in the composition |
 | `pgc_env_check.py` | `PGC ENVIRONMENT CHECK PASSED` — no RI-0 dependency reachable |
 | collatz | `SUCCESS`, `all_terminate: true` |
 | govern agent action | `SUCCESS` |
@@ -453,7 +477,7 @@ rsync -rc ~/protocol-governed-computing/data/transformation/construction/registr
 python ~/protocol-governed-computing/transformation/scripts/testbed/construction_acceptance.py
 
 ~/protocol-governed-computing/protocol_compiler/compile_domain.sh ~/protocol-governed-computing/business_domains/book_library_mgmt
-PGC_SNAPSHOT_PROFILE=REFERENCE_PLATFORM_PROFILE_V1 ~/protocol-governed-computing/snapshot_assembler/assemble.sh
+PGC_SNAPSHOT_PROFILE=GOVERNANCE_SURFACE_PROFILE_V0 ~/protocol-governed-computing/snapshot_assembler/assemble.sh
 
 python ~/protocol-governed-computing/business_domains/book_library_mgmt/testbed/catalog/execution_validation.py
 python ~/protocol-governed-computing/business_domains/book_library_mgmt/testbed/catalog/execution_validation_cr02.py
@@ -628,7 +652,7 @@ W=~/protocol-governed-computing
 # 2. Hand-author registry/structures/STRUCTURE_BUILD_<DOMAIN>_CONFIG_V0.md — without it the
 #    compiler cannot discover the domain at all.
 $W/protocol_compiler/compile_domain.sh $W/business_domains/<domain>
-PGC_SNAPSHOT_PROFILE=REFERENCE_PLATFORM_PROFILE_V1 $W/snapshot_assembler/assemble.sh
+PGC_SNAPSHOT_PROFILE=GOVERNANCE_SURFACE_PROFILE_V0 $W/snapshot_assembler/assemble.sh
 ```
 
 **What it costs.** No design means no P7, and no P7 means none of the composition-integrity rules
@@ -676,7 +700,7 @@ tc construction emit $CR --root $W/business_domains/$DOM
 
 # 4. Compile the domain against the compiled platform surface, then assemble.
 $W/protocol_compiler/compile_domain.sh $W/business_domains/$DOM
-PGC_SNAPSHOT_PROFILE=REFERENCE_PLATFORM_PROFILE_V1 $W/snapshot_assembler/assemble.sh
+PGC_SNAPSHOT_PROFILE=GOVERNANCE_SURFACE_PROFILE_V0 $W/snapshot_assembler/assemble.sh
 
 # 5. Re-pin and re-approve — the composition now contains the domain, so the old pin is stale.
 tc baseline show --snapshot $W/snapshot > $CR/baseline.json
@@ -688,7 +712,7 @@ That is correct: a change request that says *create these* cannot be judged agai
 that already holds them. To re-check or amend it, roll the composition back first:
 
 ```bash
-rm -rf $W/business_domains/$DOM/{registry,snapshot} && PGC_SNAPSHOT_PROFILE=REFERENCE_PLATFORM_PROFILE_V1 $W/snapshot_assembler/assemble.sh
+rm -rf $W/business_domains/$DOM/{registry,snapshot} && PGC_SNAPSHOT_PROFILE=GOVERNANCE_SURFACE_PROFILE_V0 $W/snapshot_assembler/assemble.sh
 ```
 
 Editing an artifact already sealed into a released composition is a `REPLACE` in a governed change
@@ -775,7 +799,7 @@ for d in $W/transformation $W/snapshot_inspector $W/conformance_workloads/worklo
   $W/protocol_compiler/compile_domain.sh $d
 done
 
-PGC_SNAPSHOT_PROFILE=REFERENCE_PLATFORM_PROFILE_V1 $W/snapshot_assembler/assemble.sh
+PGC_SNAPSHOT_PROFILE=GOVERNANCE_SURFACE_PROFILE_V0 $W/snapshot_assembler/assemble.sh
 ```
 
 **The snapshot_id must be the one you started with.** It is content-derived over each domain's
@@ -832,7 +856,7 @@ evaluating different rule sets:
 ```bash
 python ~/protocol-governed-computing/transformation/scripts/emit_rule_sets.py           # re-seal
 ~/protocol-governed-computing/protocol_compiler/compile_domain.sh ~/protocol-governed-computing/transformation
-PGC_SNAPSHOT_PROFILE=REFERENCE_PLATFORM_PROFILE_V1 ~/protocol-governed-computing/snapshot_assembler/assemble.sh
+PGC_SNAPSHOT_PROFILE=GOVERNANCE_SURFACE_PROFILE_V0 ~/protocol-governed-computing/snapshot_assembler/assemble.sh
 python ~/protocol-governed-computing/transformation/scripts/testbed/build_fixtures.py   # derive
 python ~/protocol-governed-computing/transformation/scripts/testbed/build_payloads.py
 ```
@@ -913,7 +937,7 @@ S=$(mktemp -d); OUT=/tmp/pgc_cr02_design_baseline
 ~/protocol-governed-computing/protocol_compiler/compile_domain.sh $S/book_library_mgmt
 W=~/protocol-governed-computing; rm -rf $OUT
 PGC_SOURCE_ROOTS="$W/software_governance/snapshot/compiled:$W/conformance_workloads/workloads/collatz/snapshot/compiled:$W/business_domains/ai_governance/snapshot/compiled:$W/snapshot_inspector/snapshot/compiled:$W/transformation/snapshot/compiled:$S/book_library_mgmt/snapshot/compiled" \
-  PGC_SNAPSHOT_OUT=$OUT PGC_SNAPSHOT_PROFILE=REFERENCE_PLATFORM_PROFILE_V1 ~/protocol-governed-computing/snapshot_assembler/assemble.sh
+  PGC_SNAPSHOT_OUT=$OUT PGC_SNAPSHOT_PROFILE=GOVERNANCE_SURFACE_PROFILE_V0 ~/protocol-governed-computing/snapshot_assembler/assemble.sh
 ```
 
 Expect **336 artifacts** — the composition of 345 less the nine CR-2 authored. CR-1's baseline is

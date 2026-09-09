@@ -1,5 +1,285 @@
 # SOTU Handoff
 
+## Install path validated from a clean environment — `dev/16` reopened for the v4 mop-up — 2026-09-08
+
+The previous entry closed this file at the `v3` freeze. It reopens because installing `v3` from
+PyPI into an empty directory does not reach a running snapshot by following the published
+instructions, and the gap is large enough to need a cycle of its own. **`dev/16` is dedicated to
+mop-up**; nothing here is a new capability.
+
+### What was proven
+
+A clean venv, wheels built from `dev/16`, four cloned repositories and six anchors reach a sealed,
+executing platform: compile platform + workload + inspection → assemble → composition conformance
+PASSED → warm boot hash-verified → workflow SUCCESS, and the NACK payload correctly returns
+VIOLATION. The counts match the workspace exactly, so the trimmed wheels lose nothing.
+
+Every blocker met along the way was a **discovery** problem, not a code defect. No compiler,
+assembler or runtime change was needed to reach a conformant PNP.
+
+### What is wrong
+
+**Packaging.** `pgc-governance` shipped `capability_transforms/registry/` and
+`capability_side_effects/registry/`; `pgc-workloads` shipped a compiled snapshot, `registry/` and
+`test_payloads/`. Both from over-broad `package-data` globs, and both contradicting the comments
+directly above them. `.DS_Store` shipped too. The leaked registries are inert — the compiler resolves
+declarations from `PGC_PLATFORM_ROOT` — but they are a second governance surface sitting in a wheel.
+
+**Documentation.** Reaching a snapshot needs four repositories and six anchors. The published
+instructions name one repository and three anchors, one of which does nothing.
+
+- `PGC_BUILD_ROOT` is inert. `build_root()` is defined and never called; `PGC_SNAPSHOT_ROOT` is the
+  anchor that controls compiled output, and it is documented nowhere.
+- `PGC_SNAPSHOT_ROOT` means two different things — compiled output root to the compiler, assembled
+  snapshot root to the runtime.
+- `PGC_SNAPSHOT_PROFILES` is required by both the assembler and the runtime, and is named in neither
+  `--help` nor any install document. The profiles live in `.github`, which nothing tells a user to clone.
+- `PGC_DOMAIN_ROOTS` must name the directory holding `registry/structures/`, not the repository above
+  it. Pointing one level too high is a silent no-op.
+- Each domain build needs its own `PGC_SNAPSHOT_ROOT`. Two domains sharing one output root cannot both
+  pass S8, which reports the other domain's artifacts as undeclared.
+- `--all-structures` and `STRUCTURE_BUILD_PLATFORM_CONFIG_V0` do not build; only `_V1` does.
+- `pgc` reports "Ready" once the governance surface resolves, which is readiness for the platform
+  compile only, not for assembly or execution.
+
+**The ergonomics already exist, and are not distributed.** `protocol_compiler/compile_domain.sh` sets
+all three compile anchors per domain — including `PGC_SNAPSHOT_ROOT=<domain>/snapshot`, the separation
+whose absence produced the E402 deadlock — and auto-discovers the build STRUCTURE. `snapshot_assembler/assemble.sh`
+auto-discovers every compiled root and refuses to assemble when a domain declares source but has no
+compiled output, precisely so a skipped compile cannot silently narrow a composition. Neither ships:
+`packages.find` includes `compiler*` and `assembler*`, and both runners sit at their repo roots,
+outside those trees. A PyPI user therefore performs by hand what the workspace has automated since
+before `v3`. Whether the fix is to package the runners or to document the sequence is a decision, not
+a defect — but the current state is the worst of both, since the sequence was documented nowhere either.
+
+**Two anchors differ by one letter.** `PGC_SNAPSHOT_PROFILE` (singular) names the profile identity a
+snapshot claims and is read by `assemble.sh`; `PGC_SNAPSHOT_PROFILES` (plural) names the directory
+profiles are read from and is read by the assembler and runtime. Neither is documented.
+
+**A real defect, wider than one artifact.** `si artifact show capability_side_effects::CS_MUTABLE_JSON_V0` returns an
+execution-binding stub — empty `content`, empty `references`, `layer_code: WORKLOAD` — instead of the
+platform authoring copy. Two copies exist by design: `s1_extract._inject_imported_capabilities` lifts
+consumed CS/CT into the consuming domain carrying only the execution binding. But the compiler's
+`metadata.imported` marker does not survive into the sealed artifact, so
+`snapshot_assembler/assembler/indexes.py:44-51` cannot tell them apart and keeps whichever sorts last —
+`canonical/workload/` after `canonical/platform/`, by alphabetical accident. `si snapshot validate`
+flags it as `republished_copies_agree`, advisory. Fixing it changes content hashes and therefore
+snapshot identity.
+
+**Scope, measured against the full seven-domain snapshot: fifteen violations, not one — six side
+effects and nine capability transforms.** Every consumed capability is duplicated, each diverging on
+the same four fields, `content`, `layer_code`, `references`, `version`. The count scales with the
+composition, because every domain that consumes a capability emits its own execution binding beside
+the platform's authoring copy. A one-artifact finding was an artifact of the narrow composition it
+was found in, and it was not confined to side effects.
+
+**Only three of the fifteen actually resolve wrongly, and which three is decided by alphabetical
+order.** `indexed_copy` is the platform's authoring copy for twelve of them. It is the consuming
+domain's execution binding for exactly the three whose consumer sorts after `platform`:
+`CS_MUTABLE_JSON_V0` → `canonical/workload/`, `CS_SNAPSHOT_QUERY_V0` and `CS_TEXT_ARTIFACT_V0` →
+`canonical/transformation/`. Consumers sorting before it — `ai_governance`, `blockchain`,
+`book_library_mgmt`, `inspection` — lose to `platform` and the index happens to be right.
+
+This was the last-write-wins in `indexes.py` measured rather than reasoned about, and it was worse
+than a wrong resolution: the index was correct for twelve of the fifteen **by coincidence of domain
+naming**. Renaming a domain, or adding one whose name sorts late, silently changed which copy
+`si artifact show` returned for a capability nobody edited.
+
+**Fixed.** `_load_canonical` now prefers the authoring copy rather than whichever sorted last. The
+discriminator is authored `content`: the field-level diff shows `content_hash`, `frontmatter` and the
+IR byte-identical across copies, while the execution binding has `content` and `references` emptied
+and `layer_code` naming the consuming layer. So the copy still carrying authored content is the
+authoring copy, which is what `si.artifact.show` promises. Ties keep the first seen, so the sorted
+walk remains the tiebreak and the result is stable. All three indexes share `_load_canonical` and all
+three benefit.
+
+The binding copy also carries the `content_hash` of content it does not hold — the sharper tell, and
+deliberately **not** the selector: an inconsistent hash is a defect to report, not something to route
+on. That reasoning is recorded in `_authoring_rank`.
+
+After the fix, identities resolving to a non-authoring copy: **zero**. `CS_MUTABLE_JSON_V0` returns
+10888 characters under `REUSABLE_SIDE_EFFECTS` where it returned an empty stub under `WORKLOAD`;
+`CS_SNAPSHOT_QUERY_V0` and `CS_TEXT_ARTIFACT_V0` likewise. Assembler testbed 13/13, inspector 121/121,
+warm boot healthy over seven domains, collatz SUCCESS. Two testbed cases pin it —
+`artifact_index_resolves_to_authoring_copy` and `artifact_index_ignores_domain_name_order`, the second
+asserting the same identity resolves identically whether the consumer is named `blockchain`,
+`workload` or `transformation`. Both fail against the previous `indexes.py`, which is what makes them
+worth having.
+
+`republished_copies_agree` still reports fifteen, correctly: the copies do diverge. The advisory
+reports a fact about the composition; what was defective was the index. **Whether the duplication
+should exist at all remains open** and is compiler-side — carrying `metadata.imported` through
+materialization would let the assembler select on a declared marker instead of inferring from an
+emptied field.
+
+The snapshot identity is now `1194598a…`; index content feeds identity, so the fix moves it.
+
+The inspector's own suite passes `validate_catches_divergent_copies` and `validate_names_divergent_fields`,
+so detection is intended and tested. What nothing asserts is **which copy the index resolves to** —
+that is the untested behaviour, and it is where the defect lives.
+
+**A second advisory fails on the same snapshot.** `bound_paths_declared_as_stores`, one violation:
+`ai_governance::RB_AGENT_GOVERNANCE_BINDINGS_V0` binds `CS_REGISTRY_V0` to
+`ai_governance/agent_governance/governance_actions.json`, a path no store declares. Two of two
+examined, one failing. Not yet diagnosed.
+
+**Release tooling.** `release.sh:27` claims pyproject versions derive from each repo's `VERSION`.
+They do not — all nine are hand-edited literals, and nothing asserts them against `PUBLIC_VERSION`.
+That is how `3.0.0` came to name two different byte sets: the published wheels, and anything built
+from `dev/16`.
+
+**Environment.** A `.DS_Store` written into a sealed snapshot makes it unbootable — correctly refused
+at acceptance under 3b §6, but it means opening a snapshot in Finder breaks it until the file is removed.
+
+### On `dev/16`, uncommitted
+
+Packaging fixed in `software_governance` and `conformance_workloads` — narrowed `packages.find`
+excludes and scoped `package-data`. Wheels verified to carry no registry, snapshot, `test_payloads` or
+`.DS_Store`, with every implementation module still present and the compile output unchanged.
+`pgc_install/README.md` rewritten with the four repositories, the six-anchor table and the rough edges.
+`.github/snapshot_profiles/GOVERNANCE_SURFACE_PROFILE_V0.md` added, untracked.
+All nine pyprojects and the eight pins carry `3.0.1`, which **is to be replaced by `4.0.0`** — the
+composition changes, so this is not a patch.
+
+### The skinny profile
+
+`GOVERNANCE_SURFACE_PROFILE_V0` is copied into `.github/snapshot_profiles/` from the standards worked
+example and completed. It is the skinny composition: `required_workloads.entry_workflows: []`,
+`required_domains: [platform, inspection]` — a workload composes like any other domain, and nothing
+requires one to be present.
+
+It arrived as a draft with open gaps and `usable_as_a_target: false`, and adopting it unchanged would
+have been worse than `REFERENCE_PLATFORM_PROFILE_V1`: `verify_profile` reads only `required_governance`
+and `required_workloads.entry_workflows`, and in the draft the first was empty and the second is `[]` —
+a profile that cannot fail. What was written:
+
+**§2, thirty-six required identities.** The twenty-eight platform identities carry over from
+`REFERENCE_PLATFORM_PROFILE_V1` — all are platform-domain, none workload-specific, and each was
+verified to resolve rather than trusted. Eight inspection identities were added as four ingress/egress
+pairs, because `required_domains` is a key nothing verifies: naming inspection operations in §2 puts
+that requirement somewhere checked. The execution-semantics constitutions stay required despite no
+workload being composed — the surface must be able to govern a workflow; the capacity is required, the
+instance is not, and that is the substantive line between this profile and V1.
+
+**§3, three additional obligations**, each with a stated breach. `GS-1` governance closure agreement
+across domains; `GS-2` one authored copy per identity — **recorded as breached by the current reference
+realization**, since that is the `CS_MUTABLE_JSON_V0` finding above; `GS-3` no artifact in a required
+domain may reference a namespace the profile does not declare, which is what makes "composes no
+workload" a property rather than a description of one build.
+
+**§4, each claim with its discharge class** from `7a` §7. `SNAPSHOT_IMMUTABILITY` structural, its
+failing demonstration being the unenumerated-constituent refusal actually observed. `DETERMINISTIC_EXECUTION`
+derivational for addresses and **comparative-not-discharged** for execution — one OS, one interpreter,
+one runtime, which `7a` §7.3 says is not a comparative discharge however thorough.
+`COMPILED_INVOCATION_RESOLUTION` structural.
+
+**§5 derivation deleted** — `derives_from: null`, and the template directs that an absent section beats
+one saying "none". Externality now states its case rather than asking for it: not external, same
+authority, recorded as a finding against any claim made under it.
+
+`usable_as_a_target` remains **false**. The gaps are closed, but §6 requires a profile to have been read
+against a candidate snapshot before it is handed to anyone, and it has not been. Clearing that is a
+concrete prerequisite below, not a formality.
+
+The standards copy at `standards/profile_authoring/worked_example/` is untouched and will now drift.
+Which copy is canonical is undecided.
+
+### Full regression, seven domains
+
+`regression.sh --all` passes on `dev/16` with the packaging fix in place: seven domains compiled and
+attested, assembled to `cb56beb4…`, composition conformance PASSED over 410 artifacts, and every check
+green except `admission_contract_fidelity`, which is red by design at exactly the 31 findings the
+RUNBOOK expects. Execution covers collatz, both ai_governance workflows, book_library CR-1 (23/23) and
+CR-2 (21/21), and blockchain identity (15/15) and wallet (9/9). The inspector suite is 121/121.
+
+Two limits worth stating, because the run looks more conclusive than it is.
+
+**The business domains were exercised from the workspace, not from a wheel.** This narrows the
+`pgc-domains` gap without closing it: nothing here says the packaged distribution behaves the same,
+and `pgc-domains` has still had no packaging review.
+
+**The new profile is not exercised by `regression.sh` as it stands.** The script pinned
+`PGC_SNAPSHOT_PROFILE=REFERENCE_PLATFORM_PROFILE_V1`; it now defaults to it and accepts an override,
+and `si snapshot validate` was added to the check block — without it a fully green run sits on top of
+a composition carrying advisory failures, which is how the divergent copies went unreported.
+
+### The skinny composition assembles, validates clean, and boots
+
+`GOVERNANCE_SURFACE_PROFILE_V0` has been read against two candidate snapshots.
+
+**Satisfiable over the reference composition.** Seven domains under the new profile: assembled,
+profile verified, composition conformance PASSED over 410 artifacts. The `snapshot_id` differs from
+the same domains under `REFERENCE_PLATFORM_PROFILE_V1` because the claimed profile identity is a
+constituent.
+
+**Satisfied by the composition it was written for.** Platform + inspection only, via
+`PGC_SOURCE_ROOTS`: two domains, 194 artifacts, conformance PASSED, warm boot hash-verified with
+governance provenance bound. `si snapshot validate` reports **every check clean — zero violations,
+advisories included.**
+
+That last result sharpens the duplication defect. The reference composition carries fifteen divergent
+copies; this one carries none. The cause is not the platform publishing side effects twice — it is
+**composing a domain that consumes them**, since each consumer emits its own execution binding beside
+the authoring copy. Inspection declares thirty-six boundary contracts and consumes no capability, so
+nothing is injected and nothing diverges. `INVARIANT_INSPECTION_BOUNDARY_COMPOSED_V0` is satisfied
+with no workload present, which was the open question about whether inspection could stand as the
+sole non-platform domain.
+
+The profile is `status: complete`, `open_gaps: 0`, `usable_as_a_target: true` — §6's precondition,
+that a profile be read against a candidate snapshot before it is handed to anyone, is met. It is now
+the profile in force: it declares `supersedes: REFERENCE_PLATFORM_PROFILE_V1`, `regression.sh`
+defaults to it, and the nineteen operational references across eight files that named the predecessor
+now name it. Sealed evidence, the SU-3 declarations, and history were left alone.
+
+**Two profiles deleted, one retained under protest of the evidence.**
+`NORMATIVE_PLATFORM_PROFILE_BASELINE_V0` and `UNCOMPOSED_PLATFORM_PROFILE_V0` are gone — a deliberate
+act, which `4e` §6 distinguishes from supersession, since supersession deletes nothing. No manifest
+claimed either.
+
+`REFERENCE_PLATFORM_PROFILE_V1` **cannot be deleted**, and this was tested rather than argued. Moving
+it out of the profile root and booting the sealed `v3` release gives:
+
+    snapshot claims profile 'REFERENCE_PLATFORM_PROFILE_V1' and no profile of that identity
+    was found — a claim nobody can read is not a claim (3b SN-7)
+
+`pgc_release/snapshot/manifest.json` names that identity and profiles resolve by identity at read
+time, so deleting the file makes a published, DOI-cited release unreadable. It is retained for that
+reason alone, and its prose now says so. Its own `supersedes` was set to `null` and its supersession
+paragraph rewritten, because it had claimed its predecessor "is retained and remains readable" — no
+longer true.
+
+### Prerequisites to the v4 bump
+
+Ordered by dependency. Items 1 and 2 both change snapshot identity and must land before anything is
+re-validated.
+
+1. **Decide what reads §3.** `GOVERNANCE_SURFACE_PROFILE_V0` is complete and both runs pass, but
+   `verify_profile` reads only `required_governance` and `required_workloads.entry_workflows` — so
+   `GS-1`, `GS-2` and `GS-3` are stated and unchecked. Either extend the verifier to honour them, or
+   record that §3 is documentation. The same applies to `required_domains`, which is why the
+   inspection identities had to be named in §2 to be enforced at all.
+2. **The duplication itself, now that its symptom is fixed.** The index resolves correctly; the
+   composition still publishes fifteen identities twice. Decide whether a consuming domain should
+   emit an execution binding under the authoring identity at all, and if it should, carry
+   `metadata.imported` through materialization so the assembler selects on a declaration rather than
+   on an emptied field. Separately, diagnose `bound_paths_declared_as_stores` — one violation,
+   unrelated to the duplication, undiagnosed.
+3. **Per-repo review.** The packaging fix touched two of nine pyprojects; the other seven are
+   unreviewed. `pgc-domains` has had no packaging review at all.
+4. **`pgc-domains` exercised end to end.** `business_domains` was never cloned, compiled or run
+   during this validation. Blockchain's optional crypto extra is likewise untested.
+5. **Documentation.** Fold the anchor set and rough edges into the component READMEs, correct
+   `release.sh:27`, and record the `.DS_Store` hazard.
+6. **Mock upload.** TestPyPI, with `--extra-index-url` to real PyPI for third-party dependencies, then
+   a clean install from it — the upload path itself has never been exercised.
+7. **Version bump last.** Nine pyprojects and eight pins to `4.0.0`, `.github/PUBLIC_VERSION` to `v4`,
+   and the `publications.md` entry recording what v4 supersedes — `release.sh:264-267` aborts without it.
+
+Still untested and not closable locally: installing from PyPI itself, and any platform or Python other
+than macOS/arm64 on 3.12. `requires-python = ">=3.10"` is a claim, not a tested fact.
+
+---
+
 ## v3 published end to end — the reference implementation is frozen here — 2026-09-06
 
 **This is the last SOTU entry for the PGC implementation.** The platform is published as `v3` and the

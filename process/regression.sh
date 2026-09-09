@@ -6,12 +6,15 @@
 #   regression.sh --build    clean rebuild first, then checks, then execution
 #   regression.sh --all      build + checks + execution
 #
-# Expected results are the table in RUNBOOK.md "## Expected". One check is red by
-# design: admission_contract_fidelity, 31 findings, all deliberate.
+# Expected results are the table in RUNBOOK.md "## Expected". Two things are red by
+# design: admission_contract_fidelity (31 findings, all deliberate), and the advisory
+# half of `si snapshot validate`, which reports known divergences without failing.
 set -u
 cd ~/protocol-governed-computing || exit 1
 W=~/protocol-governed-computing
-export PGC_SNAPSHOT_PROFILE=REFERENCE_PLATFORM_PROFILE_V1
+# Overridable so a second profile can be read against the same compiled domains without editing
+# this file:  PGC_SNAPSHOT_PROFILE=<IDENTITY> regression.sh --build
+export PGC_SNAPSHOT_PROFILE="${PGC_SNAPSHOT_PROFILE:-GOVERNANCE_SURFACE_PROFILE_V0}"
 
 MODE="${1:-exec}"
 
@@ -42,6 +45,13 @@ if [[ "$MODE" == "--all" ]]; then
   done
   python "$W/.github/process/implementation_closure.py"
   PYTHONPATH="$W/snapshot_inspector" python "$W/snapshot_inspector/scripts/testbed/test_inspector.py"
+
+  # The assembled snapshot read by the inspector that was just composed. test_inspector.py runs
+  # against fixtures and says nothing about THIS snapshot; without this line a fully green run can
+  # sit on top of a composition carrying advisory failures, which is how fifteen divergent copies
+  # went unreported. Advisory failures exit 0 by design — `--strict` is what turns them red.
+  echo "--- si snapshot validate"; si --snapshot "$W/snapshot" snapshot validate
+
   python "$W/.github/process/pgc_env_check.py"
 fi
 
