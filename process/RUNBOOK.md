@@ -19,6 +19,23 @@ bash ~/protocol-governed-computing/.github/process/regression.sh --all
 |---|---|
 | `regression.sh` | the execution block only — fastest, and assumes a built snapshot |
 | `regression.sh --build` | clean rebuild, then the execution block |
+
+**`--build` and `--all` now delete every generated snapshot**, not only the assembled one — each
+domain's `snapshot/` as well, so a clean rebuild is a fact rather than a claim. A retired artifact
+left in a domain's `compiled/` is caught by S8 as an undeclared output, which reads as a compiler
+defect rather than as stale state.
+
+**`.DS_Store` is swept workspace-wide, `pgc_release` included.** macOS writes one into any directory
+Finder opens; acceptance then refuses the snapshot as carrying undeclared content (3b §6). That is
+correct behaviour, but it makes a DOI-cited release look corrupt when nothing about it changed, and
+because these files are gitignored `git status` stays clean and nothing warns you. Removing them
+cannot destroy anything — a `.DS_Store` is never a constituent, and none is tracked in any repo.
+
+**`pgc_release/snapshot` is excluded, and the script aborts if it ever isn't.** That directory is the
+sealed composition a paper cites by DOI — written once by `release.sh --publish-composition`,
+reproduced by nothing, recoverable only from git. Do not simplify the cleanup to `rm -rf */snapshot`:
+it misses the nested ones under `business_domains/*` and `conformance_workloads/workloads/*`, and it
+does not protect the one that matters.
 | `regression.sh --all` | build, then every check, then execution |
 
 **One run checks one profile.** A snapshot claims exactly one profile identity, and the run claims
@@ -231,6 +248,11 @@ Rows are in the order the block runs them.
 | `implementation_closure.py` | `IMPLEMENTATION CLOSURE PASSED` — every transform module named by an artifact, every named module present |
 | `test_inspector.py` | `PASSED: 121/121` |
 | `si snapshot validate` | Reads **the snapshot just assembled**, which `test_inspector.py` does not — that runs against fixtures. Non-advisory checks must all pass. Two advisory checks are **currently red**: `republished_copies_agree`, 15 violations, every `capability_side_effects` artifact published twice (once as the platform's authoring copy, once as a consuming domain's execution binding) diverging on `content`, `layer_code`, `references`, `version` — the count scales with domains composed; and `bound_paths_declared_as_stores`, 1 violation, `ai_governance::RB_AGENT_GOVERNANCE_BINDINGS_V0` binding `CS_REGISTRY_V0` to a path no store declares. Advisory failures exit 0; `--strict` turns them red. A **non-advisory** failure here is a real defect in the composition |
+| `test_indexes.py` | `PASSED: 13/13` — assembler index construction, including that a republished identity resolves to its authoring copy and that resolution does not track domain-name order |
+| `test_compiler_atoms.py` | `PASSED: 9/9` |
+| `test_governance_provenance.py` | **Currently 2 of 4 red.** `DETERMINISM` and `ISOLATION` pass; `SENSITIVITY` (an imported change must change the closure hash) and `ENFORCEMENT` (a stale domain against changed governance must fail assembly) do not. Undiagnosed — these were never run by this script before |
+| `test_reference_collatz.py` | `OK` |
+| `test_warm_boot.py` | **Currently 2 failures, both pre-existing.** `test_composite_recompute_matches_manifest` — the test's local `_composite_hash` returns the same value for *any* manifest, so it is stale rather than reporting a real divergence. `test_tampered_composite_hash_rejected` — **a real defect**: boot recomputes the composite and returns the correct id, but does not refuse a manifest claiming a false one. A snapshot can carry a false identity claim and boot silently |
 | `pgc_env_check.py` | `PGC ENVIRONMENT CHECK PASSED` — no RI-0 dependency reachable |
 | collatz | `SUCCESS`, `all_terminate: true` |
 | govern agent action | `SUCCESS` |

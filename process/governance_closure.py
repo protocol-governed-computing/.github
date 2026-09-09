@@ -44,6 +44,8 @@ import re
 import sys
 from pathlib import Path
 
+import yaml
+
 WORKSPACE = Path(__file__).resolve().parents[2]
 PLATFORM = WORKSPACE / "software_governance"
 REGISTRY = PLATFORM / "registry"
@@ -75,18 +77,41 @@ def yaml_block(text: str) -> dict:
         return {}
 
 
+MACHINE = re.compile(r"^## Machine\s*\n+```yaml\s*\n(?P<y>.*?)\n```", re.M | re.S)
+
+
+def machine_block(path: Path) -> dict | None:
+    """The artifact's parsed `## Machine` block, or None.
+
+    Scoped deliberately. Reading the whole file matched prose: a violation *example* in
+    `INVARIANT_SUPERSEDED_NOT_REFERENCED_V0` carries an illustrative `handler:` key, which the
+    previous regex harvested as a handler named `workflow:`; and a substring test for
+    `artifact_kind: INVARIANT` matched `CONSTITUTION_INVARIANTS_V0` on its prose, adding a
+    constitution to the invariant set. Prose declares nothing (MB-1) — the extractor must read
+    only what is inside the fence, as the compiler does.
+    """
+    m = MACHINE.search(path.read_text(encoding="utf-8"))
+    if not m:
+        return None
+    try:
+        return yaml.safe_load(m.group("y"))
+    except yaml.YAMLError:
+        return None
+
+
 def invariant_handlers() -> set[str]:
     """Every handler key the governance surface names, explicitly or by the compiler's convention."""
     named: set[str] = set()
     for md in sorted(REGISTRY.rglob("*.md")):
-        text = md.read_text(encoding="utf-8")
-        if "artifact_kind: INVARIANT" not in text:
+        block = machine_block(md)
+        if not isinstance(block, dict) or block.get("artifact_kind") != "INVARIANT":
             continue
-        code = re.search(r"^\s*invariant_code:\s*(\S+)", text, re.M)
-        code = code.group(1) if code else md.stem
-        override = re.search(r"^\s*handler:\s*(\S+)", text, re.M)
-        if override:
-            named.add(override.group(1))
+        code = block.get("invariant_code") or md.stem
+        # The override lives under `assert_projection`, which is where the enforcement parameters
+        # are declared; it was read from the raw text before, so its nesting never mattered.
+        override = (block.get("assert_projection") or {}).get("handler") or block.get("handler")
+        if isinstance(override, str):
+            named.add(override)
         # The convention applies whether or not an override exists: an invariant with an override
         # still derives its assert code, and both spellings are keys a registry entry may answer to.
         named.add(f"{HANDLER_PREFIX}.{('ASSERT_' + code[len('INVARIANT_'):]).lower()}"

@@ -60,7 +60,7 @@ authority, encoded as one boundary among peers.
 decide — and governance concern — what is being decided about — are orthogonal, and the surface
 expresses both through a single identifier, which makes the distinction unenforceable by any check.
 
-Recorded in `software_governance/doc/AUTHORITY_VS_CONCERN_RULING.md`, unratified. A separate finding
+Recorded in `software_governance/rulings/AUTHORITY_VS_CONCERN_RULING.md`, unratified. A separate finding
 records that `governed_by` forms a literal two-node cycle through the supreme constitution, and that
 the relation has two possible meanings the surface does not declare.
 

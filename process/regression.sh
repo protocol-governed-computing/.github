@@ -20,7 +20,33 @@ MODE="${1:-exec}"
 
 if [[ "$MODE" == "--build" || "$MODE" == "--all" ]]; then
   echo "=== BUILD: clean rebuild ==="
-  rm -rf "$W/snapshot" "$W/data" "$W/traces"
+
+  # Every generated snapshot, not just the assembled one. Leaving a domain's compiled/ in place
+  # makes "clean rebuild" a claim rather than a fact: a retired artifact surviving there is caught
+  # by S8 as an undeclared output, which reads as a compiler defect rather than as stale state.
+  #
+  # `pgc_release/snapshot` is EXCLUDED and must stay excluded. It is not build output — it is the
+  # sealed composition a paper cites by DOI, written once by `release.sh --publish-composition`
+  # and reproducible by nothing. Its only copy is git. The exclusion is asserted below rather than
+  # trusted, because a deletion here is silent and the loss is discovered much later.
+  find "$W" -type d -name snapshot \
+       -not -path "$W/.venv/*" -not -path "$W/pgc_release/*" \
+       -prune -exec rm -rf {} +
+  rm -rf "$W/data" "$W/traces"
+
+  # macOS writes .DS_Store into any directory Finder opens, including a sealed snapshot. Acceptance
+  # then refuses the snapshot as carrying undeclared content (3b §6) — correct, but it makes a
+  # DOI-cited release look corrupt when nothing about it changed. They are gitignored, so nothing
+  # warns you and the failure surfaces only at boot. Removing them cannot destroy anything: a
+  # .DS_Store is never a constituent. This sweeps the workspace, `pgc_release` included, because
+  # that is the one snapshot no rebuild would otherwise clean.
+  find "$W" -name .DS_Store -not -path "$W/.venv/*" -delete
+
+  if [[ ! -f "$W/pgc_release/snapshot/manifest.json" ]]; then
+    echo "ABORT: the cleanup removed pgc_release/snapshot — sealed evidence, not build output." >&2
+    echo "  Recover it before doing anything else:  git -C pgc_release restore snapshot/" >&2
+    exit 1
+  fi
   "$W/protocol_compiler/compile.sh" STRUCTURE_BUILD_PLATFORM_CONFIG_V1 || exit 1
   for d in conformance_workloads/workloads/collatz transformation snapshot_inspector \
            business_domains/ai_governance business_domains/book_library_mgmt \
@@ -45,6 +71,16 @@ if [[ "$MODE" == "--all" ]]; then
   done
   python "$W/.github/process/implementation_closure.py"
   PYTHONPATH="$W/snapshot_inspector" python "$W/snapshot_inspector/scripts/testbed/test_inspector.py"
+
+  # Suites that existed but were never run here. Two of them are currently red, and were red
+  # unnoticed for exactly that reason — see RUNBOOK "## Expected".
+  for t in "$W/snapshot_assembler/scripts/testbed/test_indexes.py" \
+           "$W/protocol_compiler/scripts/testbed/test_compiler_atoms.py" \
+           "$W/protocol_compiler/scripts/test_governance_provenance.py" \
+           "$W/protocol_runtime/testbed/pgc/test_reference_collatz.py" \
+           "$W/protocol_runtime/testbed/pgc/test_warm_boot.py"; do
+    echo "--- $(basename "$t")"; python "$t"
+  done
 
   # The assembled snapshot read by the inspector that was just composed. test_inspector.py runs
   # against fixtures and says nothing about THIS snapshot; without this line a fully green run can

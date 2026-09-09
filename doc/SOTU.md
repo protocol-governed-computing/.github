@@ -131,15 +131,44 @@ from `dev/16`.
 **Environment.** A `.DS_Store` written into a sealed snapshot makes it unbootable — correctly refused
 at acceptance under 3b §6, but it means opening a snapshot in Finder breaks it until the file is removed.
 
-### On `dev/16`, uncommitted
+### Committed on `dev/16` — seven repositories, working trees clean
 
-Packaging fixed in `software_governance` and `conformance_workloads` — narrowed `packages.find`
-excludes and scoped `package-data`. Wheels verified to carry no registry, snapshot, `test_payloads` or
-`.DS_Store`, with every implementation module still present and the compile output unchanged.
-`pgc_install/README.md` rewritten with the four repositories, the six-anchor table and the rough edges.
-`.github/snapshot_profiles/GOVERNANCE_SURFACE_PROFILE_V0.md` added, untracked.
-All nine pyprojects and the eight pins carry `3.0.1`, which **is to be replaced by `4.0.0`** — the
-composition changes, so this is not a patch.
+| repo | commit | what |
+|---|---|---|
+| `software_governance` | `fa1e4b2` | `pyproject.toml` — `packages.find` excludes the nested `registry/` trees; `package-data` scoped to `capability_side_effects.implementation` |
+| `conformance_workloads` | `e09ac9e` | `pyproject.toml` — excludes `snapshot*`, `registry*`, `test_payloads*`; `package-data` block dropped. `README.md` profile rename |
+| `snapshot_assembler` | `1177b4e` | `assembler/indexes.py` — `_load_canonical` prefers the authoring copy; `scripts/testbed/test_indexes.py` +2 cases; `ARCHITECTURE.md` profile rename |
+| `.github` | `3e7f2d9` | `GOVERNANCE_SURFACE_PROFILE_V0.md` added; two profiles deleted; `REFERENCE_PLATFORM_PROFILE_V1.md` amended; `RUNBOOK.md`, `regression.sh`, `release.sh`, `SOTU.md` |
+| `protocol_compiler` | `de29b20` | `scripts/test_governance_provenance.py` profile rename |
+| `transformation` | `522bcac` | `README.md`, `scripts/testbed/e2e_phases_test.py` profile renames |
+| `pgc_install` | `264c647` | `README.md` — install guide, four repositories, six-anchor table, rough edges. On `main`, as that repo requires |
+
+**Version literals were reverted to `3.0.0` before committing** and are unchanged in all nine
+pyprojects. The bump goes to `4.0.0` as the last act before release, not `3.0.1` — the composition
+changes, so it is not a patch.
+
+**Two commit messages picked up surrounding prose** and read poorly: `1177b4e` and `fa1e4b2` both
+carry a fragment of the sentence that introduced the suggestion. Nothing is pushed, so
+`git commit --amend` still fixes them.
+
+### Build and test status — PASSING
+
+`regression.sh --all`, run at handoff on the committed tree, exit 0. Seven domains compiled and
+attested, assembled to `1194598a…`, composition conformance PASSED over 410 artifacts.
+
+Green: governance closure, governance chain, supersession agreement (7 relations), human block
+fidelity (404 artifacts), evidence determinism, frontmatter fidelity, meta (822 rules), differential
+(83 documents), e2e (83 cases), projection, construction acceptance 99/99, implementation closure
+(28 transforms), inspector 121/121, environment check. Execution: collatz SUCCESS, both
+`ai_governance` workflows SUCCESS, `book_library_mgmt` 23/23 and 21/21, `blockchain` identity 15/15
+and wallet 9/9.
+
+Red by design, both expected: `admission_contract_fidelity` at 31 findings, and the advisory half of
+`si snapshot validate` — `valid: True`, 10 checks, no non-advisory failure, with
+`republished_copies_agree` at 15 and `bound_paths_declared_as_stores` at 1.
+
+`snapshot_assembler/scripts/testbed/test_indexes.py` is 13/13 and is **not run by `regression.sh`** —
+it must be run explicitly.
 
 ### The skinny profile
 
@@ -184,24 +213,19 @@ concrete prerequisite below, not a formality.
 The standards copy at `standards/profile_authoring/worked_example/` is untouched and will now drift.
 Which copy is canonical is undecided.
 
-### Full regression, seven domains
+### What the regression does and does not establish
 
-`regression.sh --all` passes on `dev/16` with the packaging fix in place: seven domains compiled and
-attested, assembled to `cb56beb4…`, composition conformance PASSED over 410 artifacts, and every check
-green except `admission_contract_fidelity`, which is red by design at exactly the 31 findings the
-RUNBOOK expects. Execution covers collatz, both ai_governance workflows, book_library CR-1 (23/23) and
-CR-2 (21/21), and blockchain identity (15/15) and wallet (9/9). The inspector suite is 121/121.
+**The business domains are exercised from the workspace, not from a wheel.** This narrows the
+`pgc-domains` gap without closing it: nothing says the packaged distribution behaves the same, and
+that wheel has had no packaging review.
 
-Two limits worth stating, because the run looks more conclusive than it is.
+**`si snapshot validate` was added to the check block.** Without it a fully green run sits on top of
+a composition carrying advisory failures — which is how fifteen divergent copies went unreported
+through an earlier passing run.
 
-**The business domains were exercised from the workspace, not from a wheel.** This narrows the
-`pgc-domains` gap without closing it: nothing here says the packaged distribution behaves the same,
-and `pgc-domains` has still had no packaging review.
-
-**The new profile is not exercised by `regression.sh` as it stands.** The script pinned
-`PGC_SNAPSHOT_PROFILE=REFERENCE_PLATFORM_PROFILE_V1`; it now defaults to it and accepts an override,
-and `si snapshot validate` was added to the check block — without it a fully green run sits on top of
-a composition carrying advisory failures, which is how the divergent copies went unreported.
+**`regression.sh` claims one profile per run.** It now defaults to `GOVERNANCE_SURFACE_PROFILE_V0`
+and accepts `PGC_SNAPSHOT_PROFILE` as an override, which is how a candidate profile is read against
+the composition before being put in force.
 
 ### The skinny composition assembles, validates clean, and boots
 
@@ -264,10 +288,10 @@ re-validated.
    `metadata.imported` through materialization so the assembler selects on a declaration rather than
    on an emptied field. Separately, diagnose `bound_paths_declared_as_stores` — one violation,
    unrelated to the duplication, undiagnosed.
-3. **Per-repo review.** The packaging fix touched two of nine pyprojects; the other seven are
-   unreviewed. `pgc-domains` has had no packaging review at all.
-4. **`pgc-domains` exercised end to end.** `business_domains` was never cloned, compiled or run
-   during this validation. Blockchain's optional crypto extra is likewise untested.
+3. ~~Per-repo review.~~ **Done** — all nine wheels inspected, three blanket globs narrowed, the
+   `pgc-domains[blockchain]` extra exercised.
+4. ~~`pgc-domains` exercised end to end from a wheel.~~ **Done** — `ai_governance` compiled,
+   assembled, booted and executed from an offline wheel install with no workspace code on the path.
 5. **Documentation.** Fold the anchor set and rough edges into the component READMEs, correct
    `release.sh:27`, and record the `.DS_Store` hazard.
 6. **Mock upload.** TestPyPI, with `--extra-index-url` to real PyPI for third-party dependencies, then
@@ -277,6 +301,76 @@ re-validated.
 
 Still untested and not closable locally: installing from PyPI itself, and any platform or Python other
 than macOS/arm64 on 3.12. `requires-python = ">=3.10"` is a claim, not a tested fact.
+
+### Packaging reviewed across all nine wheels — clean
+
+Prerequisite 3 is closed. Every wheel was built and inspected: no `registry/`, `snapshot/`,
+`.DS_Store`, `test_payloads`, testbed, scripts, docs or dossiers in any of the nine.
+
+Nothing needed is missing either, checked by installing all nine offline into a throwaway venv and
+walking them: **330 submodules imported across 12 packages, one failure** —
+`blockchain…ct_pure_derive_wallet_address_v0` needs `Crypto`, which is the `pgc-domains[blockchain]`
+optional extra behaving as designed. Installing the extra resolves it and `execute` is callable, so
+**the untested optional extra is now tested**. All six console scripts run. `compiler/VERSION` and
+`assembler/VERSION` are staged correctly by the `_build_hook` backend those two repos declare;
+`assembler.__init__` is the only importer that reads one.
+
+**One preventive change.** Three repos still carried the blanket `package-data` pattern that produced
+the two leaks already fixed — `protocol_compiler` and `snapshot_assembler` as
+`"*" = ["*.md", "*.yaml", "*.json", …, "VERSION"]`, `business_domains` as `"*" = ["*.json"]`. All
+three were clean only because no matching file happened to sit under a packaged tree; a design note
+added beside a module would have shipped silently. Narrowed to `"compiler" = ["VERSION"]`,
+`"assembler" = ["VERSION"]`, and the `business_domains` block removed. Rebuilt: contents identical —
+6, 170 and 17 files — so no behaviour changed and the trap is gone.
+
+`protocol_runtime` is the shape to copy: `include-package-data = false` with an explicit `exclude`.
+`snapshot_inspector` declares no package-data and needs none.
+
+### The full pipeline runs from the wheels
+
+Prerequisite 4 is closed. A business domain was compiled, assembled, booted and executed with **no
+workspace code on the path** — the toolchain from an offline wheel install, the declarations from
+copied repository trees, nothing in the workspace touched.
+
+Setup: `software_governance`, `business_domains` and `snapshot_inspector` copied to a scratch tree
+without their `snapshot/` directories, profiles copied beside them, and the nine wheels installed
+into a throwaway venv with `--no-index`. The repo `.sh` runners were deliberately **not** used —
+they put the workspace `protocol_compiler` on `PYTHONPATH`, which would have defeated the test.
+
+| step | result |
+|---|---|
+| platform compile | 187 artifacts, verified, attested |
+| inspection compile | 49 artifacts, verified, attested |
+| `ai_governance` compile | 63 artifacts, verified, attested |
+| assemble under `GOVERNANCE_SURFACE_PROFILE_V0` | 3 domains, `c19f8593…`, round-trip OK, conformance PASSED over 245 artifacts |
+| warm boot | 3 domains resident and hash-verified, provenance bound |
+| `WF_GOVERN_AGENT_ACTION_V0` | SUCCESS |
+
+Module origins were checked rather than assumed: `compiler`, `assembler`, `runtime`,
+`capability_transforms`, `ai_governance` and the executed CT all resolve under the test venv's
+`site-packages`. The platform capability layout is `capability_transforms.implementation.*` and
+`capability_side_effects.implementation.CS_*/runtime` — worth writing down, since the plausible guess
+`capability_transforms.atoms.*` is what the *domain* namespaces use, not the platform.
+
+**What this establishes and what it does not.** The packaged distribution can build and run a
+composition including a business domain. It still says nothing about installing from PyPI itself, or
+about any platform or Python other than macOS/arm64 on 3.12.
+
+### Start here next session
+
+**Review the packaging of the seven pyprojects nobody has looked at** — prerequisite 3. Two of nine
+were fixed because they leaked declarations into their wheels; the other seven were never examined,
+and `pgc-domains` is the one wheel shipping business-domain implementations with no review at all.
+It needs no decision from anyone, and it is a precondition for both remaining test items: knowing
+what the domains wheel contains comes before exercising it from a wheel (4), and before a mock
+upload (6).
+
+The alternative first move is prerequisite 2, but it opens with a design question — whether a
+consuming domain should publish under the authoring identity at all — so it wants deliberate
+attention rather than a sweep.
+
+Do not start with the version bump. It is last for a reason: every item above it can still move a
+snapshot identity.
 
 ---
 
@@ -1523,7 +1617,7 @@ something to seal, not on a schedule. In descending order of what it would estab
    and permissive enough for the other. The cycle summary calls it a design question, not a run.
 3. **The effecting path** — no capability with an external effect has ever been exercised, the
    largest untested surface the cycle names.
-4. **Transport** — Phase 1 frozen in `protocol_transport/doc/TRANSPORT_STANDARD_V0.md`; constitutions
+4. **Transport** — Phase 1 frozen in `protocol_transport/TRANSPORT_STANDARD_V0.md`; constitutions
    and adapters await authorization.
 
 **Resist the pull to build instead of publishing.** This session three times mistook a settled matter
