@@ -1,5 +1,120 @@
 # SOTU Handoff
 
+## v4 published to PyPI and tagged across ten repos — composition deposit still pending — 2026-09-09
+
+`dev/16` closed. All ten component repos carry tag `v4` on `main`, are clean on `dev/17`, and
+`protocol-governed-computing 4.0.0` is live on PyPI. The newcomer install path was executed
+end-to-end from an empty directory by the author and reached a booted snapshot. **The workspace is
+frozen**: no repo is to be modified. Known rough edges are deferred to JIT fixes, listed below.
+
+### The one unfinished step — blocked on two things, not one
+
+`release.sh --publish-composition` has **not** run. The first attempt died before staging anything:
+
+```
+compose_release: cannot reach Zenodo: The read operation timed out
+```
+
+`pgc_release` was never touched, carries no `v4` tag, and sits **3 commits ahead of origin** — those
+commits belong to the pending deposit, not stragglers to push separately.
+
+**Blocker 1 — Zenodo is down.** Not a defect and not our network: `zenodo.org/` itself returned 504,
+then stopped answering entirely. Check `https://status.zenodo.org` before doing anything else.
+
+**Blocker 2 — the ten component releases were never created, and this is the real gap.**
+`release.sh:178` creates a GitHub release for exactly one repo, `pgc_release`, inside the COMPOSE
+branch. The ten component repos receive only a **tag**. The script's own comment at that line states
+the consequence: *"Publishing the RELEASE is what fires the webhook; pushing the tag alone does
+not."* Zenodo mints on the `release` event, never on a tag push.
+
+Confirmed: `software_governance` has releases at `v2` and `v3` but **none at `v4`**, and its Zenodo
+webhook reports `"status": "unused"` — it has never fired. So the ten component DOIs for `v4` do not
+exist, and `compose_release.py` would have failed on ten missing DOIs even with Zenodo up. The
+outage masked it.
+
+**Those ten releases were made by hand in every prior cycle.** That manual step lived only in the
+author's memory, which is why its absence read as a network error. A script that supplies it is
+staged but deliberately **not** in `.github/process/` — writing it there would modify a frozen repo:
+
+```
+scratchpad/publish_component_releases.sh    # chmod +x before use; adopt into .github/process/ on unfreeze
+```
+
+It refuses to publish anything unless Zenodo answers first (a release published during an outage
+mints no DOI and needs a per-repo webhook redelivery afterwards), skips repos already released so a
+partial run is safe to repeat, and takes `--verify` to list which of the ten have deposits.
+
+**The ordinal edit must be re-applied on every attempt, and it now serves two purposes.**
+`.github/VERSION` is read by `compose_release.py:149` for the composition ordinal *and* by the
+release-notes lookup. The cut advanced it to **17**; the ten components declare **16** and the notes
+file is `release-16.md`. Composing at 17 stamps a deposit whose components claim a different ordinal
+— precisely the labelling artifact `pgc_release/MANIFEST.md:13` documents for v3. The fix is a
+temporary, never-committed edit:
+
+```bash
+cd ~/protocol-governed-computing && source .venv/bin/activate
+echo 16 > .github/VERSION
+
+scratchpad/publish_component_releases.sh             # ten component releases → ten DOIs
+sleep 90
+scratchpad/publish_component_releases.sh --verify    # all ten must show a timestamp
+
+.github/process/release.sh --publish-composition     # prompts before it commits
+echo 17 > .github/VERSION
+git -C .github status --porcelain                    # only doc/SOTU.md
+```
+
+Then verify `head -6 pgc_release/MANIFEST.md` reads public identity `v4`, assembler ordinal `16`.
+The compose aborts on its own if the `pgc_release` webhook is missing (it is present — one hook
+confirmed) or if `pgc_release` already bears the tag.
+
+### Verified state at freeze
+
+| check | result |
+|---|---|
+| workspace snapshot | `d92b447fd39eaf92`, `composite_hash` identical, profile `GOVERNANCE_SURFACE_PROFILE_V0`, 7 domains |
+| `si snapshot validate` | passed, 0 violations, no advisory, not truncated |
+| runtime warm-boot testbed | 6/6 passed |
+| release build gate (on the tagged tree) | clean rebuild + assemble + composition conformance, 410 passed / 5 skipped |
+| ten component repos | clean, `dev/17`, `main` tagged `v4` |
+| `pgc_install` | clean, `main`, pushed |
+| `pgc_release` | clean, `main`, **3 unpushed** — the pending deposit |
+
+### Cleanup queued from the newcomer install test
+
+Two documentation gaps the clean-environment run surfaced. Both are in `pgc_install/README.md`, both
+are cosmetic against a path that otherwise worked end-to-end, and neither is worth breaking the
+freeze for — do them in the first `dev/18` commit.
+
+1. **The `⚠ Machine-block health` advisory is undocumented.** A correct run prints it, the README's
+   rough-edges section does not mention it, and a newcomer has no way to tell an expected advisory
+   from a symptom. Say what it means and that it is expected.
+2. **The platform compile writes into the cloned repo.** `compiled/` lands inside the clone rather
+   than under a build root. The README never says so, so a reader who expects a read-only source
+   tree is surprised by a dirty checkout. State it, and note that `PGC_BUILD_ROOT` does *not* change
+   it — `build_root()` still has no callers.
+
+### Deferred — do not open the repos for these
+
+- `bound_paths_declared_as_stores` remains undiagnosed.
+- Whether anything should read profile §3 obligations — `GS-1`..`GS-3` are declared and unchecked.
+- Whether a consuming domain should publish under the authoring identity at all.
+- Canonical kind-vocabulary enumeration trigger has fired; parked in `.github/doc/parked_rulings.md`.
+- **Fold component-release publication into `release.sh`.** It is the missing half of the release
+  procedure and the direct cause of this cycle's stall; the staged script is the starting point.
+- **Split `release.sh` publish from ordinal advance.** A publish that fails leaves `.github/VERSION`
+  ahead of the identity it names, and the correction is a manual edit someone must remember. This
+  session is the motivating case, and the double duty that file now serves — ordinal *and*
+  release-notes selection — makes it worse, since both want the pre-advance value.
+
+### Next session should start with
+
+Check `https://status.zenodo.org`. When it is up, run the block above **in full** — the two component
+release commands are not optional, and skipping them is what failed this time. Nothing else in the
+workspace is to change. The author has moved to `~/omnibachi-site` to write a new paper; `standards/`
+is the only tree not frozen.
+
+
 ## Install path validated from a clean environment — `dev/16` reopened for the v4 mop-up — 2026-09-08
 
 The previous entry closed this file at the `v3` freeze. It reopens because installing `v3` from
