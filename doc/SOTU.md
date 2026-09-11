@@ -72,8 +72,8 @@ confirmed) or if `pgc_release` already bears the tag.
 
 | check | result |
 |---|---|
-| workspace snapshot | `d92b447fd39eaf92`, `composite_hash` identical, profile `GOVERNANCE_SURFACE_PROFILE_V0`, 7 domains |
-| `si snapshot validate` | passed, 0 violations, no advisory, not truncated |
+| workspace snapshot | `d92b447fd39eaf926bb2f4330f9efbb19d744ecfbc3fe9a214ae52945918905d` — the full id, because a truncation cannot be compared and reads as a mismatch against a rebuild. `snapshot_id` and `composite_hash` identical, profile `GOVERNANCE_SURFACE_PROFILE_V0`, 7 domains, 595 constituents. **Built at ordinal 16.** `COMPILER_VERSION` comes from `protocol_compiler/VERSION`, is written into every materialized artifact, and materialized artifacts are constituents — so the same governed content seals a different identity once the cycle advances the counter. At `dev/17` the same tree seals `41adfd877515544b0277fb843a99cd65efcf79c24579d29a28afa681b64be89e`; the seven graph addresses and all 595 constituents are unchanged between them. To reproduce this row, `echo 16 > protocol_compiler/VERSION` before building |
+| `si snapshot validate` | `valid: true`, 10 checks, **0 non-advisory violations** — which is the pass. Both advisory checks are red and always have been: `republished_copies_agree` 15, `bound_paths_declared_as_stores` 1. Advisory failures exit 0; `--strict` turns them red. An earlier version of this row read "no advisory", which is false and cost a downstream reader a wrong correction — state the counts, not a verdict |
 | runtime warm-boot testbed | 6/6 passed |
 | release build gate (on the tagged tree) | clean rebuild + assemble + composition conformance, 410 passed / 5 skipped |
 | ten component repos | clean, `dev/17`, `main` tagged `v4` |
