@@ -1,5 +1,142 @@
 # SOTU Handoff
 
+## v4 composition deposited — the release cycle is closed — 2026-09-11
+
+`release.sh --publish-composition` ran. **The composition version DOI is
+[10.5281/zenodo.22714911](https://doi.org/10.5281/zenodo.22714911)** (concept `10.5281/zenodo.22184747`).
+Cite the version DOI, never the concept. `pgc_release` is clean on `main`, tagged `v4`, pushed —
+the three commits that had been sitting ahead of origin went up with it.
+
+### The deposit
+
+| | |
+|---|---|
+| public identity | `v4` |
+| assembler ordinal | **16** |
+| sealed snapshot | `d92b447fd39eaf926bb2f4330f9efbb19d744ecfbc3fe9a214ae52945918905d` |
+| profile | `GOVERNANCE_SURFACE_PROFILE_V0` |
+| composition | 7 domains, 410 artifacts, 595 constituents, 597 snapshot files |
+
+**No ordinal-discrepancy section this time.** v3 carries one because it sealed ordinal 16 over
+components declaring 15. This deposit's ordinal matches what its components declare, and the
+`MANIFEST.md` accordingly has nothing to explain away.
+
+That did not happen by following the procedure the previous entry recorded. **That procedure was
+incomplete**: it set only `.github/VERSION`, which drives the manifest's prose. Two other files
+determine the artifact — `protocol_compiler/VERSION` becomes `COMPILER_VERSION`, lands in every
+materialized artifact, and therefore *changes the snapshot identity*; `snapshot_assembler/VERSION`
+becomes `provenance.assembler_version` and stamps the manifest's ordinal and `pgc_release/VERSION`.
+Composing with only the documented edit would have deposited snapshot `41adfd87…` at ordinal 17
+while claiming dev/16 — the exact artifact v3 had to apologise for.
+
+What was done instead, and what to do next cycle:
+
+```bash
+# Not an edit — a restore of the tagged state. v4..HEAD differs by exactly one
+# file in every component repo, and that file is VERSION.
+for r in protocol_compiler snapshot_assembler protocol_runtime protocol_transport          snapshot_inspector software_governance conformance_workloads          business_domains transformation .github; do
+  ( cd $r && git checkout v4 -- VERSION )
+done
+bash .github/process/regression.sh --build      # gate: must reproduce the freeze hash
+.github/process/release.sh --publish-composition
+
+# Restore. `git checkout <tag> -- FILE` STAGES the change, so `git checkout -- FILE`
+# is a silent no-op afterwards. This is the incantation that works:
+for r in ...; do ( cd $r && git restore --staged --worktree VERSION ); done
+bash .github/process/regression.sh --build
+```
+
+The rebuild before composing is a gate, not a formality: if it does not reproduce the hash this
+handoff records, stop rather than deposit something unverified.
+
+### Component DOIs at v4
+
+Nine, each unique. `.github` is not among them — it carries no Zenodo webhook and is not in
+`compose_release.COMPONENTS`.
+
+| repo | DOI | | repo | DOI |
+|---|---|---|---|---|
+| `software_governance` | 22714508 | | `snapshot_assembler` | 22714507 |
+| `conformance_workloads` | 22714505 | | `protocol_transport` | 22714513 |
+| `business_domains` | 22714506 | | `snapshot_inspector` | 22714514 |
+| `protocol_compiler` | 22714509 | | `transformation` | 22714518 |
+| `protocol_runtime` | 22714512 | | | |
+
+### Three duplicate deposits were minted and deleted — read this before the next cycle
+
+`transformation` was checked for its DOI with a Zenodo title search, `q=title:"(transformation)"`.
+Zenodo's tokenizer does not match that, so the query returned nothing **for a record that already
+existed**. Read as a failed mint, the release was deleted and recreated three times; each fire
+minted another version. Four v4 records existed for one component. Zenodo permits self-deletion
+under 30 days, so `22714657`, `22714682` and `22714703` were removed and `22714518` — the one the
+release cut produced — was kept.
+
+Three lessons, in order of how much they would have saved:
+
+1. **Never verify a mint with a title search.** Resolve a known prior version by DOI, read its
+   `conceptrecid`, and query `conceptrecid:<id>&all_versions=true`. That is exact and cannot
+   silently return zero.
+2. **Webhook status codes are noise.** `transformation` showed `hookshot_error`/500 on one
+   sub-event and had minted anyway; `snapshot_inspector` showed 500 on all three and minted. Zenodo
+   is slow enough (16.5 s to first byte during this cycle) that GitHub gives up after one attempt
+   while Zenodo still processes the request.
+3. **Redelivery needs `admin:repo_hook`,** which the current token lacks — `gh auth refresh -h
+   github.com -s admin:repo_hook` if it is ever needed. Without it the only lever is
+   delete-and-recreate, which mints. Prefer waiting.
+
+Also unavailable this cycle: `scratchpad/publish_component_releases.sh`, staged by the previous
+entry, was gone — the workspace `scratchpad/` no longer exists. The nine releases were created with
+a plain `gh release create v4 --verify-tag` loop, guarded by a Zenodo reachability check and a skip
+for any repo already released. That loop is worth keeping in `.github/process/` now that the freeze
+is over.
+
+### RUNBOOK and SOTU corrections
+
+Four expected-results claims were stale and are fixed, each verified against a run rather than a
+reading:
+
+- `test_warm_boot.py` — was "2 failures, both pre-existing"; is `6/6`. One change resolved both:
+  `boot()` no longer carries its own acceptance check and delegates to
+  `assembler.core.verify_snapshot`. `test_composite_recompute_matches_manifest` was retired with the
+  weaker check it tested.
+- `test_governance_provenance.py` — was "2 of 4 red, undiagnosed"; is `4/4`.
+- the freeze row's snapshot id — was truncated to 16 of 64 characters, which cannot be compared and
+  reads as a mismatch against any rebuild. Now full, with the ordinal it was built at.
+- `si snapshot validate` — the freeze row said "no advisory", which is false. Both advisory checks
+  are red and always have been (`republished_copies_agree` 15, `bound_paths_declared_as_stores` 1).
+  Non-advisory violations are zero, which is the pass. This row cost a downstream reader a wrong
+  correction; it now states counts, not a verdict.
+
+**The common cause is not any of the four lines.** `RUNBOOK.md`'s expected-results table is a rule
+set carried in prose that nothing evaluates, so no rule in it is capable of refusing. Payloads and
+boundary contracts each have a `--check` that prints `DRIFTED` on a hand edit; the runbook has none.
+Until those expectations are data the script compares against — including an *unexpected pass*, which
+is how both of these went unnoticed — the table will drift again.
+
+### State
+
+All twelve repos clean. Ten components on `dev/17` with `VERSION` 17; `pgc_release` and
+`pgc_install` on `main`. Working snapshot rebuilt to `41adfd877515544b0277fb843a99cd65efcf79c24579d29a28afa681b64be89e`
+at ordinal 17 — that is the dev-cycle build and is *not* the deposited artifact.
+
+Only `main` exists on any remote; `dev/N` is local-only and has no upstream, so "in sync" is not a
+question that applies to it. `.github/main` carries one commit past tag `v4` (`5ad8a62`, the RUNBOOK
+fix) so the correction is publicly readable now; the next `release.sh --publish` will force-push an
+orphan over it, which is harmless since the fix is already on `dev/17` and rides the squash.
+
+### Queued for `dev/18`
+
+- Runbook expectations as data, with an unexpected-pass check (above).
+- `publish_component_releases.sh` adopted into `.github/process/`.
+- Two `pgc_install/README.md` documentation gaps from the newcomer install test, carried from the
+  previous entry.
+- Profiles out of `.github` into their own repo, not on PyPI, with `PGC_SNAPSHOT_PROFILES` required
+  and the profile's *content hash* covered by the snapshot identity. Today the identity covers the
+  profile's name only, so a profile can be weakened without changing the identity of any snapshot
+  claiming it. This is a v5 change: it alters what the identity covers, and therefore every id.
+
+---
+
 ## v4 published to PyPI and tagged across ten repos — composition deposit still pending — 2026-09-09
 
 `dev/16` closed. All ten component repos carry tag `v4` on `main`, are clean on `dev/17`, and
