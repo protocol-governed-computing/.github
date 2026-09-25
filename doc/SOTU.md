@@ -1,5 +1,105 @@
 # SOTU Handoff
 
+## The read-back — the profile answered its own question
+
+The work the whole exercise was set up to produce, and the one piece no tool performs. Recorded in
+`doc/profile_readback_signed_federated.md` against snapshot
+`f899c0d8ba6ff6e0b2fa76eb43cfb3010e2095ab44b696d0c37f456aacaa3466`.
+
+### Result
+
+```
+§1 selections          Holds — 7 of 7
+§2 required artifacts  Holds — 11 of 11
+§3 obligations         2 Hold · 2 Not satisfied · 1 Not testable here
+§4 claims              5 of 5 discharged
+§5 derivation          Holds
+§6 externality         Not satisfied
+EO-1 … EO-6            2 Hold · 1 Partial · 2 Not satisfied · 1 Not testable here
+```
+
+**Five unmet obligations, one cause.** OB-2, OB-3, EO-1, EO-3 and EO-4 are about a deployment of
+several nodes, and there is one host. Nothing about the platform prevents meeting them and nothing
+about this deployment meets them. The composition satisfies what the platform *means*; the
+deployment does not satisfy where it *runs*. That split is the finding, and it is the expected one.
+
+### Every claim was demonstrated, and one demonstration was invalid
+
+All five ran against the composition and all five could have failed.
+
+- `SNAPSHOT_IMMUTABILITY` — a constituent altered; refused at acceptance naming the file and both
+  hashes.
+- `DETERMINISTIC_EXECUTION` — one workflow and payload across four worker processes; four identical
+  determinations. This tests SM-10 *across workers*, which a single-process platform cannot exercise
+  at all.
+- `COMPILED_INVOCATION_RESOLUTION` — a workflow the dispatch table does not name refused with
+  `WF FQDN not in vocab`.
+- `SIGNED_SNAPSHOT_VERIFICATION` — an anchored node refused an unverifiable signature; an unanchored
+  node booted the same snapshot.
+- `EVIDENCE_EXPIRY` — evidence past the window ended with its attestation, evidence within it
+  survived, the deletion recorded to an append-only stream.
+
+**The first attempt at the signature demonstration was invalid, and the read-back records it.** It
+corrupted a signature on an already-tampered snapshot, so acceptance refused before authentication
+ran — a signature refusal would have been reported that never happened. A demonstration that cannot
+isolate what it claims to test establishes nothing. Re-run on an intact snapshot.
+
+### What the reading found beyond the verdicts
+
+**§2 is prose the assembler does not read.** Eleven identities are required by §2 and none by
+`required_governance.artifacts`, which is `[]`. A profile whose §2 emptied tomorrow would still
+assemble. That is a finding about the profile's machinery rather than about the platform.
+
+**The domain authority claims are checked by nothing.** `platform` and `transformation` each name a
+decision no other domain may make — admission, sufficiency. No mechanism establishes that no other
+domain makes it. Recorded as asserted rather than established, which is what the generated text said
+before the tables were filled.
+
+**The read-back does not improve externality; it repeats it.** Performed by the same party that
+wrote the profile, the platform, and the surface it derives from. A profile read against a
+composition by its own author establishes that the author believes it holds, which is weaker than
+what a read-back is for.
+
+### The thing worth carrying forward
+
+The profile **refused a composition for lacking an artifact nobody had written** — the evidence
+expiry side effect — and the artifact was written in response. That is the strongest evidence in the
+exercise that the profile does work rather than describes it, and it happened because §2 named a
+requirement its own author could not yet meet.
+
+### Status of the profile
+
+`usable_as_a_target: false`, and correctly. §7 makes being read against a candidate snapshot the
+precondition of use; that reading has now happened, and it found five unmet obligations and an unmet
+externality requirement. The precondition is satisfied and the target is not met.
+
+**What would change the verdict is a deployment, not code**: nodes that are separately addressable,
+an evidence store held by none of them, and a build machine that is not one of them.
+
+### Still owed
+
+The five-gap list that opened this line of work is closed. What replaces it is shorter and is not
+all code.
+
+1. **A deployment.** Four addressable nodes, an evidence store external to all of them, and a build
+   machine that is not one of them. That closes OB-2, OB-3, EO-1, EO-3 and EO-4 together, because
+   they have one cause. Until then the profile is read and not met.
+2. **A second reader.** Externality is unmet and a read-back by the author does not mend it. This is
+   the only item nothing in this workspace can do.
+3. **`cryptographic_trust` V1** — its mode is `LOCAL_DEV_UNSIGNED`, and signing should be selected
+   by a composition rather than carried by the surface. The selector generalization already
+   pre-wired it; it needs declarations only.
+4. Four notes in `doc/` awaiting a decision rather than work: the handler namespace rename,
+   supersession-and-force, the composition output root, and the regulated-model domain.
+
+### Where the platform stands
+
+Everything the profile says about *meaning* holds against a sealed, signed, multi-worker composition
+that boots, authenticates and executes. Everything it says about *placement* awaits hosts. No part
+of it is unexamined.
+
+---
+
 ## Placement made composable, and a coordinator that uses it — dev/17
 
 Still nothing on GitHub. Every remote carries `main` alone.
