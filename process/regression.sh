@@ -82,7 +82,8 @@ if [[ "$MODE" == "--all" ]]; then
            "$W/protocol_compiler/scripts/testbed/test_compiler_atoms.py" \
            "$W/protocol_compiler/scripts/test_governance_provenance.py" \
            "$W/protocol_runtime/testbed/pgc/test_reference_collatz.py" \
-           "$W/protocol_runtime/testbed/pgc/test_warm_boot.py"; do
+           "$W/protocol_runtime/testbed/pgc/test_warm_boot.py" \
+           "$W/protocol_runtime/testbed/pgc/test_federation.py"; do
     echo "--- $(basename "$t")"; python "$t"
   done
 

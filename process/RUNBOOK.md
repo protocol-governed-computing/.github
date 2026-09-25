@@ -54,13 +54,14 @@ PGC_SNAPSHOT_PROFILE=SIGNED_FEDERATED_MULTINODE_PROFILE_V0 bash regression.sh --
 — and answers a different question, since it requires fifteen kinds where the profile in force
 requires seven, and obliges a signed snapshot that a default run neither produces nor checks.
 
-**One surface, two compositions.** Placement is selected by a build configuration rather than marked
+**One surface, three compositions.** Placement is selected by a build configuration rather than marked
 on an artifact, so the surface declares what is available and a build declares what is active:
 
 | Build configuration | Placement | Output root |
 |---|---|---|
 | `STRUCTURE_BUILD_PLATFORM_CONFIG_V1` | `LOCAL_SINGLE_NODE` | `software_governance/snapshot` |
 | `STRUCTURE_BUILD_PLATFORM_MULTIWORKER_CONFIG_V1` | `LOCAL_MULTI_WORKER` | `software_governance/snapshot_mw` |
+| `STRUCTURE_BUILD_PLATFORM_FEDERATED_CONFIG_V1` | `FEDERATED_NODE` | `software_governance/snapshot_fed` |
 
 A default run builds the first. The second is built by naming it, into its own root:
 
@@ -72,6 +73,11 @@ PGC_SNAPSHOT_ROOT=$PWD/software_governance/snapshot_mw \
 **The output root is an argument, not a declaration, and the two compositions can therefore collide.**
 Pointing the multi-worker build at `snapshot/` overwrites the single-node composition, and both
 builds report success. See `doc/composition_output_root.md`.
+
+The federated composition runs on a node group, not in place. Its nodes are configured by hand per
+`process/deploy/NODE_CONFIG.md`; `process/deploy/PLAN.md` gives the topology and the checks.
+`protocol_runtime/testbed/pgc/test_federation.py` exercises the same arrangement as processes on one
+machine.
 
 **Signing is optional and off by default.** `assemble --signing-key` writes a signature beside the
 manifest; a node holding `PGC_TRUST_ROOT_PUBKEY` requires and checks one, and a node holding no
