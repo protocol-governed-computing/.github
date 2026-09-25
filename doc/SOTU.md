@@ -1,5 +1,81 @@
 # SOTU Handoff
 
+## FEDERATED_NODE authorized — the deployment has a composition — dev/17
+
+Declarations and one deletion. No compiler change, which is what the selector generalization was
+for.
+
+### What was added
+
+`CONSTITUTION_EXECUTION_PLACEMENT_V1` §1 now authorizes three modes, and §5a says what the third
+permits: several separately addressable nodes under **one** authority, work reaching a node across a
+network, and a node executing a topology it did not receive from a caller. It does not permit a
+second authority — *a node is where execution happens; it is not a party that determines anything,
+and its refusal is the one authority refusing, reached on that node.*
+
+```
+single-node    LOCAL_SINGLE_NODE    cross_node=False
+multi-worker   LOCAL_MULTI_WORKER   cross_node=False
+federated      FEDERATED_NODE       cross_node=True
+```
+
+Three compositions from one surface, each carrying the arrangement its build named.
+`STRUCTURE_BUILD_PLATFORM_FEDERATED_CONFIG_V1` assembles, signs and boots:
+
+```
+snapshot_id  347be1741d7a1191bf7863462d4ec41340a33e2de7375c8c51145a59a3b201d4
+composition  PASSED (5 rules over 212 artifacts)
+boot         Authenticated under trust root, healthy
+regression   exit=0, 135 OK, governance closure passing
+```
+
+### The line that decides the deployment
+
+**The distinction from `LOCAL_MULTI_WORKER` is reachability, not count.** Workers in processes are
+not addressable at any host count, and the mode forbids cross-node dispatch outright — so a
+`LOCAL_MULTI_WORKER` composition can never satisfy EO-1, on any number of hosts. That is sharper
+than the read-back's "not satisfied", which recorded the deployment rather than the impossibility.
+
+`FEDERATED_NODE` is what an environment profile requiring addressable nodes can be met under. The
+LXC work now has a composition to deploy.
+
+### Three judgments
+
+**V1 was amended in place, not superseded by a V2.** Governance §3.3 makes versions immutable *once
+ratified*; nothing on `dev/17` is ratified. V1 ships once carrying three modes rather than shipping
+as V1 and immediately again as V2.
+
+**`REMOTE_WORKER_POOL` was skipped, and §6 says so rather than jumping silently.** A pool is a set of
+interchangeable executors behind one address; a node group is addressable participants with declared
+roles. The profile names roles, so the pool is not on the path to it. The cost is recorded: nothing
+here has been demonstrated against an arrangement where executors are anonymous.
+
+**The duplicated authorization was removed.** Generalizing the selector argued that stating the
+authorized set twice creates two places for it to disagree, and then left `AUTHORIZED_MODES` in the
+placement handler. There is now no copy anywhere in the compiler. The set exists in the constitution
+and in the structures declaring it, and authorization is enforced where it can only be stated once —
+a mode no structure declares resolves to nothing at selection and the build refuses.
+
+### Two things now stale
+
+1. **The read-back is against the multi-worker snapshot.** `doc/profile_readback_signed_federated.md`
+   records EO-1 as not satisfied by that deployment; against a federated composition the entry
+   should be re-read, and it remains not satisfied until there are hosts.
+2. **The RUNBOOK table lists two compositions**, not three.
+
+Neither is wrong, both are behind.
+
+### Where this leaves the platform
+
+Everything the profile says about meaning holds. Everything it says about placement now has a
+composition that *can* satisfy it and a deployment that does not yet exist. The next move is
+`shuttle`: four nodes, an evidence store held by none of them, a build machine outside the group.
+That closes OB-2, OB-3, EO-1, EO-3 and EO-4 together, because they have one cause.
+
+The item nothing here can close remains a second reader.
+
+---
+
 ## The read-back — the profile answered its own question
 
 The work the whole exercise was set up to produce, and the one piece no tool performs. Recorded in
