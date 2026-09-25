@@ -1,5 +1,152 @@
 # SOTU Handoff
 
+## Placement made composable, and a coordinator that uses it — dev/17
+
+Still nothing on GitHub. Every remote carries `main` alone.
+
+### What this was for
+
+`SIGNED_FEDERATED_MULTINODE_PROFILE_V0` obliges four node roles. The governance surface forbade
+them: `CONSTITUTION_EXECUTION_PLACEMENT_V0` §1 authorized `LOCAL_SINGLE_NODE` only — *no remote
+dispatch, no worker pool consulted, no distribution layer involved.* Dispatch was never an
+implementation task; it was a governed prohibition, and writing a coordinator first would have built
+something the surface refuses.
+
+### Placement is now a property of a composition
+
+V0 held that a surface carries one placement structure marked `status: active`. That is adequate
+while a surface serves one composition and incoherent once it serves two: **an inventory cannot hold
+two answers to where execution runs.** V0 §2 already said the compiler finds *"the active placement
+contract in this boundary"* — a boundary is a build, and V0 read it as a repository because for one
+composition the two could not be told apart.
+
+| | |
+|---|---|
+| surface | declares what is **available** — one structure per authorized mode, none claiming activity |
+| build configuration | declares what is **active** — naming exactly one |
+| snapshot | records what **was** active, so a composition's permissions are recoverable from it |
+
+`CONSTITUTION_EXECUTION_PLACEMENT_V1` authorizes `LOCAL_SINGLE_NODE` and `LOCAL_MULTI_WORKER`. Its
+§8 records that V0 was **deleted, not superseded**, and argues it: a superseded structure stays in
+the composition, so two would declare one mode; a superseded invariant is still enforced, so V0's
+check would go on demanding a `status: active` V1 deliberately drops; and a successor naming an
+excluded predecessor dangles. All three were observed, not predicted.
+
+### The selector is generalized, and three more boundaries are pre-wired
+
+`STRUCTURE_BOUNDARY_SELECTION_V0` declares which boundaries a build selects and where each side of
+the selection is written. The compiler loads it as it loads `STRUCTURE_DISCOVERY_V0`. Four
+boundaries are declared — placement, scheduling, security domain, cryptographic trust — and **all
+four already declared their mode in exactly the field the table names**, so the build configuration
+now selects all of them. Three have one candidate today, making selection a no-op; when any of them
+gets its own V1, multiple candidates become selectable with no compiler change.
+
+Authorization is stated once. The compiler holds no list of authorized modes: a mode no structure
+declares resolves to nothing and is refused, because a surface carries a structure only for a mode
+its constitution admits.
+
+### Scheduling does not need a V1, and I was wrong to say it did
+
+`execution_scheduling` governs *how execution units **within a topology** coordinate* — parallel
+branches, non-blocking dispatch, deterministic joins. Four workers each running a whole workflow is
+several serial topologies side by side, and inside each worker scheduling remains
+`SERIAL_SINGLE_WORKER`. Changing it would have authorized parallel branch execution inside
+workflows, which nothing asks for — the exact widening the placement work existed to avoid, for no
+reason.
+
+`cryptographic_trust` **does** need the same treatment eventually: its mode is `LOCAL_DEV_UNSIGNED`,
+and signing has to become profile-conditional rather than surface-wide.
+
+### Two compositions from one surface
+
+```
+single-node   sealed LOCAL_SINGLE_NODE    from ..._LOCAL_SINGLE_NODE_V1
+multi-worker  sealed LOCAL_MULTI_WORKER   from ..._LOCAL_MULTI_WORKER_V1
+```
+
+Both 190 artifacts, same surface, one line different.
+`STRUCTURE_BUILD_PLATFORM_MULTIWORKER_CONFIG_V1` says so in its own header: a configuration *is* the
+definition of a composition, and where the two diverge in anything but placement, that divergence is
+a defect.
+
+The multi-worker composition assembles, signs and boots:
+
+```
+snapshot_id  f899c0d8ba6ff6e0b2fa76eb43cfb3010e2095ab44b696d0c37f456aacaa3466
+composition  PASSED (5 rules over 211 artifacts)
+boot         Authenticated under trust root 70c5f1e7129766a3, healthy
+```
+
+### The coordinator
+
+`protocol_runtime/runtime/coordinator.py` — a coordinating party that runs several runtimes. Not
+part of the runtime and unknown to it: placement §4 obliges a runtime to execute *without consulting
+placement mode for branching*, so each worker calls `run_workflow` exactly as a lone runtime would.
+What the coordinator adds is which runtime receives which unit, which is a placement question.
+
+Tested, three workers, six units:
+
+```
+all six executed, spread across workers 0/1/2, one claim recorded per unit
+re-dispatch of the same units    all claimed_elsewhere, executed again: 0
+coordinating a single-node snapshot    REFUSED
+```
+
+**Placement now governs something.** The mode is read from the sealed composition, not from
+configuration — *a coordinator cannot grant itself an arrangement the composition does not carry.*
+
+**OB-4 and EO-5 hold by construction.** A claim is taken by exclusive file creation, so the
+filesystem decides once and the loser of a race learns it lost rather than discovering it later in
+the evidence. A claim that checked and then wrote would leave a window where two workers both
+believed they held it.
+
+**The over-refusal is stated, not discovered.** A worker that claims and dies before its first
+effect leaves work nobody retries. Inferring *begun* from effects means reading state a worker may
+be mid-write on — the condition it is trying to detect. SM-7a obliges a realization that can apply a
+transition partly to determine the resulting state; declining to resume is how this platform
+declines to be in that position, and the profile said so before the code did.
+
+### The surface refused three times, and each refusal taught something
+
+- **`ASSERT_CS_SURFACE_CLOSED_V1`** — a capability is not admitted by existing on disk.
+- **`ASSERT_SCHEMA_CONFORMANCE_V0`** — the machine block schema is **closed**. `ratified`, `status`
+  on a constitution, `multi_worker_allowed`, `selection_check` were all invented and all refused. I
+  had been authoring against the shape of examples rather than against the schema.
+- **`composition_check` expresses cardinality over snapshot artifacts only** — which killed the
+  design I had written and produced a better one needing no schema change: the compiler selects and
+  materializes one, the invariant verifies the result. *A snapshot carrying every available mode so
+  an invariant could pick between them would be carrying permissions it was not granted.*
+
+The schema also settled a naming question — `multi_worker_allowed` was refused, and rightly:
+`placement_mode: LOCAL_MULTI_WORKER` already says it, and a boolean beside it is a second place for
+one fact to disagree with itself.
+
+### Held in `doc/`
+
+- `supersession_and_force.md` — a superseded artifact stays in force. `SU-7` requires exclusion from
+  *every* projection execution consumes; the realization satisfies only the retention half. The
+  existing hygiene check assumes artifacts are reached by **reference**; invariants are reached by
+  **presence**. Five superseded artifacts exist, all reference-reached, so exposure is nil and
+  nothing prevents the sixth. The map's `SU-7` entry was scoped to the projection it was tested
+  against.
+- `composition_output_root.md` — two compositions can overwrite each other's output. The root is
+  supplied by `PGC_SNAPSHOT_ROOT`; the build configuration declares every path *within* it and not
+  the root. New today, for the same reason placement was: one surface, two compositions.
+- `handler_namespace_rename.md`, `regulated_llm.md` — unchanged.
+
+### Still owed
+
+1. **Nothing read back against the profile by hand.** Unchanged, and now the largest remaining item:
+   the trust root, the five-day window, the five obligations, the six environment obligations, the
+   claim discharges. No tool does this.
+2. **The evidence store is not yet external to every node.** Claims and traces sit under one
+   `data_root`. On one host that is a directory; OB-3 wants it held by no node, which on four
+   containers is a mount. Nothing in the code decides that.
+3. `cryptographic_trust` V1, when signing becomes profile-conditional.
+4. `snapshot_mw/` is a name invented when an output root was needed — see the `doc/` note.
+
+---
+
 ## Signing, evidence expiry, and a midcourse correction — dev/17
 
 Nothing here is on GitHub. Every remote carries `main` alone; `dev/17` is local, and stays local
