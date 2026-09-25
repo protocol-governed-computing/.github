@@ -54,6 +54,35 @@ PGC_SNAPSHOT_PROFILE=SIGNED_FEDERATED_MULTINODE_PROFILE_V0 bash regression.sh --
 — and answers a different question, since it requires fifteen kinds where the profile in force
 requires seven, and obliges a signed snapshot that a default run neither produces nor checks.
 
+**One surface, two compositions.** Placement is selected by a build configuration rather than marked
+on an artifact, so the surface declares what is available and a build declares what is active:
+
+| Build configuration | Placement | Output root |
+|---|---|---|
+| `STRUCTURE_BUILD_PLATFORM_CONFIG_V1` | `LOCAL_SINGLE_NODE` | `software_governance/snapshot` |
+| `STRUCTURE_BUILD_PLATFORM_MULTIWORKER_CONFIG_V1` | `LOCAL_MULTI_WORKER` | `software_governance/snapshot_mw` |
+
+A default run builds the first. The second is built by naming it, into its own root:
+
+```bash
+PGC_SNAPSHOT_ROOT=$PWD/software_governance/snapshot_mw \
+  protocol_compiler compile --structure STRUCTURE_BUILD_PLATFORM_MULTIWORKER_CONFIG_V1
+```
+
+**The output root is an argument, not a declaration, and the two compositions can therefore collide.**
+Pointing the multi-worker build at `snapshot/` overwrites the single-node composition, and both
+builds report success. See `doc/composition_output_root.md`.
+
+**Signing is optional and off by default.** `assemble --signing-key` writes a signature beside the
+manifest; a node holding `PGC_TRUST_ROOT_PUBKEY` requires and checks one, and a node holding no
+anchor boots an unsigned snapshot exactly as before. A default run neither signs nor checks, which
+is why the profile's OB-1 is not exercised by it.
+
+**What a regression run does not establish about the signed profile.** It composes and it satisfies
+the machine-checked floor. The obligations about placement — several addressable nodes, an evidence
+store held by none of them, a build machine that is not one of them — are not exercised by any run
+on one host. `doc/profile_readback_signed_federated.md` records which hold and which do not.
+
 A default run answers whether the profile is *satisfiable* over the reference composition: seven
 domains, one of them a workload. It does not establish the narrower claim the profile is written for
 — a profile requiring no workload is not tested by a snapshot containing one. For that, restrict the
