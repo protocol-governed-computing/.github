@@ -1,5 +1,130 @@
 # SOTU Handoff
 
+## Signing, evidence expiry, and a midcourse correction — dev/17
+
+Nothing here is on GitHub. Every remote carries `main` alone; `dev/17` is local, and stays local
+until it is cut. That is the point of working this way and it is why the correction below cost
+nothing.
+
+### What was built
+
+**Snapshot authentication.** `snapshot_assembler/assembler/signing.py` signs a sealed snapshot's
+identity and verifies it against a key the verifying party holds. `--signing-key` on `assemble`, a
+`keygen` subcommand, a report on `verify`, and `protocol_runtime boot` calling the same verify —
+one determination, two callers, for the reason acceptance already gave: *a second implementation of
+one determination is two things that can disagree.*
+
+Three separations are kept apart, and conflating any two defeats the exercise:
+
+| | |
+|---|---|
+| snapshot identity | `snapshot_id`, derived from what was sealed |
+| snapshot authentication | a signature over that identity |
+| trust anchor | a public key the verifying party holds, **from outside the snapshot** |
+
+`Verify(K, I, sigma)` with `K` from the node. The `key_id` in a signature record is read only to
+report which failure occurred and **must not** select a key — a snapshot carrying the key that
+authenticates it authenticates nothing.
+
+Five outcomes are distinguished, each tested: authenticated · `TrustRootMismatch` · `IdentityMismatch`
+· `SignatureInvalid` · `SignatureMalformed`. A valid snapshot carrying a valid signature over a
+*different* identity is refused as `IdentityMismatch`, checked before the cryptography, because
+calling it a bad signature names the wrong fault.
+
+**Signing is a profile's selection, not a platform property.** `cryptography` is an extra,
+`signing = ["cryptography>=42"]`, and the core dependency contract is unchanged. A node holding no
+anchor boots an unsigned snapshot exactly as before, so the reference composition is untouched —
+tested explicitly, because that is what keeps this a superset rather than a fork.
+
+**Evidence expiry.** `CS_EVIDENCE_EXPIRY_V0`, the artifact `SIGNED_FEDERATED_MULTINODE_PROFILE_V0`
+§2 required and nobody had written. It decides three things not at all: not the window
+(`retention_window_days` comes from the artifact, so from the snapshot, with no default — absent, it
+refuses), not the time (`as_of` arrives from the governed clock; a host reading its own would let
+anyone who moved the host clock expire anything), and not what is exempt (the deletion record is
+appended to a store that admits no deletion, so **the exemption is structural and no flag could
+clear it**).
+
+Tested: `SURVEY` removes nothing; `EXPIRE` ends an attestation together with its subject; evidence
+carrying no `closed_at` is left alone rather than expired on mtime, which says when bytes were
+written and not when a determination was made.
+
+**Admission is a governed act.** The first compile refused it — `ASSERT_CS_SURFACE_CLOSED_V1`. A
+capability is not admitted by existing on disk; it is declared into
+`allowed_capability_side_effects`. Added in place, the invariant's own text being *"baseline closed;
+extension open."*
+
+### The midcourse correction
+
+`~/signed-federated-pgc` was an external sandbox pinned to the published `v4` and the `4.0.0` wheel.
+It proved what it was built to prove — that `pip install` reaches about a third of a working
+platform, that `protocol_transport` is unpublished, and that no serving path exists for an installed
+platform. All three are recorded and two are fixed.
+
+Then it became the wrong shape. **A platform whose obligations require signing cannot be developed
+against a release that has none.** Signing and expiry both landed on `dev/17`, which the sandbox is
+pinned away from, and pinning it to `dev/17` was not available either: `dev/17` is not pushed, so a
+branch or SHA there is exactly the unresolvable pin that `history-16` already was.
+
+So the profile moved into the workspace. `.github/snapshot_profiles/` now carries all six documents
+beside the two that were there.
+
+**They coexist; nothing is superseded.** `4e` obliges a superseding profile to state what it
+invalidates, and this one invalidates nothing about the composition claiming the profile in force —
+that composition still requires it, and superseding would orphan a live claim. The directory already
+held a superseded profile beside a current one, so the arrangement is the existing one, not a new
+one. Assembly decides: `--profile` selects which contract a snapshot claims, and the same three
+domains compose under either. What differs is what is required of them, not what they are.
+
+`regression.sh` needed no change — `PGC_SNAPSHOT_PROFILE` already parameterizes this, and the
+RUNBOOK already called such a thing a candidate profile. Both now name it.
+
+**§5.1 was rewritten because it had become false.** It pinned a toolchain unable to meet the profile
+it introduces. It now records that, and where reproduction actually lives: content-derived identity
+covering the compiler, plus the deposited composition — *a development profile asserting
+reproducibility would be claiming a property of a release it is not.*
+
+### First build of the merged arrangement
+
+```
+snapshot_id  36ff116e9f48ef5e4972c44b915f9670c55620aebe111be925465d65beb93c64
+profile      SIGNED_FEDERATED_MULTINODE_PROFILE_V0
+composition  PASSED (5 rules over 209 artifacts)      208 before; the new capability
+signing      signed under key 70c5f1e7129766a3
+boot         Authenticated under trust root, resident, hash-verified, healthy
+```
+
+Signing and evidence expiry are in a real snapshot for the first time. Neither could ever have
+reached the sandbox.
+
+### Held in `doc/`, not decided
+
+Neither is parked in the gitignored sense — `doc/parkinglot/` is scratch that gets cleaned, and both
+of these are things looking for a final home rather than things being discarded.
+
+- `.github/doc/handler_namespace_rename.md` — 89 handler-registry keys name
+  `pgs_governance`, the retired namespace. **Not a stale reference: the naming convention**, with
+  zero Python imports behind it and `pgc_env_check` passing. It was misread as a defect once, from
+  the artifact, which is the evidence that the name misleads. A partial rename does not degrade — it
+  stops the build, the registry's own comment making an unknown handler a compile failure by design.
+  96 edits in one commit, behaviour-neutral, or not at all.
+- `.github/doc/regulated_llm.md` — a regulated language model as a governed domain. Phase 1 worth
+  testing; phase 2 as proposed claims what this architecture cannot govern. After the platform.
+
+### Still owed
+
+1. **Coordinator and worker dispatch.** `boot` and `run --wf` exist; the four node roles the
+   environment profile requires are implemented by nothing.
+2. **Nothing read back against the profile by hand** — the trust root, the window, the five
+   obligations, the six environment obligations, the claim discharges. Unchanged, and still the
+   piece no tool can do.
+3. `~/signed-federated-pgc` is dormant, not deleted. Its profiles and parked note are copied out;
+   nothing else in it is worth keeping.
+4. `SIGNED_FEDERATED_MULTINODE_PROFILE_V0` now exists in two places — here, operational, and in
+   `standards/profile_authoring/worked_example/`, illustrative. They can drift, and the worked
+   example's copy is the one that should say which it is.
+
+---
+
 ## v4 composition deposited — the release cycle is closed — 2026-09-11
 
 `release.sh --publish-composition` ran. **The composition version DOI is

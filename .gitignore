@@ -35,6 +35,7 @@ Desktop.ini
 *.bak
 *.tmp
 *.orig
+doc/parkinglot/
 
 # Environment / secrets
 .env

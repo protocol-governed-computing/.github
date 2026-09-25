@@ -43,6 +43,17 @@ does not protect the one that matters.
 `REFERENCE_PLATFORM_PROFILE_V1`. `PGC_SNAPSHOT_PROFILE` overrides it, which is how a candidate
 profile is read against the composition before it is put in force.
 
+`SIGNED_FEDERATED_MULTINODE_PROFILE_V0` is such a candidate and coexists rather than competing: it
+supersedes nothing, because it invalidates nothing about the composition claiming the profile in
+force. Running it needs no change to this script —
+
+```bash
+PGC_SNAPSHOT_PROFILE=SIGNED_FEDERATED_MULTINODE_PROFILE_V0 bash regression.sh --all
+```
+
+— and answers a different question, since it requires fifteen kinds where the profile in force
+requires seven, and obliges a signed snapshot that a default run neither produces nor checks.
+
 A default run answers whether the profile is *satisfiable* over the reference composition: seven
 domains, one of them a workload. It does not establish the narrower claim the profile is written for
 — a profile requiring no workload is not tested by a snapshot containing one. For that, restrict the
