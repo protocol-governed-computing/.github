@@ -155,6 +155,38 @@ was gone, and a `hard` mount retries forever. The host needed a console restart.
 machines a lost node takes its client with it. Here a node is removed by stopping it first, and the
 loss recorded under OB-3 is a stop.
 
+## A stateful domain on the node group
+
+`collatz` holds no state, so nothing above tests whether two workers can share one. The
+composition was reassembled with `book_library_mgmt` added — snapshot `641dc40e465b7885…`, four
+domains, 274 artifacts, placement still `FEDERATED_NODE`, signed under the same key — and the
+catalog's own execution validation was dispatched through the node group, units alternating between
+workers.
+
+**Sequentially, 23 of 23 criteria hold** — after one correction. The first run failed a criterion
+because a node read a store file another node had just replaced and was served the old one: the
+capabilities save by writing a new file and renaming it over the old, and an NFS client caching
+names and attributes can read the replaced file for seconds afterwards. A worker could equally have
+decided from state the other worker had already changed. The store is now mounted with
+`lookupcache=none,actimeo=0`; the second run passed every criterion.
+
+**Concurrently, updates were lost.** Twenty copies registered at once all reported `SUCCESS`, and
+two of their records were gone: their barcodes were claimed and their operations logged, but
+`physical_copies.json` did not hold them. Two workers had each read the file, added a record and
+written it back; the capability's lock was a thread lock, visible to neither of them. The same
+read-then-write shape made the identity registry able to accept one key twice and the operation log
+able to number two records alike, though neither was hit on the node group.
+
+The three stores now take a POSIX record lock on a sidecar file around every read-then-write, which
+NFSv4 carries to the server and so enforces across hosts. Racing eight separate processes on each
+store, the old code lost 148 of 200 updates and duplicated sequence numbers; the new code loses none
+and duplicates none. On the node group the same twenty concurrent copies all reported `SUCCESS` and
+all twenty were recorded. That run placed most units on one worker, so the cross-process race is the
+stronger evidence; the node-group run shows the locks are taken through the store.
+
+The defect was not federation's. `LOCAL_MULTI_WORKER` puts several writers on one store just as
+`FEDERATED_NODE` does, and was exposed to it from the start; a stateless workload could not show it.
+
 ---
 
 ## What this reading establishes
@@ -164,9 +196,11 @@ obligations and all six environment obligations hold on a deployment that could 
 them, two with the administrative exception named above. Several were demonstrated by breaking
 something: a signature, a constituent, a node, the store.
 
-**One of them held only after the reading changed the platform.** EO-2 failed on the first store
-outage because the boundary turned a delay into a failure; the fix was to stop it guessing. It is the
-one defect this reading found, and finding it is what a read-back is for.
+**Three defects were found, and each changed the platform.** EO-2 failed on the first store outage
+because the boundary turned a delay into a failure. A stateful domain then showed that nodes could
+read each other's writes late, and that concurrent workers could overwrite each other's state. The
+first two were fixed in configuration and in the boundary; the third in the capabilities, where it
+also affected the multi-worker composition. Finding them is what a read-back is for.
 
 **The profile remains `usable_as_a_target: false`.** The precondition of use — a read-back against a
 candidate — is met, and on a deployment. What keeps it from being handed to anyone as a target met is

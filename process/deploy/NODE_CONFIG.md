@@ -133,11 +133,16 @@ After=network-online.target
 What=192.168.1.220:/srv/pgc/data
 Where=/srv/pgc/data
 Type=nfs4
-Options=hard,_netdev
+Options=hard,_netdev,lookupcache=none,actimeo=0
 
 [Install]
 WantedBy=multi-user.target
 ```
+
+`hard` makes a lost store a wait, never a failed write. `lookupcache=none,actimeo=0` makes every node
+see another node's writes at once: the capabilities save by writing a new file and renaming it over
+the old one, and a client caching names or attributes can read the replaced file for seconds after
+the rename — a worker would then decide from state another worker has already changed.
 
 `/opt/pgc/role.env` — common lines
 ```

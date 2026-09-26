@@ -1,5 +1,66 @@
 # SOTU Handoff
 
+## A stateful domain on the node group; signed federated testing wrapped — dev/17 · 2026-09-25
+
+The stateful run the previous entry named as next is done, and with it the testbed work on
+`SIGNED_FEDERATED_MULTINODE_PROFILE_V0` is wrapped. The profile did what it was built for: every
+demonstration could fail, and three found real defects, each now fixed.
+
+```
+snapshot     641dc40e465b7885…  (platform, workload, inspection, book_library_mgmt; 274 artifacts)
+catalog      23/23 criteria through the node group, units alternating workers
+concurrency  20 concurrent copy registrations → 20 records (was 18 of 20 reported SUCCESS)
+regression   exit=0, 135 OK, test_federation 11/11, test_capability_concurrency 3/3
+```
+
+### Changes Made
+
+- `software_governance/capability_side_effects/implementation/store_lock.py` — new: one writer per
+  store across threads, processes and hosts; POSIX record lock on a hidden sidecar (`.<store>.lock`)
+- `…/CS_MUTABLE_JSON_V0/impl/executor.py` — thread lock replaced by `store_lock` on every mutation
+- `…/CS_REGISTRY_V0/impl/backend.py` — `register`, `deregister` check-and-append under `store_lock`
+- `…/CS_APPENDONLY_JSONL_V0/impl/executor.py` — count-and-append under `store_lock`
+- `protocol_runtime/testbed/pgc/test_capability_concurrency.py` — eight separate processes race
+  each store; fails on the old code (148 of 200 updates lost, duplicate sequence numbers)
+- `.github/process/regression.sh` — runs it
+- `.github/process/deploy/NODE_CONFIG.md` — store mount `hard,_netdev,lookupcache=none,actimeo=0`
+- `.github/doc/profile_readback_signed_federated.md` — section on the stateful domain; conclusion
+  now records three defects
+- On the nodes: the book snapshot, `pgc-domains` and the new `pgc-governance` wheel installed;
+  mount options changed; previous snapshot kept at `/opt/pgc/snapshot.347be174`
+
+### Build & Test Status
+
+**PASSING.** Regression `--all` exit 0, 135 OK, every domain's criteria hold (catalog 23/23),
+`test_federation` 11/11, `test_capability_concurrency` 3/3.
+
+### Open Issues
+
+1. **§6 externality** — unchanged; only a second reader closes it.
+2. **Cross-node concurrency on the group was lightly exercised** — the final race placed 19 of 20
+   units on one worker. The eight-process race is the stronger evidence.
+3. **The store holds two orphaned claims** — `BC-UNI-08`, `BC-UNI-14` are in the barcode registry
+   with no copy record, left by the lost-update run and kept as its evidence. A fresh catalog run
+   needs a fresh store.
+4. **`software_governance/CLAUDE.md` says the repo holds no implementation code**; it holds the
+   capability implementations the workers run. The doctrine file is stale.
+5. From the previous entry, still open: the SSH exception to EO-4, the EO-2 ambiguous-admission
+   case, `EVIDENCE_EXPIRY` over the shared store, the runtime's built-in defaults, the stale
+   `/etc/hosts` line on the Mac.
+
+### Architectural Concerns
+
+- **A capability's correctness now depends on the store honouring POSIX record locks.** NFSv4 and
+  local filesystems do; an object store would not. That constraint belongs in the placement or
+  capability declarations rather than only in code.
+
+### Next Session Should Start With
+
+Testing is wrapped. Decide what to record of the three defects outside this repo — the stale-read
+and lost-update findings apply to any multi-writer placement, not only this deployment.
+
+---
+
 ## The federated node group runs, configured by hand — dev/17 · 2026-09-25
 
 `FEDERATED_NODE` has a realization, a deployment, and a read-back against it. The composition built
