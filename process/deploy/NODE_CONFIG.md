@@ -12,11 +12,17 @@ What each machine holds when the `FEDERATED_NODE` composition is running, and ho
 | UC223 | 192.168.1.223 | worker | none |
 | UC224 | 192.168.1.224 | worker | none |
 
-All: Ubuntu 24.04, Python 3.12. User `pgc`, uid/gid 2001, on every host.
+All: Ubuntu 24.04, Python 3.12. Commands below run as root (`sudo -i`). User `pgc`, uid/gid 2001,
+on every host.
 
 ```sh
 groupadd -g 2001 pgc && useradd -r -u 2001 -g pgc -d /opt/pgc -s /usr/sbin/nologin pgc
 ```
+
+**Already in place:** UC220 (§2) is configured and its store is empty; the AppArmor allowance (§3,
+first step) is set on UC221–UC224; every host has user `bp` with SSH keys, and `bp` has passwordless
+sudo on UC221–UC224. UC221 additionally has `nfs-common` and a temporary manual mount of the store —
+`umount /srv/pgc/data` before enabling the mount unit, or leave it and the unit adopts it.
 
 ---
 
@@ -35,14 +41,25 @@ python -m assembler.cli assemble --profile SIGNED_FEDERATED_MULTINODE_PROFILE_V0
   --source snapshot_inspector/snapshot/compiled
 ```
 
-Copy to each node's `/opt/pgc/`: the `snapshot/` directory, `~/.pgc/federated/trust.pub` (never
-`sign.pem`), and `.github/snapshot_profiles/*.md` into `profiles/`. The boundary also gets
-`protocol_transport/{adapters,resolver,run_http.sh}` into `transport/` and
-`conformance_workloads/workloads/collatz/client/{bindings,web}` into `client/`.
+Stage everything a node receives under `/tmp/pgc`, then copy it to each node:
 
-Python packages for every node, as wheels: `pip wheel --no-deps` of `protocol_runtime`,
-`snapshot_assembler`, `snapshot_inspector`, `software_governance`, `conformance_workloads`, plus
-`cryptography` and `pyyaml` (or let the node fetch those two from PyPI).
+```sh
+find /tmp/pgc/snapshot -name .DS_Store -delete          # acceptance refuses undeclared content
+mkdir -p /tmp/pgc/profiles /tmp/pgc/wheels /tmp/pgc/transport /tmp/pgc/client
+cp .github/snapshot_profiles/*.md /tmp/pgc/profiles/
+cp ~/.pgc/federated/trust.pub /tmp/pgc/                 # the public half only — never sign.pem
+python -m pip wheel -q --no-deps -w /tmp/pgc/wheels \
+  ./protocol_runtime ./snapshot_assembler ./snapshot_inspector ./software_governance ./conformance_workloads
+rsync -a --exclude __pycache__ protocol_transport/adapters protocol_transport/resolver \
+  protocol_transport/run_http.sh /tmp/pgc/transport/
+rsync -a conformance_workloads/workloads/collatz/client/bindings \
+  conformance_workloads/workloads/collatz/client/web /tmp/pgc/client/
+for n in 221 222 223 224; do rsync -a /tmp/pgc/ bp@192.168.1.$n:pgc/; done
+```
+
+`transport/` and `client/` are used only by the boundary; the other nodes may ignore them. Copy with
+`rsync` or `scp`, not Finder: the Mac adds `.DS_Store` files, and acceptance refuses a snapshot
+carrying them.
 
 ---
 
@@ -75,6 +92,7 @@ table inet pgc {
     type filter hook input priority 0; policy drop;
     iif lo accept
     ct state established,related accept
+    ip saddr { 192.168.1.75, 192.168.1.201 } tcp dport 22 accept
     ip saddr { 192.168.1.221, 192.168.1.222, 192.168.1.223, 192.168.1.224 } tcp dport 2049 accept
   }
 }
@@ -93,13 +111,17 @@ On `shuttle`, once per node (privileged containers are still AppArmor-confined):
 lxc config set UC22x raw.apparmor 'mount fstype=nfs4, mount fstype=rpc_pipefs,' && lxc restart UC22x
 ```
 
-In the node:
+In the node, after the Mac's copy has landed in `~bp/pgc`:
 ```sh
-apt install nfs-common python3.12-venv nftables
+groupadd -g 2001 pgc && useradd -r -u 2001 -g pgc -d /opt/pgc -s /usr/sbin/nologin pgc
+apt install -y nfs-common python3.12-venv nftables
 mkdir -p /opt/pgc /srv/pgc/data
+cp -r ~bp/pgc/. /opt/pgc/
 python3 -m venv /opt/pgc/venv
-/opt/pgc/venv/bin/pip install <wheels> 'pgc-assembler[signing]'
+/opt/pgc/venv/bin/pip install /opt/pgc/wheels/*.whl 'cryptography>=42'
 ```
+
+`cryptography` and `pyyaml` come from PyPI here; everything PGC comes from the wheels.
 
 `/etc/systemd/system/srv-pgc-data.mount`
 ```
@@ -144,10 +166,22 @@ RestartSec=5
 WantedBy=multi-user.target
 ```
 
-`/etc/nftables.conf` — as UC220's, with the node's own accept line (or none).
+`/etc/nftables.conf` — as UC220's, with the node's own accept line from §4 in place of the 2049 line.
+
+**Keep the SSH line in every node's rules** — `ip saddr { 192.168.1.75, 192.168.1.201 } tcp dport 22 accept`
+(the Mac and `shuttle`) — or enabling nftables ends your SSH access (the session in progress
+survives; the next login does not). SSH is admitted from those two admin addresses only, so EO-4
+holds except for them; the read-back records the exception. `bp`'s `authorized_keys` holds the Mac's
+keys and `shuttle`'s.
+
+Enable the mount and the firewall first, then the service, in the start order of §4:
 
 ```sh
-systemctl enable --now srv-pgc-data.mount nftables pgc-<role>
+systemctl daemon-reload
+systemctl enable --now srv-pgc-data.mount nftables
+findmnt /srv/pgc/data                                   # must show 192.168.1.220:/srv/pgc/data
+systemctl enable --now pgc-<role>
+journalctl -u pgc-<role> -n 20                          # expect "Authenticated under trust root …"
 ```
 
 ---
@@ -161,6 +195,8 @@ systemctl enable --now srv-pgc-data.mount nftables pgc-<role>
 | UC221 boundary | `PGC_COORDINATOR_URL=http://192.168.1.222:8100` · `PGC_HTTP_BIND=0.0.0.0` · `PGC_HTTP_PORT=8000` · `PYTHON=/opt/pgc/venv/bin/python` · `PGC_HTTP_BINDINGS=/opt/pgc/client/bindings/http.json` · `PGC_STATIC_MOUNTS=/=/opt/pgc/client/web;/traces=/srv/pgc/data/traces;/snapshot=/opt/pgc/snapshot` | `/opt/pgc/transport/run_http.sh` | `tcp dport 8000 accept` |
 
 Start order: coordinator, then workers (they refuse until the coordinator answers), then boundary.
+
+`run_http.sh` must stay executable after copying (`chmod +x /opt/pgc/transport/run_http.sh`).
 
 ---
 
