@@ -1,5 +1,42 @@
 # SOTU Handoff
 
+## Session close: shuttle powered off — dev/17 · 2026-09-25
+
+No code changed after the previous entry. All four repos are committed and clean:
+`.github` `bfb459c`, `software_governance` `3819279`, `protocol_runtime` `1a4112b`,
+`protocol_transport` `bcc1871`.
+
+### Build & Test Status
+
+**PASSING.** Regression `--all` re-run at close: exit 0, 135 OK, `test_federation` 11/11,
+`test_capability_concurrency` 3/3.
+
+### Open Issues
+
+1. **`shuttle` is powered off, with the node group on it.** Whether UC221–UC224 were stopped before
+   UC220 is not recorded. If they were not, the host's shutdown could have waited on their `hard`
+   NFS mounts; check the next boot came up cleanly.
+2. **Power-up ordering is not set.** LXD restarts instances without order. A node that starts before
+   the UC220 VM serves NFS fails `srv-pgc-data.mount`, and its `pgc-<role>` service fails with it
+   and is not retried. After power-up, check `findmnt /srv/pgc/data` and `systemctl is-active pgc-*`
+   on each node; if either failed, `sudo systemctl restart srv-pgc-data.mount pgc-<role>` in the
+   start order coordinator → workers → boundary. The lasting fix is two `lxc config set` lines:
+   `boot.autostart.priority=100` and `boot.autostart.delay=30` on UC220, and `boot.stop.priority=10`
+   on UC221–UC224.
+3. The open issues of the two entries below stand.
+
+### Architectural Concerns
+
+None beyond those recorded below.
+
+### Next Session Should Start With
+
+If the node group is needed again: power on `shuttle`, set the LXD start/stop priorities, and check
+each node's mount and service. Otherwise the signed federated testing is wrapped and nothing
+waits on the testbed.
+
+---
+
 ## A stateful domain on the node group; signed federated testing wrapped — dev/17 · 2026-09-25
 
 The stateful run the previous entry named as next is done, and with it the testbed work on
