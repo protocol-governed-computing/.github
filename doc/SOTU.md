@@ -1,5 +1,96 @@
 # SOTU Handoff
 
+## The federated node group runs, configured by hand — dev/17 · 2026-09-25
+
+`FEDERATED_NODE` has a realization, a deployment, and a read-back against it. The composition built
+from `STRUCTURE_BUILD_PLATFORM_FEDERATED_CONFIG_V1` runs on four LXC nodes on `shuttle`, its evidence
+in a VM none of them is, signed on the Mac and nowhere else. Every node was configured by hand.
+
+```
+snapshot_id  347be1741d7a1191bf7863462d4ec41340a33e2de7375c8c51145a59a3b201d4
+signed under e5f15d7a0173e70a    ~/.pgc/federated/sign.pem — Mac only, mode 600
+UC221 boundary :8000 · UC222 coordinator :8100 · UC223, UC224 workers · UC220 VM store (NFSv4)
+read-back    OB-1…5 hold · EO-1…6 hold · OB-5/EO-4 with an SSH exception · §6 not satisfied
+regression   exit=0, 135 OK, test_federation 11/11, closures passing
+```
+
+### Changes Made
+
+**protocol_runtime** — `4b8aa51`, `4dd9889`
+- `runtime/federation/{store,coordinator,worker,client}.py` — the `FEDERATED_NODE` realization: a
+  coordinator that queues and never executes, workers that claim by exclusive creation and run
+  `run_workflow` unchanged, all meeting only at the store
+- `runtime/api.py` — `invoke_workflow`: submits to `PGC_COORDINATOR_URL` under `FEDERATED_NODE`,
+  runs in place otherwise; no timeout
+- `runtime/cli.py` — `coordinator`, `worker` subcommands
+- `runtime/federation/client.py` (EO-2) — connect bounded, answer unbounded; after admission the
+  outcome is awaited without limit, through coordinator restarts; failure only when nothing was admitted
+- `testbed/pgc/test_federation.py` — 11 cases, three of them for EO-2
+
+**protocol_transport** — `bcc1871`
+- `resolver/resolver.py` calls `runtime.api.invoke_workflow`; `adapters/http/server.py` gains
+  `PGC_HTTP_BIND`; `run_http.sh`, `README.md` document both
+
+**.github** — `1046e43`, `f59f329`
+- `process/deploy/PLAN.md` — topology, phases, the §5 checks, risks
+- `process/deploy/NODE_CONFIG.md` — the end configuration of every machine and the manual recipe
+- `process/regression.sh` runs `test_federation.py`; `process/RUNBOOK.md` gains the third composition
+- `doc/profile_readback_signed_federated.md` — read back against this deployment
+
+**Outside git**
+- `shuttle`: UC220 is an LXD VM (MAC `…:02:20`) exporting `/srv/pgc/data`; UC221–224 rebuilt fresh
+  and configured by hand; all five have `bp` with the Mac's and shuttle's keys, `sudo` on UC221–224
+- Mac: `~/.pgc/federated/{sign.pem,trust.pub}`; `/etc/hosts` still has a stale `192.168.1.200 shuttle`
+- Deploy scripts were written, used, and deleted in favour of manual configuration; they are not in git
+
+### Build & Test Status
+
+**PASSING.** Regression `--all` exit 0, 135 OK, governance and implementation closures passing,
+`test_federation` 11/11. On the live group, every §5 check was run by hand:
+
+| Check | Result |
+|---|---|
+| OB-1 | altered signature refused at authentication |
+| OB-2 | signing key absent everywhere, by hash; signing code present, key withheld |
+| OB-3 | UC223 stopped; its traces intact on UC220; UC224 served alone; UC223 rejoined unaided |
+| OB-4 / EO-5 | a begun unit never re-run, also after a worker restart; unstarted work moved |
+| EO-1 | four addresses, one role each, one `snapshot_id` everywhere |
+| EO-2 | worker refuses without coordinator or store; a request during a store outage waited and returned SUCCESS |
+| EO-4 | from outside only UC221:8000 and admin SSH answer; all else dropped |
+| EO-6 | eight runs of one payload, both workers, one surface hash `21488c857a130358` |
+
+### Open Issues
+
+1. **§6 externality** — a read-back by the author. Only a second reader closes it.
+2. **SSH exception to EO-4** — the Mac (`.75`) and shuttle (`.201`) reach port 22 on all five
+   machines. A non-admin LAN host was not probed.
+3. **EO-2 residual** — a connection lost after a unit is sent and before the coordinator answers
+   leaves admission unknown; the error says so, and nothing resolves it.
+4. **`EVIDENCE_EXPIRY`** has not been exercised over the shared store.
+5. **Stateful domains** — two workers share one `data_root`; concurrent units against the same
+   capability state are serialized only by what each capability does. Only `collatz` has run.
+6. **Stale `/etc/hosts` line** on the Mac (`192.168.1.200 shuttle`) makes `ping shuttle` fail.
+7. **Built-in defaults** in the runtime (coordinator port 8100, loopback bind, 10 s connect bound)
+   against the runtime doctrine's "no magic constants" — flagged, not decided.
+
+### Architectural Concerns
+
+- **`runtime.api` consults placement.** `invoke_workflow` branches on the sealed placement mode and
+  reads `PGC_COORDINATOR_URL`. It decides where `run_workflow` is called, not how execution proceeds,
+  so placement §4 holds — but it is the first runtime entry point to consult placement, and the
+  runtime doctrine forbids environment-driven branching. It reads an address, not a branch. Worth a ruling.
+- **The boundary authenticates per request**, not at start, so its boot log has no trust-root line.
+- **Privileged nodes share the host kernel.** Node isolation from the host is not claimed; abrupt
+  node loss wedges the host's NFS client. Nodes are stopped, never force-deleted, while mounted.
+
+### Next Session Should Start With
+
+Decide whether to run a stateful domain on the node group — it is the first thing that can break a
+determination across workers, and only `collatz`, which holds no state, has run. Read how
+`book_library_mgmt`'s capabilities write under `{{module_data_root}}` before sending it a unit.
+
+---
+
 ## FEDERATED_NODE authorized — the deployment has a composition — dev/17
 
 Declarations and one deletion. No compiler change, which is what the selector generalization was
