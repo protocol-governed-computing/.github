@@ -1,5 +1,32 @@
 # SOTU Handoff
 
+## Clean regression from nothing: green — dev/17 · 2026-09-27
+
+A full clean regression ran after the constitution rename and the CLM merge, with every repo
+committed. It started with the environment check passing and ran
+`bash .github/process/regression.sh --all`, which exited 0 in about 1m 24s.
+- **Starting state:** every repo on dev/17 and clean, except `pgc_install` and `pgc_release` on
+  `main` and `standards` on `work/non-normative`, all clean.
+- **The clean step:** it removed every generated snapshot, `data/` and `traces/`, and left
+  `pgc_release` untouched.
+
+| Stage | Result |
+|---|---|
+| Compile | 10 builds, 0 failed: platform ×3, collatz, transformation, inspection, `ai_governance`, `book_library_mgmt`, `blockchain`, `causal_language_model` |
+| Transform conformance | platform 11 proven, 1 unproven (`COMPARE_EQUAL`, as decided); CLM 8 proven over 17 cases; composition PASSED (5 rules over 492 artifacts) |
+| Assemble | snapshot `2644f8c851bf…` |
+| Fidelity | human block PASSED (480 artifacts); frontmatter PASSED; admission contract has the known 31 findings over 36 gates |
+| Construction acceptance | 150/150 artifacts reproduced across 5 domains, 0 field differences |
+| Implementation closure | PASSED, 34 transforms |
+| Platform tests | every script and unittest suite passes, including dispatch-routing fidelity 5/5 and node-keyed routing 3/3 |
+| Inspector `si snapshot validate` | valid, 10 checks, none failed; advisories: `republished_copies_agree`, `bound_paths_declared_as_stores` |
+| Execution | collatz, ai_governance's agent action and licensing provision: SUCCESS |
+| Domain suites | book catalog 23/23 and 21/21; identity 15/15 (2 not exercised); wallet 9/9 (1 not exercised); CLM 27/27 |
+
+**This is the reference result for the current composition,** `2644f8c8…`. The only red line is the
+31 admission-contract findings, which are red by design. Every dossier pin, CLM's included, names
+an earlier composition. They stay historical until a dossier's phases run again.
+
 ## Constitution renamed: CONSTITUTION_DETERMINISTIC_ATOMS_V0 — dev/17 · 2026-09-27
 
 `capability_transforms::CONSTITUTION_CAPABILITY_TRANSFORMS_V0` is now
