@@ -75,10 +75,11 @@ yet a design that does what was asked**, and only execution tells the two apart.
 **4. Pinning a change's baseline is tribal knowledge.**
 - A change request's baseline must be the composition *without* its own domain. Pinned against a
   build that already holds it, every NEW row reads as `*_ALREADY_EXISTS`.
-- Getting the right pin today means stashing, switching branches, building, pinning and switching
-  back.
-- It should be one command, `tc baseline show --exclude-domain <domain>`, and the rule should be
-  stated in `transformation/CLAUDE.md`.
+- CLM's pin was taken by stashing, switching branches, building, pinning and switching back.
+- That was unnecessary. `assemble.sh` already builds a deliberately narrower composition when
+  `PGC_SOURCE_ROOTS` names its roots, and writes it wherever `PGC_SNAPSHOT_OUT` says. A pin without
+  the change's own domain is one assembly into a side directory, followed by `tc baseline show` on it.
+- What is missing is the rule, not the tool. It belongs in `transformation/CLAUDE.md`.
 
 **5. Isolating an exploratory domain on its own branch works, and costs.**
 - Keeping CLM on `work/clm`, with platform fixes on `dev/17`, kept the release line clean. It took
@@ -109,7 +110,8 @@ broke.
 **CLM stays on `work/clm`, frozen at CR-1, until two things are done:**
 
 1. the compile-time routing assertion in lesson 1, so the defect class is refused without needing a
-   domain to run into it;
+   domain to run into it. This is now done: S8 reads the sealed dispatch against every declared
+   transition and refuses the build where they differ;
 2. a decision on the replay classification, so the regression does not carry a named exception
    indefinitely.
 
