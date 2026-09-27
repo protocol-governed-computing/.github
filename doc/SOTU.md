@@ -1,5 +1,85 @@
 # SOTU Handoff
 
+## Conformance frozen: kept, no backfill; CLM merge next — dev/17 · 2026-09-27
+
+`platform_test_data` is delivered and closed: the platform proves its own transforms in each of its
+three builds. Then transform conformance was **frozen by decision, not left open**. All repos are
+committed.
+
+### The decision: keep and freeze
+
+After two platform dossiers and the start of a third, the business author asked whether conformance
+was worth its cost. No vector has caught a bug in a transform's code; the defects it found were in
+the conformance machinery itself, and the execution validations already exercise every transform
+through real workflows. So:
+
+- **Kept, and not rolled back.**
+  - Every build runs its vectors after the compile.
+  - The platform's 12 transforms are checked on every build: 11 proven and 1 unproven,
+    `COMPARE_EQUAL`.
+  - P7 requires cases for every transform a design authors or amends.
+  - Molecules are proven from recorded results, which CLM needs.
+  - The rules over vectors no longer report PASSED while judging nothing.
+  - The net cost is about 1,100 lines of code and tests across 6 repos.
+- **Rolling back was rejected.** Back to dormant restores rules that report PASSED over nothing.
+  Removing conformance entirely is a bigger change, and leaves no check per transform.
+- **Skipped, by decision and not as open items:**
+  - backfilling domain vectors: 16 domain transforms stay unproven until their domain next changes
+    them, as P7 already requires;
+  - the `vector_backfill` path. Today a domain can give vectors only to a transform its design
+    authors or amends, and constitution V2 §5 says so;
+  - the ai_governance CR. Its inherited vectors were stale, not a drift in behaviour: the three
+    transforms declare `refusal: raises` on purpose;
+  - a vector for `COMPARE_EQUAL`;
+  - sealing the implementation's source by hash;
+  - the Collatz declared-iteration dossier. CLM's `model_response` supplies the in-composition
+    evidence for a molecule. That relaxes the earlier ruling that the evidence must not come from a
+    domain that needs it.
+- **If P7's vector rule ever feels bureaucratic,** downgrade that one rule to a warning. Do not roll
+  back.
+
+### What `platform_test_data` delivered
+
+- **Governance:** `CONSTITUTION_TEST_DATA_V2`, `SCHEMA_TEST_DATA_V1` and
+  `STRUCTURE_BUILD_PLATFORM_{,FEDERATED_,MULTIWORKER_}CONFIG_V2`. The V1s, and schema V0, were deleted.
+- **Vectors:** 11 in `capability_transforms/registry/test_data/`. All 49 inherited cases were kept.
+- **Compiler:**
+  - vectors are written as canonical declarations: the snapshot grew from 421 to 432 artifacts, and
+    `si artifact list --kind TEST_DATA` lists them;
+  - the attestation records `imported_capabilities`;
+  - `compile.sh` runs the platform's conformance.
+- **Runner:**
+  - a build's own and carried transforms are read from its attestation, never from a name;
+  - any failed case refuses its build;
+  - it takes `--snapshot-root` and `--structure`.
+
+### Build & Test Status
+
+**PASSING.** Regression `--all` is green except `admission_contract_fidelity` (31, expected). Every
+build prints its `[conformance]` line: the RUNBOOK has the platform line, three times, and every
+domain's.
+
+### Open Issues
+
+1. **Three documents still name the V1 platform build declarations:**
+   - `pgc_install/README.md`, which is main-only;
+   - `standards/profile_authoring/README.md`, frozen with draft-3;
+   - `governance_surface_map.yaml`, which is stale throughout.
+2. **Still carried from earlier:**
+   - the `SCHEMA_TRACE_EVENT_V0` enum lags the runtime;
+   - the CLM CR-1 rebaseline notes: overturn P3 #2, move GAP-09 to REUSE, revisit the trace
+     constraint.
+
+### Next Session Should Start With
+
+1. Merge dev/17 → work/clm.
+2. The CLM CR-1 rebaseline: re-pin against the merged composition, overturn P3 #2, move GAP-09 to
+   REUSE, and revisit the trace constraint.
+3. Resume CLM at P7. P7 now requires cases for each transform it authors, with recorded results for
+   the non-deterministic step.
+
+---
+
 ## Transform conformance delivered; platform test data next — dev/17 · 2026-09-26
 
 `transform_conformance` is delivered in six steps. Steps 1–5 are committed. **Uncommitted:**
