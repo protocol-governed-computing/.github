@@ -91,6 +91,7 @@ if [[ "$MODE" == "--all" ]]; then
   for t in "$W/snapshot_assembler/scripts/testbed/test_indexes.py" \
            "$W/protocol_compiler/scripts/testbed/test_compiler_atoms.py" \
            "$W/protocol_compiler/scripts/testbed/test_molecule_composition.py" \
+           "$W/protocol_compiler/scripts/testbed/test_transform_conformance.py" \
            "$W/protocol_compiler/scripts/test_governance_provenance.py" \
            "$W/protocol_runtime/testbed/pgc/test_reference_collatz.py" \
            "$W/protocol_runtime/testbed/pgc/test_warm_boot.py" \
