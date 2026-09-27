@@ -103,6 +103,7 @@ if [[ "$MODE" == "--all" ]]; then
            "$W/protocol_runtime/testbed/pgc/test_federation.py" \
            "$W/protocol_runtime/testbed/pgc/test_capability_concurrency.py" \
            "$W/protocol_runtime/testbed/pgc/test_molecule_execution.py" \
+           "$W/protocol_runtime/testbed/pgc/test_node_keyed_routing.py" \
            "$W/protocol_runtime/testbed/pgc/test_transform_conformance_runner.py"; do
     echo "--- $(basename "$t")"; python "$t"
   done
