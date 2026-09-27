@@ -59,7 +59,7 @@ if [[ "$MODE" == "--build" || "$MODE" == "--all" ]]; then
     "$W/protocol_compiler/compile.sh" STRUCTURE_BUILD_PLATFORM_MULTIWORKER_CONFIG_V2 || exit 1
   for d in conformance_workloads/workloads/collatz transformation snapshot_inspector \
            business_domains/ai_governance business_domains/book_library_mgmt \
-           business_domains/blockchain; do
+           business_domains/blockchain business_domains/causal_language_model; do
     "$W/protocol_compiler/compile_domain.sh" "$W/$d" || exit 1
   done
   "$W/snapshot_assembler/assemble.sh" || exit 1
@@ -121,7 +121,7 @@ fi
 echo; echo "=== EXECUTION ==="
 echo "=== clearing data roots ==="
 rm -rf "$W/data/collatz" "$W/data/ai_governance" "$W/data/book_library_mgmt" \
-       "$W/data/book_library_mgmt_cr02" "$W/data/blockchain"
+       "$W/data/book_library_mgmt_cr02" "$W/data/blockchain" "$W/data/causal_language_model"
 
 echo; echo "=== collatz ==="
 "$W/protocol_runtime/run.sh" run \
@@ -161,3 +161,7 @@ python "$W/business_domains/blockchain/testbed/identity/execution_validation.py"
 echo; echo "=== blockchain: wallet ==="
 python "$W/business_domains/blockchain/testbed/wallet/execution_validation.py" \
   --data-root "$W/data/blockchain"
+
+echo; echo "=== causal_language_model: model_response ==="
+python "$W/business_domains/causal_language_model/testbed/model_response/execution_validation.py" \
+  --data-root "$W/data/causal_language_model"

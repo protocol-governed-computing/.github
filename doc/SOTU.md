@@ -1,5 +1,73 @@
 # SOTU Handoff
 
+## CLM CR-1 delivered: model_response runs end to end, 27/27 — work/clm · 2026-09-27
+
+`causal_language_model` CR-1 `model_response` is designed (P0–P8), emitted, implemented and
+validated by running. CLM work is on `work/clm` only. Every platform fix it needed went to `dev/17`
+first, with a test, and was merged in. The delivery write-up is
+`business_domains/causal_language_model/cr_dossiers/cr_01_model_response/delivery.md`.
+
+### What runs
+
+- **Five workflows:** register, place in service, submit a user prompt, retrieve a record, and
+  withdraw.
+- **The test model.** It offers another customer's account number on every word, and the rules stop
+  it every time.
+- **Refusals.** Each is recorded with its reason and announced as `EV_USER_PROMPT_REFUSED_V0`.
+- **Replay.** It reproduces a response from the recorded offers without consulting the model.
+- **The suite.** `testbed/model_response/execution_validation.py` holds 27/27, and `regression.sh`
+  runs it on `work/clm`.
+- **Conformance:** 8 proven over 17 cases. Construction: 100%.
+
+### Platform fixes on dev/17 (all merged into work/clm)
+
+- **Keyed workflow nodes.** P7 §5 gains a `Runs` column, with topology rules for key uniqueness and
+  route resolution. Acyclicity is checked per node key.
+- **Routing, endings and emits keyed by node, not CC.** One CC run at several nodes used to take the
+  last node's continuation. This silently misrouted:
+  - CLM's submission, which announced nothing;
+  - ai_governance's `WF_GOVERN_AGENT_ACTION_V0` and `WF_PROVISION_AI_LICENSING_V0`.
+
+  The fix is in the compiler's `dispatch.py` and `s2_canonicalize.py`, and the runtime's
+  `loader.py` and `scheduler.py`, with the new test `test_node_keyed_routing.py`.
+- **Refusal moments.** A refusing EXIT may announce, but only events declared `moment: refusal`.
+- **`INVARIANT_CT_SURFACE_DERIVED_CLOSED_V1`.** It closes over molecule steps.
+- **The runtime:**
+  - the executor hands an atom every argument, even one named like a step key;
+  - conformance reports a missing implementation instead of crashing.
+
+### Pins
+
+- **A CR's baseline pins the composition without the CR's own domain.** Pinning a snapshot that
+  already contains CLM turns its NEW rows into `*_ALREADY_EXISTS`.
+- **The procedure:**
+  1. build on dev/17;
+  2. `tc baseline show`;
+  3. re-approve P2–P8;
+  4. build again on work/clm for execution.
+- **Current pin:** `3c360d98…`.
+
+### Open
+
+- **Replay agrees except on the store's clock-assigned `record_id`.** It sits in `detail`, which the
+  evidence classification declares determinative. That classification says it does not claim
+  purity for `detail`. Separating store-assigned content is a platform decision.
+- **`moment: refusal` is not rendered** into the EV artifact.
+- **P7 does not check that vector YAML parses.**
+- **`tc construction emit --help` is stale** about manifest creation.
+- **`protocol_runtime/testbed/implementations/tests/test_workflow_execution.py`:** 2 failures. It
+  builds `TraceWriter` without its snapshot args. They predate this work and the test is not in the
+  regression.
+- **Blockchain, carried over:**
+  - cr_03's delivered route;
+  - cr_04's EV ATTRIBUTE fields.
+- **Book catalog, carried over:** `VALIDATE_RECORD_STRUCTURE` never refuses.
+
+### Next
+
+- **Merge `work/clm`** into the release line when you decide.
+- **CLM CR-2:** the second of the six functions.
+
 ## Conformance frozen: kept, no backfill; CLM merge next — dev/17 · 2026-09-27
 
 `platform_test_data` is delivered and closed: the platform proves its own transforms in each of its
