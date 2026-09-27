@@ -75,7 +75,8 @@ if [[ "$MODE" == "--all" ]]; then
   python "$W/transformation/scripts/testbed/build_payloads.py" --check
   PYTHONPATH="$W/snapshot_inspector" python "$W/snapshot_inspector/scripts/author_transport_contracts.py" --check
   python "$W/.github/process/frontmatter_fidelity.py"
-  for t in meta_test differential e2e_phases_test projection_test construction_acceptance; do
+  for t in meta_test differential e2e_phases_test projection_test construction_acceptance \
+           molecule_design_test; do
     echo "--- $t"; python "$W/transformation/scripts/testbed/$t.py"
   done
   python "$W/.github/process/implementation_closure.py"
