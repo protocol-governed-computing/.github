@@ -89,6 +89,7 @@ if [[ "$MODE" == "--all" ]]; then
   # Suites that existed but were never run here. Two of them were red, and were red unnoticed for
   # exactly that reason — see RUNBOOK "## Expected".
   for t in "$W/snapshot_assembler/scripts/testbed/test_indexes.py" \
+           "$W/snapshot_assembler/scripts/testbed/test_transform_conformance_evidence.py" \
            "$W/protocol_compiler/scripts/testbed/test_compiler_atoms.py" \
            "$W/protocol_compiler/scripts/testbed/test_molecule_composition.py" \
            "$W/protocol_compiler/scripts/testbed/test_transform_conformance.py" \
