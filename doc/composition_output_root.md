@@ -13,7 +13,7 @@ So nothing refuses this:
 
 ```bash
 PGC_SNAPSHOT_ROOT=.../software_governance/snapshot \
-  protocol_compiler compile --structure STRUCTURE_BUILD_PLATFORM_MULTIWORKER_CONFIG_V1
+  protocol_compiler compile --structure STRUCTURE_BUILD_PLATFORM_MULTIWORKER_CONFIG_V2
 ```
 
 The multi-worker composition is written over the single-node one. Both builds report success, the

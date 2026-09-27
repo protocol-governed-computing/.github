@@ -59,15 +59,15 @@ on an artifact, so the surface declares what is available and a build declares w
 
 | Build configuration | Placement | Output root |
 |---|---|---|
-| `STRUCTURE_BUILD_PLATFORM_CONFIG_V1` | `LOCAL_SINGLE_NODE` | `software_governance/snapshot` |
-| `STRUCTURE_BUILD_PLATFORM_MULTIWORKER_CONFIG_V1` | `LOCAL_MULTI_WORKER` | `software_governance/snapshot_mw` |
-| `STRUCTURE_BUILD_PLATFORM_FEDERATED_CONFIG_V1` | `FEDERATED_NODE` | `software_governance/snapshot_fed` |
+| `STRUCTURE_BUILD_PLATFORM_CONFIG_V2` | `LOCAL_SINGLE_NODE` | `software_governance/snapshot` |
+| `STRUCTURE_BUILD_PLATFORM_MULTIWORKER_CONFIG_V2` | `LOCAL_MULTI_WORKER` | `software_governance/snapshot_mw` |
+| `STRUCTURE_BUILD_PLATFORM_FEDERATED_CONFIG_V2` | `FEDERATED_NODE` | `software_governance/snapshot_fed` |
 
 A default run builds the first. The second is built by naming it, into its own root:
 
 ```bash
 PGC_SNAPSHOT_ROOT=$PWD/software_governance/snapshot_mw \
-  protocol_compiler compile --structure STRUCTURE_BUILD_PLATFORM_MULTIWORKER_CONFIG_V1
+  protocol_compiler compile --structure STRUCTURE_BUILD_PLATFORM_MULTIWORKER_CONFIG_V2
 ```
 
 **The output root is an argument, not a declaration, and the two compositions can therefore collide.**
@@ -146,7 +146,7 @@ clause they enforce.
 cd ~/protocol-governed-computing
 export PGC_SNAPSHOT_PROFILE=GOVERNANCE_SURFACE_PROFILE_V0
 
-~/protocol-governed-computing/protocol_compiler/compile.sh STRUCTURE_BUILD_PLATFORM_CONFIG_V1
+~/protocol-governed-computing/protocol_compiler/compile.sh STRUCTURE_BUILD_PLATFORM_CONFIG_V2
 
 ~/protocol-governed-computing/protocol_compiler/compile_domain.sh ~/protocol-governed-computing/conformance_workloads/workloads/collatz
 
@@ -171,11 +171,14 @@ source and no compiled output, the assembler refused, and every runtime check af
 snapshot that had never been written. A build list that omits a domain is indistinguishable from a
 domain that declares no source, which is why the assembler names the command rather than proceeding.
 
-**Every domain build proves its transforms.** `compile_domain.sh` runs `runtime conformance` once the
-compile succeeds, and exits non-zero when a case fails. Each build prints one line, naming every transform
-it owns as proven, unproven or refused, and every platform transform it carries:
+**Every build proves the transforms it supplies.** `compile.sh` and `compile_domain.sh` run
+`runtime conformance` once the compile succeeds, and exit non-zero when any case fails. Each build
+prints one line, naming every transform it supplies as proven, unproven or refused, and counting the
+platform transforms it carries. The platform supplies its own twelve transforms and proves them; each
+of its three builds prints the same line:
 
 ```
+[conformance] platform: 11 proven, 1 unproven, 0 refused, 0 carried from another surface (49 case(s))
 [conformance] workload: 0 proven, 2 unproven, 0 refused, 0 carried from another surface (0 case(s))
 [conformance] transformation: 0 proven, 6 unproven, 0 refused, 0 carried from another surface (0 case(s))
 [conformance] inspection: 0 proven, 0 unproven, 0 refused, 0 carried from another surface (0 case(s))
@@ -184,11 +187,16 @@ it owns as proven, unproven or refused, and every platform transform it carries:
 [conformance] blockchain: 0 proven, 1 unproven, 0 refused, 6 carried from another surface (0 case(s))
 ```
 
-Unproven is expected until a domain's own change gives its transforms vectors; a count moves only
-when that change lands. **Any refused transform is a defect.** Unproven is never reported as passing.
-The result is written to `<domain>/snapshot/compiled/transform_conformance/result.json`. The assembler
-carries it to `snapshot/transform_conformance/<domain>/`, and it is part of the snapshot's identity.
-The platform build runs no conformance, so a carried platform transform is proven nowhere.
+The platform's unproven transform is `CT_PURE_COMPARE_EQUAL_V0`, which no inherited vector tests. A
+domain's transforms stay unproven until the domain's own change gives them vectors, and a count moves
+only when that change lands. **Any refused transform, or any failed case, is a defect.** Unproven is
+never reported as passing.
+
+What a build supplies and what it carries is read from its attestation's `imported_capabilities`, never
+from a name. The result is written to `<build>/snapshot/compiled/transform_conformance/result.json`, or
+under the build's own root for a placement build. The assembler carries it to
+`snapshot/transform_conformance/<build>/`, and it is part of the snapshot's identity. The platform's
+vectors are declarations: `si artifact list --kind TEST_DATA` lists them.
 
 **A rebuild reproduces its identity, and that is worth checking when anything near the assembler or
 the attestation changes.** Recompile one domain and reassemble twice; the `snapshot_id` must not move.
@@ -316,9 +324,10 @@ Rows are in the order the block runs them.
 | `si snapshot validate` | Reads **the snapshot just assembled**, which `test_inspector.py` does not — that runs against fixtures. Non-advisory checks must all pass. Two advisory checks are **currently red**: `republished_copies_agree`, 15 violations, every `capability_side_effects` artifact published twice (once as the platform's authoring copy, once as a consuming domain's execution binding) diverging on `content`, `layer_code`, `references`, `version` — the count scales with domains composed; and `bound_paths_declared_as_stores`, 1 violation, `ai_governance::RB_AGENT_GOVERNANCE_BINDINGS_V0` binding `CS_REGISTRY_V0` to a path no store declares. Advisory failures exit 0; `--strict` turns them red. A **non-advisory** failure here is a real defect in the composition |
 | `domain_authoring.py` | `PASSED: 8/8` — authors the smallest domain from scratch in a temporary directory, compiles it against the platform, composes, boots and executes it. This is the path `pgc_install/README.md` documents for a domain developer, run rather than described. A failure means the README is wrong, not the platform. It pins four things that were each wrong when that guide was first written: all five projection paths are required and their absence fails at S7 rather than early; `structure_scope` names the composed domain, so a generic value assembles and conforms under the wrong name; a domain composes without violating the claimed profile; and an unimportable domain returns `VIOLATION` with null outputs rather than raising |
 | `test_indexes.py` | `PASSED: 13/13` — assembler index construction, including that a republished identity resolves to its authoring copy and that resolution does not track domain-name order |
-| `test_transform_conformance_evidence.py` | `PASSED: 21/21` — every domain's conformance result is carried, names each of its transforms with none refused, and is a manifest constituent; `conformance/` holds only `composition.json` |
+| `test_transform_conformance_evidence.py` | `PASSED: 32/32` — every build's conformance result, the platform's included, is carried, names each transform the build supplies with none refused, names as carried exactly what its attestation records, and is a manifest constituent; the platform proves every transform it has a vector for; `conformance/` holds only `composition.json` |
 | `test_transform_conformance.py`, `test_vector_build.py` | `10/10 passed`, `4/4 passed` — the compiler refuses a malformed vector before conformance runs, and a wrong expectation fails the build at conformance |
-| `test_transform_conformance_runner.py` | `OK` (7 tests) — a molecule is proven from recorded results without running its non-deterministic step; a missing or unused record refuses |
+| `test_platform_vectors.py` | `3/3 passed` — the platform materializes its vectors and writes their cases; each defect in a platform vector stops the platform build on its own rule; a build records what it carried in, and the platform carries nothing |
+| `test_transform_conformance_runner.py` | `OK` (9 tests) — a molecule is proven from recorded results without running its non-deterministic step; a missing or unused record refuses; what a build supplies is read from its attestation, never a name; a failed case for a carried transform refuses the build |
 | `test_compiler_atoms.py` | `PASSED: 9/9` |
 | `test_governance_provenance.py` | `4/4 PASS`, and `provenance restored: yes` on the last line — the script mutates governance to make its point and must put it back. `DETERMINISM` same governance → identical closure hash; `ISOLATION` a platform-only change leaves it unchanged; `SENSITIVITY` an imported change moves it; `ENFORCEMENT` a stale domain against changed governance is blocked at assembly. The two that were red when this script was first wired in were never diagnosed as defects and no longer reproduce; if any of the four goes red, read `provenance restored` before rerunning — a run that died mid-mutation leaves governance edited |
 | `test_reference_collatz.py` | `OK` |
@@ -882,7 +891,7 @@ rm -rf $W/snapshot $W/data \
        $W/business_domains/*/snapshot $W/conformance_workloads/workloads/*/snapshot
 
 # 2. Platform first — a domain resolves its references against the compiled governance surface.
-$W/protocol_compiler/compile.sh STRUCTURE_BUILD_PLATFORM_CONFIG_V1
+$W/protocol_compiler/compile.sh STRUCTURE_BUILD_PLATFORM_CONFIG_V2
 
 # 3. Every domain in the composition. Omitting one assembles it from stale output that no longer exists.
 for d in $W/transformation $W/snapshot_inspector $W/conformance_workloads/workloads/collatz \

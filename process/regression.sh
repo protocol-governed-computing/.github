@@ -47,16 +47,16 @@ if [[ "$MODE" == "--build" || "$MODE" == "--all" ]]; then
     echo "  Recover it before doing anything else:  git -C pgc_release restore snapshot/" >&2
     exit 1
   fi
-  "$W/protocol_compiler/compile.sh" STRUCTURE_BUILD_PLATFORM_CONFIG_V1 || exit 1
+  "$W/protocol_compiler/compile.sh" STRUCTURE_BUILD_PLATFORM_CONFIG_V2 || exit 1
   # The platform's other two placements, each into its own root. They are compiled against the
   # same governance surface as the default build, so a governance change leaves them stale until they
   # are rebuilt — and the assembler then refuses to compose them with freshly compiled domains, which
   # surfaced as a red test_federation after a change that touched no federation code.
   rm -rf "$W/software_governance/snapshot_fed" "$W/software_governance/snapshot_mw"
   PGC_SNAPSHOT_ROOT="$W/software_governance/snapshot_fed" \
-    "$W/protocol_compiler/compile.sh" STRUCTURE_BUILD_PLATFORM_FEDERATED_CONFIG_V1 || exit 1
+    "$W/protocol_compiler/compile.sh" STRUCTURE_BUILD_PLATFORM_FEDERATED_CONFIG_V2 || exit 1
   PGC_SNAPSHOT_ROOT="$W/software_governance/snapshot_mw" \
-    "$W/protocol_compiler/compile.sh" STRUCTURE_BUILD_PLATFORM_MULTIWORKER_CONFIG_V1 || exit 1
+    "$W/protocol_compiler/compile.sh" STRUCTURE_BUILD_PLATFORM_MULTIWORKER_CONFIG_V2 || exit 1
   for d in conformance_workloads/workloads/collatz transformation snapshot_inspector \
            business_domains/ai_governance business_domains/book_library_mgmt \
            business_domains/blockchain; do
@@ -94,6 +94,7 @@ if [[ "$MODE" == "--all" ]]; then
            "$W/protocol_compiler/scripts/testbed/test_molecule_composition.py" \
            "$W/protocol_compiler/scripts/testbed/test_transform_conformance.py" \
            "$W/protocol_compiler/scripts/testbed/test_vector_build.py" \
+           "$W/protocol_compiler/scripts/testbed/test_platform_vectors.py" \
            "$W/protocol_compiler/scripts/test_governance_provenance.py" \
            "$W/protocol_runtime/testbed/pgc/test_reference_collatz.py" \
            "$W/protocol_runtime/testbed/pgc/test_warm_boot.py" \

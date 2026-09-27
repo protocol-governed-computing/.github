@@ -31,7 +31,7 @@ sudo on UC221–UC224. UC221 additionally has `nfs-common` and a temporary manua
 ```sh
 cd ~/protocol-governed-computing
 PGC_SNAPSHOT_ROOT=$PWD/software_governance/snapshot_fed \
-  protocol_compiler/compile.sh STRUCTURE_BUILD_PLATFORM_FEDERATED_CONFIG_V1
+  protocol_compiler/compile.sh STRUCTURE_BUILD_PLATFORM_FEDERATED_CONFIG_V2
 protocol_compiler/compile_domain.sh conformance_workloads/workloads/collatz
 protocol_compiler/compile_domain.sh snapshot_inspector
 python -m assembler.cli assemble --profile SIGNED_FEDERATED_MULTINODE_PROFILE_V0 \
