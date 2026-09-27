@@ -96,6 +96,7 @@ if [[ "$MODE" == "--all" ]]; then
            "$W/protocol_compiler/scripts/testbed/test_transform_conformance.py" \
            "$W/protocol_compiler/scripts/testbed/test_vector_build.py" \
            "$W/protocol_compiler/scripts/testbed/test_platform_vectors.py" \
+           "$W/protocol_compiler/scripts/testbed/test_keyed_chain_and_molecule_surface.py" \
            "$W/protocol_compiler/scripts/test_governance_provenance.py" \
            "$W/protocol_runtime/testbed/pgc/test_reference_collatz.py" \
            "$W/protocol_runtime/testbed/pgc/test_warm_boot.py" \
