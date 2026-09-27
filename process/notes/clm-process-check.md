@@ -65,7 +65,7 @@ yet a design that does what was asked**, and only execution tells the two apart.
 
 **3. P7 is beyond hand authoring, and that raises an authority question.**
 - CLM's P7 has 47 topology rows and 280 bindings. A generator script wrote it from P5 and P6, and P8
-  likewise.
+  likewise. Both scripts are kept, as they ran, in `clm-generators/` next to this note.
 - The phase checks admit the document, not the way it was produced. So the design's author is, in
   fact, a script outside governance.
 - Either generation from P5/P6 becomes a governed step with its own evidence, or the design language
