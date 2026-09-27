@@ -191,7 +191,7 @@ Compose a greeting from a name.
 fqdn: greeting::CT_PURE_COMPOSE_GREETING_V0
 artifact_kind: CAPABILITY_TRANSFORM
 version: v0
-governed_by: capability_transforms::CONSTITUTION_CAPABILITY_TRANSFORMS_V0
+governed_by: capability_transforms::CONSTITUTION_DETERMINISTIC_ATOMS_V0
 authority: pgc.platform
 concern: greeting
 core:

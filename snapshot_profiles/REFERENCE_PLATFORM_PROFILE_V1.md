@@ -93,7 +93,7 @@ snapshot_profile:
       - execution::CONSTITUTION_EXECUTION_V0
       - execution_topology::CONSTITUTION_EXECUTION_TOPOLOGY_V0
       - capability_contracts::CONSTITUTION_CAPABILITY_CONTRACT_V0
-      - capability_transforms::CONSTITUTION_CAPABILITY_TRANSFORMS_V0
+      - capability_transforms::CONSTITUTION_DETERMINISTIC_ATOMS_V0
       - capability_side_effects::CONSTITUTION_CAPABILITY_SIDE_EFFECTS_V0
       - runtime_binding::CONSTITUTION_RUNTIME_BINDING_V0
       - trace::CONSTITUTION_TRACE_EXECUTION_V0

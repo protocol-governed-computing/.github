@@ -1,5 +1,64 @@
 # SOTU Handoff
 
+## Constitution renamed: CONSTITUTION_DETERMINISTIC_ATOMS_V0 — dev/17 · 2026-09-27
+
+`capability_transforms::CONSTITUTION_CAPABILITY_TRANSFORMS_V0` is now
+`CONSTITUTION_DETERMINISTIC_ATOMS_V0`. The rename is for human readers. The old name claimed the
+constitution governs every capability transform, but since molecules and non-deterministic atoms it
+governs one kind of three. `INVARIANT_CT_GOVERNED_BY_KIND_V0` places each transform under exactly
+one constitution by kind and purity:
+
+| Transform | Constitution |
+|---|---|
+| deterministic atom | `CONSTITUTION_DETERMINISTIC_ATOMS_V0` |
+| non-deterministic atom (`ct_impure`) | `CONSTITUTION_NONDETERMINISTIC_ATOMS_V0` |
+| molecule | `CONSTITUTION_MOLECULES_V0` |
+
+### What changed
+
+- **The constitution:** `git mv` and a new fqdn. Its body now covers deterministic atoms only, with
+  the placement table above.
+- **Three rules common to every transform stay where they were.** They are surface closure,
+  derived closure and implementation admissibility (option (a), approved). The body says so plainly,
+  and a home common to all three constitutions would be a separate change. No behaviour changed.
+- **References updated across six repos, about 50 files:**
+  - `governed_by` on 33 CT artifacts, covering the platform, all four business domains, collatz and
+    the transformation tool domain;
+  - the governance artifacts that name it, and the surface map;
+  - both snapshot profiles;
+  - `_transform_index.py`, `families.py` and `domain_authoring.py`, plus two tests;
+  - `software_governance/CLAUDE.md`, which is gitignored.
+- **No alias is kept for the old name.** A stale reference fails the build at S2, and that is how
+  the last three were found.
+- **`CONSTITUTION_NONDETERMINISTIC_ATOMS_V0`** lost a clause excusing the old body's "every
+  transform is pure".
+
+### Deliberately unchanged
+
+- **Seven historical dossiers:** `software_governance/dossiers/molecule_composition`, CLM P6 and
+  blockchain cr_01 P3. They record the name as it was when approved. Construction acceptance still
+  reproduces all 150 artifacts, because `governed_by` is rendered from code, not read from the
+  dossier.
+- **`pgc_release`:** sealed evidence, 56 files under the old name.
+- **The papers:** they don't use the name.
+
+### Regression, all green (`--all`)
+
+- **Domain suites:** 23/23, 21/21, 15/15, 9/9 and CLM 27/27.
+- **Build checks:**
+  - construction acceptance: 150/150;
+  - implementation closure: 34 transforms;
+  - every platform test passes.
+- **Admission fidelity:** the known 31 findings over 36 gates.
+
+### Worth knowing
+
+- **Every pin is now historical, CLM's included.** The composition id changed. That matters only if
+  a dossier's phases run again, and the side-assembly recipe in `transformation/CLAUDE.md` re-pins.
+- **The `grep` in the Claude Code shell is a wrapper.** It skips `build/` directories and
+  gitignored files, which hid `transformation/registry/build/` and `software_governance/CLAUDE.md`
+  from the first sweep. Use `/usr/bin/grep` for workspace-wide renames.
+
 ## CLM merged into dev/17 as a regression domain; routing refused at S8 — dev/17 · 2026-09-27
 
 A process check came first, and it was done before the merge on purpose. Its note is
