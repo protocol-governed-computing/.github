@@ -171,6 +171,25 @@ source and no compiled output, the assembler refused, and every runtime check af
 snapshot that had never been written. A build list that omits a domain is indistinguishable from a
 domain that declares no source, which is why the assembler names the command rather than proceeding.
 
+**Every domain build proves its transforms.** `compile_domain.sh` runs `runtime conformance` once the
+compile succeeds, and exits non-zero when a case fails. Each build prints one line, naming every transform
+it owns as proven, unproven or refused, and every platform transform it carries:
+
+```
+[conformance] workload: 0 proven, 2 unproven, 0 refused, 0 carried from another surface (0 case(s))
+[conformance] transformation: 0 proven, 6 unproven, 0 refused, 0 carried from another surface (0 case(s))
+[conformance] inspection: 0 proven, 0 unproven, 0 refused, 0 carried from another surface (0 case(s))
+[conformance] ai_governance: 0 proven, 3 unproven, 0 refused, 4 carried from another surface (0 case(s))
+[conformance] book_library_mgmt: 0 proven, 4 unproven, 0 refused, 5 carried from another surface (0 case(s))
+[conformance] blockchain: 0 proven, 1 unproven, 0 refused, 6 carried from another surface (0 case(s))
+```
+
+Unproven is expected until a domain's own change gives its transforms vectors; a count moves only
+when that change lands. **Any refused transform is a defect.** Unproven is never reported as passing.
+The result is written to `<domain>/snapshot/compiled/transform_conformance/result.json`. The assembler
+carries it to `snapshot/transform_conformance/<domain>/`, and it is part of the snapshot's identity.
+The platform build runs no conformance, so a carried platform transform is proven nowhere.
+
 **A rebuild reproduces its identity, and that is worth checking when anything near the assembler or
 the attestation changes.** Recompile one domain and reassemble twice; the `snapshot_id` must not move.
 
@@ -291,11 +310,15 @@ Rows are in the order the block runs them.
 | `e2e_phases_test.py` | `E2E PASSED` — every phase, both admissible and inadmissible, through the runtime |
 | `projection_test.py` | `PROJECTION PASSED` — reproducible, general, and refusing an inadmissible prior |
 | `construction_acceptance.py` | `99/99 artifacts reproduced across 4 domain(s) (0 field difference(s))` — `book_library_mgmt` from maintained fixtures, `blockchain` and the two base-code roots from their delivered dossiers. A base-code root carries **no order**, so the harness takes its dossiers as a set and refuses if two of them determine one artifact; a partial registry reports its undetermined tail rather than counting it as reproduced. An `UNCOVERED` line is a dossier root determining artifacts that nothing compares — add it to `DOMAINS`, or say why not |
+| `molecule_design_test.py`, `vector_design_test.py` | `4/4 passed`, `6/6 passed` — the design language renders a molecule's steps, and a transform's cases as its vector, and each rule that holds them fires on the defect it names |
 | `implementation_closure.py` | `IMPLEMENTATION CLOSURE PASSED` — every transform module named by an artifact, every named module present |
 | `test_inspector.py` | `PASSED: 121/121` |
 | `si snapshot validate` | Reads **the snapshot just assembled**, which `test_inspector.py` does not — that runs against fixtures. Non-advisory checks must all pass. Two advisory checks are **currently red**: `republished_copies_agree`, 15 violations, every `capability_side_effects` artifact published twice (once as the platform's authoring copy, once as a consuming domain's execution binding) diverging on `content`, `layer_code`, `references`, `version` — the count scales with domains composed; and `bound_paths_declared_as_stores`, 1 violation, `ai_governance::RB_AGENT_GOVERNANCE_BINDINGS_V0` binding `CS_REGISTRY_V0` to a path no store declares. Advisory failures exit 0; `--strict` turns them red. A **non-advisory** failure here is a real defect in the composition |
 | `domain_authoring.py` | `PASSED: 8/8` — authors the smallest domain from scratch in a temporary directory, compiles it against the platform, composes, boots and executes it. This is the path `pgc_install/README.md` documents for a domain developer, run rather than described. A failure means the README is wrong, not the platform. It pins four things that were each wrong when that guide was first written: all five projection paths are required and their absence fails at S7 rather than early; `structure_scope` names the composed domain, so a generic value assembles and conforms under the wrong name; a domain composes without violating the claimed profile; and an unimportable domain returns `VIOLATION` with null outputs rather than raising |
 | `test_indexes.py` | `PASSED: 13/13` — assembler index construction, including that a republished identity resolves to its authoring copy and that resolution does not track domain-name order |
+| `test_transform_conformance_evidence.py` | `PASSED: 21/21` — every domain's conformance result is carried, names each of its transforms with none refused, and is a manifest constituent; `conformance/` holds only `composition.json` |
+| `test_transform_conformance.py`, `test_vector_build.py` | `10/10 passed`, `4/4 passed` — the compiler refuses a malformed vector before conformance runs, and a wrong expectation fails the build at conformance |
+| `test_transform_conformance_runner.py` | `OK` (7 tests) — a molecule is proven from recorded results without running its non-deterministic step; a missing or unused record refuses |
 | `test_compiler_atoms.py` | `PASSED: 9/9` |
 | `test_governance_provenance.py` | `4/4 PASS`, and `provenance restored: yes` on the last line — the script mutates governance to make its point and must put it back. `DETERMINISM` same governance → identical closure hash; `ISOLATION` a platform-only change leaves it unchanged; `SENSITIVITY` an imported change moves it; `ENFORCEMENT` a stale domain against changed governance is blocked at assembly. The two that were red when this script was first wired in were never diagnosed as defects and no longer reproduce; if any of the four goes red, read `provenance restored` before rerunning — a run that died mid-mutation leaves governance edited |
 | `test_reference_collatz.py` | `OK` |
