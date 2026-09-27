@@ -1,6 +1,6 @@
 # Federated Deployment on `shuttle` — Plan
 
-Deploys the `FEDERATED_NODE` composition (`STRUCTURE_BUILD_PLATFORM_FEDERATED_CONFIG_V1`) onto four
+Deploys the `FEDERATED_NODE` composition (`STRUCTURE_BUILD_PLATFORM_FEDERATED_CONFIG_V2`) onto four
 LXC nodes and an external evidence store, so that `SIGNED_FEDERATED_MULTINODE_PROFILE_V0` can be read
 back against a deployment that can satisfy it. Targets OB-2, OB-3, EO-1, EO-2, EO-3, EO-4.
 
