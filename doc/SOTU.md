@@ -1,5 +1,59 @@
 # SOTU Handoff
 
+## Transform conformance delivered; platform test data next — dev/17 · 2026-09-26
+
+`transform_conformance` is delivered in six steps. Steps 1–5 are committed. **Uncommitted:**
+- `transformation`, step 6: P7 `test_cases` and `test_case_values` registers, the vector rules (P7
+  has 232 rules), the TEST_DATA companion family and renderer, fixture and corpus cases, and
+  `vector_design_test`.
+- `.github`: the RUNBOOK conformance section and test rows, plus `vector_design_test` in the regression.
+- `software_governance`: `dossiers/transform_conformance/{delivery,closure}.md`, and the new
+  `dossiers/platform_test_data/p0_business_problem_statement.md`.
+
+### Build & Test Status
+
+**PASSING.** Regression `--all` is green except `admission_contract_fidelity` (31, expected).
+Construction acceptance reproduces 99/99 and lists 4 vectors as NOT YET DELIVERED.
+
+Every domain build now runs conformance after its compile succeeds. The baseline, as proven /
+unproven / refused / carried:
+
+| Domain | Proven | Unproven | Refused | Carried |
+|---|---|---|---|---|
+| workload | 0 | 2 | 0 | 0 |
+| transformation | 0 | 6 | 0 | 0 |
+| inspection | 0 | 0 | 0 | 0 |
+| ai_governance | 0 | 3 | 0 | 4 |
+| book_library_mgmt | 0 | 4 | 0 | 5 |
+| blockchain | 0 | 1 | 0 | 6 |
+
+### Open Issues
+
+1. **No transform is proven yet.** The platform transforms that domains carry are proven nowhere.
+2. **The implementation's source is not sealed by a hash.** Two P7 refinements are also missing:
+   a value's case is matched per register rather than per transform, and cell normalization reaches
+   values.
+3. **The ai_governance vectors inherited from RI-0 disagree with PGC.** This covers
+   `CHECK_QUOTA_AVAILABLE`, `CHECK_TRAINING_STATUS` and `EVALUATE_INACTIVITY`: RI-0 answered "no"
+   where PGC refuses, and one output was renamed. It needs a business ruling in its own CR.
+4. **Still carried from earlier:**
+   - the `SCHEMA_TRACE_EVENT_V0` enum lags the runtime;
+   - `governance_surface_map.yaml` is stale;
+   - the CLM CR-1 rebaseline notes: overturn P3 #2, move GAP-09 to REUSE, revisit the trace constraint.
+
+### Next Session Should Start With
+
+1. **Gate 0 for `software_governance/dossiers/platform_test_data`.** The P0 is written and has four
+   clarifications with recommended answers. It lifts RI-0's vectors for 11 platform transforms
+   into the Machine-block format and runs them in a new workload in `conformance_workloads`.
+   - A read-only drift check found 10 of the 11 match on every case.
+   - `PASSTHROUGH` is unconfirmed until the first compile.
+2. Then the `ai_governance` CR for its 3 vectors.
+3. Then Collatz declared iteration: the first molecule proven in a composition.
+4. Then merge dev/17 → work/clm, run the CLM CR-1 rebaseline, and resume CLM at P7.
+
+---
+
 ## Session close: shuttle powered off — dev/17 · 2026-09-25
 
 No code changed after the previous entry. All four repos are committed and clean:
