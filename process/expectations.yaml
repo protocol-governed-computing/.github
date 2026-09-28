@@ -26,16 +26,18 @@ steps:
     expect: ["SUPERSESSION AGREEMENT PASSED — 7 relation\\(s\\)"]
   - id: human_block_fidelity
     section: checks
-    expect: ["HUMAN BLOCK FIDELITY PASSED — 480 artifacts"]
+    expect: ["HUMAN BLOCK FIDELITY PASSED — 483 artifacts"]
   - id: evidence_determinism
     section: checks
     expect: ["EVIDENCE DETERMINISM PASSED"]
   - id: admission_contract_fidelity
     section: checks
     exit: 1
-    expect: ["ADMISSION CONTRACT FIDELITY FAILED — 31 finding\\(s\\) over 36 gate\\(s\\)"]
+    # 36 → 34 gates, 31 → 26 findings: a superseded intent is no admission gate (A11), and the five
+    # were all on the superseded WF_RECORD_VERIFICATION_DECISION_V0's gate.
+    expect: ["ADMISSION CONTRACT FIDELITY FAILED — 26 finding\\(s\\) over 34 gate\\(s\\)"]
     red_by_design: >-
-      31 deliberate findings — other domains' business, plus IN_REGISTER_BOOK_V0's `subject`,
+      26 deliberate findings — other domains' business, plus IN_REGISTER_BOOK_V0's `subject`,
       deferred in cr_04_catalog P3 Q1
   - id: emit_rule_sets
     section: checks
@@ -118,6 +120,10 @@ steps:
   - id: test_dispatch_routing_fidelity
     section: checks
     expect: ["5/5 passed"]
+  - id: test_force_and_output_root
+    section: checks
+    # nothing superseded is in force; a build writes only where it declares (A batch, wave 3 — A11, A10)
+    expect: ["8/8 passed"]
   - id: test_governance_provenance
     section: checks
     # The script mutates governance to make its point; a run that died mid-mutation leaves it edited.

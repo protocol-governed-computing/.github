@@ -61,6 +61,8 @@ profile weakened without anyone seeing it.
 | B20 | ~~`regression.sh` exits 0 on a failing test script~~ — **done**: every check and execution step runs through `step`, and the script exits with the verdict | small–medium |
 | B21 | `pgc_runtime examine` parses RI-0's trace format (`execution_start`, `node_start`, `sequence`, …) and pins `TRACE_SCHEMA_V0`. It cannot read a PGC trace, the way `behavior-logic` could not (B19). | small–medium |
 | B22 | `SCHEMA_EVENT_V0` is never applied — EVENT is `described` in `STRUCTURE_SCHEMA_DISPATCH_V0` but absent from its dispatch — and it is stale: its `governed_by` constant and `$id` (`pgs_governance.schemas…`) match no event. Rewrite it from what events carry (with `core.moment`) and dispatch it, or record the disposition truthfully. Changes a governed artifact, so it goes with batch A. | small–medium |
+| B23 | The blockchain web client's `verify_actor.html` explainer still says `blockchain.accept_actor` and `blockchain.reject_actor` reach `WF_RECORD_VERIFICATION_DECISION_V0`, and shows that workflow's graph. CR-04 split it into `WF_ACCEPT_ACTOR_V0` and `WF_REJECT_ACTOR_V0` and superseded it; the TIs route to the successors. | small |
+| B24 | `STRUCTURE_BUILD_PLATFORM_CONFIG_V0` does not build and declares no output root, so A10 now refuses it with its reason. `STRUCTURE_ARTIFACT_IDENTITY_V0` still names it, and the compiler's `--all-structures` and no-argument defaults still select it. Retire it, or declare it superseded once nothing names it. | small |
 | B18 | Transform conformance: 16 domain transforms unproven, and implementation source not sealed by hash. **Frozen by decision**, so record it, don't fix it. | none |
 
 ---
@@ -112,6 +114,14 @@ Each ruling is recorded in `.github/process/rulings.md`.
   - the signed federated profile.
 - **Canonical docs:** the three transform constitutions, and the placement and profile docs.
 - **`.github/process/notes/release-17.md`,** and a `pgc_release/MANIFEST.md` for v5.
+- **`pgc_install/README.md`:** its anchors table and compile steps set `PGC_SNAPSHOT_ROOT` for the
+  compiler. From v5 the compiler reads no output root from the environment (A10); each build
+  configuration declares its own.
+- **The standards realization map:** SU-7 was mapped Demonstrated on the vocabulary projection alone.
+  A superseded workflow stayed dispatchable until A11; the entry should cite the S8 check now.
+- **Design notes whose change has landed:** `doc/handler_namespace_rename.md`,
+  `doc/supersession_and_force.md` and `doc/composition_output_root.md` describe A2, A11 and A10 as
+  open. Retire them, or keep them as the reasoning behind what landed.
 - **The papers:** anything citing v4 behaviour that v5 changes. Molecules, the constitution rename
   and routing by node are the likely ones.
 
@@ -131,7 +141,7 @@ Each ruling is recorded in `.github/process/rulings.md`.
 
 ## The A batch — plan
 
-**Wave 2 done:** B6. **Wave 1 done, with B7:** A9, A5, A3, A4 and the ATTRIBUTE fix; `regression.sh --all` 53/53. Rulings: handler keys → `pgc_governance.handlers.*`; the renderer honours ATTRIBUTE on events; the transform-wide rules → `CONSTITUTION_CAPABILITY_TRANSFORMS_V1`. A1's home is still to be ruled.
+**Wave 3 done:** A2, A6, A8, A7, A11 (B12), A10 (B11); `regression.sh --all` 54/54. **Wave 2 done:** B6. **Wave 1 done, with B7:** A9, A5, A3, A4 and the ATTRIBUTE fix; `regression.sh --all` 53/53. Rulings: handler keys → `pgc_governance.handlers.*`; the renderer honours ATTRIBUTE on events; the transform-wide rules → `CONSTITUTION_CAPABILITY_TRANSFORMS_V1`. A1: hash the profile's content now; profiles stay in `.github`.
 
 Everything that changes a composition id lands here, together, then one clean regression and one
 re-pin. It runs in four waves, each ending with a green `regression.sh --all`, so a failure is

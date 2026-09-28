@@ -1,5 +1,42 @@
 # SOTU Handoff
 
+## A batch, wave 3: the governance surface — dev/17 · 2026-09-28
+
+Waves 1 and 2 are committed. Wave 3 is on dev/17, uncommitted. `regression.sh --all`: 54/54.
+
+- **A2 — handler keys.** 94 registry keys, three prefix constants and seven invariants now say
+  `pgc_governance.handlers.*`. It is behaviour-neutral: the same assertions run on the same inputs.
+- **A6 — transform-wide rules.** `CONSTITUTION_CAPABILITY_TRANSFORMS_V1` carries surface closure,
+  derived closure and implementation admissibility; `DETERMINISTIC_ATOMS_V0` no longer does. No
+  transform is `governed_by` it.
+- **A8 — record locks.** `FEDERATED_NODE` declares `shared_store_requirement: posix_record_locks`,
+  and says why an object store cannot carry a node group's store.
+- **A7 — `cryptographic_trust` V1**, the way placement went to V1: V0 deleted, not superseded.
+  - `LOCAL_DEV_UNSIGNED` and `SIGNED_SNAPSHOT` are authorized; the build configuration selects one.
+  - The federated build now declares `SIGNED_SNAPSHOT`. Before, it claimed `LOCAL_DEV_UNSIGNED`
+    against V0's own rule that unsigned snapshots stay local.
+  - The runtime still does not branch on the mode; a node holding an anchor verifies.
+- **A11 — presence is not force.** `INVARIANT_SUPERSEDED_NOT_IN_FORCE_V0` declares one predicate,
+  realized once in `compiler/atoms/force.py`, and asked at selection, assertion derivation,
+  dispatch entry and admission. S8 checks the outputs: anything superseded that still confers effect
+  fails the build.
+  - **The exposure was not nil.** Two superseded workflows were dispatchable, and the book catalog's
+    CR-01 validation ran one. It now runs V1, the act in force.
+  - `admission_contract_fidelity` drops to 26 findings over 34 gates. The five findings that went
+    were all on the superseded `WF_RECORD_VERIFICATION_DECISION_V0`'s gate.
+- **A10 — output roots.** Each build configuration declares `output_configuration.root`; the
+  compiler no longer reads `PGC_SNAPSHOT_ROOT`. Two in-force configurations of one repository naming
+  one root are refused, and a configuration naming none cannot be built. `compiler.cli output-root`
+  prints where a configuration writes; `compile.sh` asks it.
+- **Tests.** `test_force_and_output_root.py`, 8/8, in `regression.sh`.
+- **Findings.**
+  - **B23:** the blockchain web client's explainer describes the superseded workflow.
+  - **B24:** `STRUCTURE_BUILD_PLATFORM_CONFIG_V0` is dead but still named.
+  - **F:** `pgc_install`'s README, the SU-7 realization entry, and three landed design notes.
+
+**Next:** wave 4, A1 — where profiles live, still to be ruled. Then the batch's end: re-pin the
+dossier baselines, regenerate the surface map, SOTU.
+
 ## A batch, waves 1–2: traces name places; evidence says what to ignore; routes resolve against the composition — dev/17 · 2026-09-28
 
 The A batch changes identity, so it lands whole before the v5 seal, in four waves (plan in

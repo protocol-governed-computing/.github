@@ -75,16 +75,16 @@ on an artifact, so the surface declares what is available and a build declares w
 | `STRUCTURE_BUILD_PLATFORM_MULTIWORKER_CONFIG_V2` | `LOCAL_MULTI_WORKER` | `software_governance/snapshot_mw` |
 | `STRUCTURE_BUILD_PLATFORM_FEDERATED_CONFIG_V2` | `FEDERATED_NODE` | `software_governance/snapshot_fed` |
 
-A default run builds the first. The second is built by naming it, into its own root:
+A default run builds the first. The others are built by naming them:
 
 ```bash
-PGC_SNAPSHOT_ROOT=$PWD/software_governance/snapshot_mw \
-  protocol_compiler compile --structure STRUCTURE_BUILD_PLATFORM_MULTIWORKER_CONFIG_V2
+protocol_compiler/compile.sh STRUCTURE_BUILD_PLATFORM_MULTIWORKER_CONFIG_V2
 ```
 
-**The output root is an argument, not a declaration, and the two compositions can therefore collide.**
-Pointing the multi-worker build at `snapshot/` overwrites the single-node composition, and both
-builds report success. See `doc/composition_output_root.md`.
+**Each configuration declares its own root** in `output_configuration.root`, and the table's last
+column is that declaration. Nothing on the command line overrides it, and two in-force configurations
+of one repository naming the same root are refused, so the compositions cannot overwrite each other.
+`python -m compiler.cli output-root --structure <code>` prints where a configuration writes.
 
 The federated composition runs on a node group, not in place. Its nodes are configured by hand per
 `process/deploy/NODE_CONFIG.md`; `process/deploy/PLAN.md` gives the topology and the checks.
@@ -124,7 +124,7 @@ execute a JSON path, and the result reads like a test failure rather than the sh
 That has cost two clean runs.
 
 **It is not a substitute for reading `## Expected`.** The script reports what each step printed; it
-does not judge. Two things are red by design — `admission_contract_fidelity` at 31 findings, and the
+does not judge. Two things are red by design — `admission_contract_fidelity` at 26 findings, and the
 advisory half of `si snapshot validate` — so a run that is *entirely* green means something stopped
 reporting.
 
@@ -225,7 +225,7 @@ Two different identities means something the composition carries changed without
 It was true for a long time: an attestation recorded when it was signed, to the microsecond, and the
 identity was taken over that — so a composition's identity was a function of *when it was built*, every
 pin in the workspace expired on the next rebuild, and a genuine alteration was indistinguishable from a
-no-op recompile. `cryptographic_trust::CONSTITUTION_CRYPTOGRAPHIC_TRUST_V0` now declares which of an
+no-op recompile. `cryptographic_trust::CONSTITUTION_CRYPTOGRAPHIC_TRUST_V1` now declares which of an
 attestation's fields constitute the composition and which merely accompany it, and the assembler reads
 that division in both the enumerator and the verifier.
 
@@ -321,7 +321,7 @@ explains it. The step ids there are the names below.
 | `supersession_agreement.py` | `SUPERSESSION AGREEMENT PASSED — N relation(s), both sides agree on each` — the relation is stated twice, on the successor and on the predecessor, and this compares them. **It does not close SU-3**, which asks for it once with the other side derived; what it closes is a disagreement nothing would report. `superseded_by` is written as a list by construction and may be written as one identity by hand: both spellings are one declaration and the closure handler normalizes them |
 | `human_block_fidelity.py` | `HUMAN BLOCK FIDELITY PASSED` — the prose beside a machine block declares nothing. A `RESTATED` line means delete the prose copy, never edit the machine block; a `SECTION` line means the section is named as if it states a rule. The policy is `vocabulary::VOCAB_HUMAN_BLOCK_CONSTRAINTS_V0`, read from the sealed composition — add a forbidden name there, never here. Reasoning: Field Manual, *The human block* |
 | `evidence_determinism.py` | **Give `PGC_SNAPSHOT_ROOT` an absolute path or leave it unset** — this check shells out to `run.sh`, which resolves a relative one against its own directory and fails in a way that reads like a determinism defect. `EVIDENCE DETERMINISM PASSED` — one workflow run twice; determinative content identical, observational content differs. A `DETERMINATIVE CONTENT DIFFERS` line means something non-deterministic is classified determinative; a `vacuous` line means nothing observational varies, so the split is untested. Policy: `vocabulary::VOCAB_EVIDENCE_CONTENT_CLASSIFICATION_V1` |
-| `admission_contract_fidelity.py` | `ADMISSION CONTRACT FIDELITY PASSED` — every IN gate's declared contract matches what its workflow binds. `OVER-DECLARED` means the gate requires a field nothing consumes, so a correct payload is refused; `UNDER-DECLARED` means the gate admits a payload the workflow cannot resolve. **Currently red on 31 findings, all deliberate**: other domains' business, plus `IN_REGISTER_BOOK_V0`'s `subject`, deferred with its ground in `cr_04_catalog` P3 Q1 — correcting it moves every caller, which that change's seed forbids |
+| `admission_contract_fidelity.py` | `ADMISSION CONTRACT FIDELITY PASSED` — every IN gate's declared contract matches what its workflow binds. `OVER-DECLARED` means the gate requires a field nothing consumes, so a correct payload is refused; `UNDER-DECLARED` means the gate admits a payload the workflow cannot resolve. **Currently red on 26 findings over 34 gates, all deliberate**: other domains' business, plus `IN_REGISTER_BOOK_V0`'s `subject`, deferred with its ground in `cr_04_catalog` P3 Q1 — correcting it moves every caller, which that change's seed forbids |
 | `emit_rule_sets.py --check` | every phase `OK` — the sealed rule set matches the declared one |
 | `build_payloads.py --check` | `OK` — every phase payload matches the corpus document it is cut from. A `DRIFTED` line is a hand-edited payload; fix the source document and regenerate |
 | `author_transport_contracts.py --check` | `OK` — every `si.` boundary contract matches the declaration that generates it. A `DRIFTED` line is a hand-edited artifact; fix the declaration, never the artifact |
@@ -345,6 +345,7 @@ explains it. The step ids there are the names below.
 | `test_compiler_atoms.py` | `PASSED: 9/9` |
 | `test_molecule_composition.py` | `9/9 passed` — molecules compose, each transform is placed under the constitution its kind and purity name, and an atom run directly is sealed with its purity |
 | `test_keyed_chain_and_molecule_surface.py`, `test_dispatch_routing_fidelity.py` | `4/4`, `5/5 passed` — two places running one contract are not a cycle; the sealed dispatch realizes every declared transition at its own node, and S8 refuses one that does not |
+| `test_force_and_output_root.py` | `8/8 passed` — a superseded workflow, intent or invariant that still confers effect fails S8 (`INVARIANT_SUPERSEDED_NOT_IN_FORCE_V0`); a build writes to the root its configuration declares, and two in-force configurations of one repository naming one root are refused |
 | `test_governance_provenance.py` | `4/4 PASS`, and `provenance restored: yes` on the last line — the script mutates governance to make its point and must put it back. `DETERMINISM` same governance → identical closure hash; `ISOLATION` a platform-only change leaves it unchanged; `SENSITIVITY` an imported change moves it; `ENFORCEMENT` a stale domain against changed governance is blocked at assembly. The two that were red when this script was first wired in were never diagnosed as defects and no longer reproduce; if any of the four goes red, read `provenance restored` before rerunning — a run that died mid-mutation leaves governance edited |
 | `test_reference_collatz.py` | `OK` |
 | `test_warm_boot.py` | `6/6 passed`. Both former failures are resolved, and the resolution is one change rather than two. `boot()` no longer carries its own acceptance check — it recomputed the composite over the manifest's *recorded* per-domain hashes, which detects a tampered manifest but not a tampered constituent, so a snapshot with an edited projection booted and reported healthy, and a manifest claiming a false composite was not refused. Acceptance is now delegated to `assembler.core.verify_snapshot`, which recomputes every constituent from its bytes and evaluates all four clauses of `3b` §7; `boot` raises `RuntimeError` on any of them. One determination, one implementation. `test_composite_recompute_matches_manifest` was retired with the weaker check it tested and replaced by `test_manifest_states_one_identity`, which asserts the manifest's two statements of its own identity agree. **These tests skip when no assembled snapshot is present** — a bare workspace reports 6 skipped, not 6 passed |

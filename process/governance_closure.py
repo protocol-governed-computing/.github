@@ -51,7 +51,7 @@ PLATFORM = WORKSPACE / "software_governance"
 REGISTRY = PLATFORM / "registry"
 
 # The compiler binds a derived ASSERT's handler by this convention unless the invariant overrides it.
-HANDLER_PREFIX = "pgs_governance.registry.handlers"
+HANDLER_PREFIX = "pgc_governance.handlers"
 
 # How a layer declaration says where its root is, in order of the compiler's own preference.
 # `registry_module` is last because it is RI-0 harvest naming kept for backward compatibility, and

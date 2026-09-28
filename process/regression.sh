@@ -8,7 +8,7 @@
 #
 # Expected results are data: `expectations.yaml`, compared by `regression_verdict.py` after the
 # run, and the script exits with the verdict. RUNBOOK.md "## Expected" explains each row. Two things
-# are red by design: admission_contract_fidelity (31 findings, all deliberate), and the advisory
+# are red by design: admission_contract_fidelity (26 findings, all deliberate), and the advisory
 # half of `si snapshot validate`, which reports known divergences without failing. Each step's output
 # and exit code are kept in `traces/regression/` (or $PGC_REGRESSION_OUT).
 set -u
@@ -55,10 +55,9 @@ if [[ "$MODE" == "--build" || "$MODE" == "--all" ]]; then
   # are rebuilt — and the assembler then refuses to compose them with freshly compiled domains, which
   # surfaced as a red test_federation after a change that touched no federation code.
   rm -rf "$W/software_governance/snapshot_fed" "$W/software_governance/snapshot_mw"
-  PGC_SNAPSHOT_ROOT="$W/software_governance/snapshot_fed" \
-    "$W/protocol_compiler/compile.sh" STRUCTURE_BUILD_PLATFORM_FEDERATED_CONFIG_V2 || exit 1
-  PGC_SNAPSHOT_ROOT="$W/software_governance/snapshot_mw" \
-    "$W/protocol_compiler/compile.sh" STRUCTURE_BUILD_PLATFORM_MULTIWORKER_CONFIG_V2 || exit 1
+  # Each configuration declares its own root (output_configuration.root), so none is passed here.
+  "$W/protocol_compiler/compile.sh" STRUCTURE_BUILD_PLATFORM_FEDERATED_CONFIG_V2 || exit 1
+  "$W/protocol_compiler/compile.sh" STRUCTURE_BUILD_PLATFORM_MULTIWORKER_CONFIG_V2 || exit 1
   for d in conformance_workloads/workloads/collatz transformation snapshot_inspector \
            business_domains/ai_governance business_domains/book_library_mgmt \
            business_domains/blockchain business_domains/causal_language_model; do
@@ -117,6 +116,7 @@ if [[ "$MODE" == "--all" ]]; then
            "$W/protocol_compiler/scripts/testbed/test_platform_vectors.py" \
            "$W/protocol_compiler/scripts/testbed/test_keyed_chain_and_molecule_surface.py" \
            "$W/protocol_compiler/scripts/testbed/test_dispatch_routing_fidelity.py" \
+           "$W/protocol_compiler/scripts/testbed/test_force_and_output_root.py" \
            "$W/protocol_compiler/scripts/test_governance_provenance.py" \
            "$W/protocol_runtime/testbed/pgc/test_reference_collatz.py" \
            "$W/protocol_runtime/testbed/pgc/test_warm_boot.py" \

@@ -166,3 +166,19 @@ mostly repeat what CR-1 proved about the platform.
 
 **Applied.** CLM is merged into dev/17, and `regression.sh` runs its suite. The reasoning is in
 `notes/clm-process-check.md`.
+
+---
+
+### A profile's content is in the identity; profiles stay in `.github` — A1, v5
+
+**Ruling.** The snapshot identity covers the content of the profile a snapshot claims, not only its
+name. Profiles stay in `.github/snapshot_profiles/`, read through `PGC_SNAPSHOT_PROFILES` as today.
+Moving them to a repository of their own is not part of v5.
+
+**Why.** Today a profile can be weakened without changing the identity of any snapshot claiming it.
+Hashing the content closes that, and it is the whole of the weakness. A repository of its own would
+make profiles versioned and citable like the other components, which is worth having but is a
+separate change with a larger reach: `release.sh`, `compose_release`, `pgc_install`.
+
+**Applied.** Wave 4 of the A batch (`../doc/v5_readiness.md`, A1).
+

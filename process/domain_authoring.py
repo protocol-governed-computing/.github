@@ -101,6 +101,7 @@ artifact_discovery:
   - CC
   - CT
 output_configuration:
+  root: snapshot
   artifacts:
     layer: PROTOCOL_BUILD_ROOT
     subpath: compiled/canonical
@@ -347,14 +348,12 @@ def main() -> int:
 
         r = run([py, "-m", "compiler.cli", "compile", "--structure",
                  "STRUCTURE_BUILD_INSPECTION_CONFIG_V0"],
-                {**env, "PGC_DOMAIN_ROOTS": str(ws / "snapshot_inspector"),
-                 "PGC_SNAPSHOT_ROOT": str(ws / "snapshot_inspector" / "snapshot")})
+                {**env, "PGC_DOMAIN_ROOTS": str(ws / "snapshot_inspector")})
         check("inspection_compiles", "0 failed" in r.stdout)
 
         r = run([py, "-m", "compiler.cli", "compile", "--structure",
                  "STRUCTURE_BUILD_GREETING_CONFIG_V0"],
-                {**env, "PGC_DOMAIN_ROOTS": str(tmp / "greeting"),
-                 "PGC_SNAPSHOT_ROOT": str(tmp / "greeting" / "snapshot")})
+                {**env, "PGC_DOMAIN_ROOTS": str(tmp / "greeting")})
         check("authored_domain_compiles", "0 failed" in r.stdout,
               (r.stdout + r.stderr)[-400:])
         if "0 failed" not in r.stdout:

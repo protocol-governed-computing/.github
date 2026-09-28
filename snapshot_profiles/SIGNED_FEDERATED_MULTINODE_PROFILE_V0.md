@@ -323,7 +323,7 @@ something nothing governs.
 
 | Identity | The decision that requires it |
 |---|---|
-| `cryptographic_trust::CONSTITUTION_CRYPTOGRAPHIC_TRUST_V0` | the trust root, and the signature every node verifies before executing |
+| `cryptographic_trust::CONSTITUTION_CRYPTOGRAPHIC_TRUST_V1` | the trust root, and the signature every node verifies before executing |
 | `federation::CONSTITUTION_FEDERATION_BOUNDARY_V0` | one authority across many nodes, and the line between internal transport and a governed boundary |
 | `execution_placement::CONSTITUTION_EXECUTION_PLACEMENT_V0` | nodes as placement rather than authority |
 | `execution_topology::CONSTITUTION_EXECUTION_TOPOLOGY_V0` | the node roles and their reachability |
