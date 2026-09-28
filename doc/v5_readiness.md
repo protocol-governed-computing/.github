@@ -27,6 +27,7 @@ after v5 means a second round of re-pinning and a second deposit for each one.
 | A5 | **`SCHEMA_TRACE_EVENT_V0` lags the runtime.** The event enum does not list what the runtime writes. | SOTU, carried since dev/17 | schema artifact |
 | A6 | **A common home for the three transform-wide rules.** Surface closure, derived closure and implementation admissibility sit in `CONSTITUTION_DETERMINISTIC_ATOMS_V0` for history's sake. This is option (b) of the rename. | this session | constitution artifacts |
 | A8 | **The FEDERATED_NODE placement requires a store honouring POSIX record locks.** Capability correctness across workers depends on it; NFSv4 and local filesystems honour them, an object store does not. Ruled C4: declare it in the placement. | ruling C4 | placement declaration |
+| A9 | **A trace records which contract ran, not which node.** CC and route events carry the CC address, never the node key. With one contract at several places, evidence does not say which place ran; it is recoverable only by replaying the routing. The execution-path overlay stops at the first reused contract for the same reason. Record the node key in `CC_START` and `WF_ROUTE`, then walk the overlay by key. Changes the trace schema, with A5. | found in B19 | trace schema, determinative content |
 | A7 | **`cryptographic_trust` V1.** Signing is selected by the composition, not carried by the surface. Declarations only; the selector is pre-wired. | SOTU "Still owed" | trust declarations |
 
 **Recommendation:** take A1–A5 into v5, and A6–A7 too if they stay small. A1 is the one that matters
@@ -39,13 +40,13 @@ profile weakened without anyone seeing it.
 
 | # | Item | Size |
 |---|---|---|
-| B1 | `software_governance/surface_map/governance_surface_map.yaml` is stale throughout | small–medium |
+| B1 | ~~`governance_surface_map.yaml` is stale~~ — **done**: regenerated, 195 artifacts; the generator's leftover `execution/<envelope|semantics>` special case is removed | small |
 | B2 | ~~`software_governance/CLAUDE.md` says the repo holds no implementation code~~ — **done**; the file is gitignored, so the correction is on disk only | trivial |
 | B3 | ~~`test_workflow_execution.py`: 2 failures, `TraceWriter` without its snapshot args~~ — **done**, 7/7; still not in the regression | trivial |
 | B4 | ~~`tc construction emit --help` is stale about manifest creation~~ — **done** | trivial |
-| B5 | P7 does not check that vector-case YAML parses | small (one rule) |
-| B6 | blockchain cr_03's delivered route defect | small |
-| B7 | blockchain cr_04's EV fields declared as ATTRIBUTE, which the renderer ignores | small |
+| B5 | ~~P7 does not check that vector-case YAML parses~~ — **done**: `TEST_VALUE_UNPARSEABLE` (P7 now 235 rules), sealed; `vector_value_design_test` 3/3, `vector_design_test` 6/6 | small |
+| B6 | **Not a blockchain defect: a false positive in `TOPOLOGY_ROUTE_RESOLVES`.** The rule resolves a routing target only against the dossier's own rows, so an amendment that routes to an existing, unchanged node is flagged (blockchain cr_03 row 3; the workflow artifact is correct). Fix: resolve also against the workflow's nodes in the pinned composition. The published graphs carry node keys, but no observation exposes them yet: it needs a node list on `si.behavior_logic.list` (a governed inspection surface) and a P7 observation. Changes the transformation and inspection domains, so it joins batch A. | medium |
+| B7 | **Confirmed, and wider.** Dossiers declaring event fields as ATTRIBUTE have them silently dropped by the renderer: `EV_WALLET_CREATED_V0` is sealed with only a default `timestamp`, not `wallet_id`, `holder`, `occurred_at`; blockchain cr_01's identity events follow the same pattern. The fix is a renderer or rule change plus re-rendering delivered events, and possibly what the runtime validates on announcement. Changes domain artifacts, so it joins batch A. | medium |
 | B8 | book catalog's `VALIDATE_RECORD_STRUCTURE` never refuses | small, needs a ruling |
 | B9 | blockchain identity takes its admitted states from the caller, the hole cr_04 closed for wallet | small CR |
 | B10 | ai_governance's inherited vectors disagree with PGC (`CHECK_QUOTA_AVAILABLE`, `CHECK_TRAINING_STATUS`, `EVALUATE_INACTIVITY`) | needs a business ruling, own CR |
@@ -54,14 +55,17 @@ profile weakened without anyone seeing it.
 | B13 | Runbook expectations as data, with an unexpected-pass check | small–medium |
 | B14 | `publish_component_releases.sh` adopted into `.github/process/` | small |
 | B15 | Two `pgc_install/README.md` gaps from the newcomer install test, and it still names V1 platform build declarations | small |
-| B16 | `transformation/CLAUDE.md` is gitignored, so lessons 2 and 4 are unversioned | trivial, decide where they live |
-| B17 | `SIGNED_FEDERATED_MULTINODE_PROFILE_V0` exists twice: operational in `.github`, illustrative in `standards`. The illustrative copy should say so. | trivial |
-| B19 | `runtime/cli.py` `behavior-logic` reads `PGS_WORKSPACE`, a legacy RI-0 environment name | trivial |
+| B16 | ~~Rulings and doctrine live only in gitignored `CLAUDE.md` files~~ — **done**: rulings are mirrored into `.github/process/rulings.md`, which is versioned | trivial |
+| B17 | `SIGNED_FEDERATED_MULTINODE_PROFILE_V0` exists twice: operational in `.github`, illustrative in `standards`. **Deferred** to the next standards revision; `standards` is frozen. | trivial |
+| B19 | ~~`behavior-logic` reads `PGS_WORKSPACE`~~ — **done, and it was broken, not just misnamed**: it looked for graphs in the RI-0 layout. It now takes `--snapshot` / `PGC_SNAPSHOT_ROOT` and reads `behavior_logic/<domain>/<WF>/`; `run --behavior-logic` was fixed with it. | trivial |
+| B20 | **`regression.sh` does not fail on a failing test script.** A failing `vector_design_test` left the run at exit 0. Belongs with B13: expectations as data, with the run failing on any unexpected result. | small–medium |
 | B18 | Transform conformance: 16 domain transforms unproven, and implementation source not sealed by hash. **Frozen by decision**, so record it, don't fix it. | none |
 
 ---
 
 ## C. Decisions — ruled
+
+Each ruling is recorded in `.github/process/rulings.md`.
 
 | # | Item | Ruling |
 |---|---|---|

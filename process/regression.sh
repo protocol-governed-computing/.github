@@ -77,7 +77,7 @@ if [[ "$MODE" == "--all" ]]; then
   python "$W/.github/process/frontmatter_fidelity.py"
   for t in meta_test differential e2e_phases_test projection_test construction_acceptance \
            molecule_design_test vector_design_test keyed_node_design_test \
-           refusal_moment_design_test; do
+           refusal_moment_design_test vector_value_design_test; do
     echo "--- $t"; python "$W/transformation/scripts/testbed/$t.py"
   done
   python "$W/.github/process/implementation_closure.py"
@@ -105,6 +105,7 @@ if [[ "$MODE" == "--all" ]]; then
            "$W/protocol_runtime/testbed/pgc/test_capability_concurrency.py" \
            "$W/protocol_runtime/testbed/pgc/test_molecule_execution.py" \
            "$W/protocol_runtime/testbed/pgc/test_node_keyed_routing.py" \
+           "$W/protocol_runtime/testbed/pgc/test_trace_path.py" \
            "$W/protocol_runtime/testbed/pgc/test_transform_conformance_runner.py"; do
     echo "--- $(basename "$t")"; python "$t"
   done
