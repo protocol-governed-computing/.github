@@ -19,6 +19,19 @@ bash ~/protocol-governed-computing/.github/process/regression.sh --all
 |---|---|
 | `regression.sh` | the execution block only — fastest, and assumes a built snapshot |
 | `regression.sh --build` | clean rebuild, then the execution block |
+| `regression.sh --all` | clean rebuild, then every check, then execution |
+
+**The run ends with a verdict, and exits with it.** Every check and execution step runs through
+`step`, which keeps the step's output and exit code in `traces/regression/` (or
+`$PGC_REGRESSION_OUT`). `regression_verdict.py` then compares each step against
+`expectations.yaml`, the table under "## Expected" as data. The run fails on:
+- a step that fails, or prints a different count;
+- a step red by design that comes back green (an **unexpected pass**);
+- a step expected and not run, or run with no expectation.
+
+`REGRESSION PASSED — every step as expected` is the only green. Before the verdict, a failing test
+script left the run at exit 0, and this table was a rule set in prose that nothing evaluated. When a
+result changes on purpose, change `expectations.yaml` and this table in the same commit.
 
 **`--build` and `--all` now delete every generated snapshot**, not only the assembled one — each
 domain's `snapshot/` as well, so a clean rebuild is a fact rather than a claim. A retired artifact
@@ -36,7 +49,6 @@ sealed composition a paper cites by DOI — written once by `release.sh --publis
 reproduced by nothing, recoverable only from git. Do not simplify the cleanup to `rm -rf */snapshot`:
 it misses the nested ones under `business_domains/*` and `conformance_workloads/workloads/*`, and it
 does not protect the one that matters.
-| `regression.sh --all` | build, then every check, then execution |
 
 **One run checks one profile.** A snapshot claims exactly one profile identity, and the run claims
 `GOVERNANCE_SURFACE_PROFILE_V0` — the profile in force, which supersedes
@@ -299,7 +311,8 @@ Every path is absolute; the `cd` is convenience only.
 
 ## Expected
 
-Rows are in the order the block runs them.
+Rows are in the order the block runs them. **`expectations.yaml` is what is checked**; this table
+explains it. The step ids there are the names below.
 
 | Check | Result |
 |---|---|
@@ -317,22 +330,28 @@ Rows are in the order the block runs them.
 | `differential.py` | `DIFFERENTIAL PASSED` — the sealed rule set and the declared one agree on every corpus document |
 | `e2e_phases_test.py` | `E2E PASSED` — every phase, both admissible and inadmissible, through the runtime |
 | `projection_test.py` | `PROJECTION PASSED` — reproducible, general, and refusing an inadmissible prior |
-| `construction_acceptance.py` | `99/99 artifacts reproduced across 4 domain(s) (0 field difference(s))` — `book_library_mgmt` from maintained fixtures, `blockchain` and the two base-code roots from their delivered dossiers. A base-code root carries **no order**, so the harness takes its dossiers as a set and refuses if two of them determine one artifact; a partial registry reports its undetermined tail rather than counting it as reproduced. An `UNCOVERED` line is a dossier root determining artifacts that nothing compares — add it to `DOMAINS`, or say why not |
-| `molecule_design_test.py`, `vector_design_test.py` | `4/4 passed`, `6/6 passed` — the design language renders a molecule's steps, and a transform's cases as its vector, and each rule that holds them fires on the defect it names |
+| `construction_acceptance.py` | `150/150 artifacts reproduced across 5 domain(s) (0 field difference(s))` — `book_library_mgmt` from maintained fixtures; `blockchain`, `causal_language_model` and the two base-code roots from their delivered dossiers. A base-code root carries **no order**, so the harness takes its dossiers as a set and refuses if two of them determine one artifact; a partial registry reports its undetermined tail rather than counting it as reproduced. An `UNCOVERED` line is a dossier root determining artifacts that nothing compares — add it to `DOMAINS`, or say why not |
+| `molecule_design_test.py`, `vector_design_test.py` | `5/5 passed`, `6/6 passed` — the design language renders a molecule's steps, and a transform's cases as its vector, and each rule that holds them fires on the defect it names |
+| `keyed_node_design_test.py`, `refusal_moment_design_test.py`, `vector_value_design_test.py` | `4/4`, `4/4`, `3/3 passed` — a node is a key and the contract it runs a column; a refusing ending announces only a declared refusal moment; a vector value parses as a YAML literal |
 | `implementation_closure.py` | `IMPLEMENTATION CLOSURE PASSED` — every transform module named by an artifact, every named module present |
 | `test_inspector.py` | `PASSED: 121/121` |
 | `si snapshot validate` | Reads **the snapshot just assembled**, which `test_inspector.py` does not — that runs against fixtures. Non-advisory checks must all pass. Two advisory checks are **currently red**: `republished_copies_agree`, 15 violations, every `capability_side_effects` artifact published twice (once as the platform's authoring copy, once as a consuming domain's execution binding) diverging on `content`, `layer_code`, `references`, `version` — the count scales with domains composed; and `bound_paths_declared_as_stores`, 1 violation, `ai_governance::RB_AGENT_GOVERNANCE_BINDINGS_V0` binding `CS_REGISTRY_V0` to a path no store declares. Advisory failures exit 0; `--strict` turns them red. A **non-advisory** failure here is a real defect in the composition |
 | `domain_authoring.py` | `PASSED: 8/8` — authors the smallest domain from scratch in a temporary directory, compiles it against the platform, composes, boots and executes it. This is the path `pgc_install/README.md` documents for a domain developer, run rather than described. A failure means the README is wrong, not the platform. It pins four things that were each wrong when that guide was first written: all five projection paths are required and their absence fails at S7 rather than early; `structure_scope` names the composed domain, so a generic value assembles and conforms under the wrong name; a domain composes without violating the claimed profile; and an unimportable domain returns `VIOLATION` with null outputs rather than raising |
 | `test_indexes.py` | `PASSED: 13/13` — assembler index construction, including that a republished identity resolves to its authoring copy and that resolution does not track domain-name order |
-| `test_transform_conformance_evidence.py` | `PASSED: 32/32` — every build's conformance result, the platform's included, is carried, names each transform the build supplies with none refused, names as carried exactly what its attestation records, and is a manifest constituent; the platform proves every transform it has a vector for; `conformance/` holds only `composition.json` |
+| `test_transform_conformance_evidence.py` | `PASSED: 36/36` — every build's conformance result, the platform's included, is carried, names each transform the build supplies with none refused, names as carried exactly what its attestation records, and is a manifest constituent; the platform proves every transform it has a vector for; `conformance/` holds only `composition.json` |
 | `test_transform_conformance.py`, `test_vector_build.py` | `10/10 passed`, `4/4 passed` — the compiler refuses a malformed vector before conformance runs, and a wrong expectation fails the build at conformance |
 | `test_platform_vectors.py` | `3/3 passed` — the platform materializes its vectors and writes their cases; each defect in a platform vector stops the platform build on its own rule; a build records what it carried in, and the platform carries nothing |
-| `test_transform_conformance_runner.py` | `OK` (9 tests) — a molecule is proven from recorded results without running its non-deterministic step; a missing or unused record refuses; what a build supplies is read from its attestation, never a name; a failed case for a carried transform refuses the build |
+| `test_transform_conformance_runner.py` | `OK` (10 tests) — a molecule is proven from recorded results without running its non-deterministic step; a missing or unused record refuses; what a build supplies is read from its attestation, never a name; a failed case for a carried transform refuses the build |
 | `test_compiler_atoms.py` | `PASSED: 9/9` |
+| `test_molecule_composition.py` | `8/8 passed` — molecules compose and each transform is placed under the constitution its kind and purity name |
+| `test_keyed_chain_and_molecule_surface.py`, `test_dispatch_routing_fidelity.py` | `4/4`, `5/5 passed` — two places running one contract are not a cycle; the sealed dispatch realizes every declared transition at its own node, and S8 refuses one that does not |
 | `test_governance_provenance.py` | `4/4 PASS`, and `provenance restored: yes` on the last line — the script mutates governance to make its point and must put it back. `DETERMINISM` same governance → identical closure hash; `ISOLATION` a platform-only change leaves it unchanged; `SENSITIVITY` an imported change moves it; `ENFORCEMENT` a stale domain against changed governance is blocked at assembly. The two that were red when this script was first wired in were never diagnosed as defects and no longer reproduce; if any of the four goes red, read `provenance restored` before rerunning — a run that died mid-mutation leaves governance edited |
 | `test_reference_collatz.py` | `OK` |
 | `test_warm_boot.py` | `6/6 passed`. Both former failures are resolved, and the resolution is one change rather than two. `boot()` no longer carries its own acceptance check — it recomputed the composite over the manifest's *recorded* per-domain hashes, which detects a tampered manifest but not a tampered constituent, so a snapshot with an edited projection booted and reported healthy, and a manifest claiming a false composite was not refused. Acceptance is now delegated to `assembler.core.verify_snapshot`, which recomputes every constituent from its bytes and evaluates all four clauses of `3b` §7; `boot` raises `RuntimeError` on any of them. One determination, one implementation. `test_composite_recompute_matches_manifest` was retired with the weaker check it tested and replaced by `test_manifest_states_one_identity`, which asserts the manifest's two statements of its own identity agree. **These tests skip when no assembled snapshot is present** — a bare workspace reports 6 skipped, not 6 passed |
+| `test_federation.py`, `test_capability_concurrency.py`, `test_molecule_execution.py` | `OK` (11, 3 and 11 tests) — federated roles; capabilities under concurrent writers; molecules run, recorded and replayed |
+| `test_node_keyed_routing.py`, `test_trace_path.py` | `OK` (3 and 4 tests) — routing, endings and announcements by node; the path drawn over a workflow's graph is the one the run took |
 | `pgc_env_check.py` | `PGC ENVIRONMENT CHECK PASSED` — no RI-0 dependency reachable |
+| `test_regression_verdict.py` | `8/8 passed` — the verdict fails a run for every way it can differ from this table, including an unexpected pass and a suite that skipped everything |
 | collatz | `SUCCESS`, `all_terminate: true` |
 | govern agent action | `SUCCESS` |
 | provision licensing | `SUCCESS` — the block clears `data/` first, so this is always a first run |
@@ -340,6 +359,7 @@ Rows are in the order the block runs them.
 | `execution_validation_cr02.py` (catalog) | `21/21 criteria hold` — CR-2's criteria, and proof the later change broke nothing |
 | `execution_validation.py` (identity) | `15/15 criteria hold (2 not exercised)` — the remaining two are a timed test and the transaction half of the wallet claim, which needs a function that does not exist yet |
 | `execution_validation.py` (wallet) | `9/9 criteria hold  (1 not exercised)` — the skip is a write through a consulted binding, which no act is authored to attempt |
+| `execution_validation.py` (model_response) | `27/27 criteria hold` — CLM CR-1: a model answers only in service, only on what it may read, only in words the rules permit; refusals recorded and announced; a replay agrees except the store's clock-assigned record identity |
 
 ### Choosing a store operation
 

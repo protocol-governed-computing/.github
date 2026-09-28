@@ -1,0 +1,189 @@
+# What a regression run is expected to report — RUNBOOK.md "## Expected", as data.
+#
+# `regression_verdict.py` compares every step `regression.sh` runs against this file. The RUNBOOK
+# explains each row; this file is what is checked. When a result changes on purpose, change it here
+# in the same commit, with the reason. That keeps each result a decision rather than drift.
+#
+# Each step has:
+#   id            — the name `regression.sh` gives the step
+#   section       — checks (run by --all) | execution (run by every mode)
+#   exit          — the exit code expected (default 0)
+#   expect        — regular expressions that must each appear in the step's output. Counts are exact.
+#   red_by_design — set on a step expected to fail, saying why. If it passes, the run fails as an
+#                   UNEXPECTED PASS: a known failure that stops failing is a change nobody decided.
+
+steps:
+
+  # ── checks ───────────────────────────────────────────────────────────────────────────────────
+  - id: governance_closure
+    section: checks
+    expect: ["GOVERNANCE CLOSURE PASSED"]
+  - id: governance_chain_closure
+    section: checks
+    expect: ["GOVERNANCE CHAIN PASSED"]
+  - id: supersession_agreement
+    section: checks
+    expect: ["SUPERSESSION AGREEMENT PASSED — 7 relation\\(s\\)"]
+  - id: human_block_fidelity
+    section: checks
+    expect: ["HUMAN BLOCK FIDELITY PASSED — 480 artifacts"]
+  - id: evidence_determinism
+    section: checks
+    expect: ["EVIDENCE DETERMINISM PASSED"]
+  - id: admission_contract_fidelity
+    section: checks
+    exit: 1
+    expect: ["ADMISSION CONTRACT FIDELITY FAILED — 31 finding\\(s\\) over 36 gate\\(s\\)"]
+    red_by_design: >-
+      31 deliberate findings — other domains' business, plus IN_REGISTER_BOOK_V0's `subject`,
+      deferred in cr_04_catalog P3 Q1
+  - id: emit_rule_sets
+    section: checks
+    expect: ["p7\\s+235 rules", "p8\\s+33 rules"]
+  - id: build_payloads
+    section: checks
+    expect: ["OK\\s+83 payload\\(s\\) agree"]
+  - id: author_transport_contracts
+    section: checks
+    expect: ["OK\\s+36 contract\\(s\\) for 18 operations agree"]
+  - id: frontmatter_fidelity
+    section: checks
+    expect: ["FRONTMATTER FIDELITY PASSED"]
+  - id: meta_test
+    section: checks
+    expect: ["META PASSED"]
+  - id: differential
+    section: checks
+    expect: ["DIFFERENTIAL PASSED — 83 document\\(s\\) across 9 phase\\(s\\)"]
+  - id: e2e_phases_test
+    section: checks
+    expect: ["E2E PASSED — 83 case\\(s\\)"]
+  - id: projection_test
+    section: checks
+    expect: ["PROJECTION PASSED"]
+  - id: construction_acceptance
+    section: checks
+    expect: ["150/150 artifacts reproduced across 5 domain\\(s\\)\\s+\\(0 field difference\\(s\\)\\)"]
+  - id: molecule_design_test
+    section: checks
+    expect: ["5/5 passed"]
+  - id: vector_design_test
+    section: checks
+    expect: ["6/6 passed"]
+  - id: keyed_node_design_test
+    section: checks
+    expect: ["4/4 passed"]
+  - id: refusal_moment_design_test
+    section: checks
+    expect: ["4/4 passed"]
+  - id: vector_value_design_test
+    section: checks
+    expect: ["3/3 passed"]
+  - id: implementation_closure
+    section: checks
+    expect: ["IMPLEMENTATION CLOSURE PASSED — 34 transform\\(s\\)"]
+  - id: test_inspector
+    section: checks
+    expect: ["PASSED: 121/121"]
+  - id: domain_authoring
+    section: checks
+    expect: ["PASSED: 8/8"]
+  - id: test_indexes
+    section: checks
+    expect: ["PASSED: 13/13"]
+  - id: test_transform_conformance_evidence
+    section: checks
+    expect: ["PASSED: 36/36"]
+  - id: test_compiler_atoms
+    section: checks
+    expect: ["PASSED: 9/9"]
+  - id: test_molecule_composition
+    section: checks
+    expect: ["8/8 passed"]
+  - id: test_transform_conformance
+    section: checks
+    expect: ["10/10 passed"]
+  - id: test_vector_build
+    section: checks
+    expect: ["4/4 passed"]
+  - id: test_platform_vectors
+    section: checks
+    expect: ["3/3 passed"]
+  - id: test_keyed_chain_and_molecule_surface
+    section: checks
+    expect: ["4/4 passed"]
+  - id: test_dispatch_routing_fidelity
+    section: checks
+    expect: ["5/5 passed"]
+  - id: test_governance_provenance
+    section: checks
+    # The script mutates governance to make its point; a run that died mid-mutation leaves it edited.
+    expect: ["PASS\\s+DETERMINISM", "PASS\\s+ISOLATION", "PASS\\s+SENSITIVITY", "PASS\\s+ENFORCEMENT",
+             "provenance restored: yes"]
+  # unittest suites: `^OK$` and not `OK (skipped=…)` — a suite that skipped everything is not a pass.
+  - id: test_reference_collatz
+    section: checks
+    expect: ["Ran 5 tests", "(?m)^OK$"]
+  - id: test_warm_boot
+    section: checks
+    expect: ["Ran 6 tests", "(?m)^OK$"]
+  - id: test_federation
+    section: checks
+    expect: ["Ran 11 tests", "(?m)^OK$"]
+  - id: test_capability_concurrency
+    section: checks
+    expect: ["Ran 3 tests", "(?m)^OK$"]
+  - id: test_molecule_execution
+    section: checks
+    expect: ["Ran 11 tests", "(?m)^OK$"]
+  - id: test_node_keyed_routing
+    section: checks
+    expect: ["Ran 3 tests", "(?m)^OK$"]
+  - id: test_trace_path
+    section: checks
+    expect: ["Ran 4 tests", "(?m)^OK$"]
+  - id: test_transform_conformance_runner
+    section: checks
+    expect: ["Ran 10 tests", "(?m)^OK$"]
+  - id: si_snapshot_validate
+    section: checks
+    # Non-advisory checks all pass. Two advisory checks are red and exit 0 by design; their counts
+    # are pinned, so a count that moves either way is reported.
+    expect: ["valid\\s+True", "failed_checks: —",
+             "check\\s+republished_copies_agree\\s+examined\\s+\\d+\\s+violation_count\\s+15\\b",
+             "check\\s+bound_paths_declared_as_stores\\s+examined\\s+\\d+\\s+violation_count\\s+1\\b"]
+    red_by_design: >-
+      advisory — 15 capability_side_effects artifacts published twice and diverging;
+      one ai_governance binding to a path no store declares
+  - id: pgc_env_check
+    section: checks
+    expect: ["PGC ENVIRONMENT CHECK PASSED"]
+  - id: test_regression_verdict
+    section: checks
+    expect: ["8/8 passed"]
+
+  # ── execution ────────────────────────────────────────────────────────────────────────────────
+  - id: collatz
+    section: execution
+    expect: ["Status:\\s+SUCCESS", "all_terminate: true"]
+  - id: govern_agent_action
+    section: execution
+    expect: ["Status:\\s+SUCCESS"]
+  - id: provision_licensing
+    section: execution
+    expect: ["Status:\\s+SUCCESS"]
+  - id: catalog_cr01
+    section: execution
+    expect: ["23/23 criteria hold"]
+  - id: catalog_cr02
+    section: execution
+    expect: ["21/21 criteria hold"]
+  - id: blockchain_identity
+    section: execution
+    expect: ["15/15 criteria hold\\s+\\(2 not exercised\\)"]
+  - id: blockchain_wallet
+    section: execution
+    expect: ["9/9 criteria hold\\s+\\(1 not exercised\\)"]
+  - id: clm_model_response
+    section: execution
+    expect: ["27/27 criteria hold"]

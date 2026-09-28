@@ -1,5 +1,105 @@
 # SOTU Handoff
 
+## v5 parking lot opened; every trace draws its path — dev/17 · 2026-09-28
+
+v5 is planned, not scheduled. Every item left open since v4 is triaged in
+`.github/doc/v5_readiness.md`.
+- **A — identity-changing:** one batch, landing before the v5 seal.
+- **B — defects.**
+- **C — decisions.**
+- **D — deployment limits.**
+- **E — needs a second reader.**
+- **F — documentation.**
+
+Rulings now have a versioned home, `.github/process/rulings.md`. Each repository's `CLAUDE.md` is
+gitignored, so a ruling kept only there was neither versioned nor backed up.
+
+### Every execution trace has a picture again
+
+- **What it does.** Every `run_workflow` writes `<trace_id>.png` beside `<trace_id>.jsonl`: the
+  workflow's behavior-logic graph with the path the run took drawn in red. RI-0 had this; PGC had
+  lost it.
+- **It is a projection.** The JSONL is the evidence and nothing reads the picture back, so rendering
+  never fails a run. Without graphviz, or for a workflow with no published graph, there is simply no
+  picture. `PGC_TRACE_PNG=0` turns it off; that is deployment configuration under ruling C2/C3.
+- **What it costs.** About 0.25 s per run. The full clean regression went from about 1m 24s to about
+  1m 51s, and every one of its 167 traces has a picture.
+- **The path is walked by routing, not matched by contract.** The drawing follows the recorded
+  `WF_ROUTE` outcomes, in order, over the graph's node-keyed edges. The old walk matched
+  `CC_COMPLETE` events to nodes by contract code. It lost the path at the first node whose key isn't
+  its contract's code, so CLM's submission was drawn only halfway. Every CLM path now draws to its
+  own record node and exit. Test: `test_trace_path.py`, 4/4, in `regression.sh`.
+- **`behavior-logic` works again.** Both `pgc_runtime behavior-logic` and `run --behavior-logic`
+  looked for graphs in the RI-0 layout (`<workspace>/protocol_snapshot/…`, `PGS_WORKSPACE`). They
+  now read `snapshot/behavior_logic/<domain>/<WF>/`, from `--snapshot` or `PGC_SNAPSHOT_ROOT`.
+
+### Also done since the rename
+
+- **C rulings.** They are recorded in `rulings.md`:
+  - **C1:** a generated dossier is a stated limit. CLM's `delivery.md` now says its P7 and P8 were
+    generated.
+  - **C2/C3:** deployment configuration is not branching. The runtime's defaults are gathered in
+    `runtime/federation/defaults.py`.
+  - **C4:** record locks are declared in the FEDERATED_NODE placement. It is pending, as A8.
+  - **C5:** EO-2 is a stated limit.
+- **B fixes:**
+  - B1: the surface map is regenerated (195 artifacts) and a stale generator case removed.
+  - B2: `software_governance/CLAUDE.md` is corrected. The file is gitignored.
+  - B3: the runtime workflow-execution test passes, 7/7.
+  - B4: the `emit --help` text is corrected.
+  - B5: the new P7 rule `TEST_VALUE_UNPARSEABLE` brings P7 to 235 rules, sealed.
+  - B16: `rulings.md`.
+  - B19: `behavior-logic`, as above.
+- **Re-diagnosed into batch A:**
+  - **B6** is a false positive in `TOPOLOGY_ROUTE_RESOLVES`. The rule doesn't resolve an
+    amendment's route against the workflow's existing nodes; blockchain's artifact is correct.
+  - **B7** is confirmed and wider. Event fields declared as ATTRIBUTE were dropped:
+    `EV_WALLET_CREATED_V0` was sealed with only `timestamp`, and blockchain cr_01's identity events
+    follow the same pattern.
+- **New findings:**
+  - **A9.** A trace records which contract ran, not which node. The picture is right because the
+    graph names nodes; the evidence still doesn't.
+  - **B20.** `regression.sh` exits 0 when a test script fails.
+- **Deferred:** B17 waits for the next `standards` revision.
+
+### The regression now has a verdict (B13, B20)
+
+The RUNBOOK's expected results used to be prose nothing evaluated, and `regression.sh` exited 0
+whatever its steps did.
+
+**What the run does now:**
+- **Every step through a wrapper.** Every check and execution step runs through `step`, which keeps
+  its output and exit code in `traces/regression/` (or `$PGC_REGRESSION_OUT`).
+- **Expectations as data.** `.github/process/expectations.yaml` is the "## Expected" table as data,
+  52 steps with exit codes and exact counts.
+- **A verdict.** `regression_verdict.py` compares the run against those expectations, and the script
+  exits with the verdict.
+
+**The run fails on any of these:**
+- a failing step, or a count that moves;
+- an **unexpected pass** — admission fidelity's 31 findings, or the inspector's two advisories
+  (15 and 1), coming back green;
+- a step expected and not run, or run with no expectation;
+- a unittest suite that skipped everything.
+
+**Tests and results.** `test_regression_verdict.py` passes 8/8 and runs as a step itself.
+`--all`: **52/52 steps as expected, exit 0**. Execution only: 8/8.
+
+**RUNBOOK "## Expected" now points at the data.** The stale rows are corrected: construction 150/150
+across 5 domains, molecule 5/5, conformance evidence 36/36, runner 10 tests. The cycle's new tests
+and the CLM suite are added.
+
+**The new habit:** a count that changes on purpose is changed in `expectations.yaml` and the RUNBOOK
+in the same commit, with the reason.
+
+### Next
+
+- **B8, B9, B10** — need business rulings.
+- **B11, B12** — the output-root and supersession notes in `doc/`.
+- **B14, B15** — `publish_component_releases.sh`, and the `pgc_install` README.
+- **Then the A batch in one pass:** A1 (profile content in the identity) through A9. Then one clean
+  regression and one re-pin.
+
 ## Clean regression from nothing: green — dev/17 · 2026-09-27
 
 A full clean regression ran after the constitution rename and the CLM merge, with every repo

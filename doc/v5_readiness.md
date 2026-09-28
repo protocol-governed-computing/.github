@@ -50,15 +50,15 @@ profile weakened without anyone seeing it.
 | B8 | book catalog's `VALIDATE_RECORD_STRUCTURE` never refuses | small, needs a ruling |
 | B9 | blockchain identity takes its admitted states from the caller, the hole cr_04 closed for wallet | small CR |
 | B10 | ai_governance's inherited vectors disagree with PGC (`CHECK_QUOTA_AVAILABLE`, `CHECK_TRAINING_STATUS`, `EVALUATE_INACTIVITY`) | needs a business ruling, own CR |
-| B11 | **Two compositions can overwrite each other's output:** the output root is not declared by the build | medium, `doc/composition_output_root.md` |
-| B12 | **A superseded artifact stays in force:** a defect in the family's model | medium, `doc/supersession_and_force.md` |
-| B13 | Runbook expectations as data, with an unexpected-pass check | small–medium |
-| B14 | `publish_component_releases.sh` adopted into `.github/process/` | small |
-| B15 | Two `pgc_install/README.md` gaps from the newcomer install test, and it still names V1 platform build declarations | small |
+| B11 | **Two compositions can overwrite each other's output:** the output root is not declared by the build. Its fix declares the root in each build configuration, a governed artifact, so it **moves to batch A**. | medium, `doc/composition_output_root.md` |
+| B12 | **A superseded artifact stays in force.** The full fix is an `in_force` predicate declared in the surface plus an invariant that every effect-conferring path consults it, so it **moves to batch A**. A code-only first step — no assertion derived from a superseded invariant — changes nothing today, because none exists. | medium, `doc/supersession_and_force.md` |
+| B13 | ~~Runbook expectations as data, with an unexpected-pass check~~ — **done**: `expectations.yaml` (52 steps, counts exact), `regression_verdict.py`, `test_regression_verdict.py` 8/8; RUNBOOK "## Expected" brought up to date and pointed at the data | small–medium |
+| B14 | ~~`publish_component_releases.sh` adopted into `.github/process/`~~ — **done**, rewritten (the staged copy was lost). Refuses unless Zenodo answers and every component has a release webhook; skips components already released; reads the component list from `compose_release.py`. `--verify` checked against v4: 9/9. The publish path runs for the first time at v5. | small |
+| B15 | ~~Two `pgc_install/README.md` gaps~~ — **done**: the Machine-block health advisory is documented; the second gap, compile writing into the clone, was already covered in §4. Its V1 build-configuration names are right for the published v4 install and change with v5 (F). | small |
 | B16 | ~~Rulings and doctrine live only in gitignored `CLAUDE.md` files~~ — **done**: rulings are mirrored into `.github/process/rulings.md`, which is versioned | trivial |
 | B17 | `SIGNED_FEDERATED_MULTINODE_PROFILE_V0` exists twice: operational in `.github`, illustrative in `standards`. **Deferred** to the next standards revision; `standards` is frozen. | trivial |
 | B19 | ~~`behavior-logic` reads `PGS_WORKSPACE`~~ — **done, and it was broken, not just misnamed**: it looked for graphs in the RI-0 layout. It now takes `--snapshot` / `PGC_SNAPSHOT_ROOT` and reads `behavior_logic/<domain>/<WF>/`; `run --behavior-logic` was fixed with it. | trivial |
-| B20 | **`regression.sh` does not fail on a failing test script.** A failing `vector_design_test` left the run at exit 0. Belongs with B13: expectations as data, with the run failing on any unexpected result. | small–medium |
+| B20 | ~~`regression.sh` exits 0 on a failing test script~~ — **done**: every check and execution step runs through `step`, and the script exits with the verdict | small–medium |
 | B18 | Transform conformance: 16 domain transforms unproven, and implementation source not sealed by hash. **Frozen by decision**, so record it, don't fix it. | none |
 
 ---
