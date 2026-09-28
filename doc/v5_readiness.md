@@ -45,7 +45,7 @@ profile weakened without anyone seeing it.
 | B3 | ~~`test_workflow_execution.py`: 2 failures, `TraceWriter` without its snapshot args~~ — **done**, 7/7; still not in the regression | trivial |
 | B4 | ~~`tc construction emit --help` is stale about manifest creation~~ — **done** | trivial |
 | B5 | ~~P7 does not check that vector-case YAML parses~~ — **done**: `TEST_VALUE_UNPARSEABLE` (P7 now 235 rules), sealed; `vector_value_design_test` 3/3, `vector_design_test` 6/6 | small |
-| B6 | **Not a blockchain defect: a false positive in `TOPOLOGY_ROUTE_RESOLVES`.** The rule resolves a routing target only against the dossier's own rows, so an amendment that routes to an existing, unchanged node is flagged (blockchain cr_03 row 3; the workflow artifact is correct). Fix: resolve also against the workflow's nodes in the pinned composition. The published graphs carry node keys, but no observation exposes them yet: it needs a node list on `si.behavior_logic.list` (a governed inspection surface) and a P7 observation. Changes the transformation and inspection domains, so it joins batch A. | medium |
+| B6 | ~~False positive in `TOPOLOGY_ROUTE_RESOLVES`~~ — **done** (wave 2): `si.behavior_logic.list` rows carry `nodes`; P7 observes them, and a route to a place the composed workflow already has resolves. cr_03 row 3 no longer fires. **Not a blockchain defect: a false positive in `TOPOLOGY_ROUTE_RESOLVES`.** The rule resolves a routing target only against the dossier's own rows, so an amendment that routes to an existing, unchanged node is flagged (blockchain cr_03 row 3; the workflow artifact is correct). Fix: resolve also against the workflow's nodes in the pinned composition. The published graphs carry node keys, but no observation exposes them yet: it needs a node list on `si.behavior_logic.list` (a governed inspection surface) and a P7 observation. Changes the transformation and inspection domains, so it joins batch A. | medium |
 | B7 | **Confirmed, and wider.** Dossiers declaring event fields as ATTRIBUTE have them silently dropped by the renderer: `EV_WALLET_CREATED_V0` is sealed with only a default `timestamp`, not `wallet_id`, `holder`, `occurred_at`; blockchain cr_01's identity events follow the same pattern. The fix is a renderer or rule change plus re-rendering delivered events, and possibly what the runtime validates on announcement. Changes domain artifacts, so it joins batch A. | medium |
 | B8 | book catalog's `VALIDATE_RECORD_STRUCTURE` never refuses | small, needs a ruling |
 | B9 | blockchain identity takes its admitted states from the caller, the hole cr_04 closed for wallet | small CR |
@@ -131,7 +131,7 @@ Each ruling is recorded in `.github/process/rulings.md`.
 
 ## The A batch — plan
 
-**Wave 1 done, with B7:** A9, A5, A3, A4 and the ATTRIBUTE fix; `regression.sh --all` 53/53. Rulings: handler keys → `pgc_governance.handlers.*`; the renderer honours ATTRIBUTE on events; the transform-wide rules → `CONSTITUTION_CAPABILITY_TRANSFORMS_V1`. A1's home is still to be ruled.
+**Wave 2 done:** B6. **Wave 1 done, with B7:** A9, A5, A3, A4 and the ATTRIBUTE fix; `regression.sh --all` 53/53. Rulings: handler keys → `pgc_governance.handlers.*`; the renderer honours ATTRIBUTE on events; the transform-wide rules → `CONSTITUTION_CAPABILITY_TRANSFORMS_V1`. A1's home is still to be ruled.
 
 Everything that changes a composition id lands here, together, then one clean regression and one
 re-pin. It runs in four waves, each ending with a green `regression.sh --all`, so a failure is

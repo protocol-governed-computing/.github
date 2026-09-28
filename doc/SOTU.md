@@ -1,5 +1,37 @@
 # SOTU Handoff
 
+## A batch, waves 1–2: traces name places; evidence says what to ignore; routes resolve against the composition — dev/17 · 2026-09-28
+
+The A batch changes identity, so it lands whole before the v5 seal, in four waves (plan in
+`v5_readiness.md`). Wave 1, evidence, is committed. `regression.sh --all`: 53/53.
+
+- **A9 — traces name the node.** `CC_START`/`CC_COMPLETE` carry `node`, and `WF_ROUTE` carries
+  `from_node` and `to_node`: the ending reached, or null where an outcome reached neither. One
+  contract at two places is now two places in the evidence. The PNG path is read from these.
+- **A5 — the trace schema is the trace.** `SCHEMA_TRACE_EVENT_V1` replaces a V0 that described
+  RI-0's format and shared no field with PGC's. The file is a header, then events with a fixed
+  envelope. `trace_schema_conformance.py` is a regression step: 84 traces, 2292 lines, all conform.
+- **A3/A4 — what a replay ignores is declared.** `VOCAB_EVIDENCE_CONTENT_CLASSIFICATION_V1` adds
+  `observational_keys: [record_id]`, stripped wherever it appears. The trace header carries it, and
+  `runtime.replay` reads it from there. CLM's validation lost its `STORE_ASSIGNED` exception: a
+  replay agrees on every determinative event.
+- **B7 — events carry ATTRIBUTE fields.** The event renderer merges ATTRIBUTE into the schema and
+  sets `core.moment`. The machine blocks of six events were patched to match.
+- **A defect, found and fixed.** S5 sealed an atom that a contract runs directly without its
+  `ct_purity`, so a non-deterministic one was neither recorded nor replayed. It now is.
+- **Findings.**
+  - **B21:** `pgc_runtime examine` still parses RI-0 traces.
+  - **B22:** `SCHEMA_EVENT_V0` is stale and not in the schema dispatch.
+
+**Wave 2, B6 — done.** `si.behavior_logic.list` rows now carry `nodes`, the workflow's node keys.
+P7 declares the observation, and `tc phase emit` generated the judging step and re-sealed P7.
+`TOPOLOGY_ROUTE_RESOLVES` now accepts a route to a place the composed workflow already has.
+Blockchain cr_03 row 3 no longer fires. Test counts: inspector 122/122, `keyed_node_design_test`
+5/5. Regression: 53/53.
+
+**Next:** wave 3, the governance surface — A2, A6, A8, A7, A11, A10. Ask again where profiles live
+(A1) before wave 4.
+
 ## v5 parking lot opened; every trace draws its path — dev/17 · 2026-09-28
 
 v5 is planned, not scheduled. Every item left open since v4 is triaged in

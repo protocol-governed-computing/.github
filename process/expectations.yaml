@@ -72,7 +72,8 @@ steps:
     expect: ["6/6 passed"]
   - id: keyed_node_design_test
     section: checks
-    expect: ["4/4 passed"]
+    # a route to a place the composition already has resolves (A batch, wave 2 — B6)
+    expect: ["5/5 passed"]
   - id: refusal_moment_design_test
     section: checks
     expect: ["4/4 passed"]
@@ -84,7 +85,8 @@ steps:
     expect: ["IMPLEMENTATION CLOSURE PASSED — 34 transform\\(s\\)"]
   - id: test_inspector
     section: checks
-    expect: ["PASSED: 121/121"]
+    # si.behavior_logic.list names each workflow's nodes by key (B6)
+    expect: ["PASSED: 122/122"]
   - id: domain_authoring
     section: checks
     expect: ["PASSED: 8/8"]
