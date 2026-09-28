@@ -182,3 +182,46 @@ separate change with a larger reach: `release.sh`, `compose_release`, `pgc_insta
 
 **Applied.** Wave 4 of the A batch (`../doc/v5_readiness.md`, A1).
 
+---
+
+### A validator reports; the contract refuses — B8, v5
+
+**Ruling.** `CT_PURE_VALIDATE_RECORD_STRUCTURE_V0` stays a reporter: it returns the violations it
+finds and decides nothing. Each contract that validates a record refuses on what it finds, with a
+following rule step requiring `violations == []`, as `causal_language_model::CC_CLAIM_MODEL_IDENTITY_V0`
+already does.
+
+**Why.** Four contracts — book's `CC_VALIDATE_BOOK_SUBMISSION_V0`, `CC_REGISTER_BOOK_V0` and
+`CC_REGISTER_ADDITIONAL_EDITION_V0`, and blockchain's `CC_VALIDATE_REGISTRATION_V0` — validate and
+never act on the result, so a malformed record is admitted. Making the transform refuse would fix
+them in one place and leave no way to validate without deciding. Whether a violation refuses is the
+business's rule, so it belongs in the business's contract.
+
+**Applied.** Through a CR in each domain: book catalog, and blockchain identity with B9.
+
+---
+
+### Identity's admitted states are a literal — B9, v5
+
+**Ruling.** `WF_ACCEPT_ACTOR_V0` and `WF_REJECT_ACTOR_V0` fix `states_admitting_a_decision` and
+`admitted_outcomes` as literals, as wallet fixed its own. The fields leave the intents and the TIs.
+
+**Why.** The TIs hold the sets as constants, so the transport boundary cannot widen them, but the
+workflows admit them from the payload, so a caller invoking a workflow directly can. A business rule
+the caller supplies is a business rule the caller can widen (`cr_04_wallet` delivery).
+
+**Applied.** A blockchain identity CR, carrying B8's blockchain contract as well.
+
+---
+
+### ai_governance's three checks refuse — B10, v5
+
+**Ruling.** `CT_PURE_CHECK_QUOTA_AVAILABLE_V0`, `CT_PURE_CHECK_TRAINING_STATUS_V0` and
+`CT_PURE_EVALUATE_INACTIVITY_V0` keep PGC's behaviour: they refuse, as their `refusal: raises`
+declares. The vectors inherited from RI-0, which expect a negative answer, are replaced by vectors
+proving the refusal.
+
+**Why.** The refusal was declared deliberately, and the vectors are what went stale.
+
+**Applied.** An ai_governance CR.
+

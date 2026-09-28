@@ -124,6 +124,7 @@ if [[ "$MODE" == "--all" ]]; then
            "$W/protocol_runtime/testbed/pgc/test_capability_concurrency.py" \
            "$W/protocol_runtime/testbed/pgc/test_molecule_execution.py" \
            "$W/protocol_runtime/testbed/pgc/test_node_keyed_routing.py" \
+           "$W/protocol_runtime/testbed/pgc/test_examine.py" \
            "$W/protocol_runtime/testbed/pgc/test_trace_path.py" \
            "$W/protocol_runtime/testbed/pgc/test_transform_conformance_runner.py"; do
     step "$(basename "$t" .py)" python "$t"

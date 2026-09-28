@@ -1,5 +1,84 @@
 # SOTU Handoff
 
+## B21–B24 — dev/17 · 2026-09-28
+
+The A batch is complete; wave 4 and B21–B24 are on dev/17, uncommitted. `regression.sh --all`:
+55/55.
+
+- **B21 — `examine` reads PGC traces.** It read RI-0's format and could not read one line PGC
+  writes. It is now a `SCHEMA_TRACE_EVENT_V1` reader: path by node, contracts and results, events,
+  recorded non-deterministic results, errors. It exits 1 on a structural failure — an ERROR, or a
+  run that never completed — and 0 on a completed run, refusals included. It refuses any other
+  format. The RI-0 classifier, hint engine and `structure.*` locator are gone.
+  `test_examine.py`: 5/5, and it reads every trace under `data/`.
+- **B22 — events are schema-checked.** `SCHEMA_EVENT_V1` was written from what the 25 events
+  declare: a constitution named by FQDN, `subdomain`, `moment`, integer fields, `enum`. EVENT is now
+  dispatched, and its `description_pending` row is gone. Four kinds remain pending: ACTOR, INTENT,
+  TI and TE.
+- **B23 — the blockchain web page.** Its explainer named the superseded
+  `WF_RECORD_VERIFICATION_DECISION_V0`. It now names and draws `WF_ACCEPT_ACTOR_V0` and
+  `WF_REJECT_ACTOR_V0`, with CR-04's reason for the split.
+- **B24 — the dead platform build config.** `STRUCTURE_BUILD_PLATFORM_CONFIG_V0` is deleted, not
+  superseded; `STRUCTURE_ARTIFACT_IDENTITY_V0` and the compiler's comments name V2. The compiler's
+  no-argument default and `--all-structures`, both of which selected it, are removed. `compile` now
+  requires `--structure`. The surface map has 197 artifacts, and human-block fidelity counts 482.
+- **Noticed, not changed:** the other dispatched schemas still carry a `pgs_governance.schemas…`
+  `$id`.
+
+### B8–B10 ruled; three CRs follow
+
+The rulings are in `process/rulings.md`. Each changes a domain's behaviour, so each lands as a CR
+through P0–P8, not by hand.
+
+- **B8 — a validator reports, and the contract refuses.** It is wider than recorded. Four contracts
+  validate a record and never act on the result: book's `VALIDATE_BOOK_SUBMISSION`, `REGISTER_BOOK`
+  and `REGISTER_ADDITIONAL_EDITION`, and blockchain's `VALIDATE_REGISTRATION`. Each gains CLM's
+  follow-up rule, `violations == []`. The platform transform stays a reporter.
+- **B9 — identity's rules become literals.** The TIs fix them as constants, but the workflows admit
+  them from the payload, so a direct caller can widen them. There are three:
+  - `states_admitting_a_decision`;
+  - `admitted_outcomes`;
+  - `registration_schema`, found while diagnosing.
+- **B10 — refuse.** ai_governance's three checks keep their declared refusal. Refusal vectors
+  replace the stale RI-0 ones.
+- **The CRs, in order:**
+  1. blockchain `cr_05_identity` (B8 and B9). Its P0 problem statement is drafted, with three
+     clarifications for Gate 0.
+  2. book `cr_05_catalog` (B8).
+  3. ai_governance `cr_01` (B10). It is that domain's first dossier.
+
+- **`cr_05_identity`, Gate 0 passed.** The author accepted all three recommendations: an
+  incomplete registration is refused; rules a request states are ignored, not refused; a refused
+  decision records nothing. The seed is ADMISSIBLE at P0, 5/5 over 83 rules. The baseline is pinned
+  to `4d366cca…`, the v5 working composition: 478 artifacts, 8 domains.
+
+**Next:** `cr_05_identity` P1. Then book `cr_05_catalog`, ai_governance `cr_01`, and group F.
+
+## A batch complete — wave 4: the identity covers the profile's content — dev/17 · 2026-09-28
+
+Waves 1–3 are committed. Wave 4 and the batch's close are on dev/17, uncommitted.
+`regression.sh --all`: 54/54.
+
+- **A1 — the profile's content is in the identity.** The manifest carries `profile_sha256`, a
+  digest of the claimed profile's `snapshot_profile` declaration, and `identity_covers` names it.
+  Acceptance recomputes it from the profile as it now reads. A profile changed after sealing is
+  refused, and so is a manifest that does not cover its profile. Profiles stay in `.github`, per the
+  A1 ruling.
+  - `test_warm_boot.py` is now 8/8. The two new cases change a copy of the claimed profile after
+    sealing, and delete `profile_sha256`.
+  - A snapshot sealed before v5 carries no `profile_sha256` and is refused by this acceptance. That
+    includes `pgc_release/snapshot`, which v4's tooling still verifies.
+- **The batch's close.**
+  - **Surface map regenerated:** 198 artifacts, up from 195 — the transform-wide constitution, the
+    signed-snapshot structure and the not-in-force invariant.
+  - **No dossier was re-pinned.** Every CR with a dossier is delivered, and a delivered dossier's pin
+    records the composition it was designed against. The next CR pins the v5 composition.
+  - **Docs:** the `snapshot_assembler` README and ARCHITECTURE now state the profile rule and the
+    declared output root.
+
+**Next:** the B items still open (B8–B10 await rulings; B21–B24), then group F, the documentation
+refresh, before the v5 seal.
+
 ## A batch, wave 3: the governance surface — dev/17 · 2026-09-28
 
 Waves 1 and 2 are committed. Wave 3 is on dev/17, uncommitted. `regression.sh --all`: 54/54.

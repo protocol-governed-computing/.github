@@ -26,7 +26,7 @@ steps:
     expect: ["SUPERSESSION AGREEMENT PASSED — 7 relation\\(s\\)"]
   - id: human_block_fidelity
     section: checks
-    expect: ["HUMAN BLOCK FIDELITY PASSED — 483 artifacts"]
+    expect: ["HUMAN BLOCK FIDELITY PASSED — 482 artifacts"]
   - id: evidence_determinism
     section: checks
     expect: ["EVIDENCE DETERMINISM PASSED"]
@@ -135,7 +135,8 @@ steps:
     expect: ["Ran 5 tests", "(?m)^OK$"]
   - id: test_warm_boot
     section: checks
-    expect: ["Ran 6 tests", "(?m)^OK$"]
+    # a profile changed after sealing, and a manifest not covering its profile, are refused (A1)
+    expect: ["Ran 8 tests", "(?m)^OK$"]
   - id: test_federation
     section: checks
     expect: ["Ran 11 tests", "(?m)^OK$"]
@@ -149,6 +150,10 @@ steps:
     section: checks
     # 4: the trace names each place the run passed through (A9).
     expect: ["Ran 4 tests", "(?m)^OK$"]
+  - id: test_examine
+    section: checks
+    # the examiner reads SCHEMA_TRACE_EVENT_V1, and every trace the run wrote (B21)
+    expect: ["Ran 5 tests", "(?m)^OK$"]
   - id: test_trace_path
     section: checks
     expect: ["Ran 4 tests", "(?m)^OK$"]
