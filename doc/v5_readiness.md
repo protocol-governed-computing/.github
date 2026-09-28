@@ -59,6 +59,8 @@ profile weakened without anyone seeing it.
 | B17 | `SIGNED_FEDERATED_MULTINODE_PROFILE_V0` exists twice: operational in `.github`, illustrative in `standards`. **Deferred** to the next standards revision; `standards` is frozen. | trivial |
 | B19 | ~~`behavior-logic` reads `PGS_WORKSPACE`~~ — **done, and it was broken, not just misnamed**: it looked for graphs in the RI-0 layout. It now takes `--snapshot` / `PGC_SNAPSHOT_ROOT` and reads `behavior_logic/<domain>/<WF>/`; `run --behavior-logic` was fixed with it. | trivial |
 | B20 | ~~`regression.sh` exits 0 on a failing test script~~ — **done**: every check and execution step runs through `step`, and the script exits with the verdict | small–medium |
+| B21 | `pgc_runtime examine` parses RI-0's trace format (`execution_start`, `node_start`, `sequence`, …) and pins `TRACE_SCHEMA_V0`. It cannot read a PGC trace, the way `behavior-logic` could not (B19). | small–medium |
+| B22 | `SCHEMA_EVENT_V0` is never applied — EVENT is `described` in `STRUCTURE_SCHEMA_DISPATCH_V0` but absent from its dispatch — and it is stale: its `governed_by` constant and `$id` (`pgs_governance.schemas…`) match no event. Rewrite it from what events carry (with `core.moment`) and dispatch it, or record the disposition truthfully. Changes a governed artifact, so it goes with batch A. | small–medium |
 | B18 | Transform conformance: 16 domain transforms unproven, and implementation source not sealed by hash. **Frozen by decision**, so record it, don't fix it. | none |
 
 ---
@@ -124,3 +126,24 @@ Each ruling is recorded in `.github/process/rulings.md`.
    baseline that still runs phases.
 4. **Refresh the documentation (F)** against the final composition.
 5. **Write the release notes,** record D and E as stated limits, and cut v5.
+
+---
+
+## The A batch — plan
+
+**Wave 1 done, with B7:** A9, A5, A3, A4 and the ATTRIBUTE fix; `regression.sh --all` 53/53. Rulings: handler keys → `pgc_governance.handlers.*`; the renderer honours ATTRIBUTE on events; the transform-wide rules → `CONSTITUTION_CAPABILITY_TRANSFORMS_V1`. A1's home is still to be ruled.
+
+Everything that changes a composition id lands here, together, then one clean regression and one
+re-pin. It runs in four waves, each ending with a green `regression.sh --all`, so a failure is
+traced to one wave rather than to the batch.
+
+| Wave | Items | Repos | What changes |
+|---|---|---|---|
+| **1 — evidence** | A5, A9, A3, A4 | protocol_runtime, software_governance, transformation, business_domains | **A9:** `CC_START` and `WF_ROUTE` carry the node key. **A5:** `SCHEMA_TRACE_EVENT` lists what the runtime writes. **A3:** store-assigned content (`record_id` and the store's timestamp) is declared observational in the evidence classification, and replay honours it, so CLM's named exception is dropped. **A4:** `moment: refusal` is rendered into the EV artifact. |
+| **2 — design and construction** | B6, B7 | snapshot_inspector, transformation, business_domains | **B6:** `si.behavior_logic.list` publishes node keys; P7 observes them; `TOPOLOGY_ROUTE_RESOLVES` accepts a route to an existing node. **B7:** event fields declared ATTRIBUTE reach the sealed event — approach to be ruled; blockchain's events re-rendered. |
+| **3 — governance surface** | A2, A6, A8, A7, A11 (B12), A10 (B11) | software_governance, protocol_compiler, all domains' build configs | **A2:** the 89 handler keys renamed. **A6:** the three transform-wide rules move to a common home. **A8:** FEDERATED_NODE declares the record-lock requirement. **A7:** `cryptographic_trust` V1, signing selected by composition. **A11:** an `in_force` predicate, applied where presence confers effect, and the invariant that checks it. **A10:** each build configuration declares its output root; two naming one root are refused. |
+| **4 — identity** | A1 | snapshot_assembler, .github (or a new profiles repo), protocol_runtime | The snapshot identity covers the profile's **content**, not only its name. `PGC_SNAPSHOT_PROFILES` becomes required. Last, because every earlier wave changes ids anyway and this one changes what an id means. |
+
+**Then:** one clean regression, `expectations.yaml` updated for every count that moved (with
+reasons), every dossier baseline that still runs phases re-pinned by the side-assembly recipe, and
+the SOTU.

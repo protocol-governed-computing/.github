@@ -6,7 +6,7 @@ EV-7: observational content MUST NOT participate in any determination.
 
 Neither could be checked before the distinction was declared, because a checker comparing everything
 fails on every timestamp and one comparing nothing establishes nothing (`3e` §5.2). The classification
-is `vocabulary::VOCAB_EVIDENCE_CONTENT_CLASSIFICATION_V0`, and every trace carries it as its first
+is `vocabulary::VOCAB_EVIDENCE_CONTENT_CLASSIFICATION_V1`, and every trace carries it as its first
 record — so this check reads the trace and needs nothing else.
 
 Executes one workflow twice into separate data roots and asserts:

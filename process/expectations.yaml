@@ -99,7 +99,8 @@ steps:
     expect: ["PASSED: 9/9"]
   - id: test_molecule_composition
     section: checks
-    expect: ["8/8 passed"]
+    # 9: an atom a contract runs directly is sealed with its declared purity (A batch, wave 1).
+    expect: ["9/9 passed"]
   - id: test_transform_conformance
     section: checks
     expect: ["10/10 passed"]
@@ -138,7 +139,8 @@ steps:
     expect: ["Ran 11 tests", "(?m)^OK$"]
   - id: test_node_keyed_routing
     section: checks
-    expect: ["Ran 3 tests", "(?m)^OK$"]
+    # 4: the trace names each place the run passed through (A9).
+    expect: ["Ran 4 tests", "(?m)^OK$"]
   - id: test_trace_path
     section: checks
     expect: ["Ran 4 tests", "(?m)^OK$"]
@@ -187,3 +189,6 @@ steps:
   - id: clm_model_response
     section: execution
     expect: ["27/27 criteria hold"]
+  - id: trace_schema_conformance
+    section: execution
+    expect: ["TRACE SCHEMA CONFORMANCE PASSED — \\d+ trace\\(s\\)"]

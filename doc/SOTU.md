@@ -92,13 +92,29 @@ and the CLM suite are added.
 **The new habit:** a count that changes on purpose is changed in `expectations.yaml` and the RUNBOOK
 in the same commit, with the reason.
 
+### B14, B15 done; B11, B12 moved to batch A
+
+- **B14 — `publish_component_releases.sh` is back in `.github/process/`.** It is rewritten, because
+  the staged copy was lost with an old scratchpad.
+  - It refuses to publish unless Zenodo answers and every component has its release webhook.
+  - It skips components already released.
+  - It reads the component list from `compose_release.py`.
+  - `--verify` checked against v4: 9/9 components have a record. The publish path first runs at v5.
+- **B15 — `pgc_install/README.md` (`main`) documents the `⚠ Machine-block health` advisory.** The
+  second newcomer gap, compile writing into the clone, was already covered in §4. The README's V1
+  build-configuration names are right for the published v4 and change with v5 (F).
+- **B11 (output root) and B12 (supersession in force) moved to batch A.** Each fix declares something
+  in a governed artifact: the output root in each build configuration, and an `in_force` predicate
+  with an invariant that every effect path consults it.
+
 ### Next
 
-- **B8, B9, B10** — need business rulings.
-- **B11, B12** — the output-root and supersession notes in `doc/`.
-- **B14, B15** — `publish_component_releases.sh`, and the `pgc_install` README.
-- **Then the A batch in one pass:** A1 (profile content in the identity) through A9. Then one clean
-  regression and one re-pin.
+- **The A batch first, by decision:** A1–A9, with B6, B7, B11 and B12 folded in. A plan is being
+  drawn; then one clean regression and one re-pin.
+- **B8, B9, B10 wait for business rulings:**
+  - B8: should the catalog's structure validation refuse?
+  - B9: should identity take its admitted states as a literal, as wallet does?
+  - B10: for ai_governance's three vectors, answer or refuse? That one is its own CR.
 
 ## Clean regression from nothing: green — dev/17 · 2026-09-27
 
