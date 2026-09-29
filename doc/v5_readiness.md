@@ -104,6 +104,17 @@ Each ruling is recorded in `.github/process/rulings.md`.
 
 ## F. Documentation refresh for v5
 
+**Done, except what the cut writes.** The org profile names the four domains, the three transform
+kinds, transforms proven by their cases, the signed federated profile, and `pgc_release`/`pgc_install`.
+READMEs and ARCHITECTURE files are corrected where v5 changed them: output roots are declared rather
+than supplied (six READMEs); the runtime's commands, trace layout, keyed nodes, transform kinds and
+federation; S8's dispatch and supersession checks; conformance run by the runtime, not the compiler;
+18 inspector operations; 883 design rules over 61 check kinds; the domains' dossiers and suites.
+`pgc_install/README.md` is written for v5 and is committed only when v5 is published; its version
+paragraph is the cut's. The realization map's SU-7 cites S8. The three landed design notes and the
+parking lot are deleted. The field manual's transform definition and environment overrides are corrected.
+Left to the cut: `release-17.md`, `pgc_release/MANIFEST.md` and its README's domain count.
+
 - **Org profile** (`.github/profile/README.md`): four business domains, the signed federated
   profile, molecules and non-deterministic atoms, CLM.
 - **Every repo's `README.md` and `ARCHITECTURE.md`.** `business_domains` and `snapshot_assembler`
@@ -121,9 +132,8 @@ Each ruling is recorded in `.github/process/rulings.md`.
   configuration declares its own.
 - **The standards realization map:** SU-7 was mapped Demonstrated on the vocabulary projection alone.
   A superseded workflow stayed dispatchable until A11; the entry should cite the S8 check now.
-- **Design notes whose change has landed:** `doc/handler_namespace_rename.md`,
-  `doc/supersession_and_force.md` and `doc/composition_output_root.md` describe A2, A11 and A10 as
-  open. Retire them, or keep them as the reasoning behind what landed.
+- ~~**Design notes whose change has landed**~~ — deleted: A2, A10 and A11 are recorded in the
+  SOTU entry for wave 3, and the notes' history is in git.
 - **The papers:** anything citing v4 behaviour that v5 changes. Molecules, the constitution rename
   and routing by node are the likely ones.
 

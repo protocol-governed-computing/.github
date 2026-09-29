@@ -85,43 +85,6 @@ different reason worth stating: it presumes a host with subdomains and stores, a
 three host capabilities, none of which is that.
 
 
-## Supersession — realization migration state
-
-Carried forward from `SUPERSESSION_MODEL.md` when its semantics were subsumed into the Supersession
-standard. The standard states what supersession is; the realization work below is what applying it
-to the current composition requires, and it was still outstanding when the file was retired.
-
-**The live finding**: the `blockchain` composition carries three references to a superseded workflow.
-Under referential closure (SU-5) it does not compile. That is the correct first casualty — the rule
-finds a real defect on its first run.
-
-Two existing version pairs are *not* affected, because nothing declares them superseded:
-`STRUCTURE_BUILD_PLATFORM_CONFIG_V0` and `STRUCTURE_FIGURE_OF_MERIT_POLICY_V0`. Whether they should
-be declared so is a separate, smaller act.
-
-## What must change, and what it invalidates
-
-| layer | change |
-|---|---|
-| `software_governance` | `INVARIANT_SUPERSEDED_NOT_REFERENCED_V0` and its assertion; the artifact constitution states that `Supersedes` is a governed relation and that a superseded artifact is unreachable |
-| `protocol_compiler` | read `Supersedes` as a compiled fact; assert closure; omit superseded artifacts from the dispatch and intent projections while keeping them canonical |
-| `protocol_runtime` | nothing — an artifact absent from dispatch is already unreachable |
-| `transformation` | nothing further; P7 states it and construction writes both headers today |
-
-**What it invalidates immediately:** the `blockchain` composition, which carries three references to a
-superseded workflow. cr_04 must re-point `IN_ACTOR_VERIFIED_V0` — or retire it too — and re-point both
-transport ingresses at the accept and reject workflows, before the domain will compile under the new
-invariant. That is the correct first casualty: the rule finds a real defect on its first run.
-
-**What it does not invalidate:** the two existing version pairs. `STRUCTURE_BUILD_PLATFORM_CONFIG_V0`
-and `STRUCTURE_FIGURE_OF_MERIT_POLICY_V0` are not declared superseded by anything the compiler reads,
-so the invariant does not fire on them. Deciding whether they *should* be is a separate, smaller act —
-and once declared, the closure check will name every reference that has to move.
-
-**Recompile:** every domain, because the assertion set changes.
-
-
-
 ## Specification plan — residue
 
 The planning artifact `specification_plan.md` was retired when the specification it planned was

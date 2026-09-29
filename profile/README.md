@@ -108,6 +108,25 @@ it performed. **Autonomy over the work; no authority over the software.** That s
 claim the architecture exists to make good on, and it is what the conformance suite and the external
 validation runs are for.
 
+## What the reference implementation runs
+
+- **Four business domains**, each a directory of declarations and nothing else: `blockchain`
+  (a participant registered, then accepted or rejected, and given one wallet), `book_library_mgmt`
+  (a library catalog), `ai_governance` (an agent's actions admitted or denied, and AI licences
+  provisioned and reclaimed) and `causal_language_model` (a language model answering only in words
+  the rules in force permit). Each change to a domain arrives as a governed change dossier, P0–P8.
+- **Steps not determined by their inputs.** A language model's offer is non-deterministic. It is
+  declared so, recorded where it is produced, replayed from the record, and never routed on before a
+  deterministic step has judged it. A **molecule** is a transform whose declared steps are its
+  specification, with no implementation of its own.
+- **Transforms proven by their cases.** A transform states the cases that prove it beside it, and
+  every build runs them.
+- **Execution across nodes.** Under the signed federated profile, one snapshot runs on a coordinator
+  and several worker nodes over a shared store, and every node verifies a signed snapshot before it
+  runs anything.
+- **A graph for every trace.** Every run can be drawn as the path it took through the sealed
+  workflow.
+
 ## Five authorities
 
 PGC separates five things that are usually blended. Authority flows **downward**;
@@ -187,6 +206,8 @@ assembled from these components under a conformance profile; no single repositor
 | `protocol_transport` | The transport boundary — protocol-neutral ingress and egress |
 | `snapshot_inspector` | Read-only snapshot inspection |
 | `transformation` | The transformation lifecycle: design compiler and construction compiler |
+| `pgc_release` | One composition, sealed and cited: the assembled snapshot and the manifest naming its components |
+| `pgc_install` | The composition as installable software: one PyPI distribution pinning every component |
 
 ```
    transformation ──▶ protocol artifacts ──▶ protocol_compiler ──▶ domain projections
@@ -194,7 +215,10 @@ assembled from these components under a conformance profile; no single repositor
         ──▶ protocol_runtime ──▶ execution ──▶ trace / evidence
 ```
 
-Two repositories deliberately sit off this line. `protocol_transport` is the boundary at
+`pgc_release` keeps one assembled snapshot so that a paper can cite it, and `pgc_install` publishes
+the same composition as software to install. Neither builds anything.
+
+Two more repositories deliberately sit off this line. `protocol_transport` is the boundary at
 either end of execution — governed ingress and egress contracts, protocol-neutral and not
 stages in the lifecycle. `snapshot_inspector` reads the sealed snapshot and takes no part in
 producing it.

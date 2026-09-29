@@ -110,7 +110,13 @@ through P0–P8, not by hand.
   `emit` carries a replaced document's descriptions forward as `check` already measured them.
   `vector_design_test` 8/8; `regression.sh --all` 57/57, composition `b8dd7145…`.
 
-**Next:** group F, then the release notes and the v5 cut.
+- **Testbeds cleaned.** RI-0 licensing replay and scenarios deleted; payloads that nothing ran, or
+  that targeted a superseded workflow, deleted; the rest carry only what the acts read.
+- **Group F done** except what the cut writes; see `v5_readiness.md` §F. Noticed, not changed:
+  `compiler/diagnostics/determination.py` still reads `PGC_SNAPSHOT_ROOT`, and the execution paper
+  states determinism without the non-deterministic atom (a published paper; the author's call).
+
+**Next:** `release-17.md`, `pgc_release/MANIFEST.md`, a final clean regression, and the v5 cut.
 
 ## A batch complete — wave 4: the identity covers the profile's content — dev/17 · 2026-09-28
 
