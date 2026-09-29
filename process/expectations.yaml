@@ -150,6 +150,11 @@ steps:
     section: checks
     # a profile changed after sealing, and a manifest not covering its profile, are refused (A1)
     expect: ["Ran 8 tests", "(?m)^OK$"]
+  - id: test_resident_boot
+    section: checks
+    # a process verifies a snapshot once; a rewritten manifest is verified afresh, one that no
+    # longer verifies is refused, and a run writes its evidence and no picture
+    expect: ["Ran 4 tests", "(?m)^OK$"]
   - id: test_federation
     section: checks
     expect: ["Ran 11 tests", "(?m)^OK$"]

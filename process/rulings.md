@@ -295,3 +295,24 @@ shown the gap, because their predecessors were themselves rendered and carried n
 reads the held subdomains from the domain's registry, `cli.construction_emit` reads its
 predecessors; `vector_design_test` 8/8.
 
+---
+
+### A process verifies once; a run writes evidence, not pictures — runtime performance, v5
+
+**Ruling.** `runtime.api` keeps a booted snapshot resident per process, keyed by the manifest file
+and by what acceptance was judged against (trust anchor, profile root). A rewritten manifest is
+verified afresh; `boot()` itself is never cached. A run writes its `.jsonl` evidence only; the
+path's picture is drawn on request (`run --behavior-logic`, `behavior-logic <trace>`). This reverses
+"every execution trace has a picture".
+
+**Why.** Measured, one governed run took ~330 ms: ~195 ms re-verifying the whole snapshot, ~128 ms
+drawing the picture through a Graphviz subprocess, ~8 ms executing. The HTTP server, the federation
+worker and coordinator, and every validation suite call `run_workflow` in a loop, so each paid both
+on every request. Warm boot was always meant as load once, verify once; the package a boot produces
+is frozen and nothing reads the snapshot after it. The picture is a view of the evidence, not
+evidence.
+
+**Applied.** `protocol_runtime/runtime/api.py`; `test_resident_boot.py` 4/4, in `regression.sh`.
+A run now takes ~5 ms after the first in a process. No artifact and no snapshot identity changes, so
+no dossier.
+

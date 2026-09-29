@@ -1,5 +1,49 @@
 # SOTU Handoff
 
+## Runtime performance done: a governed run in ~5 ms — dev/17 · 2026-09-29
+
+- **Boot once, run many.** `runtime.api` keeps a booted snapshot resident per process, keyed by
+  the manifest file, trust anchor and profile root; a rewritten manifest is verified afresh, and
+  `boot()` itself is never cached. The HTTP server, the federation worker and coordinator, and the
+  suites all run through it.
+- **Pictures on demand.** A run writes its `.jsonl` only; `run --behavior-logic` or
+  `behavior-logic <trace>` draws the path. It reverses "every trace has a picture"; ruled in
+  `rulings.md`.
+- **Measured:** ~330 ms → ~5 ms per run after the first in a process (~133 ms). The regression's
+  execution block ran 189 governed runs in 2.5 s, where the runs alone used to take about a minute.
+- `test_resident_boot.py` 4/4; `regression.sh --all` 58/58. No artifact or snapshot identity
+  changed, so no dossier. Snapshot verification itself (item 3 below) is no longer worth doing.
+
+## Scoped next: runtime performance on dev/17; a real model for CLM on work/clm — 2026-09-29
+
+### Platform, dev/17 — worth doing whether or not CLM moves
+
+Measured: one in-process governed run takes ~330 ms. Boot and snapshot verification take ~195 ms,
+drawing the trace PNG ~128 ms, and the execution itself ~8 ms.
+
+1. **Boot once, run many.** `runtime.api` boots and hash-verifies the whole snapshot on every call.
+   Keep it resident, keyed by root and snapshot id, and re-verify only when the id changes. First
+   confirm whether the HTTP server and the coordinator already boot once.
+2. **Trace pictures on demand.** A run writes its `.jsonl` evidence only; `behavior-logic` draws the
+   PNG when asked. This reverses "every execution trace has a picture", so it needs a ruling, and the
+   tests and expectations that look for a PNG need updating.
+3. Optional, after (1): snapshot verification itself (`pathlib` comparisons, repeated JSON reads).
+
+Expected: under ~10 ms per governed run, and a faster regression; before-and-after timings are the
+evidence. Plan to be approved before any edit.
+
+### CLM, work/clm — a separate issue, not started
+
+A locally hosted pretrained model (qwen3 through Ollama, thinking off; a small variant for
+development) governed token by token. Model composability is a different dimension and is out.
+The shape discussed: **invert control.** A driver outside PGC asks the model for its top-k offers
+and submits each offer to a governed workflow that chooses a permitted token and appends it to the
+record; only a release workflow releases, and only what the record holds. It needs no platform
+change: no outbound side effect, no side effect inside a molecule (a molecule is a transform), no
+cyclic workflow (workflows are acyclic). Limits: the platform cannot prove that offers came from the
+model, and this is a new CR rather than a second realization of CR-1's offer step. It depends on the
+platform items above for its performance.
+
 ## B21–B24 — dev/17 · 2026-09-28
 
 The A batch is complete; wave 4 and B21–B24 are on dev/17, uncommitted. `regression.sh --all`:
