@@ -73,8 +73,21 @@ through P0–P8, not by hand.
   a ruling in `rulings.md`. Re-sealing moved the working snapshot to `08800223…`; the baseline was
   re-pinned and p2–p7 re-approved against it.
 
-**Next:** `cr_05_identity` P8 approval, then construction (`tc construction check/emit`), build and
-execution validation. Then book `cr_05_catalog`, ai_governance `cr_01`, and group F.
+- **Construction refused, then admitted by declaration.** `tc construction check` found 78 facts
+  lost. Every loss was intended, but nothing in the design language could say so. P7 now has a
+  `withdrawn_facts` register, and cr_05 declares 38 withdrawals. Construction check reaches 100%
+  with nothing narrowed. The fix also covers a list refinement the guard misread; the ruling is in
+  `rulings.md`. The re-seal moved the snapshot to `dcfed76f…`.
+
+- **`cr_05_identity` delivered.** The first execution run found every registration through the
+  entrance refused: the registration gate still required the schema the entrance stopped sending,
+  and P3 had missed that gate. Re-authored from P3, the gate became an eleventh artifact. Emitted, and
+  identity holds 22/22 criteria (3 not exercised), wallet 9/9; full `regression.sh --all` 56/56 on a
+  clean rebuild, composition `61952a22…`. Admission fidelity dropped from 26 findings to 12. B25
+  recorded: no rule checks that an entrance supplies what its gate requires. `delivery.md` written.
+
+**Next:** book `cr_05_catalog` (B8's book half). First check its real exposure the way identity's
+was checked, by running the workflows directly. Then ai_governance `cr_01` (B10), and group F.
 
 ## A batch complete — wave 4: the identity covers the profile's content — dev/17 · 2026-09-28
 

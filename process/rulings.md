@@ -241,3 +241,21 @@ none of its steps read — the constant the change exists to remove.
 
 **Applied.** `transformation/design/checks.py` and the P7 rule set, re-sealed;
 `keyed_node_design_test` proves both halves.
+
+---
+
+### An amendment declares what it withdraws — cr_05_identity, v5
+
+**Ruling.** P7 gains `withdrawn_facts`: an artifact the design extends, a place in its machine
+block, and the reason the fact goes. Construction subtracts declared withdrawals from what an
+amendment loses; a fact omitted without one is still refused, and a withdrawal covering nothing
+lost is refused as unfounded. `WITHDRAWAL_NOT_AN_AMENDMENT` holds a withdrawal to an `EXTEND`.
+Separately, the narrowing guard now treats a value refined into a list as refined, as it already
+treated one refined into an object.
+
+**Why.** An `EXTEND` is rendered whole, so an omission and a decision read the same in the rendered
+artifact, and the guard refused both. Trusting the redeclaration, as the P7 interface ruling does,
+would have given up the guard's purpose. Stating the decision keeps it.
+
+**Applied.** Template, P7 rule set (re-sealed, 241 rules), `completeness.py`, `cli.py`;
+`withdrawal_design_test` (5/5). The register was added empty to every current-format P7 document.
