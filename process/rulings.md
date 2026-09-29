@@ -225,3 +225,19 @@ proving the refusal.
 
 **Applied.** An ai_governance CR.
 
+
+---
+
+### A contract redeclared whole requires only what it declares — cr_05_identity, v5
+
+**Ruling.** `NODE_INPUT_UNBOUND` reads a contract's required inputs from the design where the design
+composes that contract's steps. The pinned contract's inputs are joined only for a contract the
+design calls without composing.
+
+**Why.** The rule joined the pinned inputs to the design's so that a reused contract could not be
+handed nothing. A design that redeclares a contract whole authors its interface again, and an input
+it withdraws is no longer required. Joined, the only way to pass was to hand the contract a rule
+none of its steps read — the constant the change exists to remove.
+
+**Applied.** `transformation/design/checks.py` and the P7 rule set, re-sealed;
+`keyed_node_design_test` proves both halves.

@@ -52,7 +52,29 @@ through P0–P8, not by hand.
   decision records nothing. The seed is ADMISSIBLE at P0, 5/5 over 83 rules. The baseline is pinned
   to `4d366cca…`, the v5 working composition: 478 artifacts, 8 domains.
 
-**Next:** `cr_05_identity` P1. Then book `cr_05_catalog`, ai_governance `cr_01`, and group F.
+- **`cr_05_identity` P1, projected.** It is the seed's registers, each row cited: 73 citations.
+  ADMISSIBLE at P1, 5/5 over 189 rules, judged against its P0 prior. `tc baseline verify`:
+  BASELINE OK, and no register approved yet.
+
+- **`cr_05_identity` P2–P8, designed.** Each phase ADMISSIBLE at 5/5. P7 redeclares ten identity
+  artifacts whole and creates nothing:
+  - the contracts hold the schema, the sets and the rules as literals;
+  - a rule step refuses an incomplete registration;
+  - a comparison and a rule refuse self-decision;
+  - the decided record is built from the checked decision;
+  - each act fixes its decision, and registration writes UNVERIFIED itself;
+  - the entrances drop the constants;
+  - the acceptance gate declares optional grounds.
+
+  P8 schedules nothing, since nothing is new.
+- **A P7 rule fixed along the way.** `NODE_INPUT_UNBOUND` joined a contract's pinned inputs to the
+  design's, so an input a redeclared contract withdrew still read as required. Refined in
+  `transformation/design/checks.py`, re-sealed and proven in `keyed_node_design_test` (6/6), with
+  a ruling in `rulings.md`. Re-sealing moved the working snapshot to `08800223…`; the baseline was
+  re-pinned and p2–p7 re-approved against it.
+
+**Next:** `cr_05_identity` P8 approval, then construction (`tc construction check/emit`), build and
+execution validation. Then book `cr_05_catalog`, ai_governance `cr_01`, and group F.
 
 ## A batch complete — wave 4: the identity covers the profile's content — dev/17 · 2026-09-28
 

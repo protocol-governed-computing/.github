@@ -74,8 +74,9 @@ steps:
     expect: ["6/6 passed"]
   - id: keyed_node_design_test
     section: checks
-    # a route to a place the composition already has resolves (A batch, wave 2 — B6)
-    expect: ["5/5 passed"]
+    # a route to a place the composition already has resolves (A batch, wave 2 — B6); a contract
+    # redeclared whole requires only what it now declares (cr_05_identity)
+    expect: ["6/6 passed"]
   - id: refusal_moment_design_test
     section: checks
     expect: ["4/4 passed"]
