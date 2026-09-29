@@ -112,11 +112,34 @@ through P0–P8, not by hand.
 
 - **Testbeds cleaned.** RI-0 licensing replay and scenarios deleted; payloads that nothing ran, or
   that targeted a superseded workflow, deleted; the rest carry only what the acts read.
-- **Group F done** except what the cut writes; see `v5_readiness.md` §F. Noticed, not changed:
+- **Group F done** except what the cut writes. Noticed, not changed:
   `compiler/diagnostics/determination.py` still reads `PGC_SNAPSHOT_ROOT`, and the execution paper
   states determinism without the non-deterministic atom (a published paper; the author's call).
 
-**Next:** `release-17.md`, `pgc_release/MANIFEST.md`, a final clean regression, and the v5 cut.
+- **`v5_readiness.md` retired.** Every A and B item is done, deferred or frozen; what the cut still
+  needs is carried below.
+
+### Carried to the v5 cut
+
+The cut is not scheduled; one more cycle of checks comes first.
+
+- **The cut writes:** `release-17.md`; `pgc_release/MANIFEST.md` and its README's domain count (eight);
+  `pgc_install/README.md`'s version paragraph (its v5 body is committed only when v5 is published);
+  a final clean regression; one re-pin of every dossier baseline that still runs phases.
+- **Stated limits for the release notes:**
+  - C1: a generated dossier is admitted on what it says, and keeps its generator as evidence in its
+    `delivery.md`. Governed generation is v6.
+  - C5: after a dropped connection, a caller cannot tell whether it was admitted. A unit idempotency
+    key with an admission-status query is v6 design work.
+- **Deployment and operations (D), recorded, not blocking:** the SSH exception to EO-4;
+  `EVIDENCE_EXPIRY` not exercised over the shared store; cross-node concurrency only lightly
+  exercised; two orphaned barcode claims kept as evidence; the evidence store is not external to
+  every node; `shuttle` LXD start/stop priorities not set; the stale `/etc/hosts` line on the Mac.
+- **Only someone else can close (E):** a second reader (§6 externality); the profile read-back by
+  hand for the signed federated profile, which the author can do but which is still one reader.
+- **Deferred or frozen:** B17, the signed federated profile existing twice, waits for the next
+  standards revision. B18, 13 domain transforms unproven and implementation source not sealed by
+  hash, is recorded, not fixed. Both are in `standards/doc/parkinglot/todo.md`.
 
 ## A batch complete — wave 4: the identity covers the profile's content — dev/17 · 2026-09-28
 

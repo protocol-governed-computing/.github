@@ -118,7 +118,7 @@ honour them; an object store does not. A constraint held only in code is invisib
 reading the profile.
 
 **Applied.** It changes the placement artifact, so it belongs to v5's identity-changing batch
-(`../doc/v5_readiness.md`, A8).
+(v5 A batch, A8).
 
 ---
 
@@ -143,7 +143,7 @@ molecules and non-deterministic atoms were added.
 **Applied.**
 - Every current reference is renamed, and no alias is kept.
 - Historical dossiers and `pgc_release` keep the old name, as they recorded it.
-- A common home for the three rules is option (b), a separate change (`../doc/v5_readiness.md`, A6).
+- A common home for the three rules is option (b), a separate change (v5 A batch, A6).
 
 ---
 
@@ -180,7 +180,7 @@ Hashing the content closes that, and it is the whole of the weakness. A reposito
 make profiles versioned and citable like the other components, which is worth having but is a
 separate change with a larger reach: `release.sh`, `compose_release`, `pgc_install`.
 
-**Applied.** Wave 4 of the A batch (`../doc/v5_readiness.md`, A1).
+**Applied.** Wave 4 of the A batch (v5 A batch, A1).
 
 ---
 
