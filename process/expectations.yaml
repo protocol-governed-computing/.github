@@ -26,7 +26,7 @@ steps:
     expect: ["SUPERSESSION AGREEMENT PASSED — 7 relation\\(s\\)"]
   - id: human_block_fidelity
     section: checks
-    expect: ["HUMAN BLOCK FIDELITY PASSED — 485 artifacts"]
+    expect: ["HUMAN BLOCK FIDELITY PASSED — 502 artifacts"]
   - id: evidence_determinism
     section: checks
     expect: ["EVIDENCE DETERMINISM PASSED"]
@@ -37,7 +37,8 @@ steps:
     # were all on the superseded WF_RECORD_VERIFICATION_DECISION_V0's gate. 26 → 12: cr_05_identity
     # stopped the identity acts reading rules from the request, which cleared fourteen. 12 → 11:
     # cr_05_catalog records the subject callers send, clearing IN_REGISTER_BOOK_V0's `subject`.
-    expect: ["ADMISSION CONTRACT FIDELITY FAILED — 11 finding\\(s\\) over 34 gate\\(s\\)"]
+    # 34 → 37 gates: cr_02_hosted_model adds three, each declaring exactly what its act binds.
+    expect: ["ADMISSION CONTRACT FIDELITY FAILED — 11 finding\\(s\\) over 37 gate\\(s\\)"]
     red_by_design: >-
       11 deliberate findings — the moment and stream each blockchain act records (cr_05_identity
       GAP-09), the address path and type, wallet's fields, and one transformation prior
@@ -67,7 +68,7 @@ steps:
     expect: ["PROJECTION PASSED"]
   - id: construction_acceptance
     section: checks
-    expect: ["150/150 artifacts reproduced across 5 domain\\(s\\)\\s+\\(0 field difference\\(s\\)\\)"]
+    expect: ["167/167 artifacts reproduced across 5 domain\\(s\\)\\s+\\(0 field difference\\(s\\)\\)"]
   - id: molecule_design_test
     section: checks
     expect: ["5/5 passed"]
@@ -97,7 +98,7 @@ steps:
     expect: ["4/4 passed"]
   - id: implementation_closure
     section: checks
-    expect: ["IMPLEMENTATION CLOSURE PASSED — 34 transform\\(s\\)"]
+    expect: ["IMPLEMENTATION CLOSURE PASSED — 36 transform\\(s\\)"]
   - id: test_inspector
     section: checks
     # si.behavior_logic.list names each workflow's nodes by key (B6)
@@ -222,6 +223,10 @@ steps:
   - id: clm_model_response
     section: execution
     expect: ["27/27 criteria hold"]
+  - id: clm_hosted_model
+    section: execution
+    # Qwen3 8B's words are not determined, so the regression leaves it out; --qwen exercises it.
+    expect: ["15/15 criteria hold  \\(1 not exercised\\)"]
   - id: trace_schema_conformance
     section: execution
     expect: ["TRACE SCHEMA CONFORMANCE PASSED — \\d+ trace\\(s\\)"]

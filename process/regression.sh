@@ -146,7 +146,8 @@ echo "execution" >> "$RUN/sections"
 echo; echo "=== EXECUTION ==="
 echo "=== clearing data roots ==="
 rm -rf "$W/data/collatz" "$W/data/ai_governance" "$W/data/book_library_mgmt" \
-       "$W/data/book_library_mgmt_cr02" "$W/data/blockchain" "$W/data/causal_language_model"
+       "$W/data/book_library_mgmt_cr02" "$W/data/blockchain" "$W/data/causal_language_model" \
+  "$W/data/causal_language_model_hosted"
 
 echo; echo "=== collatz ==="
 step collatz "$W/protocol_runtime/run.sh" run \
@@ -191,12 +192,17 @@ echo; echo "=== causal_language_model: model_response ==="
 step clm_model_response python "$W/business_domains/causal_language_model/testbed/model_response/execution_validation.py" \
   --data-root "$W/data/causal_language_model"
 
+echo; echo "=== causal_language_model: hosted model ==="
+step clm_hosted_model python "$W/business_domains/causal_language_model/testbed/hosted_model/execution_validation.py" \
+  --data-root "$W/data/causal_language_model_hosted"
+
 # Every trace this block wrote, against the schema its constitution names. Scoped to the data roots
 # cleared above, so a stale trace from an earlier run is never what is judged.
 echo; echo "=== trace schema ==="
 step trace_schema_conformance python "$W/.github/process/trace_schema_conformance.py" \
   "$W/data/collatz" "$W/data/ai_governance" "$W/data/book_library_mgmt" \
-  "$W/data/book_library_mgmt_cr02" "$W/data/blockchain" "$W/data/causal_language_model"
+  "$W/data/book_library_mgmt_cr02" "$W/data/blockchain" "$W/data/causal_language_model" \
+  "$W/data/causal_language_model_hosted"
 
 echo; echo "=== VERDICT ==="
 python "$W/.github/process/regression_verdict.py" "$RUN"

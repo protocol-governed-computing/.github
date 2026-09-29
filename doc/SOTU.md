@@ -1,5 +1,19 @@
 # SOTU Handoff
 
+## CLM governs a hosted model, numbers grounded: Qwen3 8B through Ollama — work/clm · 2026-09-29
+
+- **`cr_02_hosted_model` redone from P0 and delivered.** The first delivery was withdrawn after Qwen
+  leaked a read account number digit by digit and then invented one. P0 now adds grounding: a time in
+  service may require every number to be one the model read, matched on digits. P0–P8 admissible
+  against `b8dd7145…`; 17 artifacts; no existing artifact changed. P7 `step_bindings` changed after
+  its approval (the opening carries `ground_numbers`) — re-approve before merge.
+- **Choice transform:** judges NFKC text; won't begin a forbidden number the model read; with
+  grounding, won't begin or end a number that isn't in the reading (`numbers_from_the_reading`).
+- **Host:** `host/driver.py --model qwen3:8b [--ungrounded]`. ~45 ms a token.
+- **Validation:** hosted suite 15/15 in regression, 16/16 with `--qwen`; regression 59/59.
+- **Open:** grounded is not true — Qwen gave the customer's own number as the spouse's. Next:
+  merge work/clm → dev/17; then an evaluation harness if a paper is wanted.
+
 ## Runtime performance done: a governed run in ~5 ms — dev/17 · 2026-09-29
 
 - **Boot once, run many.** `runtime.api` keeps a booted snapshot resident per process, keyed by
