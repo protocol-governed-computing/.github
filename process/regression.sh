@@ -8,7 +8,7 @@
 #
 # Expected results are data: `expectations.yaml`, compared by `regression_verdict.py` after the
 # run, and the script exits with the verdict. RUNBOOK.md "## Expected" explains each row. Two things
-# are red by design: admission_contract_fidelity (26 findings, all deliberate), and the advisory
+# are red by design: admission_contract_fidelity (11 findings, all deliberate), and the advisory
 # half of `si snapshot validate`, which reports known divergences without failing. Each step's output
 # and exit code are kept in `traces/regression/` (or $PGC_REGRESSION_OUT).
 set -u
