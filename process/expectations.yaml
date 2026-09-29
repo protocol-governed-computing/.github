@@ -26,7 +26,7 @@ steps:
     expect: ["SUPERSESSION AGREEMENT PASSED — 7 relation\\(s\\)"]
   - id: human_block_fidelity
     section: checks
-    expect: ["HUMAN BLOCK FIDELITY PASSED — 482 artifacts"]
+    expect: ["HUMAN BLOCK FIDELITY PASSED — 485 artifacts"]
   - id: evidence_determinism
     section: checks
     expect: ["EVIDENCE DETERMINISM PASSED"]
@@ -35,15 +35,15 @@ steps:
     exit: 1
     # 36 → 34 gates, 31 → 26 findings: a superseded intent is no admission gate (A11), and the five
     # were all on the superseded WF_RECORD_VERIFICATION_DECISION_V0's gate. 26 → 12: cr_05_identity
-    # stopped the identity acts reading rules from the request, which cleared fourteen.
-    expect: ["ADMISSION CONTRACT FIDELITY FAILED — 12 finding\\(s\\) over 34 gate\\(s\\)"]
+    # stopped the identity acts reading rules from the request, which cleared fourteen. 12 → 11:
+    # cr_05_catalog records the subject callers send, clearing IN_REGISTER_BOOK_V0's `subject`.
+    expect: ["ADMISSION CONTRACT FIDELITY FAILED — 11 finding\\(s\\) over 34 gate\\(s\\)"]
     red_by_design: >-
-      12 deliberate findings — the moment and stream each blockchain act records (cr_05_identity
-      GAP-09), the address path and type, wallet's fields, IN_REGISTER_BOOK_V0's `subject` deferred
-      in cr_04_catalog P3 Q1, and one transformation prior
+      11 deliberate findings — the moment and stream each blockchain act records (cr_05_identity
+      GAP-09), the address path and type, wallet's fields, and one transformation prior
   - id: emit_rule_sets
     section: checks
-    expect: ["p7\\s+241 rules", "p8\\s+33 rules"]
+    expect: ["p7\\s+242 rules", "p8\\s+33 rules"]
   - id: build_payloads
     section: checks
     expect: ["OK\\s+83 payload\\(s\\) agree"]
@@ -73,7 +73,9 @@ steps:
     expect: ["5/5 passed"]
   - id: vector_design_test
     section: checks
-    expect: ["6/6 passed"]
+    # a manifest is generated for an amendment, names every subdomain the domain holds, and an
+    # emitted amendment keeps the descriptions it replaces (cr_01_licensing)
+    expect: ["8/8 passed"]
   - id: keyed_node_design_test
     section: checks
     # a route to a place the composition already has resolves (A batch, wave 2 — B6); a contract
@@ -89,6 +91,10 @@ steps:
     section: checks
     # an amendment declares what it takes away (cr_05_identity)
     expect: ["5/5 passed"]
+  - id: entrance_gate_design_test
+    section: checks
+    # an entrance supplies what its gate requires (B25)
+    expect: ["4/4 passed"]
   - id: implementation_closure
     section: checks
     expect: ["IMPLEMENTATION CLOSURE PASSED — 34 transform\\(s\\)"]
@@ -199,7 +205,8 @@ steps:
     expect: ["23/23 criteria hold"]
   - id: catalog_cr02
     section: execution
-    expect: ["21/21 criteria hold"]
+    # cr_05_catalog: the catalog holds every rule it applies and checks what it records
+    expect: ["27/27 criteria hold"]
   - id: blockchain_identity
     section: execution
     # cr_05_identity: identity holds every rule it applies, through the entrance and directly

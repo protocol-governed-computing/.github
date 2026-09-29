@@ -86,8 +86,31 @@ through P0–P8, not by hand.
   clean rebuild, composition `61952a22…`. Admission fidelity dropped from 26 findings to 12. B25
   recorded: no rule checks that an entrance supplies what its gate requires. `delivery.md` written.
 
-**Next:** book `cr_05_catalog` (B8's book half). First check its real exposure the way identity's
-was checked, by running the workflows directly. Then ai_governance `cr_01` (B10), and group F.
+- **B25 done.** P7 holds an entrance to the gate it reaches (`ENTRANCE_UNDERSUPPLIES_GATE`, 242
+  rules); the inspector publishes intents. It fires on cr_05's first-pass shape and on no current
+  document. `regression.sh --all` 57/57, composition `34c8a0e8…`.
+
+- **`cr_05_catalog` delivered.** Measuring book found worse than B8: every catalog act confirmed
+  staff against rules the request sent, so an unauthorized caller registered a book by sending none.
+  The author widened the scope to identity's pattern. The catalog now holds its authorization rules
+  and descriptions, refuses on what its checks find, checks what it records and records the subject
+  callers send (every book registered before had none). A copy is registered as registered, and a
+  correction keeps its state and meets the description. 26 artifacts redeclared, 36 facts withdrawn;
+  P7 and P8 generated under C1, generators kept in `.github/process/notes/cr05-catalog-generators/`.
+  Catalog 23/23 and 27/27; `regression.sh --all` 57/57, composition `25009fed…`. Carried: credentials
+  are self-asserted (authentication is outside the catalog).
+
+- **`cr_01_licensing` delivered (B10).** ai_governance's three checks are proven: each is
+  redeclared whole with its cases, 7 in all (the earlier RI-0 values under PGC names, each no case
+  now expecting a refusal, plus the inactivity boundary). Conformance: ai_governance 3 proven. The seed
+  first listed the checks' refusals as operation refusals, which obliged P7 to restate both acts and
+  to discharge provisioning's denial at an ending that completes. The author ruled them the checks'
+  own, proven by their cases, and dropped them from the seed. Two construction fixes came with it:
+  the manifest generator now runs for an amendment and names every subdomain the domain holds, and
+  `emit` carries a replaced document's descriptions forward as `check` already measured them.
+  `vector_design_test` 8/8; `regression.sh --all` 57/57, composition `b8dd7145…`.
+
+**Next:** group F, then the release notes and the v5 cut.
 
 ## A batch complete — wave 4: the identity covers the profile's content — dev/17 · 2026-09-28
 

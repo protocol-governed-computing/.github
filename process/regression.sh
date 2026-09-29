@@ -94,7 +94,8 @@ if [[ "$MODE" == "--all" ]]; then
   step frontmatter_fidelity python "$W/.github/process/frontmatter_fidelity.py"
   for t in meta_test differential e2e_phases_test projection_test construction_acceptance \
            molecule_design_test vector_design_test keyed_node_design_test \
-           refusal_moment_design_test vector_value_design_test withdrawal_design_test; do
+           refusal_moment_design_test vector_value_design_test withdrawal_design_test \
+           entrance_gate_design_test; do
     step "$t" python "$W/transformation/scripts/testbed/$t.py"
   done
   step implementation_closure python "$W/.github/process/implementation_closure.py"

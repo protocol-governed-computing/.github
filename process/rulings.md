@@ -259,3 +259,39 @@ would have given up the guard's purpose. Stating the decision keeps it.
 
 **Applied.** Template, P7 rule set (re-sealed, 241 rules), `completeness.py`, `cli.py`;
 `withdrawal_design_test` (5/5). The register was added empty to every current-format P7 document.
+
+---
+
+### An entrance supplies what its gate requires — B25, v5
+
+**Ruling.** P7 gains `ENTRANCE_UNDERSUPPLIES_GATE`: every field the gate of an entrance's workflow
+requires is supplied by the entrance's payload. The gate is read from the design where the design
+states it, and from the composition otherwise; `si.capability.surface` now publishes each intent's
+workflow and inputs under `intents`, beside contracts.
+
+**Why.** `cr_05_identity` stopped an entrance sending a field its workflow no longer read and reused
+the gate that still required it. Every phase admitted the design, construction was complete, and
+every registration through the entrance was refused at admission. The first request found it.
+
+**Applied.** `snapshot_inspector` capability surface; `transformation` check, rule and observation,
+P7 re-sealed at 242 rules; `entrance_gate_design_test` 4/4. No current P7 document trips it.
+
+---
+
+### An amendment is built as it was measured — B10, v5
+
+**Ruling.** The domain build manifest is generated for a change that only amends, and it describes
+the domain, naming every subdomain the domain holds, not only those the change declares. `construction
+emit` carries forward the descriptions of the document it replaces, exactly as `construction check`
+does when it measures the amendment.
+
+**Why.** `cr_01_licensing` amends three transforms and creates nothing. The generator returned no
+manifest, so the domain could not compile the cases, and it would have described ai_governance as
+having one subdomain. `check` then measured the amendment as complete with its predecessor's
+descriptions carried, and `emit` wrote it without them. The book and identity amendments had never
+shown the gap, because their predecessors were themselves rendered and carried no descriptions.
+
+**Applied.** `render.build_manifest` (amendments, held subdomains, declared root), `generators`
+reads the held subdomains from the domain's registry, `cli.construction_emit` reads its
+predecessors; `vector_design_test` 8/8.
+
