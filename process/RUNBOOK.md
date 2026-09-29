@@ -873,8 +873,9 @@ W = "/Users/bp/protocol-governed-computing"
 sys.path[:0] = [f"{W}/software_governance", f"{W}/business_domains"]
 from runtime import api
 P = pathlib.Path(f"{W}/business_domains/blockchain/testbed/identity/test_payloads")
+WF = {"04": "blockchain::WF_ACCEPT_ACTOR_V0", "08": "blockchain::WF_REJECT_ACTOR_V0"}
 for f in sorted(P.glob("*.json")):
-    r = api.run_workflow(wf_fqdn="blockchain::WF_REGISTER_ACTOR_V0",
+    r = api.run_workflow(wf_fqdn=WF.get(f.name[:2], "blockchain::WF_REGISTER_ACTOR_V0"),
                          payload=json.loads(f.read_text()),
                          snapshot_root=f"{W}/snapshot", data_root=f"{W}/data/blockchain")
     print(f"{f.name:<36} {r.status}")
@@ -956,10 +957,9 @@ W = "/Users/bp/protocol-governed-computing"
 sys.path[:0] = [f"{W}/software_governance", f"{W}/business_domains", f"{W}/conformance_workloads"]
 from runtime import api
 P = pathlib.Path(f"{W}/business_domains/blockchain/testbed/identity/test_payloads")
-REG = "blockchain::WF_REGISTER_ACTOR_V0"
-DEC = "blockchain::WF_RECORD_VERIFICATION_DECISION_V0"
+WF = {"04": "blockchain::WF_ACCEPT_ACTOR_V0", "08": "blockchain::WF_REJECT_ACTOR_V0"}
 for f in sorted(P.glob("*.json")):
-    wf = REG if f.name[:2] in {"01", "02", "03", "07"} else DEC
+    wf = WF.get(f.name[:2], "blockchain::WF_REGISTER_ACTOR_V0")
     r = api.run_workflow(wf_fqdn=wf, payload=json.loads(f.read_text()),
                          snapshot_root=f"{W}/snapshot", data_root=f"{W}/data/blockchain")
     print(f"{f.name:<36} {r.status}")
