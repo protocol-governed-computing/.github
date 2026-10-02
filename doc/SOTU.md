@@ -1,5 +1,35 @@
 # SOTU Handoff
 
+## Parked feature idea: decision explanation graph on the execution-path picture — dev/17 · 2026-10-01
+
+Not started, not scheduled. Prototype on a feature branch off `dev/17` before any merge.
+
+- **Idea.** Extend the on-demand redlined execution-path PNG (`protocol_runtime/runtime/trace_viz.py`,
+  `run --behavior-logic` / `behavior-logic <trace>`) into a decision explanation graph: for each
+  node and edge, *what caused this path and which artifacts were involved*. Origin: an expert's list
+  of ten next-step directions (#1, "a system that can explain every decision"), weighed in the
+  standards session.
+- **Shape.** A declared `si.` **query** operation (e.g. `si.execution.explain`) returns the graph as
+  data; the PNG is one client rendering of it. Reads the sealed snapshot plus the trace, never
+  runtime internals — `runtime examine` is the side channel ruling A.2 flagged; do not repeat it.
+  An LLM narration stays client-side and is never the system's answer (IN-8).
+- **Phase 1 — supported by today's data.** Route taken and the declared outcome that selected it
+  (`WF_ROUTE`); per node the contract, capability FQDN and kind, projected steps, bindings (all
+  already in `<WF>.graph.json`); captured non-deterministic values (`CT_STEP`). Draw inferred links
+  (trace joined to snapshot) differently from recorded ones.
+- **Phase 2 — needs evidence work first.** *Why admitted or refused*: closure, rules, predicate
+  results, rule refusal vs closure failure. Blocked on determination records in evidence (map
+  finding 10) and evidence naming its snapshot (EV-17); both are `protocol_runtime` changes.
+- **Repos (checked, not guessed).** `snapshot_inspector` — the operation's declaration and generated
+  `TI_`/`TE_` pair (`scripts/author_transport_contracts.py`), a `inspector/queries/` module, a
+  `registry.py` entry, optionally a `client/web` view. `.github` — `RUNBOOK.md:643` "eighteen
+  operations sharing one route" becomes nineteen; check the regression too. `protocol_runtime` only
+  if `trace_viz` is rewired as a client. No change expected to `protocol_compiler`,
+  `snapshot_assembler`, `software_governance` or `standards`; confirm by a build.
+- **Settle first.** Traces sit outside the snapshot (`data/traces/`). The query takes a trace identity
+  as input and must refuse a trace it cannot tie to the snapshot it reads (IN-9). Until EV-17 the
+  trace does not name its snapshot, so phase 1 needs an interim tie.
+
 ## CLM governs a hosted model, numbers grounded: Qwen3 8B through Ollama — work/clm · 2026-09-29
 
 - **`cr_02_hosted_model` redone from P0 and delivered.** The first delivery was withdrawn after Qwen
