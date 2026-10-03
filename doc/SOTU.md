@@ -1,5 +1,16 @@
 # SOTU Handoff
 
+## Paused — everything committed and backed up — dev/17 · 2026-10-03
+
+- **State.** Every repo is clean. `dev/17` now exists on GitHub as a backup in all ten dev repos
+  (not merged to `main`). `standards` is on `work/v1`, in sync with its remote. `pgc_release` is in sync.
+- **Last regression.** `regression.sh --all`: 59/59, every step as expected.
+- **Deferred on purpose.**
+  - Why a capability refused: parked in the entry below; only if an investigation stalls on it.
+  - EN-12 in the realization map: worth re-checking when the standards work resumes.
+  - `pgc_install` is 3 commits ahead of `origin/main`: a release decision, not cleanup.
+- **First action next session.** None scheduled.
+
 ## Decision explanation graph: closed — delivered via `si.execution.explain` and the PNG — dev/17 · 2026-10-03
 
 - **Query.** `si.execution.explain <trace>` in `snapshot_inspector` (`inspector/queries/execution_explain.py`,
