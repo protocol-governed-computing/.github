@@ -26,7 +26,7 @@ steps:
     expect: ["SUPERSESSION AGREEMENT PASSED — 7 relation\\(s\\)"]
   - id: human_block_fidelity
     section: checks
-    expect: ["HUMAN BLOCK FIDELITY PASSED — 502 artifacts"]
+    expect: ["HUMAN BLOCK FIDELITY PASSED — 504 artifacts"]
   - id: evidence_determinism
     section: checks
     expect: ["EVIDENCE DETERMINISM PASSED"]
@@ -50,7 +50,7 @@ steps:
     expect: ["OK\\s+83 payload\\(s\\) agree"]
   - id: author_transport_contracts
     section: checks
-    expect: ["OK\\s+36 contract\\(s\\) for 18 operations agree"]
+    expect: ["OK\\s+38 contract\\(s\\) for 19 operations agree"]
   - id: frontmatter_fidelity
     section: checks
     expect: ["FRONTMATTER FIDELITY PASSED"]
@@ -101,8 +101,8 @@ steps:
     expect: ["IMPLEMENTATION CLOSURE PASSED — 36 transform\\(s\\)"]
   - id: test_inspector
     section: checks
-    # si.behavior_logic.list names each workflow's nodes by key (B6)
-    expect: ["PASSED: 122/122"]
+    # si.behavior_logic.list names each workflow's nodes by key (B6); si.execution.explain adds 29
+    expect: ["PASSED: 151/151"]
   - id: domain_authoring
     section: checks
     expect: ["PASSED: 8/8"]
@@ -175,7 +175,7 @@ steps:
     expect: ["Ran 5 tests", "(?m)^OK$"]
   - id: test_trace_path
     section: checks
-    expect: ["Ran 4 tests", "(?m)^OK$"]
+    expect: ["Ran 7 tests", "(?m)^OK$"]
   - id: test_transform_conformance_runner
     section: checks
     expect: ["Ran 10 tests", "(?m)^OK$"]

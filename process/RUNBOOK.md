@@ -640,7 +640,7 @@ files, and it lives with the domain it serves.
 # collatz — one operation, one route per operation
 ~/protocol-governed-computing/conformance_workloads/workloads/collatz/client/serve.sh
 
-# snapshot inspection — eighteen operations sharing one route
+# snapshot inspection — nineteen operations sharing one route
 ~/protocol-governed-computing/snapshot_inspector/client/serve.sh
 ```
 

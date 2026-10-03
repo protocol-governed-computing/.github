@@ -1,6 +1,40 @@
 # SOTU Handoff
 
-## Parked feature idea: decision explanation graph on the execution-path picture — dev/17 · 2026-10-01
+## Decision explanation graph: closed — delivered via `si.execution.explain` and the PNG — dev/17 · 2026-10-03
+
+- **Query.** `si.execution.explain <trace>` in `snapshot_inspector` (`inspector/queries/execution_explain.py`,
+  `inspector/trace.py`, contracts `TI_`/`TE_SI_EXECUTION_EXPLAIN_V0`). The trace is named by the
+  runtime's own reference, read under a provisioned trace root (transport: data root; CLI:
+  `--trace-root` / `$PGC_DATA_ROOT`), and refused unless it names the snapshot being read. Recorded
+  facts and snapshot-joined facts stay apart (`snapshot` keys).
+- **Phase 2 — why.** The runtime now records every admission check it evaluated, held or not
+  (`scheduler._admit` → `CC_STEP` ADMIT `detail.checks`; declared in `SCHEMA_TRACE_EVENT_V1`). The
+  query reports per node a `determination` (gate: the checks and which failed; capability: its
+  outcome, explicitly *not* its reasons) and an `ending`: `declared_ending` (decided at which node,
+  by which outcome), `no_declared_answer` (ERROR records — the declarations had no answer, no rule
+  refused), or `incomplete`. Traces from before the change say "not recorded".
+- **Correction.** EV-17 was never a phase-2 dependency: it concerns `snapshot/evidence/*`, not run
+  traces. Finding 10 was already CLOSED in the map.
+- **Bears on the standard (not edited — standards paused).** Admission now evidences refusals as
+  fully as admissions at the gate: the map's EN-12 row (Unimplemented) is worth re-assessing.
+- **Closed (KISS).** Reviewed against real collatz and blockchain runs. The picture answers which
+  path, which outcome chose each route, where the run was decided, and which capability decided it;
+  that one pointer is the deep-dive entry (`si artifact show` on it). Rejected as complexity without
+  value: a per-node `governed_by` inventory and an artifact table in the PNG — the text answer
+  already carries `artifacts`.
+- **Parked, only if an investigation stalls on it.** Why a capability refused: record the refusing
+  capability's result values for a non-SUCCESS outcome and draw one line at the deciding node. A
+  runtime + trace-schema change — a decision about which values are determinative.
+- **PNG rewired.** `protocol_runtime/runtime/trace_viz.py` now draws `si.execution.explain` over
+  `si.behavior_logic.show` and reads no trace itself: recorded facts red (path, outcomes, failed
+  checks, captured inputs, errors), joined capability grey, undeclared routes dashed, the deciding
+  node double-bordered; refused traces are reported, not drawn. The runtime imports the inspector
+  only there (optional extra `pgc-runtime[render]`); execution never does.
+- **Repos touched.** `snapshot_inspector`, `protocol_transport` (`resolver.py`: data root → trace
+  root), `protocol_runtime` (`scheduler.py`, `evidence.py`, `trace_viz.py`, `cli.py`, `pyproject.toml`, test, docs), `software_governance` (trace schema),
+  `.github` (RUNBOOK count, `expectations.yaml`).
+
+### Original parked idea — 2026-10-01
 
 Not started, not scheduled. Prototype on a feature branch off `dev/17` before any merge.
 
@@ -26,9 +60,17 @@ Not started, not scheduled. Prototype on a feature branch off `dev/17` before an
   operations sharing one route" becomes nineteen; check the regression too. `protocol_runtime` only
   if `trace_viz` is rewired as a client. No change expected to `protocol_compiler`,
   `snapshot_assembler`, `software_governance` or `standards`; confirm by a build.
-- **Settle first.** Traces sit outside the snapshot (`data/traces/`). The query takes a trace identity
-  as input and must refuse a trace it cannot tie to the snapshot it reads (IN-9). Until EV-17 the
-  trace does not name its snapshot, so phase 1 needs an interim tie.
+- **Trace-to-snapshot tie — already present.** The trace's first record (`trace_classification`)
+  carries `snapshot_id`, verified at boot (`protocol_runtime/runtime/evidence.py:120`,
+  `boot.py:104`). EV-17's Violated row concerns `snapshot/evidence/*/evidence.json`, not the trace.
+  Rules for the query:
+  - The trace arrives as a declared input (identity or path), never by scanning `data/traces/` (AI-12).
+  - Require an exact `snapshot_id` match with the snapshot being read; refuse on mismatch or on a
+    trace with no first record (IN-9). Trace addresses (`wf_addr`, `cc_code`) mean nothing elsewhere.
+  - The trace is unsealed, so the tie is *claimed*, not proven; the graph labels it so.
+  - The working `snapshot/` is rebuilt each time, so old traces will mismatch: regenerate the trace,
+    or let the query take the snapshot root as input (e.g. a `pgc_release` copy).
+  - Phase 1 needs no `protocol_runtime` change.
 
 ## CLM governs a hosted model, numbers grounded: Qwen3 8B through Ollama — work/clm · 2026-09-29
 
