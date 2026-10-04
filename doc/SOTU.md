@@ -1,5 +1,36 @@
 # SOTU Handoff
 
+## v5 published; dev/18 open — 2026-10-03
+
+- **Published.** Cycle 17 is published as `v5`. Ten repos carry one commit on `main` and the tag
+  `v5`. `history-17` keeps the full cycle locally.
+  - **Composition:** `pgc_release` @ `9aec833`, sealing snapshot `f8356d9c…`: 8 domains, 515
+    artifacts. Version DOI **10.5281/zenodo.23129879** (concept 22184747).
+  - **Components:** nine version DOIs, 10.5281/zenodo.23129781 through 23129792.
+  - **PyPI:** nine packages at `5.0.0`. A clean `pip install protocol-governed-computing==5.0.0`
+    resolves all nine, and `pgc` reports them. `pgc_install` is pushed at `9c1f9f1`.
+  - **Release record:** `process/notes/release-17.md`; the `v5` entry in `publications.md`.
+- **Verified before publishing.** A clean `regression.sh --all` ran 59 of 59 steps as expected and
+  reproduced `f8356d9c…`. `release.sh --check` passed. No wheel ships declarations.
+- **A finding for the next version.** The SoSyM paper's evaluation found D2. When a step omits an
+  outcome its operation declares, the runtime continues past it (`dispatcher.py:182`), and the trace
+  does not record the step's outcome.
+  - With a corrupted contact-address registry, a failed lookup let a person be accepted.
+  - A static survey finds 14 of 73 operation steps listing fewer outcomes than their operation, and
+    11 act outcomes that no workflow routes, all storage failures in blockchain.
+  - v5 states this as a limit. The fix is deliberately not in v5: a runtime that refuses an unlisted
+    step outcome, a trace that records step outcomes, and later construction checks at both levels.
+  - Evidence is in `~/omnibachi-site/sosym_doc/experiments/` (`omission.sh` case O3,
+    `outcome_survey.py`).
+  - The domain dossiers drafted for these gaps were dropped by the author's decision: domain gaps are
+    test cases, not architecture. They are not in any repo.
+- **Cleanup done.** The editable installs reported stale `3.0.0` metadata. They are reinstalled and
+  report `5.0.0`. `pgc_env_check` passes.
+- **Left for the author.** The remote `dev/17` backup branches are redundant with `history-17`.
+  Delete them if the remotes should carry only `main` and `v5`.
+- **First action next session.** Finish the SoSyM paper. It already cites v5. The supplement deposit
+  and the reference check remain.
+
 ## Paused — everything committed and backed up — dev/17 · 2026-10-03
 
 - **State.** Every repo is clean. `dev/17` now exists on GitHub as a backup in all ten dev repos
