@@ -286,6 +286,8 @@ python ~/protocol-governed-computing/business_domains/blockchain/testbed/wallet/
 python ~/protocol-governed-computing/business_domains/blockchain/testbed/routing_closure/execution_validation.py
 
 python ~/protocol-governed-computing/transformation/testbed/routing_closure/execution_validation.py
+
+python ~/protocol-governed-computing/business_domains/ai_governance/testbed/routing_closure/execution_validation.py
 ```
 
 **`frontmatter_fidelity` reads the assembled snapshot**, so it belongs after Build rather than before
@@ -367,6 +369,7 @@ explains it. The step ids there are the names below.
 | `execution_validation.py` (wallet) | `9/9 criteria hold  (1 not exercised)` — the skip is a write through a consulted binding, which no act is authored to attempt |
 | `execution_validation.py` (routing closure) | `6/6 criteria hold  (2 not exercised)` — each case corrupts one store on its own scratch root; the skips are the unchanged paths, which identity and wallet exercise, and records made before a failure, which nothing authored can touch |
 | `execution_validation.py` (transformation routing closure) | `4/4 criteria hold  (1 not exercised)` — P2 and P3 are dispatched with one observation answering NOT_FOUND at the capability boundary; the skip is unchanged judgements, which e2e and the differential exercise |
+| `execution_validation.py` (ai_governance reclaim closure) | `4/4 criteria hold  (0 not exercised)` — each case provisions a license on its own scratch root; the refused case stands in for the registry's removal, which refuses only a missing key the contract already refuses |
 | `execution_validation.py` (model_response) | `27/27 criteria hold` — CLM CR-1: a model answers only in service, only on what it may read, only in words the rules permit; refusals recorded and announced; a replay agrees on every determinative event |
 | `trace_schema_conformance.py` | `TRACE SCHEMA CONFORMANCE PASSED` — every line of every trace the execution block wrote conforms to `SCHEMA_TRACE_EVENT_V1` |
 

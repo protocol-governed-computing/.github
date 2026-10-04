@@ -228,6 +228,10 @@ steps:
     section: execution
     # routing_closure: an observation that finds nothing ends a phase as rejected; answers and routing generated
     expect: ["4/4 criteria hold\\s+\\(1 not exercised\\)"]
+  - id: ai_governance_reclaim_closure
+    section: execution
+    # cr_02_reclaim_closure: a reclaim the registry refuses ends as still active, license kept
+    expect: ["4/4 criteria hold\\s+\\(0 not exercised\\)"]
   - id: clm_model_response
     section: execution
     expect: ["27/27 criteria hold"]
