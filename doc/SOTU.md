@@ -25,8 +25,10 @@
 - **Correction recorded.** The superseded `WF_RECORD_VERIFICATION_DECISION_V0` is unreachable: it has
   no dispatch entry. SU-8 forbids deleting it, so it keeps its 3 gaps and no `cr_07` was needed.
 - **Gaps found, not closed:**
-  1. Design language: no discharge through a generated act's routing, or through an act reused
-     unchanged. P7 discharge needs topology rows. Queued as **`generated_discharge`**.
+  1. ~~`generated_discharge`~~ **Dropped, by the separation-of-concerns review.** Grounding a
+     discharge against a composition the design does not own would have the design judge it, and
+     whether an ending refuses is a design concept the platform does not seal and need not. The two
+     deferrals (transformation generator, ai_governance reused act) are honest. Root cause: #2.
   2. Design language: no register restates workflow admission, renamed nodes or nested literal
      inputs, and there is no INVARIANT family. Held for v6.
   3. Doctrine: how to pin a platform change already in the working snapshot.
@@ -40,7 +42,15 @@
      64/64.
   6. The runtime proceeds past evaluation targets in `on_result`; none are in use.
   7. ai_governance is not in `construction_acceptance`.
-- **First action next session.** `generated_discharge`.
+- **SoC clean-up, done:** the dispatcher no longer writes `wf_complete` (the scheduler does);
+  GC-15 reads `wf_routing`, which S4 precomputes with S2's `resolve_wf_node_keys`, so there is one
+  resolver; the phase-workflow generator observes the QUERY outcomes through `si.capability.surface`
+  (`emit --snapshot` is now required) rather than holding a copy. `--all` runs 64/64.
+- **v6 queue:**
+  - The design language restates every sealed workflow (#2). This dissolves the deferrals.
+  - One declared CT refusal signal, probably refusal by return; it replaces recognition by name.
+  - A Format column in `interface_fields`, replacing `string (date-time)`.
+- **First action next session.** None scheduled; D1, D2 and the clean-up are closed.
 
 ## v5 published; dev/18 open — 2026-10-03
 

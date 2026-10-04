@@ -87,7 +87,7 @@ if [[ "$MODE" == "--all" ]]; then
            human_block_fidelity evidence_determinism admission_contract_fidelity; do
     step "$c" python "$W/.github/process/$c.py"
   done
-  step emit_rule_sets python "$W/transformation/scripts/emit_rule_sets.py" --check
+  step emit_rule_sets python "$W/transformation/scripts/emit_rule_sets.py" --snapshot "$W/snapshot" --check
   step build_payloads python "$W/transformation/scripts/testbed/build_payloads.py" --check
   step author_transport_contracts env PYTHONPATH="$W/snapshot_inspector" \
     python "$W/snapshot_inspector/scripts/author_transport_contracts.py" --check

@@ -137,7 +137,7 @@ steps:
   - id: test_routing_closure
     section: checks
     # a step answers what its capability declares (CP-13); a reachable node answers what it runs (GC-15)
-    expect: ["11/11 passed"]
+    expect: ["12/12 passed"]
   - id: test_force_and_output_root
     section: checks
     # nothing superseded is in force; a build writes only where it declares (A batch, wave 3 — A11, A10)

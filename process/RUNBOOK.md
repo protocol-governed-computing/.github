@@ -243,7 +243,7 @@ python ~/protocol-governed-computing/.github/process/supersession_agreement.py
 python ~/protocol-governed-computing/.github/process/human_block_fidelity.py
 python ~/protocol-governed-computing/.github/process/evidence_determinism.py
 python ~/protocol-governed-computing/.github/process/admission_contract_fidelity.py
-python ~/protocol-governed-computing/transformation/scripts/emit_rule_sets.py --check
+python ~/protocol-governed-computing/transformation/scripts/emit_rule_sets.py --snapshot ~/protocol-governed-computing/snapshot --check
 python ~/protocol-governed-computing/transformation/scripts/testbed/build_payloads.py --check
 PYTHONPATH=~/protocol-governed-computing/snapshot_inspector \
   python ~/protocol-governed-computing/snapshot_inspector/scripts/author_transport_contracts.py --check
@@ -351,7 +351,7 @@ explains it. The step ids there are the names below.
 | `test_compiler_atoms.py` | `PASSED: 9/9` |
 | `test_molecule_composition.py` | `9/9 passed` — molecules compose, each transform is placed under the constitution its kind and purity name, and an atom run directly is sealed with its purity |
 | `test_keyed_chain_and_molecule_surface.py`, `test_dispatch_routing_fidelity.py` | `4/4`, `5/5 passed` — two places running one contract are not a cycle; the sealed dispatch realizes every declared transition at its own node, and S8 refuses one that does not |
-| `test_routing_closure.py` | `11/11 passed` — a step's surface holds every outcome its capability declares (`3d` CP-13), read from the imported platform surface in a domain build; a node execution can reach answers every outcome of the contract or intent it runs (`4a` GC-15); a superseded workflow and an unreachable node are not checked |
+| `test_routing_closure.py` | `12/12 passed` — the GC-15 check reads the routing the compiler precomputes from S2's resolver, and refuses without it; a step's surface holds every outcome its capability declares (`3d` CP-13), read from the imported platform surface in a domain build; a node execution can reach answers every outcome of the contract or intent it runs (`4a` GC-15); a superseded workflow and an unreachable node are not checked |
 | `test_force_and_output_root.py` | `8/8 passed` — a superseded workflow, intent or invariant that still confers effect fails S8 (`INVARIANT_SUPERSEDED_NOT_IN_FORCE_V0`); a build writes to the root its configuration declares, and two in-force configurations of one repository naming one root are refused |
 | `test_governance_provenance.py` | `4/4 PASS`, and `provenance restored: yes` on the last line — the script mutates governance to make its point and must put it back. `DETERMINISM` same governance → identical closure hash; `ISOLATION` a platform-only change leaves it unchanged; `SENSITIVITY` an imported change moves it; `ENFORCEMENT` a stale domain against changed governance is blocked at assembly. The two that were red when this script was first wired in were never diagnosed as defects and no longer reproduce; if any of the four goes red, read `provenance restored` before rerunning — a run that died mid-mutation leaves governance edited |
 | `test_reference_collatz.py` | `OK` |
@@ -950,7 +950,7 @@ cd $W/transformation
 for s in meta_test e2e_phases_test differential projection_test construction_acceptance; do
   python scripts/testbed/$s.py
 done
-python scripts/emit_rule_sets.py --check          # sealed rule sets match their declaration
+python scripts/emit_rule_sets.py --snapshot ../snapshot --check   # sealed rule sets match their declaration
 
 CR=$W/business_domains/blockchain/cr_dossiers/cr_01_identity
 tc phase meta                                     # rule/mechanism parity
@@ -989,7 +989,7 @@ workflow artifact. Editing the declaration alone leaves `tc phase check` and the
 evaluating different rule sets:
 
 ```bash
-python ~/protocol-governed-computing/transformation/scripts/emit_rule_sets.py           # re-seal
+python ~/protocol-governed-computing/transformation/scripts/emit_rule_sets.py --snapshot ~/protocol-governed-computing/snapshot   # re-seal
 ~/protocol-governed-computing/protocol_compiler/compile_domain.sh ~/protocol-governed-computing/transformation
 PGC_SNAPSHOT_PROFILE=GOVERNANCE_SURFACE_PROFILE_V0 ~/protocol-governed-computing/snapshot_assembler/assemble.sh
 python ~/protocol-governed-computing/transformation/scripts/testbed/build_fixtures.py   # derive
