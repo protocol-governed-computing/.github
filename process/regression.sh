@@ -191,6 +191,9 @@ step blockchain_wallet python "$W/business_domains/blockchain/testbed/wallet/exe
 echo; echo "=== blockchain: routing closure (each case on its own scratch root) ==="
 step blockchain_routing_closure python "$W/business_domains/blockchain/testbed/routing_closure/execution_validation.py"
 
+echo; echo "=== transformation: routing closure (a phase whose observation finds nothing rejects) ==="
+step transformation_routing_closure python "$W/transformation/testbed/routing_closure/execution_validation.py"
+
 echo; echo "=== causal_language_model: model_response ==="
 step clm_model_response python "$W/business_domains/causal_language_model/testbed/model_response/execution_validation.py" \
   --data-root "$W/data/causal_language_model"

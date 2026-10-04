@@ -224,6 +224,10 @@ steps:
     section: execution
     # cr_06_routing_closure: a failed record ends identity's and wallet's acts as rejected
     expect: ["6/6 criteria hold\\s+\\(2 not exercised\\)"]
+  - id: transformation_routing_closure
+    section: execution
+    # routing_closure: an observation that finds nothing ends a phase as rejected; answers and routing generated
+    expect: ["4/4 criteria hold\\s+\\(1 not exercised\\)"]
   - id: clm_model_response
     section: execution
     expect: ["27/27 criteria hold"]
