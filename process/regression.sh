@@ -188,6 +188,9 @@ echo; echo "=== blockchain: wallet ==="
 step blockchain_wallet python "$W/business_domains/blockchain/testbed/wallet/execution_validation.py" \
   --data-root "$W/data/blockchain"
 
+echo; echo "=== blockchain: routing closure (each case on its own scratch root) ==="
+step blockchain_routing_closure python "$W/business_domains/blockchain/testbed/routing_closure/execution_validation.py"
+
 echo; echo "=== causal_language_model: model_response ==="
 step clm_model_response python "$W/business_domains/causal_language_model/testbed/model_response/execution_validation.py" \
   --data-root "$W/data/causal_language_model"

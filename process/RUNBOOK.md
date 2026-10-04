@@ -282,6 +282,8 @@ python ~/protocol-governed-computing/business_domains/book_library_mgmt/testbed/
 python ~/protocol-governed-computing/business_domains/blockchain/testbed/identity/execution_validation.py --data-root ~/protocol-governed-computing/data/blockchain
 
 python ~/protocol-governed-computing/business_domains/blockchain/testbed/wallet/execution_validation.py --data-root ~/protocol-governed-computing/data/blockchain
+
+python ~/protocol-governed-computing/business_domains/blockchain/testbed/routing_closure/execution_validation.py
 ```
 
 **`frontmatter_fidelity` reads the assembled snapshot**, so it belongs after Build rather than before
@@ -361,6 +363,7 @@ explains it. The step ids there are the names below.
 | `execution_validation_cr02.py` (catalog) | `21/21 criteria hold` — CR-2's criteria, and proof the later change broke nothing |
 | `execution_validation.py` (identity) | `15/15 criteria hold (2 not exercised)` — the remaining two are a timed test and the transaction half of the wallet claim, which needs a function that does not exist yet |
 | `execution_validation.py` (wallet) | `9/9 criteria hold  (1 not exercised)` — the skip is a write through a consulted binding, which no act is authored to attempt |
+| `execution_validation.py` (routing closure) | `6/6 criteria hold  (2 not exercised)` — each case corrupts one store on its own scratch root; the skips are the unchanged paths, which identity and wallet exercise, and records made before a failure, which nothing authored can touch |
 | `execution_validation.py` (model_response) | `27/27 criteria hold` — CLM CR-1: a model answers only in service, only on what it may read, only in words the rules permit; refusals recorded and announced; a replay agrees on every determinative event |
 | `trace_schema_conformance.py` | `TRACE SCHEMA CONFORMANCE PASSED` — every line of every trace the execution block wrote conforms to `SCHEMA_TRACE_EVENT_V1` |
 

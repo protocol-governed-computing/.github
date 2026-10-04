@@ -220,6 +220,10 @@ steps:
   - id: blockchain_wallet
     section: execution
     expect: ["9/9 criteria hold\\s+\\(1 not exercised\\)"]
+  - id: blockchain_routing_closure
+    section: execution
+    # cr_06_routing_closure: a failed record ends identity's and wallet's acts as rejected
+    expect: ["6/6 criteria hold\\s+\\(2 not exercised\\)"]
   - id: clm_model_response
     section: execution
     expect: ["27/27 criteria hold"]
