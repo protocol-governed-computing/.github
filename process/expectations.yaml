@@ -1,0 +1,232 @@
+# What a regression run is expected to report — RUNBOOK.md "## Expected", as data.
+#
+# `regression_verdict.py` compares every step `regression.sh` runs against this file. The RUNBOOK
+# explains each row; this file is what is checked. When a result changes on purpose, change it here
+# in the same commit, with the reason. That keeps each result a decision rather than drift.
+#
+# Each step has:
+#   id            — the name `regression.sh` gives the step
+#   section       — checks (run by --all) | execution (run by every mode)
+#   exit          — the exit code expected (default 0)
+#   expect        — regular expressions that must each appear in the step's output. Counts are exact.
+#   red_by_design — set on a step expected to fail, saying why. If it passes, the run fails as an
+#                   UNEXPECTED PASS: a known failure that stops failing is a change nobody decided.
+
+steps:
+
+  # ── checks ───────────────────────────────────────────────────────────────────────────────────
+  - id: governance_closure
+    section: checks
+    expect: ["GOVERNANCE CLOSURE PASSED"]
+  - id: governance_chain_closure
+    section: checks
+    expect: ["GOVERNANCE CHAIN PASSED"]
+  - id: supersession_agreement
+    section: checks
+    expect: ["SUPERSESSION AGREEMENT PASSED — 7 relation\\(s\\)"]
+  - id: human_block_fidelity
+    section: checks
+    expect: ["HUMAN BLOCK FIDELITY PASSED — 504 artifacts"]
+  - id: evidence_determinism
+    section: checks
+    expect: ["EVIDENCE DETERMINISM PASSED"]
+  - id: admission_contract_fidelity
+    section: checks
+    exit: 1
+    # 36 → 34 gates, 31 → 26 findings: a superseded intent is no admission gate (A11), and the five
+    # were all on the superseded WF_RECORD_VERIFICATION_DECISION_V0's gate. 26 → 12: cr_05_identity
+    # stopped the identity acts reading rules from the request, which cleared fourteen. 12 → 11:
+    # cr_05_catalog records the subject callers send, clearing IN_REGISTER_BOOK_V0's `subject`.
+    # 34 → 37 gates: cr_02_hosted_model adds three, each declaring exactly what its act binds.
+    expect: ["ADMISSION CONTRACT FIDELITY FAILED — 11 finding\\(s\\) over 37 gate\\(s\\)"]
+    red_by_design: >-
+      11 deliberate findings — the moment and stream each blockchain act records (cr_05_identity
+      GAP-09), the address path and type, wallet's fields, and one transformation prior
+  - id: emit_rule_sets
+    section: checks
+    expect: ["p7\\s+242 rules", "p8\\s+33 rules"]
+  - id: build_payloads
+    section: checks
+    expect: ["OK\\s+83 payload\\(s\\) agree"]
+  - id: author_transport_contracts
+    section: checks
+    expect: ["OK\\s+38 contract\\(s\\) for 19 operations agree"]
+  - id: frontmatter_fidelity
+    section: checks
+    expect: ["FRONTMATTER FIDELITY PASSED"]
+  - id: meta_test
+    section: checks
+    expect: ["META PASSED"]
+  - id: differential
+    section: checks
+    expect: ["DIFFERENTIAL PASSED — 83 document\\(s\\) across 9 phase\\(s\\)"]
+  - id: e2e_phases_test
+    section: checks
+    expect: ["E2E PASSED — 83 case\\(s\\)"]
+  - id: projection_test
+    section: checks
+    expect: ["PROJECTION PASSED"]
+  - id: construction_acceptance
+    section: checks
+    expect: ["167/167 artifacts reproduced across 5 domain\\(s\\)\\s+\\(0 field difference\\(s\\)\\)"]
+  - id: molecule_design_test
+    section: checks
+    expect: ["5/5 passed"]
+  - id: vector_design_test
+    section: checks
+    # a manifest is generated for an amendment, names every subdomain the domain holds, and an
+    # emitted amendment keeps the descriptions it replaces (cr_01_licensing)
+    expect: ["8/8 passed"]
+  - id: keyed_node_design_test
+    section: checks
+    # a route to a place the composition already has resolves (A batch, wave 2 — B6); a contract
+    # redeclared whole requires only what it now declares (cr_05_identity)
+    expect: ["6/6 passed"]
+  - id: refusal_moment_design_test
+    section: checks
+    expect: ["4/4 passed"]
+  - id: vector_value_design_test
+    section: checks
+    expect: ["3/3 passed"]
+  - id: withdrawal_design_test
+    section: checks
+    # an amendment declares what it takes away (cr_05_identity)
+    expect: ["5/5 passed"]
+  - id: entrance_gate_design_test
+    section: checks
+    # an entrance supplies what its gate requires (B25)
+    expect: ["4/4 passed"]
+  - id: implementation_closure
+    section: checks
+    expect: ["IMPLEMENTATION CLOSURE PASSED — 36 transform\\(s\\)"]
+  - id: test_inspector
+    section: checks
+    # si.behavior_logic.list names each workflow's nodes by key (B6); si.execution.explain adds 29
+    expect: ["PASSED: 151/151"]
+  - id: domain_authoring
+    section: checks
+    expect: ["PASSED: 8/8"]
+  - id: test_indexes
+    section: checks
+    expect: ["PASSED: 13/13"]
+  - id: test_transform_conformance_evidence
+    section: checks
+    expect: ["PASSED: 36/36"]
+  - id: test_compiler_atoms
+    section: checks
+    expect: ["PASSED: 9/9"]
+  - id: test_molecule_composition
+    section: checks
+    # 9: an atom a contract runs directly is sealed with its declared purity (A batch, wave 1).
+    expect: ["9/9 passed"]
+  - id: test_transform_conformance
+    section: checks
+    expect: ["10/10 passed"]
+  - id: test_vector_build
+    section: checks
+    expect: ["4/4 passed"]
+  - id: test_platform_vectors
+    section: checks
+    expect: ["3/3 passed"]
+  - id: test_keyed_chain_and_molecule_surface
+    section: checks
+    expect: ["4/4 passed"]
+  - id: test_dispatch_routing_fidelity
+    section: checks
+    expect: ["5/5 passed"]
+  - id: test_force_and_output_root
+    section: checks
+    # nothing superseded is in force; a build writes only where it declares (A batch, wave 3 — A11, A10)
+    expect: ["8/8 passed"]
+  - id: test_governance_provenance
+    section: checks
+    # The script mutates governance to make its point; a run that died mid-mutation leaves it edited.
+    expect: ["PASS\\s+DETERMINISM", "PASS\\s+ISOLATION", "PASS\\s+SENSITIVITY", "PASS\\s+ENFORCEMENT",
+             "provenance restored: yes"]
+  # unittest suites: `^OK$` and not `OK (skipped=…)` — a suite that skipped everything is not a pass.
+  - id: test_reference_collatz
+    section: checks
+    expect: ["Ran 5 tests", "(?m)^OK$"]
+  - id: test_warm_boot
+    section: checks
+    # a profile changed after sealing, and a manifest not covering its profile, are refused (A1)
+    expect: ["Ran 8 tests", "(?m)^OK$"]
+  - id: test_resident_boot
+    section: checks
+    # a process verifies a snapshot once; a rewritten manifest is verified afresh, one that no
+    # longer verifies is refused, and a run writes its evidence and no picture
+    expect: ["Ran 4 tests", "(?m)^OK$"]
+  - id: test_federation
+    section: checks
+    expect: ["Ran 11 tests", "(?m)^OK$"]
+  - id: test_capability_concurrency
+    section: checks
+    expect: ["Ran 3 tests", "(?m)^OK$"]
+  - id: test_molecule_execution
+    section: checks
+    expect: ["Ran 11 tests", "(?m)^OK$"]
+  - id: test_node_keyed_routing
+    section: checks
+    # 4: the trace names each place the run passed through (A9).
+    expect: ["Ran 4 tests", "(?m)^OK$"]
+  - id: test_examine
+    section: checks
+    # the examiner reads SCHEMA_TRACE_EVENT_V1, and every trace the run wrote (B21)
+    expect: ["Ran 5 tests", "(?m)^OK$"]
+  - id: test_trace_path
+    section: checks
+    expect: ["Ran 7 tests", "(?m)^OK$"]
+  - id: test_transform_conformance_runner
+    section: checks
+    expect: ["Ran 10 tests", "(?m)^OK$"]
+  - id: si_snapshot_validate
+    section: checks
+    # Non-advisory checks all pass. Two advisory checks are red and exit 0 by design; their counts
+    # are pinned, so a count that moves either way is reported.
+    expect: ["valid\\s+True", "failed_checks: —",
+             "check\\s+republished_copies_agree\\s+examined\\s+\\d+\\s+violation_count\\s+15\\b",
+             "check\\s+bound_paths_declared_as_stores\\s+examined\\s+\\d+\\s+violation_count\\s+1\\b"]
+    red_by_design: >-
+      advisory — 15 capability_side_effects artifacts published twice and diverging;
+      one ai_governance binding to a path no store declares
+  - id: pgc_env_check
+    section: checks
+    expect: ["PGC ENVIRONMENT CHECK PASSED"]
+  - id: test_regression_verdict
+    section: checks
+    expect: ["8/8 passed"]
+
+  # ── execution ────────────────────────────────────────────────────────────────────────────────
+  - id: collatz
+    section: execution
+    expect: ["Status:\\s+SUCCESS", "all_terminate: true"]
+  - id: govern_agent_action
+    section: execution
+    expect: ["Status:\\s+SUCCESS"]
+  - id: provision_licensing
+    section: execution
+    expect: ["Status:\\s+SUCCESS"]
+  - id: catalog_cr01
+    section: execution
+    expect: ["23/23 criteria hold"]
+  - id: catalog_cr02
+    section: execution
+    # cr_05_catalog: the catalog holds every rule it applies and checks what it records
+    expect: ["27/27 criteria hold"]
+  - id: blockchain_identity
+    section: execution
+    # cr_05_identity: identity holds every rule it applies, through the entrance and directly
+    expect: ["22/22 criteria hold\\s+\\(3 not exercised\\)"]
+  - id: blockchain_wallet
+    section: execution
+    expect: ["9/9 criteria hold\\s+\\(1 not exercised\\)"]
+  - id: clm_model_response
+    section: execution
+    expect: ["27/27 criteria hold"]
+  - id: clm_hosted_model
+    section: execution
+    # Qwen3 8B's words are not determined, so the regression leaves it out; --qwen exercises it.
+    expect: ["15/15 criteria hold  \\(1 not exercised\\)"]
+  - id: trace_schema_conformance
+    section: execution
+    expect: ["TRACE SCHEMA CONFORMANCE PASSED — \\d+ trace\\(s\\)"]
