@@ -26,7 +26,7 @@ steps:
     expect: ["SUPERSESSION AGREEMENT PASSED — 7 relation\\(s\\)"]
   - id: human_block_fidelity
     section: checks
-    expect: ["HUMAN BLOCK FIDELITY PASSED — 505 artifacts"]
+    expect: ["HUMAN BLOCK FIDELITY PASSED — 506 artifacts"]
   - id: evidence_determinism
     section: checks
     expect: ["EVIDENCE DETERMINISM PASSED"]
@@ -68,7 +68,7 @@ steps:
     expect: ["PROJECTION PASSED"]
   - id: construction_acceptance
     section: checks
-    expect: ["167/167 artifacts reproduced across 5 domain\\(s\\)\\s+\\(0 field difference\\(s\\)\\)"]
+    expect: ["168/168 artifacts reproduced across 5 domain\\(s\\)\\s+\\(0 field difference\\(s\\)\\)"]
   - id: molecule_design_test
     section: checks
     expect: ["5/5 passed"]

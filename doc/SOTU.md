@@ -60,8 +60,15 @@
        identity.
      - `routing_closure/delivery.md` still says V1 was restated; it is delivered and not edited, and
        this entry supersedes it.
-  2. **In-place semantic amendments (SU-11): queued for v6 as a policy decision.** This covers
-     `ROUTING_COMPLETE_V0`, the constitutions and domain EXTEND.
+  2. **In-place semantic amendments (SU-11): the gate on cutting v6.** This is not a policy
+     question. `4e` §7 and SU-11 already rule that a change of declared semantics is a new
+     identity. Every change this cycle amended meaning in place, and v6 would be cited with
+     identities whose meaning differs from v5's. The program:
+     (a) a transformation dossier, in which an EXTEND declares whether it changes meaning; a change
+         of meaning becomes `_V(n+1)`, supersedes the old identity, and has its references rewritten
+         by construction;
+     (b) a determination of which dev/18 changes alter meaning, re-cut through the pipeline;
+     (c) cut v6.
   3. **Double ERROR (done).** `RecordedRefusal` (in `evidence.py`) is the base of
      `UnroutedOutcomeError`, `UnlistedStepOutcomeError` and `CapabilityFaultError`.
      `api.run_workflow` does not record those again. `test_step_outcome` asserts exactly one ERROR
@@ -70,7 +77,44 @@
      from obligations the standard fixed first.
   - `--all` runs 64/64 as expected. The surface map is regenerated: V2, and the GC-15 invariant it
     had missed.
-- **First action next session.** None scheduled. The v6 queue is above.
+- **Committed and pushed:** V2 trace schema and the single-record refusal, to `dev/18`, with
+  standards on `work/v1`.
+- **SU-11 diagnosis (step a).** Already present: P7 REPLACE plus `supersedes`, construction marking
+  the predecessor, and the compiler's `ASSERT_SUPERSEDED_NOT_REFERENCED_V0`. Missing:
+  - **M1.** Nothing tells an amendment from a semantic change. Fix: construction compares an
+    EXTEND's governed facts with the existing artifact, and a release gate diffs against the last
+    cited composition.
+  - **M2.** A re-point requires restating the whole referrer. Fix: a P7 `reference_repoints`
+    register, with construction rewriting the reference in place.
+  - **M3.** The design does not state the blast radius. Fix: a rule checks every live referrer
+    against `si.artifact.refs`.
+  - **M4.** External callers move by hand. Fix: list them in the delivery.
+  - **M5.** No declared documentation-key vocabulary.
+  - Map correction: ID-5 is Partial, not Demonstrated.
+- **Closure criteria for the D1/D2 journey.**
+  - **Must:**
+    - M1–M5;
+    - the SU-11 re-cut of dev/18's semantic changes;
+    - the map corrected (ID-5, SU-11);
+    - Changes 3 and 4 settled on `work/v1`, with their realization recorded in `revisions.md`;
+    - the SoSyM evidence re-run on v6 (`omission.sh` O3, `outcome_survey.py`, outputs kept);
+    - v6 cut: `--all`, `release.sh --check`, the `pgc_release` DOI, PyPI 6.0.0, `release-18` notes.
+  - **Should:**
+    - RT-6: a CT-IR path resolving to None must refuse;
+    - evaluation targets in `on_result`: refuse at compile until they are executed;
+    - a SoSyM reviewer-response note.
+  - **Not needed to close:** the CT refusal signal, the Format column, design-language
+    completeness, and ai_governance in construction acceptance.
+  - **Order:** M5 → M1 → M2/M3 → RT-6 and evaluation targets → re-cut → map and standard →
+    evidence → v6 → note.
+- **M5 delivered:** `software_governance/dossiers/identity_semantics/` (P0–P8, Gates 0, 1 and 2),
+  emitting `artifact::VOCAB_DECLARATION_REPRESENTATION_V0`. Its groups are `documentation` (9 keys)
+  and `unordered` (12 keys).
+  - It found a renderer defect, now fixed: a multi-group vocabulary was sealed as one group, and the
+    measure still read 100%.
+  - `--all` runs 64/64, with 506 artifacts and construction acceptance at 168/168.
+- **First action next session.** Dossier B (`transformation/dossiers/semantic_change/`, M1–M3) at
+  P0.
 
 ## v5 published; dev/18 open — 2026-10-03
 
