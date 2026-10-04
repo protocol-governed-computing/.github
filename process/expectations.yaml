@@ -182,8 +182,9 @@ steps:
     expect: ["Ran 7 tests", "(?m)^OK$"]
   - id: test_step_outcome
     section: checks
-    # an unlisted step outcome refuses (EX-18); each step records its outcome and continuation (EV-19)
-    expect: ["3/3 passed"]
+    # an unlisted step outcome refuses (EX-18); each step records its outcome and continuation (EV-19);
+    # a fault refuses rather than routing as VIOLATION, and an atom's own refusal still routes (3a §4.1)
+    expect: ["8/8 passed"]
   - id: test_transform_conformance_runner
     section: checks
     expect: ["Ran 10 tests", "(?m)^OK$"]

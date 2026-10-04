@@ -1,5 +1,47 @@
 # SOTU Handoff
 
+## D1 and D2 closed in every layer; 8 gaps found — dev/18 · 2026-10-04
+
+- **SoSyM submitted.** On the site, no DOI. The abstract was rewritten from the expert review.
+- **Standards (`work/v1`).** Changes 3 and 4 add EX-18, CP-13 and EV-19 (nested composition) and
+  GC-15 (construction refuses an unrouted reachable outcome). All four are core. The realization map
+  now records all four as **Demonstrated**.
+- **Domains, one CR each, all committed:**
+  - blockchain `cr_06_routing_closure`: 4 CCs and 4 WFs answer and route BACKEND_ERROR.
+  - transformation `dossiers/routing_closure`: the generator (`design/emit.py`) owns the query
+    answers and the phase routing. NOT_FOUND ends a phase as EXIT_REJECTED.
+  - ai_governance `cr_02_reclaim_closure`: the reclaim's DEREGISTER answers VIOLATION, which routes
+    to EXIT_ACTIVE. The defect was latent, because the removal is the last step. The renderer gained
+    `string (date-time)` formats and carry-forward of `extensions.description`.
+- **Platform `software_governance/dossiers/routing_closure`, committed:**
+  - CP-13: `ROUTING_COMPLETE` checks a step against its capability's declared outcomes, reading the
+    imported platform surface in a domain build.
+  - GC-15: new `workflow::INVARIANT_WF_ROUTING_CLOSED_V0`. It skips workflows not in force (SU-7).
+  - EX-18: the dispatcher refuses an unlisted step outcome (`UnlistedStepOutcomeError`).
+  - EV-19: `CC_STEP` requires `outcome` and `continuation`.
+  - The dossier is pinned to v5 `f8356d9c`, because the working snapshot already held the change.
+- **Regression.** `--all` runs 64/64 as expected. New suites: `test_routing_closure` (11),
+  `test_step_outcome` (3), and the three validations (6/6, 4/4, 4/4). The artifact count is 505.
+- **Correction recorded.** The superseded `WF_RECORD_VERIFICATION_DECISION_V0` is unreachable: it has
+  no dispatch entry. SU-8 forbids deleting it, so it keeps its 3 gaps and no `cr_07` was needed.
+- **Gaps found, not closed:**
+  1. Design language: no discharge through a generated act's routing, or through an act reused
+     unchanged. P7 discharge needs topology rows. Queued as **`generated_discharge`**.
+  2. Design language: no register restates workflow admission, renamed nodes or nested literal
+     inputs, and there is no INVARIANT family. Held for v6.
+  3. Doctrine: how to pin a platform change already in the working snapshot.
+  4. The P6 checker admitted a malformed one-cell row.
+  5. ~~Runtime: a fault is routed as a refusal~~ **Closed, no dossier.** A `CTFault` (module or
+     IR failure, atom bug, None return, missing output), a `CSExecutionError`, or a CS result with
+     no status now refuses (`CapabilityFaultError` plus an ERROR). Only an atom's own
+     `CTExecutionError` routes, and it is recognised by name, because 14 atoms define their own
+     class and 4 use a vendored one; one canonical class is v6. Found along the way: a CT-IR path
+     that resolves to nothing yields None (RT-6, still open). `test_step_outcome` 8/8; `--all`
+     64/64.
+  6. The runtime proceeds past evaluation targets in `on_result`; none are in use.
+  7. ai_governance is not in `construction_acceptance`.
+- **First action next session.** `generated_discharge`.
+
 ## v5 published; dev/18 open — 2026-10-03
 
 - **Published.** Cycle 17 is published as `v5`. Ten repos carry one commit on `main` and the tag
