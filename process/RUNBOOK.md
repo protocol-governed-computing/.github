@@ -359,7 +359,7 @@ explains it. The step ids there are the names below.
 | `test_federation.py`, `test_capability_concurrency.py`, `test_molecule_execution.py` | `OK` (11, 3 and 11 tests) — federated roles; capabilities under concurrent writers; molecules run, recorded and replayed |
 | `test_node_keyed_routing.py`, `test_trace_path.py` | `OK` (4 and 4 tests) — routing, endings and announcements by node, and the trace naming each place; the path drawn over a workflow's graph is the one the trace records |
 | `test_step_outcome.py` | `8/8 passed` — a step outcome its contract declares no continuation for refuses, writes an ERROR and runs nothing after it (`3a` EX-18); every step record carries its outcome and the continuation it selected, an admission's being `route` (`3e` EV-19). A fault refuses the run with an ERROR and is never routed: a transform that will not load, an atom that breaks, a side effect that raises or states no outcome (`3a` §4.1, `3c` §7). An atom's own refusal still routes as VIOLATION. Needs an assembled snapshot |
-| `test_examine.py` | `OK` (5 tests) — `runtime examine` reads `SCHEMA_TRACE_EVENT_V1`, refuses any other format, tells a completed run (refusals included) from a structural failure, and reads every trace under `data/` |
+| `test_examine.py` | `OK` (5 tests) — `runtime examine` reads `SCHEMA_TRACE_EVENT_V2`, refuses any other format (a v5 trace, written to V1, included), tells a completed run (refusals included) from a structural failure, and reads every trace under `data/` |
 | `pgc_env_check.py` | `PGC ENVIRONMENT CHECK PASSED` — no RI-0 dependency reachable |
 | `test_regression_verdict.py` | `8/8 passed` — the verdict fails a run for every way it can differ from this table, including an unexpected pass and a suite that skipped everything |
 | collatz | `SUCCESS`, `all_terminate: true` |
@@ -373,7 +373,7 @@ explains it. The step ids there are the names below.
 | `execution_validation.py` (transformation routing closure) | `4/4 criteria hold  (1 not exercised)` — P2 and P3 are dispatched with one observation answering NOT_FOUND at the capability boundary; the skip is unchanged judgements, which e2e and the differential exercise |
 | `execution_validation.py` (ai_governance reclaim closure) | `4/4 criteria hold  (0 not exercised)` — each case provisions a license on its own scratch root; the refused case stands in for the registry's removal, which refuses only a missing key the contract already refuses |
 | `execution_validation.py` (model_response) | `27/27 criteria hold` — CLM CR-1: a model answers only in service, only on what it may read, only in words the rules permit; refusals recorded and announced; a replay agrees on every determinative event |
-| `trace_schema_conformance.py` | `TRACE SCHEMA CONFORMANCE PASSED` — every line of every trace the execution block wrote conforms to `SCHEMA_TRACE_EVENT_V1` |
+| `trace_schema_conformance.py` | `TRACE SCHEMA CONFORMANCE PASSED` — every line of every trace the execution block wrote conforms to `SCHEMA_TRACE_EVENT_V2` |
 
 ### Choosing a store operation
 

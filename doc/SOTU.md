@@ -50,7 +50,27 @@
   - The design language restates every sealed workflow (#2). This dissolves the deferrals.
   - One declared CT refusal signal, probably refusal by return; it replaces recognition by name.
   - A Format column in `interface_fields`, replacing `string (date-time)`.
-- **First action next session.** None scheduled; D1, D2 and the clean-up are closed.
+- **Committed and pushed** to `dev/18` (standards to `work/v1`) in every repo touched.
+- **Process-check concerns, resolved:**
+  1. **Trace schema versioned (done).** `SCHEMA_TRACE_EVENT_V1` is restored to exactly what v5
+     published. `SCHEMA_TRACE_EVENT_V2` (`trace_schema_version: v2`) requires `outcome` and
+     `continuation` on `CC_STEP`, and the runtime writes v2.
+     - The examiner and `trace_schema_conformance` read v2; a v5 trace is refused by name.
+     - The trace constitution now names V2 and states that a schema requiring more is a new
+       identity.
+     - `routing_closure/delivery.md` still says V1 was restated; it is delivered and not edited, and
+       this entry supersedes it.
+  2. **In-place semantic amendments (SU-11): queued for v6 as a policy decision.** This covers
+     `ROUTING_COMPLETE_V0`, the constitutions and domain EXTEND.
+  3. **Double ERROR (done).** `RecordedRefusal` (in `evidence.py`) is the base of
+     `UnroutedOutcomeError`, `UnlistedStepOutcomeError` and `CapabilityFaultError`.
+     `api.run_workflow` does not record those again. `test_step_outcome` asserts exactly one ERROR
+     per refusal.
+  4. **Process order: noted.** The platform dossier was written after the code; its criteria came
+     from obligations the standard fixed first.
+  - `--all` runs 64/64 as expected. The surface map is regenerated: V2, and the GC-15 invariant it
+    had missed.
+- **First action next session.** None scheduled. The v6 queue is above.
 
 ## v5 published; dev/18 open — 2026-10-03
 

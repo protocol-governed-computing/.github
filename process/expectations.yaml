@@ -175,7 +175,7 @@ steps:
     expect: ["Ran 4 tests", "(?m)^OK$"]
   - id: test_examine
     section: checks
-    # the examiner reads SCHEMA_TRACE_EVENT_V1, and every trace the run wrote (B21)
+    # the examiner reads SCHEMA_TRACE_EVENT_V2, and every trace the run wrote (B21)
     expect: ["Ran 5 tests", "(?m)^OK$"]
   - id: test_trace_path
     section: checks
