@@ -26,7 +26,7 @@ steps:
     expect: ["SUPERSESSION AGREEMENT PASSED — 7 relation\\(s\\)"]
   - id: human_block_fidelity
     section: checks
-    expect: ["HUMAN BLOCK FIDELITY PASSED — 504 artifacts"]
+    expect: ["HUMAN BLOCK FIDELITY PASSED — 505 artifacts"]
   - id: evidence_determinism
     section: checks
     expect: ["EVIDENCE DETERMINISM PASSED"]
@@ -134,6 +134,10 @@ steps:
   - id: test_dispatch_routing_fidelity
     section: checks
     expect: ["5/5 passed"]
+  - id: test_routing_closure
+    section: checks
+    # a step answers what its capability declares (CP-13); a reachable node answers what it runs (GC-15)
+    expect: ["11/11 passed"]
   - id: test_force_and_output_root
     section: checks
     # nothing superseded is in force; a build writes only where it declares (A batch, wave 3 — A11, A10)
@@ -176,6 +180,10 @@ steps:
   - id: test_trace_path
     section: checks
     expect: ["Ran 7 tests", "(?m)^OK$"]
+  - id: test_step_outcome
+    section: checks
+    # an unlisted step outcome refuses (EX-18); each step records its outcome and continuation (EV-19)
+    expect: ["3/3 passed"]
   - id: test_transform_conformance_runner
     section: checks
     expect: ["Ran 10 tests", "(?m)^OK$"]

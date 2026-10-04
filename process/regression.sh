@@ -117,6 +117,7 @@ if [[ "$MODE" == "--all" ]]; then
            "$W/protocol_compiler/scripts/testbed/test_platform_vectors.py" \
            "$W/protocol_compiler/scripts/testbed/test_keyed_chain_and_molecule_surface.py" \
            "$W/protocol_compiler/scripts/testbed/test_dispatch_routing_fidelity.py" \
+           "$W/protocol_compiler/scripts/testbed/test_routing_closure.py" \
            "$W/protocol_compiler/scripts/testbed/test_force_and_output_root.py" \
            "$W/protocol_compiler/scripts/test_governance_provenance.py" \
            "$W/protocol_runtime/testbed/pgc/test_reference_collatz.py" \
@@ -128,6 +129,7 @@ if [[ "$MODE" == "--all" ]]; then
            "$W/protocol_runtime/testbed/pgc/test_node_keyed_routing.py" \
            "$W/protocol_runtime/testbed/pgc/test_examine.py" \
            "$W/protocol_runtime/testbed/pgc/test_trace_path.py" \
+           "$W/protocol_runtime/testbed/pgc/test_step_outcome.py" \
            "$W/protocol_runtime/testbed/pgc/test_transform_conformance_runner.py"; do
     step "$(basename "$t" .py)" python "$t"
   done
