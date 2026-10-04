@@ -155,3 +155,40 @@ more conformance than `v3`, supersedes no specification revision, and stands in 
 to the standard's own revision identity. The published version `4.0.0` names this publication and is
 not a semantic-versioning claim about compatibility.
 
+
+## `v5` — the identity covers what it claims, and evidence explains a run
+
+**Supersedes `v4`.** The same ten repositories and the same governance surface, now composing eight
+domains and 500 protocol artifacts under `GOVERNANCE_SURFACE_PROFILE_V0`. The sealed composition is
+snapshot `f8356d9c8938aea16ab7850d7bda964d8d16c42c64e5db9056d5fe58040ec1d0`.
+
+**Published at composition ordinal 17.** `v4` was published at ordinal 16.
+
+**Why it was issued.** Three changes alter what a composition determines or what its acceptance
+admits. Any one of them would have needed a new identity.
+
+*The identity covers the profile's content.* The manifest carries `profile_sha256`, a digest of the
+claimed profile's declaration, and `identity_covers` names it. Acceptance recomputes the digest, so a
+profile changed after sealing is refused. Before, the identity covered only the profile's name.
+**A snapshot sealed before `v5` carries no `profile_sha256` and is refused by `v5`'s acceptance.**
+That includes the `v4` snapshot. `v4`'s own tooling still verifies it.
+
+*Presence is not force.* A superseded artifact no longer confers effect. One predicate, declared by
+`INVARIANT_SUPERSEDED_NOT_IN_FORCE_V0`, is asked at selection, assertion, dispatch and admission.
+Before, two superseded workflows were dispatchable, and one validation ran one of them.
+
+*Domains changed what they decide.* Blockchain identity and the book catalog hold their rules as
+literals instead of admitting them from the request. A validator's report now refuses. ai_governance
+proves its three checks by declared cases. The language-model domain governs a hosted model.
+
+**Evidence explains a run.** The trace names each node, records every admission check, and conforms
+to a trace schema that describes it. The inspector answers `si.execution.explain`, which attributes
+each recorded decision to the sealed model.
+
+**Why `v4` could not be reused.** `4.0.0` is published and immutable. The material also differs in
+what it determines and what it admits, not only in how it is packaged.
+
+**What it does not assert.** The identity counts publications and nothing else. `v5` does not claim
+more conformance than `v4`, supersedes no specification revision, and stands in no declared relation
+to the standard's own revision identity. The published version `5.0.0` names this publication and is
+not a semantic-versioning claim about compatibility.
