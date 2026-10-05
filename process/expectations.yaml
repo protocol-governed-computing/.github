@@ -23,10 +23,10 @@ steps:
     expect: ["GOVERNANCE CHAIN PASSED"]
   - id: supersession_agreement
     section: checks
-    expect: ["SUPERSESSION AGREEMENT PASSED — 7 relation\\(s\\)"]
+    expect: ["SUPERSESSION AGREEMENT PASSED — 8 relation\\(s\\)"]
   - id: human_block_fidelity
     section: checks
-    expect: ["HUMAN BLOCK FIDELITY PASSED — 506 artifacts"]
+    expect: ["HUMAN BLOCK FIDELITY PASSED — 507 artifacts"]
   - id: evidence_determinism
     section: checks
     expect: ["EVIDENCE DETERMINISM PASSED"]
@@ -68,7 +68,7 @@ steps:
     expect: ["PROJECTION PASSED"]
   - id: construction_acceptance
     section: checks
-    expect: ["168/168 artifacts reproduced across 5 domain\\(s\\)\\s+\\(0 field difference\\(s\\)\\)"]
+    expect: ["169/169 artifacts reproduced across 5 domain\\(s\\)\\s+\\(0 field difference\\(s\\)\\)"]
   - id: molecule_design_test
     section: checks
     expect: ["5/5 passed"]
@@ -138,6 +138,10 @@ steps:
     section: checks
     # a step answers what its capability declares (CP-13); a reachable node answers what it runs (GC-15)
     expect: ["12/12 passed"]
+  - id: test_reference_semantics
+    section: checks
+    # one declaration says what a reference is; the record and both reference checks read it
+    expect: ["14/14 passed"]
   - id: test_force_and_output_root
     section: checks
     # nothing superseded is in force; a build writes only where it declares (A batch, wave 3 — A11, A10)

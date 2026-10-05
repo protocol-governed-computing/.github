@@ -1,5 +1,72 @@
 # SOTU Handoff
 
+## Reckoning: the remaining list is frozen; the goal is a coherent dev/18, not v6 — dev/18 · 2026-10-04
+
+- **Goal changed.** No v6 cut is planned. The goal is a dev/18 that is coherent and ready to merge.
+  Publication waits; the SoSyM review sets no pace. The v6 cut, the `pgc_release` DOI, PyPI 6.0.0
+  and the SoSyM note leave the closure criteria.
+- **Why the reckoning.** Four CRs became six, then a seventh. The M-series was planned from the
+  standard's obligation list, one step ahead, not from a design of the whole system. Dossier A
+  (M5) declared what carries no meaning without asking what M1 and M2 would need from it. Each gate
+  reviews one dossier, so a gap between dossiers passes every gate.
+- **Structural cause.** `tc construction emit --root` writes one domain. A concept that spans the
+  platform and transformation always costs two dossiers.
+- **Dossier B paused after P1** (`transformation/dossiers/semantic_change/`). P2 grounding found:
+  - The platform's declaration does not name the keys that hold references, so M1 would read a
+    re-point as a change of meaning. Nor does it state that explanation is exempt only as text.
+    Both go into **A2**.
+  - M1 makes `withdrawn_facts` unsatisfiable: a withdrawal changes meaning. B retires the register,
+    and the narrowing check folds into the M1 comparison. Four P7 designs use it today: blockchain
+    `cr_05` (39), book_library_mgmt `cr_05` (36) and its fixture copy, CLM `cr_02` (1). They go to
+    the re-cut.
+  - `tc construction check` without `--snapshot` admits an amendment it never compared. B refuses
+    that.
+  - B's P0/P1 still name `artifact` MODIFIED. They are rewritten to name it ADJACENT before B
+    resumes.
+- **The frozen list.** Anything new is parked on dev/18 unless it blocks this list.
+  1. **A2**, `software_governance/dossiers/reference_semantics/`: `VOCAB_DECLARATION_REPRESENTATION_V1`
+     supersedes V0. It adds the reference-key group and the text-only rule. This is the last
+     platform dossier for this concern.
+  2. **B**: M1–M3, retiring `withdrawn_facts`, and refusing a design with an amendment when no
+     snapshot is passed. Construction reads V1 by its exact identity and never searches for it.
+  3. RT-6 and evaluation targets.
+  4. The SU-11 re-cut of dev/18's semantic changes.
+  5. The map and the standard, including the publication rule below.
+  6. **Cleanup**, then regression.
+  7. The SoSyM evidence re-run on dev/18 (`omission.sh` O3, `outcome_survey.py`), outputs kept.
+  8. dev/18 merge-ready: `--all` green.
+- **Cleanup rules.** These keep the cleanup itself conformant.
+  - Delete only identities that were never published: in the working snapshot, absent from
+    `pgc_release/snapshot` (v5), and superseded during dev/18. VOCAB V0 is one. The list comes from
+    a diff of the two snapshots, not from memory.
+  - Everything in v5 stays, for example `SCHEMA_TRACE_EVENT_V1` (SU-8).
+  - Clean up before any merge to `main`. A version on `main` is cited.
+  - The standard has to permit it first. On `work/v1`, add that publication is the boundary of
+    identity, and that a version never published may be withdrawn before release. Record it in
+    `revisions.md`.
+- **A2 at P0, admissible, awaiting Gate 0** (`software_governance/dossiers/reference_semantics/`,
+  pinned to `c55dbfd7`). Grounding found that the platform decides what a reference is three ways.
+  - **S1's record of references** (`s1_extract._extract_references`) reads a fixed list of nine keys.
+    `si.artifact.refs` reports `CONSTITUTION_ASSERT_V0` referred to by 1 artifact, although 138 name
+    it in `enforced_by`, and `AC_SEED_AUTHOR_V0` by 0 of 39 (`actor_context`).
+  - **`ASSERT_SUPERSEDED_NOT_REFERENCED_V0`** walks every FQDN-shaped value.
+  - **Construction** has no notion of a reference.
+  - A2 therefore declares the reference keys in VOCAB V1, and has S1 and the superseded check read
+    them. A full name in an undeclared key is refused. Short-code references (workflow `code` and
+    `start_node`) stay out of scope.
+  - M3 depends on this: it reads `si.artifact.refs`.
+- **A2 delivered** (`software_governance/dossiers/reference_semantics/delivery.md`).
+  - VOCAB V1 (73/73) supersedes V0. `bindings` is keyed but not `full_name_required`: admission
+    and test cases key `bindings` by short code or field name. A short-code RB binding key is no
+    longer refused; parked with the other short-code references.
+  - Compiler: `compiler/atoms/representation.py`; S1 records from the declaration and refuses an
+    undeclared full name (`E105_UNDECLARED_REFERENCE`); the FQDN-only and superseded handlers read it.
+  - Renderer: `version` comes from the identity's `_V<n>`. book_library `cr_05` re-emitted; two
+    `_V1` artifacts now say `v1`.
+  - `test_reference_semantics` 14/14; `test_vector_build` expects the dangling-target refusal.
+  - `--all` 65/65 as expected: 507 artifacts, 8 supersession relations, acceptance 169/169.
+- **First action next session.** Dossier B: rewrite P0/P1 with `artifact` ADJACENT, then P2.
+
 ## D1 and D2 closed in every layer; 8 gaps found — dev/18 · 2026-10-04
 
 - **SoSyM submitted.** On the site, no DOI. The abstract was rewritten from the expert review.
