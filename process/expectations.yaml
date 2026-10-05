@@ -23,10 +23,10 @@ steps:
     expect: ["GOVERNANCE CHAIN PASSED"]
   - id: supersession_agreement
     section: checks
-    expect: ["SUPERSESSION AGREEMENT PASSED — 8 relation\\(s\\)"]
+    expect: ["SUPERSESSION AGREEMENT PASSED — 9 relation\\(s\\)"]
   - id: human_block_fidelity
     section: checks
-    expect: ["HUMAN BLOCK FIDELITY PASSED — 507 artifacts"]
+    expect: ["HUMAN BLOCK FIDELITY PASSED — 508 artifacts"]
   - id: evidence_determinism
     section: checks
     expect: ["EVIDENCE DETERMINISM PASSED"]
@@ -88,10 +88,10 @@ steps:
   - id: vector_value_design_test
     section: checks
     expect: ["3/3 passed"]
-  - id: withdrawal_design_test
+  - id: semantic_change_design_test
     section: checks
-    # an amendment declares what it takes away (cr_05_identity)
-    expect: ["5/5 passed"]
+    # a change of meaning is a new identity; a replacement accounts for its reach (semantic_change)
+    expect: ["17/17 passed"]
   - id: entrance_gate_design_test
     section: checks
     # an entrance supplies what its gate requires (B25)
@@ -102,7 +102,7 @@ steps:
   - id: test_inspector
     section: checks
     # si.behavior_logic.list names each workflow's nodes by key (B6); si.execution.explain adds 29
-    expect: ["PASSED: 151/151"]
+    expect: ["PASSED: 152/152"]
   - id: domain_authoring
     section: checks
     expect: ["PASSED: 8/8"]

@@ -537,10 +537,9 @@ What carries the change instead:
 
 ```bash
 tc construction check --snapshot ~/protocol-governed-computing/snapshot $D
-#   AMENDMENT NARROWS lists facts that exist now and the design does not state. For an amendment
-#   some narrowing is the point — a replaced input is a lost fact — so read the list rather than the
-#   count. It cannot tell a renamed step from a deleted one: renaming one step reported 13 facts
-#   lost where 1 had changed. Prefer the smallest diff.
+#   REFUSED lists each amendment that changes meaning under its identity, by place, each re-point
+#   that would move more than references, and each referrer of a replaced artifact the design leaves
+#   unaccounted for. A change of meaning is a new identity: author the successor and REPLACE.
 ```
 
 Verify by diffing the emitted artifact, not by trusting the measurement. CR-3's correction is two
@@ -573,11 +572,9 @@ describing a design that no longer exists:
 D=~/protocol-governed-computing/business_domains/book_library_mgmt/cr_dossiers/cr_01_catalog
 
 tc construction check $D --snapshot ~/protocol-governed-computing/snapshot
-#   100% or the design does not determine its artifacts, AND no amendment narrows what it replaces.
-#   `--snapshot` is what checks the second: an artifact inventoried EXTEND is rendered whole and
-#   replaces its predecessor, so a design stating only the delta deletes the rest — at 100%
-#   completeness, because completeness never looks at what already exists. Without the flag that
-#   check does not run and says so.
+#   100% or the design does not determine its artifacts, AND no amendment changes meaning.
+#   `--snapshot` is what checks the second, and a design that amends, replaces or re-points is
+#   refused without it: completeness never looks at what already exists.
 
 python - <<'EOF'                               # construct + persist, through the governed workflow
 import sys; W = "/Users/bp/protocol-governed-computing"

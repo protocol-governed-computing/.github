@@ -65,7 +65,24 @@
     `_V1` artifacts now say `v1`.
   - `test_reference_semantics` 14/14; `test_vector_build` expects the dangling-target refusal.
   - `--all` 65/65 as expected: 507 artifacts, 8 supersession relations, acceptance 169/169.
-- **First action next session.** Dossier B: rewrite P0/P1 with `artifact` ADJACENT, then P2.
+- **Dossier B delivered** (`transformation/dossiers/semantic_change/delivery.md`).
+  - M1: construction compares every amendment, rendered or generated (via a generator preview),
+    with the composition by VOCAB V1 (`build/sameness.py`); refuses a change of meaning by place, an
+    uncompared amendment (no `--snapshot`), and a declaration naming a rule it does not apply.
+  - M2: P7 admits `REPOINT`; construction rewrites names of replaced artifacts to their successor.
+  - M3: every live referrer of a `REPLACE`d artifact must be REPLACE/EXTEND/REPOINT in the design.
+  - P7 refuses any `withdrawn_facts` row (register kept: removing it changed P1–P6's sealed rules).
+  - `WF_P7_…_V0` stood down for `_V1` (carried by hand, filled by the generator); the P7 intent
+    re-pointed by hand. Narrowing and `withdraw` removed.
+  - Inspector: the graph adds the canonical record of references. It missed 342 of 1,008 recorded
+    references (e.g. `CONSTITUTION_CAPABILITY_CONTRACT_V0`: 1 of 73).
+  - `--all` 65/65: 508 artifacts, 9 supersession relations, `test_inspector` 152/152,
+    `semantic_change_design_test` 17/17 (replaces `withdrawal_design_test`).
+- **Correction to A2.** A2's P2 and delivery say inspection reported `CONSTITUTION_ASSERT_V0` named by
+  1 of 138 and `AC_SEED_AUTHOR_V0` by 0 of 39. Those were counts of the part (`enforced_by`,
+  `actor_context`), not of the artifact; each has 2 and 1 referrers. A2's change to the record
+  stands; its figures do not. The real gap is above.
+- **First action next session.** RT-6 and evaluation targets, then the SU-11 re-cut.
 
 ## D1 and D2 closed in every layer; 8 gaps found — dev/18 · 2026-10-04
 
