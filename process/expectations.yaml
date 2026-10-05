@@ -24,12 +24,13 @@ steps:
   - id: supersession_agreement
     section: checks
     # 11 → 13: routing_lookup stands down the execution topology constitution and CONTRACT_CLOSED V0
-    expect: ["SUPERSESSION AGREEMENT PASSED — 13 relation\\(s\\)"]
+    # 13 → 15: published_rules stands down ROUTING_COMPLETE V0 and the trace constitution V0
+    expect: ["SUPERSESSION AGREEMENT PASSED — 15 relation\\(s\\)"]
   - id: human_block_fidelity
     section: checks
     # 510 → 509: ai_governance::CC_ENFORCE_LICENSE_CAP_V0, unreachable, deleted by hand (routing_lookup)
-    # 509 → 511: routing_lookup adds the two V1 rules
-    expect: ["HUMAN BLOCK FIDELITY PASSED — 511 artifacts"]
+    # 509 → 511: routing_lookup adds the two V1 rules; 511 → 513: published_rules adds two more
+    expect: ["HUMAN BLOCK FIDELITY PASSED — 513 artifacts"]
   - id: evidence_determinism
     section: checks
     expect: ["EVIDENCE DETERMINISM PASSED"]
@@ -71,7 +72,13 @@ steps:
     expect: ["PROJECTION PASSED"]
   - id: construction_acceptance
     section: checks
-    expect: ["178/178 artifacts reproduced across 7 domain\\(s\\)\\s+\\(0 field difference\\(s\\)\\)"]
+    exit: 1
+    expect: ["176/178 artifacts reproduced across 7 domain\\(s\\)\\s+\\(2 field difference\\(s\\)\\)",
+             "DIFF  IN_UPDATE_BIBLIOGRAPHIC_INFORMATION_V1\\s+1 field", "DIFF  WF_UPDATE_BIBLIOGRAPHIC_INFORMATION_V1\\s+1 field"]
+    red_by_design: >-
+      book_library_mgmt's two _V1 artifacts were published in v5 with `version: v0`; identity is fixed at
+      publication, so they keep the sealed text, and the renderer, which now writes the version from the
+      identity, differs from them in that one field
   - id: molecule_design_test
     section: checks
     expect: ["5/5 passed"]

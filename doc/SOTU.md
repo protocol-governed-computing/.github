@@ -154,8 +154,21 @@
     probe. Runtime `UnknownContinuationError`. Tests `test_routing_lookup` 5/5,
     `test_unknown_continuation` 3/3. `--all` 68/68; 511 artifacts, 13 supersession relations.
   - **Item 3 (RT-6 and evaluation targets) is closed.**
-- **First action next session.** Item 4: a measured sweep to freeze the SU-11 re-cut's scope (designs,
-  artifacts, what each would refuse) before any re-cut work.
+- **SU-11 re-cut: scope frozen** (`.github/process/notes/su11-recut-sweep.md`). 24 published
+  identities changed meaning in dev/18; the three withdrawal designs were in v5 and are out of scope.
+  - Restored to v5 text (user decision): `CONSTITUTION_WORKFLOW_V0`; stood-down
+    `CONSTITUTION_EXECUTION_TOPOLOGY_V0` and `WF_P7_…_V0` (v5 + stand-down marking); book_library
+    `IN_`/`WF_UPDATE_BIBLIOGRAPHIC_INFORMATION_V1` (published `version: v0` kept; construction
+    acceptance red by design at 176/178, 2 pinned differences).
+  - 1a failed: every invariant must be named by a constitution rule. 1c taken:
+    `CONSTITUTION_EXECUTION_TOPOLOGY_V1` (unpublished) names `INVARIANT_WF_ROUTING_CLOSED_V0`
+    (unpublished), which it now governs. `--all` 68/68 as expected.
+  - **Platform `published_rules` delivered** (`delivery.md`): `ROUTING_COMPLETE_V1` (CP-13, today's
+    check as `_v1`) and `CONSTITUTION_TRACE_EXECUTION_V1` (schema V2); both V0s = v5 + stand-down;
+    v0 handler = v5. Probe: narrowed surface refused by V1. `--all` 68/68; 513 artifacts, 15 relations.
+    `ROUTING_COMPLETE_V1` and `CONSTITUTION_TRACE_EXECUTION_V1`; V0s restored to v5 and stood down.
+  - Then three domain dossiers: blockchain (8), ai_governance (1), transformation (9).
+- **First action next session.** Blockchain re-cut dossier P0 (8 published identities, `cr_06` routes).
 
 ## D1 and D2 closed in every layer; 8 gaps found — dev/18 · 2026-10-04
 
