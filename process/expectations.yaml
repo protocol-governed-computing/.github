@@ -26,7 +26,8 @@ steps:
     expect: ["SUPERSESSION AGREEMENT PASSED — 11 relation\\(s\\)"]
   - id: human_block_fidelity
     section: checks
-    expect: ["HUMAN BLOCK FIDELITY PASSED — 510 artifacts"]
+    # 510 → 509: ai_governance::CC_ENFORCE_LICENSE_CAP_V0, unreachable, deleted by hand (routing_lookup)
+    expect: ["HUMAN BLOCK FIDELITY PASSED — 509 artifacts"]
   - id: evidence_determinism
     section: checks
     expect: ["EVIDENCE DETERMINISM PASSED"]

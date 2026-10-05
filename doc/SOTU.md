@@ -140,8 +140,15 @@
     Also carried: set membership declares `value` a string and is given a boolean; declared input
     types are not checked.
   - ai_governance licence cap: next, after Collatz.
-- **First action next session.** The licence cap dossier (ai_governance) P0, then build the platform
-  dossier.
+  - **Licence cap: no dossier.** The premise was wrong. `CC_ENFORCE_LICENSE_CAP_V0` was named by
+    nothing; the cap is enforced by `CC_VALIDATE_ELIGIBILITY_V0` (quota check refuses at the cap).
+    Deleted by hand with the user's approval (v5 keeps it; the one recorded exception to "never delete
+    a v5 identity", because unreachable); two prose mentions trimmed. `routing_lookup` P0 statement and
+    P2 amended ("Amended before build"). `--all` as expected; 509 artifacts.
+  - Build note: the stood-down Collatz V0 still declares `evaluate_conjecture` and is compiled, so the
+    V1 contract-closed check judges only contracts in force (`INVARIANT_SUPERSEDED_NOT_IN_FORCE_V0`).
+- **First action next session.** Build the platform dossier `routing_lookup`: V1 constitution + V1
+  invariant by hand, construction re-points the 20, compiler check (in-force only), runtime refusal.
 
 ## D1 and D2 closed in every layer; 8 gaps found — dev/18 · 2026-10-04
 
