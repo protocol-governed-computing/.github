@@ -23,10 +23,10 @@ steps:
     expect: ["GOVERNANCE CHAIN PASSED"]
   - id: supersession_agreement
     section: checks
-    expect: ["SUPERSESSION AGREEMENT PASSED — 10 relation\\(s\\)"]
+    expect: ["SUPERSESSION AGREEMENT PASSED — 11 relation\\(s\\)"]
   - id: human_block_fidelity
     section: checks
-    expect: ["HUMAN BLOCK FIDELITY PASSED — 509 artifacts"]
+    expect: ["HUMAN BLOCK FIDELITY PASSED — 510 artifacts"]
   - id: evidence_determinism
     section: checks
     expect: ["EVIDENCE DETERMINISM PASSED"]
@@ -68,7 +68,7 @@ steps:
     expect: ["PROJECTION PASSED"]
   - id: construction_acceptance
     section: checks
-    expect: ["177/177 artifacts reproduced across 6 domain\\(s\\)\\s+\\(0 field difference\\(s\\)\\)"]
+    expect: ["178/178 artifacts reproduced across 7 domain\\(s\\)\\s+\\(0 field difference\\(s\\)\\)"]
   - id: molecule_design_test
     section: checks
     expect: ["5/5 passed"]
@@ -77,11 +77,17 @@ steps:
     # a manifest is generated for an amendment, names every subdomain the domain holds, and an
     # emitted amendment keeps the descriptions it replaces (cr_01_licensing)
     expect: ["8/8 passed"]
+  - id: test_no_default
+    section: checks
+    # a binding that reaches nothing is never given a value (3c RT-6): a transform's path refuses,
+    # a result maps only on SUCCESS and must carry what it maps, an absent source is left out
+    expect: ["12/12 passed"]
   - id: keyed_node_design_test
     section: checks
     # a route to a place the composition already has resolves (A batch, wave 2 — B6); a contract
-    # redeclared whole requires only what it now declares (cr_05_identity)
-    expect: ["6/6 passed"]
+    # redeclared whole requires only what it now declares (cr_05_identity); an input written as an
+    # object that does not parse is refused (3c RT-6)
+    expect: ["7/7 passed"]
   - id: refusal_moment_design_test
     section: checks
     expect: ["4/4 passed"]
@@ -154,7 +160,8 @@ steps:
   # unittest suites: `^OK$` and not `OK (skipped=…)` — a suite that skipped everything is not a pass.
   - id: test_reference_collatz
     section: checks
-    expect: ["Ran 5 tests", "(?m)^OK$"]
+    # cr_01_termination_gate: a sequence that does not end at 1 now ends the run violated
+    expect: ["Ran 6 tests", "(?m)^OK$"]
   - id: test_warm_boot
     section: checks
     # a profile changed after sealing, and a manifest not covering its profile, are refused (A1)
@@ -191,7 +198,7 @@ steps:
     expect: ["8/8 passed"]
   - id: test_transform_conformance_runner
     section: checks
-    expect: ["Ran 10 tests", "(?m)^OK$"]
+    expect: ["Ran 11 tests", "(?m)^OK$"]
   - id: si_snapshot_validate
     section: checks
     # Non-advisory checks all pass. Two advisory checks are red and exit 0 by design; their counts
@@ -228,8 +235,15 @@ steps:
     expect: ["27/27 criteria hold"]
   - id: blockchain_identity
     section: execution
-    # cr_05_identity: identity holds every rule it applies, through the entrance and directly
-    expect: ["22/22 criteria hold\\s+\\(3 not exercised\\)"]
+    exit: 1
+    # cr_05_identity: identity holds every rule it applies, through the entrance and directly.
+    # 22 → 21 (RT-6): an acceptance stating no grounds records none, and TE_ACCEPT_ACTOR_V0's output
+    # contract still owes `grounds`, so the entrance refuses the answer by name.
+    expect: ["21/22 criteria hold\\s+\\(3 not exercised\\)",
+             "differing: \\{'accept': 'EXECUTION_FAILURE'\\}"]
+    red_by_design: >-
+      parked on dev/18 — the TE output contract cannot declare a field optional; once it can,
+      `grounds` is declared optional and the entrance answers an acceptance without it
   - id: blockchain_wallet
     section: execution
     expect: ["9/9 criteria hold\\s+\\(1 not exercised\\)"]

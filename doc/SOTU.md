@@ -98,7 +98,50 @@
   - `--all` 65/65: 509 artifacts, 10 supersession relations.
   - Carried: a step-binding literal that fails to parse is silently kept as a string
     (`render._binding`); to be refused in the RT-6 pass.
-- **First action next session.** RT-6: R0–R3, plus refusing an unparseable binding literal.
+- **RT-6 built (R0–R3), no default left in any resolver.**
+  - `ct_executor.py`: both resolvers and the loop accumulators refuse a path that reaches nothing
+    (`CTFault`); a value present as null passes.
+  - `dispatcher.py`: inputs leave an absent source out (nested too); a list naming one refuses;
+    a result maps only on SUCCESS and must carry each field mapped from it; `$.result_status` maps
+    the step's outcome; a malformed path or a step not yet run refuses (`BindingFault` →
+    `CapabilityFaultError`).
+  - `memory.py` + `scheduler.py`: workflow bindings leave an absent source out; a contract not reached
+    on this route is absent; a malformed path refuses (`MalformedBindingError`).
+  - `transformation/build/render.py`: `_binding` refuses an object or list literal that does not
+    parse.
+  - Readers that expected the null: CLM's choose atom reads `ground_numbers` with `.get` (absent means
+    not grounded, as before). The transport resolver refuses an absent egress field by name.
+  - Tests: `test_no_default` 12/12 (new, in regression); the conformance runner 11/11 (the
+    null-input case passes nulls; absent inputs fail as a fault); `keyed_node_design_test` 7/7.
+  - Map: RT-6's text corrected; it stays Partial for the outcome-namespace fallback (finding 31).
+  - `--all` 66/66 as expected.
+- **Parked on dev/18: optional TE output fields.** `TE_ACCEPT_ACTOR_V0` owes `grounds`, which an
+  acceptance may omit; the entrance now refuses that answer (`EXECUTION_FAILURE`) after the workflow
+  has recorded the acceptance. `blockchain_identity` is red by design at 21/22. Needs the TE output
+  contract to declare a field optional (transport standard change).
+- **Evaluation targets: three dossiers (plan A).** The SOTU's "none are in use" was wrong: two live
+  contracts route SUCCESS to a condition nothing runs, so the licence cap is never enforced and the
+  Collatz gate cannot fail. The constitution also contradicts itself (§4 two answers; §1, §3 admit
+  evaluation targets).
+  - Platform `software_governance/dossiers/routing_lookup/`: P0–P8 approved (Gates 1–2). V1
+    constitution + V1 `INVARIANT_TOPOLOGY_CONTRACT_CLOSED` by hand (REVIEW); 20 referrers REPOINT
+    (dry-run clean); compiler check for V1; runtime refuses an unknown answer. **Built last.**
+  - Collatz `conformance_workloads/workloads/collatz/cr_dossiers/cr_01_termination_gate/`: P0–P8
+    admissible (option A, P0 amended). `CC_VERIFY_TERMINATION_V1` runs the unchanged check, then the
+    platform's `CT_PURE_VALIDATE_SET_MEMBERSHIP_V0` on `all_terminate` against `[True]`; WF re-pointed.
+    **Delivered** (`delivery.md`): Gates 1–2 approved, emitted, `--all` 66/66. First emit failed
+    the build (`SCHEMA_CC_PIPELINE_STEP_V0` requires step `outputs`; design does not know it): step 2
+    now maps `is_member` → `conjecture_holds`. `test_reference_collatz` 6/6 (gate now fails);
+    construction acceptance covers the workload: 178/178 across 7 domains.
+  - **Parked on dev/18 (design-language gaps for workloads):** P7 `IMPLEMENTATION_MODULE_MISPLACED`
+    assumes `{domain}.implementation…`, ignoring a build config's `implementation_namespace`
+    (`workloads.collatz…`); the workload build config does not discover `TEST_DATA`, so
+    `TRANSFORM_WITHOUT_VECTOR` cannot be met. No new workload transform can pass P7 until both close.
+    Also carried: set membership declares `value` a string and is given a boolean; declared input
+    types are not checked.
+  - ai_governance licence cap: next, after Collatz.
+- **First action next session.** The licence cap dossier (ai_governance) P0, then build the platform
+  dossier.
 
 ## D1 and D2 closed in every layer; 8 gaps found — dev/18 · 2026-10-04
 

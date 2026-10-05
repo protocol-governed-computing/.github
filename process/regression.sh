@@ -131,6 +131,7 @@ if [[ "$MODE" == "--all" ]]; then
            "$W/protocol_runtime/testbed/pgc/test_examine.py" \
            "$W/protocol_runtime/testbed/pgc/test_trace_path.py" \
            "$W/protocol_runtime/testbed/pgc/test_step_outcome.py" \
+           "$W/protocol_runtime/testbed/pgc/test_no_default.py" \
            "$W/protocol_runtime/testbed/pgc/test_transform_conformance_runner.py"; do
     step "$(basename "$t" .py)" python "$t"
   done
