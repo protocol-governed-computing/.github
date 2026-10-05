@@ -82,7 +82,23 @@
   1 of 138 and `AC_SEED_AUTHOR_V0` by 0 of 39. Those were counts of the part (`enforced_by`,
   `actor_context`), not of the artifact; each has 2 and 1 referrers. A2's change to the record
   stands; its figures do not. The real gap is above.
-- **First action next session.** RT-6 and evaluation targets, then the SU-11 re-cut.
+- **RT-6 survey (no code yet).** Three runtime resolvers default to None: CT-IR (`ct_executor`),
+  step bindings (`dispatcher._nested_get`), workflow bindings (`memory._nested_get`). Measured: 168
+  misses, all in step outputs of non-SUCCESS results (66), absent optional inputs (95+4), and one
+  synthetic CT-IR case. Plan approved (B): R0 CT-IR absent path refuses; R1 outputs mapped only on
+  SUCCESS and must exist there; R2 an absent source is left out, never None; R3 malformed paths refuse.
+- **ai_governance cr_03 delivered** (`cr_dossiers/cr_03_parameter_result/delivery.md`): it fixes
+  the one real defect the survey found. `CC_VALIDATE_TOOL_PARAMETERS_V1` maps `validation_result`
+  from `valid`; V0 stood down; `WF_GOVERN_AGENT_ACTION_V0` re-pointed (one line, `code`).
+  - First real REPLACE + REPOINT. Fixed on the way: reach ignores `NODE_NEXT`/`WF_START`; re-point
+    rewrites only declared reference parts; `code` added to VOCAB V1's `reference` group in place
+    (recorded exception, V1 unpublished; A2's P7 and delivery amended to match); the compiler's
+    superseded check reads a workflow's own place labels as labels.
+  - ai_governance added to construction acceptance (`whole=False`): 177/177 across 6 domains.
+  - `--all` 65/65: 509 artifacts, 10 supersession relations.
+  - Carried: a step-binding literal that fails to parse is silently kept as a string
+    (`render._binding`); to be refused in the RT-6 pass.
+- **First action next session.** RT-6: R0–R3, plus refusing an unparseable binding literal.
 
 ## D1 and D2 closed in every layer; 8 gaps found — dev/18 · 2026-10-04
 
