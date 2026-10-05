@@ -147,8 +147,15 @@
     P2 amended ("Amended before build"). `--all` as expected; 509 artifacts.
   - Build note: the stood-down Collatz V0 still declares `evaluate_conjecture` and is compiled, so the
     V1 contract-closed check judges only contracts in force (`INVARIANT_SUPERSEDED_NOT_IN_FORCE_V0`).
-- **First action next session.** Build the platform dossier `routing_lookup`: V1 constitution + V1
-  invariant by hand, construction re-points the 20, compiler check (in-force only), runtime refusal.
+  - **Platform `routing_lookup` delivered** (`delivery.md`). V1 constitution + V1
+    `INVARIANT_TOPOLOGY_CONTRACT_CLOSED` by hand; V0s stood down; 20 re-pointed by construction
+    (`--require 0`: 0 of 0 facts). Compiler `assert_topology_contract_closed_v1` (in force only):
+    refuses a routing answer other than continue/exit and an `evaluation` block — proved by a planted
+    probe. Runtime `UnknownContinuationError`. Tests `test_routing_lookup` 5/5,
+    `test_unknown_continuation` 3/3. `--all` 68/68; 511 artifacts, 13 supersession relations.
+  - **Item 3 (RT-6 and evaluation targets) is closed.**
+- **First action next session.** Item 4: a measured sweep to freeze the SU-11 re-cut's scope (designs,
+  artifacts, what each would refuse) before any re-cut work.
 
 ## D1 and D2 closed in every layer; 8 gaps found — dev/18 · 2026-10-04
 

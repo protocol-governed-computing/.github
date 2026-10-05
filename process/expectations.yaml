@@ -23,11 +23,13 @@ steps:
     expect: ["GOVERNANCE CHAIN PASSED"]
   - id: supersession_agreement
     section: checks
-    expect: ["SUPERSESSION AGREEMENT PASSED — 11 relation\\(s\\)"]
+    # 11 → 13: routing_lookup stands down the execution topology constitution and CONTRACT_CLOSED V0
+    expect: ["SUPERSESSION AGREEMENT PASSED — 13 relation\\(s\\)"]
   - id: human_block_fidelity
     section: checks
     # 510 → 509: ai_governance::CC_ENFORCE_LICENSE_CAP_V0, unreachable, deleted by hand (routing_lookup)
-    expect: ["HUMAN BLOCK FIDELITY PASSED — 509 artifacts"]
+    # 509 → 511: routing_lookup adds the two V1 rules
+    expect: ["HUMAN BLOCK FIDELITY PASSED — 511 artifacts"]
   - id: evidence_determinism
     section: checks
     expect: ["EVIDENCE DETERMINISM PASSED"]
@@ -78,6 +80,15 @@ steps:
     # a manifest is generated for an amendment, names every subdomain the domain holds, and an
     # emitted amendment keeps the descriptions it replaces (cr_01_licensing)
     expect: ["8/8 passed"]
+  - id: test_routing_lookup
+    section: checks
+    # routing_lookup: the build refuses a routing answer other than continue or exit, and an
+    # evaluation block, on a contract in force (CONTRACT_CLOSED_V1)
+    expect: ["5/5 passed"]
+  - id: test_unknown_continuation
+    section: checks
+    # routing_lookup: execution refuses a routing answer other than continue or exit
+    expect: ["3/3 passed"]
   - id: test_no_default
     section: checks
     # a binding that reaches nothing is never given a value (3c RT-6): a transform's path refuses,
