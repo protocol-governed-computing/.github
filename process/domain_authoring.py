@@ -384,12 +384,15 @@ def main() -> int:
                     "--payload", str(payload), "--snapshot", str(snap),
                     "--data-root", str(tmp / "data")]
 
-        # Not importable: the runtime imports the module a CT names, and when it cannot the
-        # workflow refuses rather than raising. A missing module wearing a business refusal is
-        # the failure a domain author is most likely to misread.
+        # Not importable: the runtime imports the module a CT names, and when it cannot the run
+        # refuses, naming the module, rather than raising a traceback. It is not reported as
+        # VIOLATION: a missing module wearing a business refusal is the failure a domain author is
+        # most likely to misread, and a fault is not an outcome to route on (3a §4.1).
         r = run(run_args, env)
+        out = r.stdout + r.stderr
         check("uninstalled_domain_refuses_rather_than_raising",
-              "VIOLATION" in (r.stdout + r.stderr), (r.stdout + r.stderr)[-200:])
+              r.returncode != 0 and "not importable" in out and "fault is not a declared outcome" in out
+              and "Traceback" not in out and "Status:     VIOLATION" not in out, out[-300:])
 
         r = run(run_args, {**env, "PYTHONPATH": str(tmp)})
         out = r.stdout + r.stderr

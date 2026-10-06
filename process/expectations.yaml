@@ -23,10 +23,10 @@ steps:
     expect: ["GOVERNANCE CHAIN PASSED"]
   - id: supersession_agreement
     section: checks
-    expect: ["SUPERSESSION AGREEMENT PASSED — 30 relation\\(s\\)"]
+    expect: ["SUPERSESSION AGREEMENT PASSED — 31 relation\\(s\\)"]
   - id: human_block_fidelity
     section: checks
-    expect: ["HUMAN BLOCK FIDELITY PASSED — 528 artifacts"]
+    expect: ["HUMAN BLOCK FIDELITY PASSED — 529 artifacts"]
   - id: evidence_determinism
     section: checks
     expect: ["EVIDENCE DETERMINISM PASSED"]
@@ -163,7 +163,8 @@ steps:
   # unittest suites: `^OK$` and not `OK (skipped=…)` — a suite that skipped everything is not a pass.
   - id: test_reference_collatz
     section: checks
-    expect: ["Ran 5 tests", "(?m)^OK$"]
+    # cr_01_termination_gate: a sequence that does not end at 1 now ends the run violated
+    expect: ["Ran 6 tests", "(?m)^OK$"]
   - id: test_warm_boot
     section: checks
     # a profile changed after sealing, and a manifest not covering its profile, are refused (A1)
@@ -195,7 +196,21 @@ steps:
     expect: ["Ran 7 tests", "(?m)^OK$"]
   - id: test_transform_conformance_runner
     section: checks
-    expect: ["Ran 10 tests", "(?m)^OK$"]
+    expect: ["Ran 11 tests", "(?m)^OK$"]
+  - id: test_no_default
+    section: checks
+    # a binding that reaches nothing is never given a value (3c RT-6): a transform's path refuses,
+    # a result maps only on SUCCESS and must carry what it maps, an absent source is left out
+    expect: ["12/12 passed"]
+  - id: test_step_outcome
+    section: checks
+    # an unlisted step outcome refuses (EX-18); each step records its outcome and continuation (EV-19);
+    # a fault refuses rather than routing as VIOLATION, and an atom's own refusal still routes (3a §4.1)
+    expect: ["8/8 passed"]
+  - id: test_unknown_continuation
+    section: checks
+    # execution refuses a routing answer other than continue or exit
+    expect: ["3/3 passed"]
   - id: published_identity
     section: checks
     expect: ["PUBLISHED IDENTITY PASSED — 500 identities published in v5, none changed meaning, 1 removed by name"]
@@ -235,8 +250,15 @@ steps:
     expect: ["27/27 criteria hold"]
   - id: blockchain_identity
     section: execution
-    # cr_05_identity: identity holds every rule it applies, through the entrance and directly
-    expect: ["22/22 criteria hold\\s+\\(3 not exercised\\)"]
+    exit: 1
+    # cr_05_identity: identity holds every rule it applies, through the entrance and directly.
+    # 22 → 21 (RT-6): an acceptance stating no grounds records none, and TE_ACCEPT_ACTOR_V0's output
+    # contract still owes `grounds`, so the entrance refuses the answer by name.
+    expect: ["21/22 criteria hold\\s+\\(3 not exercised\\)",
+             "differing: \\{'accept': 'EXECUTION_FAILURE'\\}"]
+    red_by_design: >-
+      parked — the TE output contract cannot declare a field optional; once it can,
+      `grounds` is declared optional and the entrance answers an acceptance without it
   - id: blockchain_wallet
     section: execution
     expect: ["9/9 criteria hold\\s+\\(1 not exercised\\)"]

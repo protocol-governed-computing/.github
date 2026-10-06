@@ -162,3 +162,49 @@ So a reference could be missed by one place and seen by another.
 - `test_routing_closure` 12/12; `test_routing_lookup` 6/6.
 - Construction acceptance 182/184 across 7 domains, red by design for the two pinned book_library
   differences.
+
+## Step 8 — No default, a refused fault, and trace format v2
+
+**Problem.** Four problems in the runtime and the transport.
+- **Defaults.** Three runtime resolvers gave a binding that reached nothing a value of None. A step
+  outcome with no continuation was routed anyway.
+- **Faults routed.** A capability fault was routed as VIOLATION, as if it were a business refusal.
+- **Traces.** Traces carried neither a step's outcome nor the continuation it selected.
+- **Transport.** The egress answered with an absent output field.
+
+**Change.** All from dev/18, final form.
+- **`protocol_runtime`** (`dispatcher`, `scheduler`, `memory`, `ct_executor`, `ct_execute`,
+  `conformance`, `evidence`, `api`, `examine/`):
+  - no resolver supplies a default (RT-6);
+  - an unlisted step outcome refuses (EX-18);
+  - a fault refuses rather than routing;
+  - an unknown continuation refuses;
+  - traces are written to `SCHEMA_TRACE_EVENT_V2`, and each refusal is recorded once (EV-19).
+  - Tests: `test_step_outcome`, `test_no_default` and `test_unknown_continuation`, with
+    `test_reference_collatz` (including the case where the gate fails) and the conformance runner.
+- **`software_governance`.** `CONSTITUTION_TRACE_EXECUTION_V1` names `SCHEMA_TRACE_EVENT_V2`, and the
+  V0 gains only `superseded_by`. `SCHEMA_TRACE_EVENT_V2.json` and the schema index are added.
+- **`snapshot_inspector`.** The test fixtures use trace format v2.
+- **`protocol_transport`.** The egress refuses an absent output field by name.
+- **`business_domains`.** CLM's choose atom reads `ground_numbers` with `.get`: absent means not
+  grounded, as before.
+- **`.github`.**
+  - `trace_schema_conformance.py` reads V2.
+  - `domain_authoring.py` expects a module that cannot be imported to refuse the run as a fault, not
+    to report VIOLATION. This file was missing from the dev/18r ledger, and the audit at this step
+    found it.
+- **Surface map.** `software_governance/surface_map/governance_surface_map.yaml` is regenerated with
+  `gen_governance_surface_map.py`: 204 governance artifacts. dev/18's copy was never regenerated after
+  its rules changed.
+
+**Verified.** `regression.sh --all`: 69/69 as expected.
+- 529 artifacts, 31 supersession relations.
+- Published identity: none of the 500 changed meaning, 1 removed by name.
+- Trace schema conformance: every line of 160 traces conforms to V2.
+- `test_step_outcome` 8/8, `test_no_default` 12/12, `test_unknown_continuation` 3/3;
+  `test_reference_collatz` 6 tests; conformance runner 11 tests; `domain_authoring` 8/8.
+- **Audit.** Every repository's code equals dev/18's except the intentional differences: the
+  declaration's name, the V1 targets and the fixes recorded in steps 4, 5 and 7.
+- **Red by design.** `blockchain_identity` holds 21 of 22 criteria. An acceptance stating no grounds
+  records none, and `TE_ACCEPT_ACTOR_V0` still owes `grounds`. The fix needs an optional transport
+  output field, which is parked.
