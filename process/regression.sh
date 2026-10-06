@@ -31,10 +31,31 @@ if [[ "$MODE" == "--build" || "$MODE" == "--all" ]]; then
   # sealed composition a paper cites by DOI, written once by `release.sh --publish-composition`
   # and reproducible by nothing. Its only copy is git. The exclusion is asserted below rather than
   # trusted, because a deletion here is silent and the loss is discovered much later.
-  find "$W" -type d -name snapshot \
-       -not -path "$W/.venv/*" -not -path "$W/pgc_release/*" \
-       -prune -exec rm -rf {} +
-  rm -rf "$W/data" "$W/traces"
+  #
+  # The previous build output is moved aside, not deleted, and comes back if the rebuild fails. A
+  # failed build used to leave no snapshot at all, and every later check then failed for that
+  # reason instead of its own. It is deleted only once the new build has been assembled.
+  BACKUP="$(mktemp -d "${TMPDIR:-/tmp}/pgc_rebuild.XXXXXX")" || exit 1
+  build_output() {
+    find "$W" -type d \( -name snapshot -o -name snapshot_fed -o -name snapshot_mw \) \
+         -not -path "$W/.venv/*" -not -path "$W/pgc_release/*" -prune -print
+    for d in "$W/data" "$W/traces"; do [[ -d "$d" ]] && echo "$d"; done
+  }
+  build_output | while IFS= read -r d; do
+    rel="${d#"$W"/}"
+    mkdir -p "$BACKUP/$(dirname "$rel")" && mv "$d" "$BACKUP/$rel" && echo "$rel" >> "$BACKUP/.moved"
+  done
+  rebuild_failed() {
+    echo "BUILD FAILED — restoring the previous build output from $BACKUP" >&2
+    build_output | while IFS= read -r d; do rm -rf "$d"; done
+    if [[ -f "$BACKUP/.moved" ]]; then
+      while IFS= read -r rel; do
+        mkdir -p "$W/$(dirname "$rel")" && mv "$BACKUP/$rel" "$W/$rel"
+      done < "$BACKUP/.moved"
+    fi
+    rm -rf "$BACKUP"
+    exit 1
+  }
 
   # macOS writes .DS_Store into any directory Finder opens, including a sealed snapshot. Acceptance
   # then refuses the snapshot as carrying undeclared content (3b §6) — correct, but it makes a
@@ -47,23 +68,23 @@ if [[ "$MODE" == "--build" || "$MODE" == "--all" ]]; then
   if [[ ! -f "$W/pgc_release/snapshot/manifest.json" ]]; then
     echo "ABORT: the cleanup removed pgc_release/snapshot — sealed evidence, not build output." >&2
     echo "  Recover it before doing anything else:  git -C pgc_release restore snapshot/" >&2
-    exit 1
+    rebuild_failed
   fi
-  "$W/protocol_compiler/compile.sh" STRUCTURE_BUILD_PLATFORM_CONFIG_V2 || exit 1
+  "$W/protocol_compiler/compile.sh" STRUCTURE_BUILD_PLATFORM_CONFIG_V2 || rebuild_failed
   # The platform's other two placements, each into its own root. They are compiled against the
   # same governance surface as the default build, so a governance change leaves them stale until they
   # are rebuilt — and the assembler then refuses to compose them with freshly compiled domains, which
   # surfaced as a red test_federation after a change that touched no federation code.
-  rm -rf "$W/software_governance/snapshot_fed" "$W/software_governance/snapshot_mw"
   # Each configuration declares its own root (output_configuration.root), so none is passed here.
-  "$W/protocol_compiler/compile.sh" STRUCTURE_BUILD_PLATFORM_FEDERATED_CONFIG_V2 || exit 1
-  "$W/protocol_compiler/compile.sh" STRUCTURE_BUILD_PLATFORM_MULTIWORKER_CONFIG_V2 || exit 1
+  "$W/protocol_compiler/compile.sh" STRUCTURE_BUILD_PLATFORM_FEDERATED_CONFIG_V2 || rebuild_failed
+  "$W/protocol_compiler/compile.sh" STRUCTURE_BUILD_PLATFORM_MULTIWORKER_CONFIG_V2 || rebuild_failed
   for d in conformance_workloads/workloads/collatz transformation snapshot_inspector \
            business_domains/ai_governance business_domains/book_library_mgmt \
            business_domains/blockchain business_domains/causal_language_model; do
-    "$W/protocol_compiler/compile_domain.sh" "$W/$d" || exit 1
+    "$W/protocol_compiler/compile_domain.sh" "$W/$d" || rebuild_failed
   done
-  "$W/snapshot_assembler/assemble.sh" || exit 1
+  "$W/snapshot_assembler/assemble.sh" || rebuild_failed
+  rm -rf "$BACKUP"
 fi
 
 # Every check and execution step runs through `step`, which keeps its output and exit code. The
@@ -114,6 +135,7 @@ if [[ "$MODE" == "--all" ]]; then
            "$W/protocol_compiler/scripts/testbed/test_molecule_composition.py" \
            "$W/protocol_compiler/scripts/testbed/test_transform_conformance.py" \
            "$W/protocol_compiler/scripts/testbed/test_vector_build.py" \
+           "$W/protocol_compiler/scripts/testbed/test_reference_semantics.py" \
            "$W/protocol_compiler/scripts/testbed/test_platform_vectors.py" \
            "$W/protocol_compiler/scripts/testbed/test_keyed_chain_and_molecule_surface.py" \
            "$W/protocol_compiler/scripts/testbed/test_dispatch_routing_fidelity.py" \
@@ -137,6 +159,9 @@ if [[ "$MODE" == "--all" ]]; then
   # sit on top of a composition carrying advisory failures, which is how fifteen divergent copies
   # went unreported. Advisory failures exit 0 by design — `--strict` is what turns them red.
   step si_snapshot_validate si --snapshot "$W/snapshot" snapshot validate
+
+  # What v5 published still means what it meant (`4e` SU-11), against the sealed composition.
+  step published_identity python "$W/.github/process/published_identity_check.py"
 
   step pgc_env_check python "$W/.github/process/pgc_env_check.py"
   step test_regression_verdict python "$W/.github/process/test_regression_verdict.py"

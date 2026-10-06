@@ -23,6 +23,7 @@ wrong. All are called by `regression.sh --all`, and each is runnable alone.
 | `governance_closure.py` | every compiler handler is named by an invariant; no layer is declared two ways |
 | `governance_chain_closure.py` | every authored invariant is named by a constitution rule |
 | `supersession_agreement.py` | a supersession is stated on both sides and the two agree |
+| `published_identity_check.py` | nothing v5 published has changed meaning (SU-11) |
 | `human_block_fidelity.py` | prose beside a machine block declares nothing |
 | `frontmatter_fidelity.py` | every authored machine-block value survived compilation |
 | `evidence_determinism.py` | determinative evidence content is identical across runs; observational content differs |

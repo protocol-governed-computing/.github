@@ -26,7 +26,7 @@ steps:
     expect: ["SUPERSESSION AGREEMENT PASSED — 7 relation\\(s\\)"]
   - id: human_block_fidelity
     section: checks
-    expect: ["HUMAN BLOCK FIDELITY PASSED — 504 artifacts"]
+    expect: ["HUMAN BLOCK FIDELITY PASSED — 505 artifacts"]
   - id: evidence_determinism
     section: checks
     expect: ["EVIDENCE DETERMINISM PASSED"]
@@ -102,7 +102,7 @@ steps:
   - id: test_inspector
     section: checks
     # si.behavior_logic.list names each workflow's nodes by key (B6); si.execution.explain adds 29
-    expect: ["PASSED: 151/151"]
+    expect: ["PASSED: 152/152"]
   - id: domain_authoring
     section: checks
     expect: ["PASSED: 8/8"]
@@ -125,6 +125,9 @@ steps:
   - id: test_vector_build
     section: checks
     expect: ["4/4 passed"]
+  - id: test_reference_semantics
+    section: checks
+    expect: ["15/15 passed"]
   - id: test_platform_vectors
     section: checks
     expect: ["3/3 passed"]
@@ -179,6 +182,9 @@ steps:
   - id: test_transform_conformance_runner
     section: checks
     expect: ["Ran 10 tests", "(?m)^OK$"]
+  - id: published_identity
+    section: checks
+    expect: ["PUBLISHED IDENTITY PASSED — 500 identities published in v5, none changed meaning"]
   - id: si_snapshot_validate
     section: checks
     # Non-advisory checks all pass. Two advisory checks are red and exit 0 by design; their counts
