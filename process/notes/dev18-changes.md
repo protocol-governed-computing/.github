@@ -14,7 +14,7 @@ dev/18 is ready to cut when every check passes. No cut is planned.
 | D2 | No identity published in v5 changes meaning. Only stand-down markings, declared re-points and named removals are allowed. | `published_identity_check.py` |
 | D3 | Construction refuses a change of meaning under an old identity. | `semantic_change_design_test.py` |
 | D4 | No rule in force contradicts another. | the compile, `test_routing_closure` and `test_routing_lookup` |
-| D5 | Every known deviation appears in the realization map and the release notes. | read |
+| D5 | Every known deviation appears in the realization map, and later in the release notes. | read |
 
 **Rules the work kept.**
 - A finding is fixed only if it makes a done-check fail; anything else is parked.
@@ -37,7 +37,7 @@ Measured on the compiled compositions: v5 holds 500 artifacts, dev/18 holds 525.
 | Stood down | 24 | Published V0s that gained only `superseded_by`; each has a V1 among the new |
 | Re-pointed | 36 | Published artifacts whose only change is a reference moved to a declared successor |
 | Explanation only | 4 | `WF_P0_…_V0` and `WF_P1_…_V0` gain a generator-source line; `VOCAB_AI_LICENSING_STATES_V0` and `WF_PROVISION_AI_LICENSING_V0` lose the line naming the licence cap |
-| Removed | 1 | `ai_governance::CC_ENFORCE_LICENSE_CAP_V0`, by named exception to SU-11 |
+| Removed | 1 | `ai_governance::CC_ENFORCE_LICENSE_CAP_V0`, a named removal recorded as a governed change |
 | Deletable | 0 | No identity was created and then stood down. Every stood-down artifact was published in v5, so it stays in the record |
 
 **New, by kind.**
@@ -237,7 +237,7 @@ So a reference could be missed by one place and seen by another.
   nothing runs it.
   - It is deleted, and the two prose lines naming it are trimmed. This is dev/18's commit.
   - `published_identity_check.py` allows this one removal by name, with its reason.
-  - It is an exception to SU-11; the realization map and the release notes record it.
+  - It was never superseded, so SU-12 does not reach it. The realization map records it under SU-12.
 - **Order.** The Collatz dossier (step 7a) ran first, because this rule refuses the evaluation block
   `CC_VERIFY_TERMINATION_V0` carries.
 

@@ -17,9 +17,12 @@
   - `blockchain/cr_06_routing_closure` (8 V1s);
   - `ai_governance/cr_02_reclaim_and_parameters` (2 V1s);
   - `collatz/cr_01_termination_gate` (1 V1).
-- **Next.** The realization-map and standard entries go on `standards` `work/v1` as ordinary tasks:
-  RT-6, ID-5, EX-18 and CP-13; the SU-11 exception for the licence cap; and the publication rule,
-  recorded in `revisions.md`. Release notes wait for a cut.
+- **Realization map updated** on `standards` `work/v1`: SU-11 moves to Partial, ID-5 and CP-13 name
+  what the replay built, and SU-12 records the licence-cap deletion. EX-18, EV-19, GC-15 and RT-6 were
+  checked and are unchanged. The spec is unchanged, so no revision is declared. The publication rule
+  was dropped: the replay authored every identity once, so ID-5 and SU-11 hold as written.
+- **Closed.** D1–D5 hold, except the release notes, which wait for a cut. The SoSyM re-run waits for
+  Springer.
 - **Ideas the author is holding, not documented on purpose:**
   - retirement of stood-down identities;
   - a per-platform coherency declaration in place of one version number across the repositories.

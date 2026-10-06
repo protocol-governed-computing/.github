@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Published identity — what v5 published still means what it meant.
 
-`4e` SU-11: a change of meaning is a new identity. Identity is fixed at publication, so the check
-compares every identity in the sealed v5 composition (`pgc_release/snapshot`) with the same identity
-in the working composition (`snapshot/`), by the platform's declaration of what carries meaning
+`4e` SU-11: a change of meaning is a new identity. A sealed release is the one record a change can be
+measured against, so the check compares every identity in the sealed v5 composition
+(`pgc_release/snapshot`) with the same identity in the working composition (`snapshot/`). It compares
+them by the platform's declaration of what carries meaning
 (`artifact::VOCAB_DECLARATION_REPRESENTATION_V0`, read through `transformation.build.sameness`).
 
 Two differences are not a change of meaning:
@@ -12,8 +13,8 @@ Two differences are not a change of meaning:
 
 An identity added since v5 is not published, so it is not compared. An identity v5 published and the
 working composition no longer holds is a finding: a published identity stays in the record. The one
-exception is a removal named in `REMOVED`, with its reason; each is an exception to SU-11 that the
-realization map and the release notes record.
+exception is a removal named in `REMOVED`, with its reason. A removal is a governed change, not a
+supersession, and the realization map records each one under SU-12.
 
 The sealed composition is read, never written. Exit 0 when nothing published changed meaning and
 nothing published is missing, 1 otherwise.
