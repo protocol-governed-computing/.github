@@ -1,5 +1,30 @@
 # SOTU Handoff
 
+## dev/18r replayed through step 8; step 9 next — dev/18r · 2026-10-05
+
+- **State.** The D1/D2 work is rebuilt on `dev/18r` in all ten dev repositories, from each "VERSION
+  bump to 18" commit. dev/18 is frozen on its own branch and is not merged.
+- **Done-checks D1–D4 hold.**
+  - `regression.sh --all` passes 69/69 as expected.
+  - Published identity: none of the 500 identities v5 published changed meaning. One,
+    `CC_ENFORCE_LICENSE_CAP_V0`, was removed by name.
+  - The record is in `process/notes/dev18r-changes.md`: the done-checks, the result, the park list
+    and one change note per platform step.
+- **Against v5:** 27 new artifacts, 24 stood down, 36 re-pointed, 4 changed in explanation only, 1
+  removed, 0 deletable.
+- **Delivered dossiers:**
+  - `blockchain/cr_06_routing_closure` (8 V1s);
+  - `ai_governance/cr_02_reclaim_and_parameters` (2 V1s);
+  - `collatz/cr_01_termination_gate` (1 V1).
+- **Next: step 9.**
+  - On `standards` `work/v1`: realization-map entries for RT-6, ID-5, EX-18 and CP-13; the SU-11
+    exception for the licence cap; the publication rule, recorded in `revisions.md`.
+  - The release notes for the cycle.
+  - Then step 10, the SoSyM re-run, and step 11, merge-ready (D5).
+- **Ideas the author is holding, not documented on purpose:**
+  - retirement of stood-down identities;
+  - a per-platform coherency declaration in place of one version number across the repositories.
+
 ## Paused — everything committed and backed up — dev/17 · 2026-10-03
 
 - **State.** Every repo is clean. `dev/17` now exists on GitHub as a backup in all ten dev repos

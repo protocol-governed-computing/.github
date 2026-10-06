@@ -1,6 +1,91 @@
-# dev/18r — platform change notes
+# dev/18r — the D1/D2 cycle, replayed
 
-One entry per platform change, in step order. Domain changes have their own dossiers.
+dev/18r rebuilt the D1/D2 work from each repository's "VERSION bump to 18" commit. dev/18's code was
+carried in its final form, and each change of meaning was authored once, under a new identity. dev/18
+stays as its own branch.
+
+## Done-checks
+
+dev/18r is merge-ready when every check passes.
+
+| # | Check | Command |
+|---|---|---|
+| D1 | The regression passes as expected, and every red-by-design step has a written reason. | `regression.sh --all` |
+| D2 | No identity published in v5 changes meaning. Only stand-down markings, declared re-points and named removals are allowed. | `published_identity_check.py` |
+| D3 | Construction refuses a change of meaning under an old identity. | `semantic_change_design_test.py` |
+| D4 | No rule in force contradicts another. | the compile, `test_routing_closure` and `test_routing_lookup` |
+| D5 | Every known deviation appears in the realization map and the release notes. | read |
+
+**Rules the work kept.**
+- A finding is fixed only if it makes a done-check fail; anything else is parked.
+- No count is stated unless a command produced it.
+- A domain change runs the dossier pipeline. A platform or pipeline change runs a change note plus
+  the regression.
+
+## Result after step 8
+
+D1–D4 hold: `regression.sh --all` passes 69/69 as expected. Four steps are red by design, each with
+its reason in `expectations.yaml`.
+
+### Artifacts, against v5
+
+Measured on the compiled compositions: v5 holds 500 artifacts, dev/18r holds 525.
+
+| | Count | What |
+|---|---|---|
+| New | 27 | 26 compiled identities and `SCHEMA_TRACE_EVENT_V2.json` |
+| Stood down | 24 | Published V0s that gained only `superseded_by`; each has a V1 among the new |
+| Re-pointed | 36 | Published artifacts whose only change is a reference moved to a declared successor |
+| Explanation only | 4 | `WF_P0_…_V0` and `WF_P1_…_V0` gain a generator-source line; `VOCAB_AI_LICENSING_STATES_V0` and `WF_PROVISION_AI_LICENSING_V0` lose the line naming the licence cap |
+| Removed | 1 | `ai_governance::CC_ENFORCE_LICENSE_CAP_V0`, by named exception to SU-11 |
+| Deletable | 0 | No identity was created and then stood down. Every stood-down artifact was published in v5, so it stays in the record |
+
+**New, by kind.**
+- **Platform (7):**
+  - `VOCAB_DECLARATION_REPRESENTATION_V0`;
+  - the topology constitution V1, and `CONTRACT_CLOSED_V1` and `ROUTING_COMPLETE_V1`;
+  - `WF_ROUTING_CLOSED_V0`;
+  - the trace constitution V1, and `SCHEMA_TRACE_EVENT_V2`.
+- **Transformation (9):** the two judge contracts and `WF_P2`–`WF_P8`.
+- **Blockchain (8).**
+- **ai_governance (2).**
+- **Collatz (1).**
+
+**Re-pointed.**
+- 19 platform artifacts name the topology V1 in `governed_by`.
+- 7 blockchain entrances and intents, 7 transformation intents, 2 ai_governance workflows and the
+  Collatz workflow each name a V1.
+
+**Dossiers.** Each is delivered with its own `delivery.md`:
+- `blockchain/cr_06_routing_closure`;
+- `ai_governance/cr_02_reclaim_and_parameters`;
+- `collatz/cr_01_termination_gate`.
+
+## Parked
+
+None of these makes a done-check fail.
+
+- **Optional TE output fields.** `TE_ACCEPT_ACTOR_V0` owes `grounds`, which leaves
+  `blockchain_identity` red at 21/22.
+- **Design language gaps:**
+  - it has no family for a constitution or an invariant;
+  - P7 assumes `{domain}.implementation`;
+  - P7 refuses with `TRANSFORM_WITHOUT_VECTOR` and `DISCHARGE_NOT_IN_TOPOLOGY`;
+  - a step's required outputs are unknown to design.
+- **Workloads cannot hold test data.**
+- **Construction reads 0 of 0 facts as 0%.**
+- **A domain build keeps no record of which checks ran.**
+- **Short-code references:** workflow `code` and `start_node`, and RB binding keys.
+- **RT-6 stays Partial** for the outcome-namespace fallback (finding 31).
+- **No register states an explanation-only `extensions.description` for a new artifact.**
+- **Stood-down identities stay in the record** until a rule says when a published identity may leave
+  it.
+
+---
+
+## Change notes
+
+One entry per platform or pipeline change, in step order.
 
 ## Step 2 — The rebuild keeps the previous build until the new one is assembled
 
