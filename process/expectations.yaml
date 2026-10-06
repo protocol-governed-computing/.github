@@ -23,10 +23,10 @@ steps:
     expect: ["GOVERNANCE CHAIN PASSED"]
   - id: supersession_agreement
     section: checks
-    expect: ["SUPERSESSION AGREEMENT PASSED — 24 relation\\(s\\)"]
+    expect: ["SUPERSESSION AGREEMENT PASSED — 26 relation\\(s\\)"]
   - id: human_block_fidelity
     section: checks
-    expect: ["HUMAN BLOCK FIDELITY PASSED — 522 artifacts"]
+    expect: ["HUMAN BLOCK FIDELITY PASSED — 524 artifacts"]
   - id: evidence_determinism
     section: checks
     expect: ["EVIDENCE DETERMINISM PASSED"]
@@ -69,7 +69,7 @@ steps:
   - id: construction_acceptance
     section: checks
     exit: 1
-    expect: ["179/181 artifacts reproduced across 6 domain\\(s\\)\\s+\\(2 field difference\\(s\\)\\)",
+    expect: ["181/183 artifacts reproduced across 6 domain\\(s\\)\\s+\\(2 field difference\\(s\\)\\)",
              "DIFF  IN_UPDATE_BIBLIOGRAPHIC_INFORMATION_V1\\s+1 field", "DIFF  WF_UPDATE_BIBLIOGRAPHIC_INFORMATION_V1\\s+1 field"]
     red_by_design: >-
       book_library_mgmt's two _V1 artifacts were published in v5 with `version: v0`; identity is fixed at
@@ -247,6 +247,10 @@ steps:
     section: execution
     # an observation that finds nothing ends a phase as rejected; answers and routing generated
     expect: ["4/4 criteria hold\\s+\\(1 not exercised\\)"]
+  - id: ai_governance_reclaim_closure
+    section: execution
+    # cr_02_reclaim_and_parameters: a reclaim the registry refuses ends as still active, license kept
+    expect: ["4/4 criteria hold\\s+\\(0 not exercised\\)"]
   - id: trace_schema_conformance
     section: execution
     expect: ["TRACE SCHEMA CONFORMANCE PASSED — \\d+ trace\\(s\\)"]

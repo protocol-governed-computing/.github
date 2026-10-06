@@ -154,8 +154,7 @@ This replaces `cr_02_reclaim_closure` and `cr_03_parameter_result`.
 - **Re-points:**
   - `WF_GOVERN_AGENT_ACTION_V0` (`code`);
   - the reclaim contract's one referrer.
-- **Deletion.** `CC_ENFORCE_LICENSE_CAP_V0`, and the prose that names it in
-  `VOCAB_AI_LICENSING_STATES_V0` and `WF_PROVISION_AI_LICENSING_V0`.
+- **Not deleted.** `CC_ENFORCE_LICENSE_CAP_V0` stays as v5 published it (parked, §6).
 - **Tests:** `ai_governance/testbed/routing_closure/execution_validation.py`.
 - **Checks:** D1, D2, D3.
 
@@ -239,3 +238,5 @@ None of these makes a done-check fail. They go to the next cycle as one file.
 - **A domain build keeps no record of which checks ran.**
 - **Short-code references:** workflow `code` and `start_node`, and RB binding keys.
 - **RT-6 stays Partial** for the outcome-namespace fallback (finding 31).
+- **`CC_ENFORCE_LICENSE_CAP_V0`.** It is published in v5 and nothing runs it. It stays as published;
+  removing a published identity needs a rule for it first.

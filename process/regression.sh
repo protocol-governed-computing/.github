@@ -230,6 +230,9 @@ step blockchain_routing_closure python "$W/business_domains/blockchain/testbed/r
 echo; echo "=== transformation: routing closure (a phase whose observation finds nothing rejects) ==="
 step transformation_routing_closure python "$W/transformation/testbed/routing_closure/execution_validation.py"
 
+echo; echo "=== ai_governance: reclaim closure (a reclaim the registry refuses stays active) ==="
+step ai_governance_reclaim_closure python "$W/business_domains/ai_governance/testbed/routing_closure/execution_validation.py"
+
 step trace_schema_conformance python "$W/.github/process/trace_schema_conformance.py" \
   "$W/data/collatz" "$W/data/ai_governance" "$W/data/book_library_mgmt" \
   "$W/data/book_library_mgmt_cr02" "$W/data/blockchain" "$W/data/causal_language_model" \
