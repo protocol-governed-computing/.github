@@ -224,6 +224,9 @@ step clm_hosted_model python "$W/business_domains/causal_language_model/testbed/
 # Every trace this block wrote, against the schema its constitution names. Scoped to the data roots
 # cleared above, so a stale trace from an earlier run is never what is judged.
 echo; echo "=== trace schema ==="
+echo; echo "=== blockchain: routing closure (each case on its own scratch root) ==="
+step blockchain_routing_closure python "$W/business_domains/blockchain/testbed/routing_closure/execution_validation.py"
+
 echo; echo "=== transformation: routing closure (a phase whose observation finds nothing rejects) ==="
 step transformation_routing_closure python "$W/transformation/testbed/routing_closure/execution_validation.py"
 

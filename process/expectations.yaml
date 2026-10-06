@@ -23,10 +23,10 @@ steps:
     expect: ["GOVERNANCE CHAIN PASSED"]
   - id: supersession_agreement
     section: checks
-    expect: ["SUPERSESSION AGREEMENT PASSED — 16 relation\\(s\\)"]
+    expect: ["SUPERSESSION AGREEMENT PASSED — 24 relation\\(s\\)"]
   - id: human_block_fidelity
     section: checks
-    expect: ["HUMAN BLOCK FIDELITY PASSED — 514 artifacts"]
+    expect: ["HUMAN BLOCK FIDELITY PASSED — 522 artifacts"]
   - id: evidence_determinism
     section: checks
     expect: ["EVIDENCE DETERMINISM PASSED"]
@@ -69,7 +69,7 @@ steps:
   - id: construction_acceptance
     section: checks
     exit: 1
-    expect: ["171/173 artifacts reproduced across 6 domain\\(s\\)\\s+\\(2 field difference\\(s\\)\\)",
+    expect: ["179/181 artifacts reproduced across 6 domain\\(s\\)\\s+\\(2 field difference\\(s\\)\\)",
              "DIFF  IN_UPDATE_BIBLIOGRAPHIC_INFORMATION_V1\\s+1 field", "DIFF  WF_UPDATE_BIBLIOGRAPHIC_INFORMATION_V1\\s+1 field"]
     red_by_design: >-
       book_library_mgmt's two _V1 artifacts were published in v5 with `version: v0`; identity is fixed at
@@ -239,6 +239,10 @@ steps:
     section: execution
     # Qwen3 8B's words are not determined, so the regression leaves it out; --qwen exercises it.
     expect: ["15/15 criteria hold  \\(1 not exercised\\)"]
+  - id: blockchain_routing_closure
+    section: execution
+    # cr_06_routing_closure: a failed record ends identity's and wallet's acts as rejected
+    expect: ["6/6 criteria hold\\s+\\(2 not exercised\\)"]
   - id: transformation_routing_closure
     section: execution
     # an observation that finds nothing ends a phase as rejected; answers and routing generated
