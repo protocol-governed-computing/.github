@@ -11,7 +11,9 @@ Two differences are not a change of meaning:
 - a reference moved to the declared successor of an artifact stood down with exactly one successor.
 
 An identity added since v5 is not published, so it is not compared. An identity v5 published and the
-working composition no longer holds is a finding: a published identity stays in the record.
+working composition no longer holds is a finding: a published identity stays in the record. The one
+exception is a removal named in `REMOVED`, with its reason; each is an exception to SU-11 that the
+realization map and the release notes record.
 
 The sealed composition is read, never written. Exit 0 when nothing published changed meaning and
 nothing published is missing, 1 otherwise.
@@ -27,6 +29,13 @@ from transformation.build import sameness
 WORKSPACE = Path(__file__).resolve().parents[2]
 PUBLISHED = WORKSPACE / "pgc_release" / "snapshot"
 WORKING = WORKSPACE / "snapshot"
+
+# Published identities removed by a named decision, and why. Nothing else may leave the record.
+REMOVED = {
+    "ai_governance::CC_ENFORCE_LICENSE_CAP_V0":
+        "nothing runs it, and its evaluation block is refused by "
+        "execution_topology::INVARIANT_TOPOLOGY_CONTRACT_CLOSED_V1",
+}
 
 
 def frontmatters(root: Path) -> dict[str, dict]:
@@ -60,8 +69,12 @@ def main() -> int:
     successor = successors(working)
 
     findings: list[str] = []
-    for fqdn in sorted(set(published) - set(working)):
-        findings.append(f"{fqdn}\n   published in v5 and no longer in the composition")
+    removed = sorted(set(published) - set(working))
+    for fqdn in removed:
+        if fqdn not in REMOVED:
+            findings.append(f"{fqdn}\n   published in v5 and no longer in the composition")
+    for fqdn in sorted(set(REMOVED) - set(removed)):
+        findings.append(f"{fqdn}\n   named as removed and still in the composition, or never published")
     for fqdn in sorted(set(published) & set(working)):
         was = {k: v for k, v in published[fqdn].items() if k != "superseded_by"}
         now = {k: v for k, v in working[fqdn].items() if k != "superseded_by"}
@@ -72,8 +85,10 @@ def main() -> int:
             findings.append(f"{fqdn}\n   changed meaning since v5:\n   {shown}{more}")
 
     if not findings:
+        for fqdn in sorted(REMOVED):
+            print(f"  REMOVED  {fqdn} — {REMOVED[fqdn]}")
         print(f"PUBLISHED IDENTITY PASSED — {len(published)} identities published in v5, "
-              f"none changed meaning")
+              f"none changed meaning, {len(REMOVED)} removed by name")
         return 0
 
     for finding in findings:

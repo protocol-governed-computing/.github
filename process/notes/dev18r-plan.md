@@ -154,9 +154,14 @@ This replaces `cr_02_reclaim_closure` and `cr_03_parameter_result`.
 - **Re-points:**
   - `WF_GOVERN_AGENT_ACTION_V0` (`code`);
   - the reclaim contract's one referrer.
-- **Not deleted.** `CC_ENFORCE_LICENSE_CAP_V0` stays as v5 published it (parked, §6).
+- **Not deleted here.** `CC_ENFORCE_LICENSE_CAP_V0` is deleted in step 7, by named exception.
 - **Tests:** `ai_governance/testbed/routing_closure/execution_validation.py`.
 - **Checks:** D1, D2, D3.
+
+### Step 7a — Collatz dossier (moved from step 8)
+
+Step 7 arms `CONTRACT_CLOSED_V1`, which refuses the evaluation block `CC_VERIFY_TERMINATION_V0`
+carries. So the Collatz dossier runs first. Its runtime test of a failing gate stays in step 8.
 
 ### Step 7 — Platform routing rules (change note)
 
@@ -174,9 +179,12 @@ This replaces `cr_02_reclaim_closure` and `cr_03_parameter_result`.
   - `test_routing_closure.py` and `test_routing_lookup.py`.
 - **Arming.** The compile now checks routing in every domain, so steps 4–6 must already route every
   outcome.
+- **Licence cap.** `CC_ENFORCE_LICENSE_CAP_V0` carries an evaluation block too, and nothing runs it.
+  It is deleted, with the two prose mentions trimmed. The published-identity check allows this one
+  named removal, and the map and release notes record it as an exception to SU-11.
 - **Checks:** D1, D2, D4.
 
-### Step 8 — Runtime, trace and Collatz
+### Step 8 — Runtime and trace
 
 **Platform part (change note).**
 - **Artifacts.** `CONSTITUTION_TRACE_EXECUTION_V1` and `SCHEMA_TRACE_EVENT_V2.json`. The trace
@@ -190,10 +198,8 @@ This replaces `cr_02_reclaim_closure` and `cr_03_parameter_result`.
 - **CLM:** the choose atom reads `ground_numbers` with `.get`.
 - **.github:** `trace_schema_conformance.py` reads V2.
 
-**Collatz dossier.** This replaces `cr_01_termination_gate`.
-- **Artifact.** `CC_VERIFY_TERMINATION_V1`; the V0 gains `superseded_by`.
-- **Re-point.** `WF_COLLATZ_CONJECTURE_V0`.
-- **Test.** `test_reference_collatz`, including the case where the gate fails.
+**Collatz test.** `test_reference_collatz`, including the case where the gate fails. The dossier
+itself ran in step 7a.
 
 **Pinned red by design:** `blockchain_identity` at 21/22, because the TE output fields are parked.
 
@@ -238,5 +244,3 @@ None of these makes a done-check fail. They go to the next cycle as one file.
 - **A domain build keeps no record of which checks ran.**
 - **Short-code references:** workflow `code` and `start_node`, and RB binding keys.
 - **RT-6 stays Partial** for the outcome-namespace fallback (finding 31).
-- **`CC_ENFORCE_LICENSE_CAP_V0`.** It is published in v5 and nothing runs it. It stays as published;
-  removing a published identity needs a rule for it first.

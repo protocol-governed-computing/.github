@@ -117,3 +117,48 @@ So a reference could be missed by one place and seen by another.
   them with `version: v0`, and the renderer now writes the version from the identity.
 - **Match with dev/18.** Each V1 equals dev/18's final text for the same artifact, apart from
   identity names, `version` and `supersedes`.
+
+## Step 7 — Routing is a lookup, and every outcome is answered
+
+**Problem.**
+- **Conditions nothing runs.** A contract could route a step's answer to an evaluation condition.
+  Execution read any answer but `exit` as going on, so such a contract ended with its last step's
+  outcome.
+- **Steps narrower than their capability.** A step's answers could be fewer than the outcomes the
+  capability it dispatches declares.
+- **Unrouted contract outcomes.** A workflow could leave an outcome of the contract a place runs
+  without a route.
+
+**Change.**
+- **`software_governance`**, from dev/18:
+  - `CONSTITUTION_EXECUTION_TOPOLOGY_V1` names both new invariants and `WF_ROUTING_CLOSED`;
+  - `INVARIANT_TOPOLOGY_CONTRACT_CLOSED_V1`: routing answers only `continue` or `exit`, and a contract
+    declares no `evaluation` block;
+  - `INVARIANT_TOPOLOGY_ROUTING_COMPLETE_V1`: a step answers every outcome its capability declares;
+  - `workflow::INVARIANT_WF_ROUTING_CLOSED_V0`: a workflow routes every outcome a reachable place can
+    end with;
+  - the three V0s gain only `superseded_by`;
+  - twenty `governed_by` references move to the topology V1, one line each.
+- **`protocol_compiler`**, from dev/18:
+  - the three handlers, and their registrations;
+  - S2's single node resolver, and S4's precomputed workflow routing;
+  - `test_routing_closure` and `test_routing_lookup`.
+- **New in dev/18r: the routing-complete V1 handler skips a stood-down contract.** It checked every
+  contract, and reported the two judge-contract V0s that step 4 stood down. dev/18 had amended those
+  V0s in place, so it never met the case. The handler now skips a contract that is not in force, as
+  `INVARIANT_SUPERSEDED_NOT_IN_FORCE_V0` requires and as `CONTRACT_CLOSED_V1` already did.
+  `test_routing_lookup` covers it.
+- **Licence cap.** `ai_governance::CC_ENFORCE_LICENSE_CAP_V0` carries an evaluation block, and
+  nothing runs it.
+  - It is deleted, and the two prose lines naming it are trimmed. This is dev/18's commit.
+  - `published_identity_check.py` allows this one removal by name, with its reason.
+  - It is an exception to SU-11; the realization map and the release notes record it.
+- **Order.** The Collatz dossier (step 7a) ran first, because this rule refuses the evaluation block
+  `CC_VERIFY_TERMINATION_V0` carries.
+
+**Verified.** `regression.sh --all`: 66/66 as expected.
+- 528 artifacts, 30 supersession relations.
+- Published identity: 500 identities published in v5, none changed meaning, 1 removed by name.
+- `test_routing_closure` 12/12; `test_routing_lookup` 6/6.
+- Construction acceptance 182/184 across 7 domains, red by design for the two pinned book_library
+  differences.

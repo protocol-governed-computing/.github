@@ -136,6 +136,8 @@ if [[ "$MODE" == "--all" ]]; then
            "$W/protocol_compiler/scripts/testbed/test_transform_conformance.py" \
            "$W/protocol_compiler/scripts/testbed/test_vector_build.py" \
            "$W/protocol_compiler/scripts/testbed/test_reference_semantics.py" \
+           "$W/protocol_compiler/scripts/testbed/test_routing_closure.py" \
+           "$W/protocol_compiler/scripts/testbed/test_routing_lookup.py" \
            "$W/protocol_compiler/scripts/testbed/test_platform_vectors.py" \
            "$W/protocol_compiler/scripts/testbed/test_keyed_chain_and_molecule_surface.py" \
            "$W/protocol_compiler/scripts/testbed/test_dispatch_routing_fidelity.py" \
