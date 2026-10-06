@@ -1,23 +1,42 @@
 # SOTU Handoff
 
-## Typed step inputs (step 9) — dev/18 · 2026-10-05
+## SOTU Handoff — 2026-10-05 · typed step inputs (dev/18 step 9)
 
-- **State.** A transform is now given only values of the types it declares, checked at build.
-  Uncommitted in `software_governance`, `protocol_compiler`, `conformance_workloads`, `standards` and
-  `.github`.
-- **What landed.**
-  - Platform, by change note: `CT_PURE_REQUIRE_TRUE_V0`, `INVARIANT_CT_SURFACE_CLOSED_V2`,
-    `INVARIANT_CT_INPUT_TYPED_V0` and `CONSTITUTION_CAPABILITY_TRANSFORMS_V2`, which stands down V1.
-  - Compiler: `assert_ct_input_typed_v0` and `test_input_typed` (7/7).
-  - Collatz, by dossier `cr_02_typed_decision`: `CC_VERIFY_TERMINATION_V2` decides with the new atom.
-  - `published_identity_check.py` follows a chain of successors to its end.
-- **Verified.** `regression.sh --all` passes 70/70 as expected. The rule found no other mismatch in any
-  domain. Planting the old step back fails the Collatz build on the new rule.
-- **Against v5:** 33 new, 26 stood down, 36 re-pointed, 8 explanation only, 1 removed, 1 deletable
-  (`CC_VERIFY_TERMINATION_V1`, never published).
-- **Record.** Step 9 in `process/notes/dev18-changes.md`; CP-2 in the realization map.
-- **Not done.** cr_02 carries no `baseline.json` approvals; Gates 1 and 2 were taken under the
-  author's go-ahead for the sweep.
+### Changes Made
+- `software_governance/capability_transforms/registry/capability_transforms/CT_PURE_REQUIRE_TRUE_V0.md` — new atom: boolean in; SUCCESS when true, VIOLATION when false.
+- `software_governance/capability_transforms/implementation/ct_pure_require_true_v0.py` — its implementation.
+- `software_governance/capability_transforms/registry/test_data/TEST_DATA_CT_PURE_REQUIRE_TRUE_V0.md` — two vectors.
+- `software_governance/registry/capability_transforms/invariants/INVARIANT_CT_SURFACE_CLOSED_V2.md` — closed list adds the atom; V1 gains `superseded_by`.
+- `software_governance/registry/capability_transforms/invariants/INVARIANT_CT_INPUT_TYPED_V0.md` — new rule: a step input has the type its transform declares.
+- `software_governance/registry/capability_transforms/constitutions/CONSTITUTION_CAPABILITY_TRANSFORMS_V2.md` — names SURFACE_CLOSED_V2 and CT_INPUT_TYPED_V0; V1 stood down and still names SURFACE_CLOSED_V1.
+- `software_governance/registry/{capability_transforms,governance}/constitutions/*` — prose names the transform constitution V2 (deterministic, non-deterministic, molecules, governance).
+- `software_governance/surface_map/governance_surface_map.yaml` — regenerated, 207 artifacts.
+- `protocol_compiler/compiler/governance_engine/assertions/handlers/assert_ct_input_typed_v0.py` + `__init__.py` — new handler, registered.
+- `protocol_compiler/scripts/testbed/test_input_typed.py` — 7 tests; `test_platform_vectors.py` counts 13 platform transforms.
+- `conformance_workloads/workloads/collatz/cr_dossiers/cr_02_typed_decision/` — P0–P8 + delivery.
+- `conformance_workloads/workloads/collatz/registry/collatz/capability_contracts/CC_VERIFY_TERMINATION_V2.md` — decides with the new atom; V1 stood down; `WF_COLLATZ_CONJECTURE_V0` re-pointed.
+- `.github/process/published_identity_check.py` — follows a successor chain to its end.
+- `.github/process/regression.sh`, `expectations.yaml` — adds `test_input_typed`; counts 535 / 34 / 37 / 183/185 / 16 advisory copies.
+- `.github/process/notes/dev18-changes.md` — step 9 and the updated result table.
+- `standards/doc/realization_map.md` — CP-2 records the rule.
+
+### Build & Test Status
+PASSING. `regression.sh --all`: 70/70 as expected. Red by design, each with its reason: `admission_contract_fidelity`, `construction_acceptance` (183/185), `si_snapshot_validate` (16 advisory copies), `blockchain_identity` (21/22). Published identity: none of 500 changed meaning, 1 removed by name. The planted V1 step fails the Collatz build on `ASSERT_CT_INPUT_TYPED_V0`.
+
+### Open Issues
+- All five repos are committed, each 1 ahead of origin: push pending.
+- Commit subjects carry wrapped-line double spaces (cosmetic).
+- cr_02 has no `baseline.json` approvals; Gates 1 and 2 were taken under the author's sweep go-ahead.
+- `CC_VERIFY_TERMINATION_V1` is deletable by a recorded human act (SU-12): created and stood down this cycle, never published.
+
+### Architectural Concerns
+- The type rule checks transform steps only; side-effect step inputs and `$.` paths other than `$.inputs` and `$.results` are not compared.
+- The runtime still does not check step inputs (`protocol_runtime/runtime/ct_executor.py:238-253`); build refusal is the only guard.
+- Adding any platform atom forces a new version of the closed surface invariant and of its constitution.
+- The architecture items in the park list of `dev18-changes.md` are unchanged.
+
+### Next Session Should Start With
+Push the five repos (`software_governance`, `protocol_compiler`, `conformance_workloads`, `.github` on `dev/18`; `standards` on `work/v1`). Then decide whether to remove `CC_VERIFY_TERMINATION_V1`.
 
 ## dev/18 replayed and renamed; no cut planned — dev/18 · 2026-10-05
 
