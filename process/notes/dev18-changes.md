@@ -22,44 +22,47 @@ dev/18 is ready to cut when every check passes. No cut is planned.
 - A domain change runs the dossier pipeline. A platform or pipeline change runs a change note plus
   the regression.
 
-## Result after step 8
+## Result after step 9
 
-D1–D4 hold: `regression.sh --all` passes 69/69 as expected. Four steps are red by design, each with
+D1–D4 hold: `regression.sh --all` passes 70/70 as expected. Four steps are red by design, each with
 its reason in `expectations.yaml`.
 
 ### Artifacts, against v5
 
-Measured on the compiled compositions: v5 holds 500 artifacts, dev/18 holds 525.
+Measured on the compiled compositions: v5 holds 500 artifacts, dev/18 holds 531.
 
 | | Count | What |
 |---|---|---|
-| New | 27 | 26 compiled identities and `SCHEMA_TRACE_EVENT_V2.json` |
-| Stood down | 24 | Published V0s that gained only `superseded_by`; each has a V1 among the new |
+| New | 33 | 32 compiled identities and `SCHEMA_TRACE_EVENT_V2.json` |
+| Stood down | 26 | Published artifacts that gained only `superseded_by`; each has a successor among the new |
 | Re-pointed | 36 | Published artifacts whose only change is a reference moved to a declared successor |
-| Explanation only | 4 | `WF_P0_…_V0` and `WF_P1_…_V0` gain a generator-source line; `VOCAB_AI_LICENSING_STATES_V0` and `WF_PROVISION_AI_LICENSING_V0` lose the line naming the licence cap |
+| Explanation only | 8 | `WF_P0_…_V0` and `WF_P1_…_V0` gain a generator-source line; `VOCAB_AI_LICENSING_STATES_V0` and `WF_PROVISION_AI_LICENSING_V0` lose the line naming the licence cap; `CONSTITUTION_GOVERNANCE_V0` and the three transform-kind constitutions name the transform constitution V2 in prose |
 | Removed | 1 | `ai_governance::CC_ENFORCE_LICENSE_CAP_V0`, a named removal recorded as a governed change |
-| Deletable | 0 | No identity was created and then stood down. Every stood-down artifact was published in v5, so it stays in the record |
+| Deletable | 1 | `workload::CC_VERIFY_TERMINATION_V1` was created and stood down in this cycle, and was never published. It may leave the record only by a recorded human act (SU-12). Every other stood-down artifact was published in v5, so it stays |
 
 **New, by kind.**
-- **Platform (7):**
+- **Platform (12):**
   - `VOCAB_DECLARATION_REPRESENTATION_V0`;
   - the topology constitution V1, and `CONTRACT_CLOSED_V1` and `ROUTING_COMPLETE_V1`;
   - `WF_ROUTING_CLOSED_V0`;
-  - the trace constitution V1, and `SCHEMA_TRACE_EVENT_V2`.
+  - the trace constitution V1, and `SCHEMA_TRACE_EVENT_V2`;
+  - the transform constitution V2, `CT_SURFACE_CLOSED_V2` and `CT_INPUT_TYPED_V0`;
+  - `CT_PURE_REQUIRE_TRUE_V0` and its test data.
 - **Transformation (9):** the two judge contracts and `WF_P2`–`WF_P8`.
 - **Blockchain (8).**
 - **ai_governance (2).**
-- **Collatz (1).**
+- **Collatz (2):** V1, stood down by V2 in this cycle, and V2.
 
 **Re-pointed.**
 - 19 platform artifacts name the topology V1 in `governed_by`.
 - 7 blockchain entrances and intents, 7 transformation intents, 2 ai_governance workflows and the
-  Collatz workflow each name a V1.
+  Collatz workflow each name a successor.
 
 **Dossiers.** Each is delivered with its own `delivery.md`:
 - `blockchain/cr_06_routing_closure`;
 - `ai_governance/cr_02_reclaim_and_parameters`;
-- `collatz/cr_01_termination_gate`.
+- `collatz/cr_01_termination_gate`;
+- `collatz/cr_02_typed_decision`.
 
 ## Parked
 
@@ -293,3 +296,37 @@ So a reference could be missed by one place and seen by another.
 - **Red by design.** `blockchain_identity` holds 21 of 22 criteria. An acceptance stating no grounds
   records none, and `TE_ACCEPT_ACTOR_V0` still owes `grounds`. The fix needs an optional transport
   output field, which is parked.
+
+## Step 9 — A transform is given only values of the types it declares
+
+**What was wrong.** The runtime checks the types a workflow is entered with. It did not check what one
+step gives another: it resolved a step's inputs and called the transform. Collatz's termination gate
+gave the set-membership check a boolean where it declares a string. The check compares by equality,
+so every run decided correctly, but the declaration and the use disagreed and nothing said so.
+
+**What changed.**
+- **`software_governance`, by change note.**
+  - New atom `CT_PURE_REQUIRE_TRUE_V0`: it succeeds when a boolean is true and refuses when it is
+    false. It has an implementation and two test vectors.
+  - `INVARIANT_CT_SURFACE_CLOSED_V2` adds the atom to the platform's closed list, and stands down V1.
+  - `CONSTITUTION_CAPABILITY_TRANSFORMS_V2` names `SURFACE_CLOSED_V2` and the new
+    `INVARIANT_CT_INPUT_TYPED_V0`, and stands down V1. V1 still names `SURFACE_CLOSED_V1`, so every
+    invariant stays named by a constitution, as the topology constitution did in step 7.
+  - The surface map is regenerated: 207 governance artifacts.
+- **`protocol_compiler`.** `assert_ct_input_typed_v0` compares each input a contract binds to a
+  transform step with the transform's declaration. A literal is typed by its value, `$.inputs` by the
+  contract, and `$.results` by the earlier step's transform. `test_input_typed` covers it, 7/7.
+  `test_platform_vectors` counts 13 platform transforms.
+- **Collatz, by dossier.** `cr_02_typed_decision` replaces the gate's decision step with
+  `CT_PURE_REQUIRE_TRUE_V0`. `CC_VERIFY_TERMINATION_V2` stands down V1, and the workflow re-points.
+- **`.github`.** `published_identity_check.py` follows a chain of successors to its end, so a
+  reference moved from V0 to V2 within one cycle is a declared re-point.
+
+**Verified.**
+- `regression.sh --all`: 70/70 as expected. The build found no other mismatch in any domain.
+- With the old decision step put back, the Collatz build fails with `ASSERT_CT_INPUT_TYPED_V0 — 1
+  violation(s)`.
+- 535 artifacts, 34 supersession relations, 37 transforms; construction acceptance 183/185.
+- `si snapshot validate` reports 16 republished platform copies, advisory: the new atom is
+  republished into the workload, as every platform transform a domain uses is.
+

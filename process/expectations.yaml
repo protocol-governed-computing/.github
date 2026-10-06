@@ -23,10 +23,10 @@ steps:
     expect: ["GOVERNANCE CHAIN PASSED"]
   - id: supersession_agreement
     section: checks
-    expect: ["SUPERSESSION AGREEMENT PASSED — 31 relation\\(s\\)"]
+    expect: ["SUPERSESSION AGREEMENT PASSED — 34 relation\\(s\\)"]
   - id: human_block_fidelity
     section: checks
-    expect: ["HUMAN BLOCK FIDELITY PASSED — 529 artifacts"]
+    expect: ["HUMAN BLOCK FIDELITY PASSED — 535 artifacts"]
   - id: evidence_determinism
     section: checks
     expect: ["EVIDENCE DETERMINISM PASSED"]
@@ -69,7 +69,7 @@ steps:
   - id: construction_acceptance
     section: checks
     exit: 1
-    expect: ["182/184 artifacts reproduced across 7 domain\\(s\\)\\s+\\(2 field difference\\(s\\)\\)",
+    expect: ["183/185 artifacts reproduced across 7 domain\\(s\\)\\s+\\(2 field difference\\(s\\)\\)",
              "DIFF  IN_UPDATE_BIBLIOGRAPHIC_INFORMATION_V1\\s+1 field", "DIFF  WF_UPDATE_BIBLIOGRAPHIC_INFORMATION_V1\\s+1 field"]
     red_by_design: >-
       book_library_mgmt's two _V1 artifacts were published in v5 with `version: v0`; identity is fixed at
@@ -104,7 +104,7 @@ steps:
     expect: ["4/4 passed"]
   - id: implementation_closure
     section: checks
-    expect: ["IMPLEMENTATION CLOSURE PASSED — 36 transform\\(s\\)"]
+    expect: ["IMPLEMENTATION CLOSURE PASSED — 37 transform\\(s\\)"]
   - id: test_inspector
     section: checks
     # si.behavior_logic.list names each workflow's nodes by key (B6); si.execution.explain adds 29
@@ -142,6 +142,10 @@ steps:
     section: checks
     # routing is a lookup with two answers; a contract declares no condition; a stood-down contract is not checked
     expect: ["6/6 passed"]
+  - id: test_input_typed
+    section: checks
+    # a transform is given only values of the types it declares (INVARIANT_CT_INPUT_TYPED_V0)
+    expect: ["7/7 passed"]
   - id: test_platform_vectors
     section: checks
     expect: ["3/3 passed"]
@@ -219,10 +223,10 @@ steps:
     # Non-advisory checks all pass. Two advisory checks are red and exit 0 by design; their counts
     # are pinned, so a count that moves either way is reported.
     expect: ["valid\\s+True", "failed_checks: —",
-             "check\\s+republished_copies_agree\\s+examined\\s+\\d+\\s+violation_count\\s+15\\b",
+             "check\\s+republished_copies_agree\\s+examined\\s+\\d+\\s+violation_count\\s+16\\b",
              "check\\s+bound_paths_declared_as_stores\\s+examined\\s+\\d+\\s+violation_count\\s+1\\b"]
     red_by_design: >-
-      advisory — 15 capability_side_effects artifacts published twice and diverging;
+      advisory — 16 platform side effects and transforms republished in each domain that uses them, and diverging;
       one ai_governance binding to a path no store declares
   - id: pgc_env_check
     section: checks

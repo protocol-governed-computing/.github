@@ -51,15 +51,25 @@ def frontmatters(root: Path) -> dict[str, dict]:
 
 
 def successors(working: dict[str, dict]) -> dict[str, str]:
-    """Each artifact stood down with one successor, by full name and by short code."""
-    out: dict[str, str] = {}
+    """Each artifact stood down with one successor, by full name and by short code.
+
+    A chain is followed to its end: a reference moved from V0 to V2 moved to V0's successor's
+    successor, which is the version in force."""
+    step: dict[str, str] = {}
     for fqdn, frontmatter in working.items():
         named = frontmatter.get("superseded_by")
         if isinstance(named, str):
             named = [named]
         if named and len(named) == 1:
-            out[fqdn] = named[0]
-            out[fqdn.split("::")[-1]] = named[0].split("::")[-1]
+            step[fqdn] = named[0]
+    out: dict[str, str] = {}
+    for fqdn, nxt in step.items():
+        seen = {fqdn}
+        while nxt in step and nxt not in seen:
+            seen.add(nxt)
+            nxt = step[nxt]
+        out[fqdn] = nxt
+        out[fqdn.split("::")[-1]] = nxt.split("::")[-1]
     return out
 
 

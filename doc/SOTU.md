@@ -1,5 +1,24 @@
 # SOTU Handoff
 
+## Typed step inputs (step 9) — dev/18 · 2026-10-05
+
+- **State.** A transform is now given only values of the types it declares, checked at build.
+  Uncommitted in `software_governance`, `protocol_compiler`, `conformance_workloads`, `standards` and
+  `.github`.
+- **What landed.**
+  - Platform, by change note: `CT_PURE_REQUIRE_TRUE_V0`, `INVARIANT_CT_SURFACE_CLOSED_V2`,
+    `INVARIANT_CT_INPUT_TYPED_V0` and `CONSTITUTION_CAPABILITY_TRANSFORMS_V2`, which stands down V1.
+  - Compiler: `assert_ct_input_typed_v0` and `test_input_typed` (7/7).
+  - Collatz, by dossier `cr_02_typed_decision`: `CC_VERIFY_TERMINATION_V2` decides with the new atom.
+  - `published_identity_check.py` follows a chain of successors to its end.
+- **Verified.** `regression.sh --all` passes 70/70 as expected. The rule found no other mismatch in any
+  domain. Planting the old step back fails the Collatz build on the new rule.
+- **Against v5:** 33 new, 26 stood down, 36 re-pointed, 8 explanation only, 1 removed, 1 deletable
+  (`CC_VERIFY_TERMINATION_V1`, never published).
+- **Record.** Step 9 in `process/notes/dev18-changes.md`; CP-2 in the realization map.
+- **Not done.** cr_02 carries no `baseline.json` approvals; Gates 1 and 2 were taken under the
+  author's go-ahead for the sweep.
+
 ## dev/18 replayed and renamed; no cut planned — dev/18 · 2026-10-05
 
 - **State.** The D1/D2 work was rebuilt from each "VERSION bump to 18" commit and is now `dev/18` in
