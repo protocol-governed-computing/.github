@@ -99,10 +99,10 @@ outcomes before the runtime step.
   the step 7 changes stay dormant.
 - **Checks:** D1, D2.
 
-### Step 4 — Transformation dossier: semantic change and routing (one dossier)
+### Step 4 — Transformation: semantic change and routing (change note)
 
-This replaces dev/18's `routing_closure` and `semantic_change` dossiers. Their delivered designs are
-ported as REPLACE + REPOINT, not edited in place.
+Every artifact this step replaces is written by the generator (`emit_rule_sets`), and a dossier
+would be judged by the P7 rules it replaces. It runs as a change note.
 
 - **Code** (all transformation tooling at dev/18's head):
   - `render.py`, `completeness.py`, `generators.py`, `sameness.py`, `cli.py`, `emit.py`;

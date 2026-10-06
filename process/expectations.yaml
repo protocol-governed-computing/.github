@@ -23,10 +23,10 @@ steps:
     expect: ["GOVERNANCE CHAIN PASSED"]
   - id: supersession_agreement
     section: checks
-    expect: ["SUPERSESSION AGREEMENT PASSED — 7 relation\\(s\\)"]
+    expect: ["SUPERSESSION AGREEMENT PASSED — 16 relation\\(s\\)"]
   - id: human_block_fidelity
     section: checks
-    expect: ["HUMAN BLOCK FIDELITY PASSED — 505 artifacts"]
+    expect: ["HUMAN BLOCK FIDELITY PASSED — 514 artifacts"]
   - id: evidence_determinism
     section: checks
     expect: ["EVIDENCE DETERMINISM PASSED"]
@@ -68,7 +68,13 @@ steps:
     expect: ["PROJECTION PASSED"]
   - id: construction_acceptance
     section: checks
-    expect: ["167/167 artifacts reproduced across 5 domain\\(s\\)\\s+\\(0 field difference\\(s\\)\\)"]
+    exit: 1
+    expect: ["171/173 artifacts reproduced across 6 domain\\(s\\)\\s+\\(2 field difference\\(s\\)\\)",
+             "DIFF  IN_UPDATE_BIBLIOGRAPHIC_INFORMATION_V1\\s+1 field", "DIFF  WF_UPDATE_BIBLIOGRAPHIC_INFORMATION_V1\\s+1 field"]
+    red_by_design: >-
+      book_library_mgmt's two _V1 artifacts were published in v5 with `version: v0`; identity is fixed at
+      publication, so they keep the sealed text, and the renderer, which now writes the version from the
+      identity, differs from them in that one field
   - id: molecule_design_test
     section: checks
     expect: ["5/5 passed"]
@@ -81,17 +87,17 @@ steps:
     section: checks
     # a route to a place the composition already has resolves (A batch, wave 2 — B6); a contract
     # redeclared whole requires only what it now declares (cr_05_identity)
-    expect: ["6/6 passed"]
+    expect: ["7/7 passed"]
   - id: refusal_moment_design_test
     section: checks
     expect: ["4/4 passed"]
   - id: vector_value_design_test
     section: checks
     expect: ["3/3 passed"]
-  - id: withdrawal_design_test
+  - id: semantic_change_design_test
     section: checks
-    # an amendment declares what it takes away (cr_05_identity)
-    expect: ["5/5 passed"]
+    # a change of meaning is a new identity; a replacement accounts for its reach (semantic_change)
+    expect: ["18/18 passed"]
   - id: entrance_gate_design_test
     section: checks
     # an entrance supplies what its gate requires (B25)
@@ -233,6 +239,10 @@ steps:
     section: execution
     # Qwen3 8B's words are not determined, so the regression leaves it out; --qwen exercises it.
     expect: ["15/15 criteria hold  \\(1 not exercised\\)"]
+  - id: transformation_routing_closure
+    section: execution
+    # an observation that finds nothing ends a phase as rejected; answers and routing generated
+    expect: ["4/4 criteria hold\\s+\\(1 not exercised\\)"]
   - id: trace_schema_conformance
     section: execution
     expect: ["TRACE SCHEMA CONFORMANCE PASSED — \\d+ trace\\(s\\)"]

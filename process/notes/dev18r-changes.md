@@ -61,3 +61,59 @@ So a reference could be missed by one place and seen by another.
 - Published identity: 500 identities published in v5, none changed meaning.
 - **Probe.** On `blockchain::CC_RESOLVE_ACTOR_V0`, the comparison reports an added outcome
   (`core.result_surface`) and ignores a reworded `summary`.
+
+## Step 4 — Construction refuses a change of meaning; a phase rejects when nothing is found
+
+**Problem.** There were two problems.
+- **Construction never compared meaning.** It built an amendment that changed what an artifact
+  means, under the artifact's old identity. It skipped the comparison when it was not given the
+  composition. It let a design withdraw a fact. And it gave a design no way to re-point a reference
+  without restating the artifact that holds it.
+- **Phases ignored NOT_FOUND.** Seven of the phases ask the composition questions before they judge.
+  When an answer was NOT_FOUND, nothing answered it, so the phase judged against an observation that
+  never arrived.
+
+**Why a change note.** All nine artifacts this step replaces are written by the generator
+(`emit_rule_sets`). A dossier would also have been judged by the P7 rules it replaces.
+
+**Change.**
+- **Construction** (`build/sameness.py`, `completeness.py`, `generators.py`, `render.py`, `cli.py`):
+  - it compares every amendment with the composition by `VOCAB_DECLARATION_REPRESENTATION_V0`;
+  - it refuses a change of meaning under an old identity, and refuses an amendment built without
+    `--snapshot`;
+  - `REPOINT` moves one reference and nothing else, and only in declared reference parts;
+  - a replacement whose live referrer the design does not account for is refused;
+  - `render._binding` refuses a step-binding literal that does not parse.
+- **P7 rules** (`p7_design_intent/rules.py` and its template): P7 admits `REPOINT` and refuses any
+  `withdrawn_facts` row.
+- **Generator** (`design/emit.py`):
+  - every observing step answers each outcome the observing capability declares;
+  - every phase routes every outcome its contract declares other than SUCCESS to `EXIT_REJECTED`;
+  - it writes P2–P8 into their V1s, and reads the judge V1s.
+- **Generator fix, new in dev/18r.** The generator found a workflow's contract by the node's place
+  label. A re-point moves the node's `code` and keeps the label, so a re-pointed workflow was routed
+  by the contract it no longer runs. `emit.judge_contract` now reads `code`, as the compiler does.
+  The routing-closure validation reads it the same way.
+- **New identities** (`transformation`), each standing down its V0, which gains only `superseded_by`:
+  - `CC_JUDGE_AGAINST_SNAPSHOT_V1` and `CC_JUDGE_AGAINST_COMPOSITION_V1`;
+  - `WF_P2…P8_…_ADMISSIBILITY_V1`. Each runs its judge V1, and P7 V1's `phase_workflows` names the
+    V1s.
+- **Re-points.** The seven intents `IN_*_SUBMITTED_V0` for P2–P8 each move `workflow` once.
+- **Explanation only.** `WF_P0_…_V0` and `WF_P1_…_V0` gain a generator-source line.
+- **Tests.**
+  - `semantic_change_design_test` replaces `withdrawal_design_test`.
+  - `testbed/routing_closure/execution_validation.py` is new.
+  - `e2e_phases_test` and `differential` now name the V1 workflows.
+  - `construction_acceptance` adds ai_governance (partial). The Collatz workload joins it in step 8.
+
+**Verified.** `regression.sh --all`: 62/62 as expected.
+- 514 artifacts, 16 supersession relations.
+- Published identity: 500 identities published in v5, none changed meaning.
+- `semantic_change_design_test` 18/18; `keyed_node_design_test` 7/7.
+- Routing closure: 4/4 criteria hold (1 not exercised).
+- Rule-set emission is consistent.
+- **Construction acceptance** reproduces 171/173 across 6 domains and is red by design. The two
+  differences are `book_library_mgmt`'s `IN_`/`WF_UPDATE_BIBLIOGRAPHIC_INFORMATION_V1`: v5 published
+  them with `version: v0`, and the renderer now writes the version from the identity.
+- **Match with dev/18.** Each V1 equals dev/18's final text for the same artifact, apart from
+  identity names, `version` and `supersedes`.

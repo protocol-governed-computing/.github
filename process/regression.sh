@@ -108,14 +108,14 @@ if [[ "$MODE" == "--all" ]]; then
            human_block_fidelity evidence_determinism admission_contract_fidelity; do
     step "$c" python "$W/.github/process/$c.py"
   done
-  step emit_rule_sets python "$W/transformation/scripts/emit_rule_sets.py" --check
+  step emit_rule_sets python "$W/transformation/scripts/emit_rule_sets.py" --snapshot "$W/snapshot" --check
   step build_payloads python "$W/transformation/scripts/testbed/build_payloads.py" --check
   step author_transport_contracts env PYTHONPATH="$W/snapshot_inspector" \
     python "$W/snapshot_inspector/scripts/author_transport_contracts.py" --check
   step frontmatter_fidelity python "$W/.github/process/frontmatter_fidelity.py"
   for t in meta_test differential e2e_phases_test projection_test construction_acceptance \
            molecule_design_test vector_design_test keyed_node_design_test \
-           refusal_moment_design_test vector_value_design_test withdrawal_design_test \
+           refusal_moment_design_test vector_value_design_test semantic_change_design_test \
            entrance_gate_design_test; do
     step "$t" python "$W/transformation/scripts/testbed/$t.py"
   done
@@ -224,6 +224,9 @@ step clm_hosted_model python "$W/business_domains/causal_language_model/testbed/
 # Every trace this block wrote, against the schema its constitution names. Scoped to the data roots
 # cleared above, so a stale trace from an earlier run is never what is judged.
 echo; echo "=== trace schema ==="
+echo; echo "=== transformation: routing closure (a phase whose observation finds nothing rejects) ==="
+step transformation_routing_closure python "$W/transformation/testbed/routing_closure/execution_validation.py"
+
 step trace_schema_conformance python "$W/.github/process/trace_schema_conformance.py" \
   "$W/data/collatz" "$W/data/ai_governance" "$W/data/book_library_mgmt" \
   "$W/data/book_library_mgmt_cr02" "$W/data/blockchain" "$W/data/causal_language_model" \
