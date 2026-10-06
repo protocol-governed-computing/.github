@@ -1,12 +1,12 @@
-# dev/18r — the D1/D2 cycle, replayed
+# dev/18 — the D1/D2 cycle, replayed
 
-dev/18r rebuilt the D1/D2 work from each repository's "VERSION bump to 18" commit. dev/18's code was
-carried in its final form, and each change of meaning was authored once, under a new identity. dev/18
-stays as its own branch.
+dev/18 was rebuilt from each repository's "VERSION bump to 18" commit. The first attempt's code was
+carried in its final form, and each change of meaning was authored once, under a new identity. The
+first attempt is kept as the tag `archive/dev-18-original` in every repository.
 
 ## Done-checks
 
-dev/18r is merge-ready when every check passes.
+dev/18 is ready to cut when every check passes. No cut is planned.
 
 | # | Check | Command |
 |---|---|---|
@@ -29,7 +29,7 @@ its reason in `expectations.yaml`.
 
 ### Artifacts, against v5
 
-Measured on the compiled compositions: v5 holds 500 artifacts, dev/18r holds 525.
+Measured on the compiled compositions: v5 holds 500 artifacts, dev/18 holds 525.
 
 | | Count | What |
 |---|---|---|
@@ -175,7 +175,7 @@ So a reference could be missed by one place and seen by another.
   - every observing step answers each outcome the observing capability declares;
   - every phase routes every outcome its contract declares other than SUCCESS to `EXIT_REJECTED`;
   - it writes P2–P8 into their V1s, and reads the judge V1s.
-- **Generator fix, new in dev/18r.** The generator found a workflow's contract by the node's place
+- **Generator fix, new in the replay.** The generator found a workflow's contract by the node's place
   label. A re-point moves the node's `code` and keeps the label, so a re-pointed workflow was routed
   by the contract it no longer runs. `emit.judge_contract` now reads `code`, as the compiler does.
   The routing-closure validation reads it the same way.
@@ -228,7 +228,7 @@ So a reference could be missed by one place and seen by another.
   - the three handlers, and their registrations;
   - S2's single node resolver, and S4's precomputed workflow routing;
   - `test_routing_closure` and `test_routing_lookup`.
-- **New in dev/18r: the routing-complete V1 handler skips a stood-down contract.** It checked every
+- **New in the replay: the routing-complete V1 handler skips a stood-down contract.** It checked every
   contract, and reported the two judge-contract V0s that step 4 stood down. dev/18 had amended those
   V0s in place, so it never met the case. The handler now skips a contract that is not in force, as
   `INVARIANT_SUPERSEDED_NOT_IN_FORCE_V0` requires and as `CONTRACT_CLOSED_V1` already did.
@@ -276,7 +276,7 @@ So a reference could be missed by one place and seen by another.
 - **`.github`.**
   - `trace_schema_conformance.py` reads V2.
   - `domain_authoring.py` expects a module that cannot be imported to refuse the run as a fault, not
-    to report VIOLATION. This file was missing from the dev/18r ledger, and the audit at this step
+    to report VIOLATION. This file was missing from the replay's file ledger, and the audit at this step
     found it.
 - **Surface map.** `software_governance/surface_map/governance_surface_map.yaml` is regenerated with
   `gen_governance_surface_map.py`: 204 governance artifacts. dev/18's copy was never regenerated after
