@@ -14,6 +14,9 @@
 - `transformation/scripts/testbed/binding_literal_design_test.py` — 7 probes.
 - `transformation/scripts/testbed/e2e_phases_test.py`, `differential.py` — P7 workflow V2, 243 rules.
 - `transformation/scripts/testbed/construction_acceptance.py` — a dossier with no p8 determines nothing (the parked rule_effectivity crashed it).
+- `transformation/scripts/testbed/differential.py`, `e2e_phases_test.py` — workflow identities from `emit.workflow_fqdn`, rule counts from the declared phases; no version or count is restated.
+- `transformation/doc/TRANSFORMATION_UNRAVEL.md` — §9 "Obligations carried into later changes": typed `generated` marker (change 2), one literal specification (change 3), render vectors (change 4).
+- `transformation/CLAUDE.md` (gitignored, local only) — doctrine: a defect blocking an in-flight dossier is fixed in sequence, not as a child.
 - `.github/process/regression.sh`, `expectations.yaml` — adds the probes; supersession 34→35, artifacts 535→536, p7 242→243.
 - `transformation/dossiers/quoted_literals/` — new build dossier p0–p8, all ADMISSIBLE 5/5, pinned `ba9000fa…` (the composition with binding_literals); Gates 0–2 taken. Authors no artifact.
 - `transformation/transformation/build/render.py` — `_binding` renders a quoted literal as the text between its quotes and a decimal as a number; the shared `_literal` (defaults, properties) is unchanged.
