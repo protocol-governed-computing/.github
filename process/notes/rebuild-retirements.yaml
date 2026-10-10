@@ -1,0 +1,52 @@
+# Ledger entries for the 11 dead transformation artifacts, drafted by version_retirement.
+# They join retired_identities.yaml at the swap (transformation/doc/REBUILD_CHARTER.md §6).
+retired:
+  - identity: transformation::CC_JUDGE_AGAINST_COMPOSITION_V0
+    decided_by: bachipeachy
+    determination: &dev_v5 >-
+      Stood down; nothing runs it, and nothing live names it but its successor. Development is
+      open, so nothing is retained for its own sake, and the v5 release retains it at its tag.
+    change: &change transformation/dossiers/version_retirement
+  - identity: transformation::CC_JUDGE_AGAINST_SNAPSHOT_V0
+    decided_by: bachipeachy
+    determination: *dev_v5
+    change: *change
+  - identity: transformation::STRUCTURE_FIGURE_OF_MERIT_POLICY_V0
+    decided_by: bachipeachy
+    determination: *dev_v5
+    change: *change
+  - identity: transformation::WF_P2_DOMAIN_MODEL_ADMISSIBILITY_V0
+    decided_by: bachipeachy
+    determination: *dev_v5
+    change: *change
+  - identity: transformation::WF_P3_ANALYSIS_LOOP_ADMISSIBILITY_V0
+    decided_by: bachipeachy
+    determination: *dev_v5
+    change: *change
+  - identity: transformation::WF_P4_BUSINESS_MODEL_ADMISSIBILITY_V0
+    decided_by: bachipeachy
+    determination: *dev_v5
+    change: *change
+  - identity: transformation::WF_P5_BUSINESS_INTENT_ADMISSIBILITY_V0
+    decided_by: bachipeachy
+    determination: *dev_v5
+    change: *change
+  - identity: transformation::WF_P6_GOVERNANCE_INTENT_ADMISSIBILITY_V0
+    decided_by: bachipeachy
+    determination: *dev_v5
+    change: *change
+  - identity: transformation::WF_P7_DESIGN_INTENT_ADMISSIBILITY_V0
+    decided_by: bachipeachy
+    determination: *dev_v5
+    change: *change
+  - identity: transformation::WF_P7_DESIGN_INTENT_ADMISSIBILITY_V1
+    decided_by: bachipeachy
+    determination: >-
+      Stood down; nothing runs it, and nothing live names it but its successor. Development is
+      open, so nothing is retained for its own sake. It was never released, so it survives only in
+      git history.
+    change: *change
+  - identity: transformation::WF_P8_AUTHORING_MANDATE_ADMISSIBILITY_V0
+    decided_by: bachipeachy
+    determination: *dev_v5
+    change: *change

@@ -1,0 +1,17 @@
+# Every identity deleted from the live tree, by a recorded human act (`4e` SU-12). A deleted name
+# is never used again: an identity listed here must not appear in the composition, and nothing
+# live may name it except the successor that supersedes it. A node's name in a workflow is a place,
+# not a reference.
+#
+# Each entry records the deleted identity, the person who decided, the determination that no
+# retention condition held, and the change that deleted it. When `retention.yaml` lists conditions,
+# an entry also names each of them under `conditions_not_holding`.
+retired:
+  - identity: ai_governance::CC_ENFORCE_LICENSE_CAP_V0
+    decided_by: bachipeachy
+    determination: >-
+      Nothing runs it, and its evaluation block is refused by
+      execution_topology::INVARIANT_TOPOLOGY_CONTRACT_CLOSED_V1. No retention condition held:
+      nothing names it, and the v5 release retains it at its tag.
+    change: .github/process/notes/dev18-changes.md
+

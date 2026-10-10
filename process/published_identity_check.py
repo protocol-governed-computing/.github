@@ -12,9 +12,11 @@ Two differences are not a change of meaning:
 - a reference moved to the declared successor of an artifact stood down with exactly one successor.
 
 An identity added since v5 is not published, so it is not compared. An identity v5 published and the
-working composition no longer holds is a finding: a published identity stays in the record. The one
-exception is a removal named in `REMOVED`, with its reason. A removal is a governed change, not a
-supersession, and the realization map records each one under SU-12.
+working composition no longer holds is a finding unless `retired_identities.yaml` records its
+deletion (`4e` SU-12). A recorded identity is retired for good, published or not:
+- one present in the working composition is a finding, because a deleted name is never used again;
+- one a live artifact names is a finding, unless the artifact is its successor. A node's name and a
+  routing target are places, not references.
 
 The sealed composition is read, never written. Exit 0 when nothing published changed meaning and
 nothing published is missing, 1 otherwise.
@@ -27,16 +29,11 @@ from pathlib import Path
 
 from transformation.build import sameness
 
+import retirement
+
 WORKSPACE = Path(__file__).resolve().parents[2]
 PUBLISHED = WORKSPACE / "pgc_release" / "snapshot"
 WORKING = WORKSPACE / "snapshot"
-
-# Published identities removed by a named decision, and why. Nothing else may leave the record.
-REMOVED = {
-    "ai_governance::CC_ENFORCE_LICENSE_CAP_V0":
-        "nothing runs it, and its evaluation block is refused by "
-        "execution_topology::INVARIANT_TOPOLOGY_CONTRACT_CLOSED_V1",
-}
 
 
 def frontmatters(root: Path) -> dict[str, dict]:
@@ -78,14 +75,18 @@ def main() -> int:
     working = frontmatters(WORKING)
     declaration = sameness.read(WORKING)
     successor = successors(working)
+    retired = retirement.retired()
 
     findings: list[str] = []
-    removed = sorted(set(published) - set(working))
-    for fqdn in removed:
-        if fqdn not in REMOVED:
-            findings.append(f"{fqdn}\n   published in v5 and no longer in the composition")
-    for fqdn in sorted(set(REMOVED) - set(removed)):
-        findings.append(f"{fqdn}\n   named as removed and still in the composition, or never published")
+    for fqdn in sorted(set(published) - set(working)):
+        if fqdn not in retired:
+            findings.append(f"{fqdn}\n   published in v5, no longer in the composition, "
+                            f"and no deletion is recorded")
+    for fqdn in sorted(set(retired) & set(working)):
+        findings.append(f"{fqdn}\n   recorded as deleted and still in the composition")
+    for fqdn, frontmatter in sorted(working.items()):
+        for name in sorted(retirement.naming(frontmatter, retired, fqdn.split("::")[0])):
+            findings.append(f"{fqdn}\n   names {name}, which is recorded as deleted")
     for fqdn in sorted(set(published) & set(working)):
         was = {k: v for k, v in published[fqdn].items() if k != "superseded_by"}
         now = {k: v for k, v in working[fqdn].items() if k != "superseded_by"}
@@ -96,10 +97,10 @@ def main() -> int:
             findings.append(f"{fqdn}\n   changed meaning since v5:\n   {shown}{more}")
 
     if not findings:
-        for fqdn in sorted(REMOVED):
-            print(f"  REMOVED  {fqdn} — {REMOVED[fqdn]}")
+        deleted = len(set(published) & set(retired))
         print(f"PUBLISHED IDENTITY PASSED — {len(published)} identities published in v5, "
-              f"none changed meaning, {len(REMOVED)} removed by name")
+              f"none changed meaning, {deleted} deleted by record; {len(retired)} identities "
+              f"retired, none reused or named")
         return 0
 
     for finding in findings:

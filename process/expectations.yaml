@@ -24,7 +24,7 @@ steps:
   - id: supersession_agreement
     section: checks
     # 34 → 35: WF_P7_DESIGN_INTENT_ADMISSIBILITY_V2 supersedes V1 (binding_literals)
-    expect: ["SUPERSESSION AGREEMENT PASSED — 35 relation\\(s\\)"]
+    expect: ["SUPERSESSION AGREEMENT PASSED — 35 relation\\(s\\), both sides agree on 35, 0 predecessor\\(s\\) deleted by record"]
   - id: human_block_fidelity
     section: checks
     # 535 → 536: WF_P7_DESIGN_INTENT_ADMISSIBILITY_V2 (binding_literals)
@@ -226,7 +226,7 @@ steps:
     expect: ["3/3 passed"]
   - id: published_identity
     section: checks
-    expect: ["PUBLISHED IDENTITY PASSED — 500 identities published in v5, none changed meaning, 1 removed by name"]
+    expect: ["PUBLISHED IDENTITY PASSED — 500 identities published in v5, none changed meaning, 1 deleted by record; 1 identities retired, none reused or named"]
   - id: si_snapshot_validate
     section: checks
     # Non-advisory checks all pass. Two advisory checks are red and exit 0 by design; their counts

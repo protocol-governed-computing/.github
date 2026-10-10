@@ -16,7 +16,9 @@ copies against each other; a fact stated twice and reconciled is still a fact st
 closes is the harm — a disagreement nothing would report. Deriving is the fix and it changes the
 projection, which is a larger change than the defect currently warrants.
 
-Reads the assembled composition, because the canonical projection is what a reader consults.
+Reads the assembled composition, because the canonical projection is what a reader consults. A
+successor may name a predecessor the composition no longer holds only when
+`retired_identities.yaml` records that predecessor's deletion (`4e` SU-12).
 
 Exit 0 when every supersession agrees on both sides, 1 otherwise.
 """
@@ -26,6 +28,8 @@ import json
 import os
 import sys
 from pathlib import Path
+
+import retirement
 
 SNAPSHOT = Path(os.environ.get("PGC_SNAPSHOT_ROOT", "snapshot"))
 
@@ -39,20 +43,27 @@ def _listed(value) -> list[str]:
 def main() -> int:
     forward: dict[str, set[str]] = {}   # successor -> predecessors it claims
     backward: dict[str, set[str]] = {}  # predecessor -> successors it names
+    present: set[str] = set()
     for path in (SNAPSHOT / "canonical").rglob("*.json"):
         record = json.loads(path.read_text(encoding="utf-8"))
         frontmatter = record.get("frontmatter") or {}
         fqdn = record.get("fqdn") or frontmatter.get("fqdn")
         if not fqdn:
             continue
+        present.add(fqdn)
         for predecessor in _listed(frontmatter.get("supersedes")):
             forward.setdefault(fqdn, set()).add(predecessor)
         for successor in _listed(frontmatter.get("superseded_by")):
             backward.setdefault(fqdn, set()).add(successor)
 
+    retired = retirement.retired()
     findings: list[str] = []
+    deleted = 0
     for successor, predecessors in sorted(forward.items()):
         for predecessor in sorted(predecessors):
+            if predecessor in retired and predecessor not in present:
+                deleted += 1
+                continue
             if successor not in backward.get(predecessor, set()):
                 findings.append(
                     f"{successor}\n"
@@ -66,7 +77,8 @@ def main() -> int:
 
     pairs = sum(len(v) for v in forward.values())
     if not findings:
-        print(f"SUPERSESSION AGREEMENT PASSED — {pairs} relation(s), both sides agree on each")
+        print(f"SUPERSESSION AGREEMENT PASSED — {pairs} relation(s), both sides agree on "
+              f"{pairs - deleted}, {deleted} predecessor(s) deleted by record")
         return 0
 
     for finding in findings:

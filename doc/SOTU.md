@@ -1,5 +1,34 @@
 # SOTU Handoff
 
+## SOTU Handoff — 2026-10-10 · transformation rebuild chartered; checkpoint before the oracle tag
+
+### Changes Made
+- `transformation/doc/REBUILD_CHARTER.md` — new. Freezes transformation as the oracle and rebuilds the module on a branch, designed once from the unravel. Scope, acceptance against the oracle, identity at the swap, the governance exception, sequence, open decisions.
+- `transformation/doc/TRANSFORMATION_UNRAVEL.md` — §10 vehicle: the charter replaces the dossier-per-change plan.
+- `transformation/dossiers/version_retirement/` — P0–P6 ADMISSIBLE, terminal at P6. Parked as evidence and not delivered.
+- `transformation/dossiers/register_format/` — P0–P7 ADMISSIBLE. Parked as evidence and not delivered.
+- `.github/process/retention.yaml` — new. Development is open; nothing is retained for its own sake; no stable baseline.
+- `.github/process/retired_identities.yaml` — new ledger (`4e` SU-12). One entry, the deletion that `REMOVED` used to hold in code.
+- `.github/process/retirement.py` — new shared reader: validates both files and finds the retired identities a live artifact names (`supersedes`, keys and `next` targets excluded).
+- `.github/process/published_identity_check.py` — `REMOVED` dict gone. A missing published identity needs a ledger entry. A ledgered identity present, or named by a live artifact other than its successor, is a finding.
+- `.github/process/supersession_agreement.py` — a successor may name an absent predecessor only if the ledger records it.
+- `.github/process/expectations.yaml`, `RUNBOOK.md` — new pass lines for both checks.
+
+### Build & Test Status
+PASSING. `regression.sh --all`: 71/71 as expected.
+
+### Open Issues
+- The trial deletion of the 11 dead transformation artifacts failed at S4: `ASSERT_PROTOCOL_SURFACE_CLOSED_V0` refuses a successor's `supersedes` naming an absent identity (10 violations). The files are restored. Decided fix (option B): exempt `supersedes` from surface closure, as a `software_governance` change judged by the oracle. The 11 ledger entries are drafted in `.github/process/notes/rebuild-retirements.yaml`, and they go into the ledger at the swap.
+- P3 of `version_retirement` missed the compiler blocker. Its beliefs came only from what P0 named.
+- `standards/doc/realization_map.md` SU-12 row still says nothing records a deletion. That is out of date, and it lives in the standards repo (`work/v1`).
+- Earlier open issues stand: `emit.sources()` template path; the `generated` gate is case-insensitive.
+
+### Architectural Concerns
+- The charter re-opens the "last exception" ruling. Record it in `.github/process/rulings.md` once the charter is approved, before the branch opens.
+
+### Next Session Should Start With
+The human approves `transformation/doc/REBUILD_CHARTER.md` and its open decisions (§11), commits the checkpoint, and tags the oracle. Then write the ruling, then `REBUILD_DESIGN.md`.
+
 ## SOTU Handoff — 2026-10-10 · transformation unravel: rule_effectivity parked, binding_literals + quoted_literals built
 
 ### Changes Made
@@ -31,7 +60,7 @@ PASSING. `regression.sh --all` (after quoted_literals): 71/71 as expected; const
 - binding_literals and quoted_literals have no `delivery.md`; their p7s were hand-written (no generator to keep).
 - The new rule's gate is case-insensitive: `Generated` also reads as the reserved source.
 - `transformation/design/emit.py` `sources()` writes `templates/<template>` into every generated artifact's provenance; the templates live at `transformation/templates/`. Designs mirror emit's spelling until it is corrected by a designed change.
-- rule_effectivity re-pinned to `ba9000fa…`; p0–p8 ADMISSIBLE (p8 by `p8_authoring_mandate.py`). **Stopped before Gate 2** at the author's call: change 1 had drifted into two concerns. The re-cut is proposed in `transformation/doc/TRANSFORMATION_UNRAVEL.md` §9.10 (decision points R1–R4).
+- rule_effectivity re-pinned to `ba9000fa…`; p0–p8 ADMISSIBLE (p8 by `p8_authoring_mandate.py`). Stopped before Gate 2: change 1 had drifted into two concerns. Re-cut decided in `transformation/doc/TRANSFORMATION_UNRAVEL.md` §9.10 (R1 re-cut, R2 re-author, R3 (b) convert test copies, R4 withdraw placeholder). Cut design committed; dossier renamed `register_format` with a narrowed p0; the rule-effectivity p0 kept for the later change.
 
 ### Architectural Concerns
 - rule_effectivity resumes against the composition binding_literals produces (quoted_literals changes no artifact): re-pin, and its codes shift by one (`WF_P7_DESIGN_INTENT_ADMISSIBILITY_V3`).
@@ -39,7 +68,7 @@ PASSING. `regression.sh --all` (after quoted_literals): 71/71 as expected; const
 - The step-binding form rules and the renderer each define a literal; `LITERAL_FORMS` is the design side only.
 
 ### Next Session Should Start With
-Review §9.10 of `transformation/doc/TRANSFORMATION_UNRAVEL.md` and decide R1–R4. Do not resume rule_effectivity before that.
+Gate 0 on `transformation/dossiers/version_retirement/p0_business_problem_statement.md` (retention policy + recorded deletion; blocks register_format). `register_format` is parked at P7 (P0–P7 ADMISSIBLE, Gate 1 taken) until it is delivered.
 
 ## SOTU Handoff — 2026-10-05 · typed step inputs (dev/18 step 9)
 
