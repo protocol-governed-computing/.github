@@ -23,10 +23,12 @@ steps:
     expect: ["GOVERNANCE CHAIN PASSED"]
   - id: supersession_agreement
     section: checks
-    expect: ["SUPERSESSION AGREEMENT PASSED — 34 relation\\(s\\)"]
+    # 34 → 35: WF_P7_DESIGN_INTENT_ADMISSIBILITY_V2 supersedes V1 (binding_literals)
+    expect: ["SUPERSESSION AGREEMENT PASSED — 35 relation\\(s\\)"]
   - id: human_block_fidelity
     section: checks
-    expect: ["HUMAN BLOCK FIDELITY PASSED — 535 artifacts"]
+    # 535 → 536: WF_P7_DESIGN_INTENT_ADMISSIBILITY_V2 (binding_literals)
+    expect: ["HUMAN BLOCK FIDELITY PASSED — 536 artifacts"]
   - id: evidence_determinism
     section: checks
     expect: ["EVIDENCE DETERMINISM PASSED"]
@@ -44,7 +46,8 @@ steps:
       GAP-09), the address path and type, wallet's fields, and one transformation prior
   - id: emit_rule_sets
     section: checks
-    expect: ["p7\\s+242 rules", "p8\\s+33 rules"]
+    # p7 242 → 243: GENERATED_SOURCE_WITHOUT_GENERATOR (binding_literals)
+    expect: ["p7\\s+243 rules", "p8\\s+33 rules"]
   - id: build_payloads
     section: checks
     expect: ["OK\\s+83 payload\\(s\\) agree"]
@@ -102,6 +105,12 @@ steps:
     section: checks
     # an entrance supplies what its gate requires (B25)
     expect: ["4/4 passed"]
+  - id: binding_literal_design_test
+    section: checks
+    # a literal means one thing to every rule that judges a binding; a generated value is stated
+    # only where its owner names a generator (binding_literals); construction renders a quoted or
+    # decimal literal as its value (quoted_literals)
+    expect: ["8/8 passed"]
   - id: implementation_closure
     section: checks
     expect: ["IMPLEMENTATION CLOSURE PASSED — 37 transform\\(s\\)"]

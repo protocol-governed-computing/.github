@@ -1,5 +1,41 @@
 # SOTU Handoff
 
+## SOTU Handoff — 2026-10-10 · transformation unravel: rule_effectivity parked, binding_literals + quoted_literals built
+
+### Changes Made
+- `transformation/doc/TRANSFORMATION_UNRAVEL.md` — §9 checklist: carrier (A), rule identity = schema `$id`, effectivity in the schema's revision history, schema file arrives with the format change carrying identity only (committed in 446b0cb).
+- `transformation/dossiers/rule_effectivity/` — re-authored as change 1 (format): p0–p6 ADMISSIBLE; p3 gains Q7 and the missing `CC_JUDGE_AGAINST_COMPOSITION_V1`; p5/p6 REPLACE 15 artifacts + 3 VOCABs; p7 drafted, INADMISSIBLE (26 findings, all the binding-literal defect). **Parked at P6.**
+- `.github/process/notes/rule-effectivity-generators/p7_design_intent.py` — generator for rule_effectivity's p7 (v5 ruling C1 evidence).
+- `transformation/dossiers/binding_literals/` — new dossier p0–p8, all ADMISSIBLE 5/5, Gates 0–2 taken.
+- `transformation/transformation/design/p7_design_intent/rules.py` — `LITERAL_FORMS` shared by `BINDING_SOURCE_MALFORMED` and `MOLECULE_BINDING_SOURCE_MALFORMED`; new rule `GENERATED_SOURCE_WITHOUT_GENERATOR` (reserved source `generated`).
+- `transformation/transformation/templates/p7_design_intent_template_v0.md` — §7 states what a literal is and that `generated` is reserved.
+- `transformation/registry/design/workflows/WF_P7_DESIGN_INTENT_ADMISSIBILITY_V2.md` — new, emitted, 243 rules; V1 gains `superseded_by`.
+- `transformation/transformation/design/emit.py`, `registry/design/intents/IN_DESIGN_INTENT_SUBMITTED_V0.md` — sealing target and intent point at V2.
+- `transformation/scripts/testbed/binding_literal_design_test.py` — 7 probes.
+- `transformation/scripts/testbed/e2e_phases_test.py`, `differential.py` — P7 workflow V2, 243 rules.
+- `transformation/scripts/testbed/construction_acceptance.py` — a dossier with no p8 determines nothing (the parked rule_effectivity crashed it).
+- `.github/process/regression.sh`, `expectations.yaml` — adds the probes; supersession 34→35, artifacts 535→536, p7 242→243.
+- `transformation/dossiers/quoted_literals/` — new build dossier p0–p8, all ADMISSIBLE 5/5, pinned `ba9000fa…` (the composition with binding_literals); Gates 0–2 taken. Authors no artifact.
+- `transformation/transformation/build/render.py` — `_binding` renders a quoted literal as the text between its quotes and a decimal as a number; the shared `_literal` (defaults, properties) is unchanged.
+- `transformation/scripts/testbed/keyed_node_design_test.py` — expects each reason as its value, not quoted text.
+- `transformation/scripts/testbed/binding_literal_design_test.py` — 8th probe: construction renders a literal as its value.
+
+### Build & Test Status
+PASSING. `regression.sh --all` (after quoted_literals): 71/71 as expected; construction acceptance unchanged at 183/185. Red by design, unchanged: `admission_contract_fidelity`, `construction_acceptance` 183/185, `si_snapshot_validate`, `blockchain_identity`. Every existing P7 corpus document keeps its verdict and findings; only the rule count moved.
+
+### Open Issues
+- Nothing committed since 446b0cb; the binding_literals implementation is partly staged in `transformation` and `.github`.
+- binding_literals and quoted_literals have no `delivery.md`; their p7s were hand-written (no generator to keep).
+- The new rule's gate is case-insensitive: `Generated` also reads as the reserved source.
+
+### Architectural Concerns
+- rule_effectivity resumes against the composition binding_literals produces (quoted_literals changes no artifact): re-pin, and its codes shift by one (`WF_P7_DESIGN_INTENT_ADMISSIBILITY_V3`).
+- A design cannot discharge a refusal with a rule its own change adds; binding_literals defers its one refusal to the rule it adds.
+- The step-binding form rules and the renderer each define a literal; `LITERAL_FORMS` is the design side only.
+
+### Next Session Should Start With
+Commit binding_literals + quoted_literals (user). Then re-pin rule_effectivity (`tc baseline show`), shift its codes by one in p5/p6 and the p7 generator (`WF_P7_…_V3`), regenerate p7, and resume at P7.
+
 ## SOTU Handoff — 2026-10-05 · typed step inputs (dev/18 step 9)
 
 ### Changes Made
