@@ -30,6 +30,8 @@ PASSING. `regression.sh --all` (after quoted_literals): 71/71 as expected; const
 - Nothing committed since 446b0cb; the binding_literals implementation is partly staged in `transformation` and `.github`.
 - binding_literals and quoted_literals have no `delivery.md`; their p7s were hand-written (no generator to keep).
 - The new rule's gate is case-insensitive: `Generated` also reads as the reserved source.
+- `transformation/design/emit.py` `sources()` writes `templates/<template>` into every generated artifact's provenance; the templates live at `transformation/templates/`. Designs mirror emit's spelling until it is corrected by a designed change.
+- rule_effectivity re-pinned to `ba9000fa…`; p0–p8 ADMISSIBLE (p8 by `p8_authoring_mandate.py`). **Stopped before Gate 2** at the author's call: change 1 had drifted into two concerns. The re-cut is proposed in `transformation/doc/TRANSFORMATION_UNRAVEL.md` §9.10 (decision points R1–R4).
 
 ### Architectural Concerns
 - rule_effectivity resumes against the composition binding_literals produces (quoted_literals changes no artifact): re-pin, and its codes shift by one (`WF_P7_DESIGN_INTENT_ADMISSIBILITY_V3`).
@@ -37,7 +39,7 @@ PASSING. `regression.sh --all` (after quoted_literals): 71/71 as expected; const
 - The step-binding form rules and the renderer each define a literal; `LITERAL_FORMS` is the design side only.
 
 ### Next Session Should Start With
-Commit binding_literals + quoted_literals (user). Then re-pin rule_effectivity (`tc baseline show`), shift its codes by one in p5/p6 and the p7 generator (`WF_P7_…_V3`), regenerate p7, and resume at P7.
+Review §9.10 of `transformation/doc/TRANSFORMATION_UNRAVEL.md` and decide R1–R4. Do not resume rule_effectivity before that.
 
 ## SOTU Handoff — 2026-10-05 · typed step inputs (dev/18 step 9)
 

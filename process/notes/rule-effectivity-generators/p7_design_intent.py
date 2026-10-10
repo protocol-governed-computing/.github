@@ -34,7 +34,7 @@ WF = [("P0", "SEED", "V0", "V1", "p0_change_seed", "p0_change_seed_template_v0",
       ("P4", "BUSINESS_MODEL", "V1", "V2", "p4_business_model", "p4_business_model_template_v0", "a business model"),
       ("P5", "BUSINESS_INTENT", "V1", "V2", "p5_business_intent", "p5_business_intent_template_v0", "a business intent"),
       ("P6", "GOVERNANCE_INTENT", "V1", "V2", "p6_governance_intent", "p6_governance_intent_template_v0", "a governance intent"),
-      ("P7", "DESIGN_INTENT", "V1", "V2", "p7_design_intent", "p7_design_intent_template_v0", "a design intent"),
+      ("P7", "DESIGN_INTENT", "V2", "V3", "p7_design_intent", "p7_design_intent_template_v0", "a design intent"),
       ("P8", "AUTHORING_MANDATE", "V1", "V2", "p8_authoring_mandate", "p8_authoring_mandate_template_v0", "an authoring mandate")]
 INTENT = {"P0": "IN_SEED_SUBMITTED_V0", "P1": "IN_CHANGE_REQUEST_SUBMITTED_V0",
           "P2": "IN_DOMAIN_MODEL_SUBMITTED_V0", "P3": "IN_ANALYSIS_LOOP_SUBMITTED_V0",
@@ -243,7 +243,7 @@ def step_bindings():
             node = D + RENAME[nd["code"]]
             for field, value in nd["inputs"].items():
                 if field == "rule_set":
-                    bound = "the rule set emission seals from the phase's declaration"
+                    bound = "generated"
                 elif isinstance(value, str) and value.startswith("$.payload."):
                     bound = "payload." + value[len("$.payload."):]
                 else:
@@ -346,6 +346,11 @@ def artifact_summary():
 
 def generation_provenance():
     out = []
+    # The two observing contracts carry steps and an observation map the generator writes, as their
+    # predecessors did; the generator, not construction, produces them.
+    rule_modules = ["transformation/design/meta.py"] + [f"transformation/design/{mod}/rules.py" for *_, mod, _, _ in WF]
+    for _, new in CC[1:]:
+        out.append(row(D + new, "transformation.design.emit:emit_rule_sets", ", ".join(rule_modules), "S7 design_resolution #3"))
     for p, n, o, v, mod, tmpl, _ in WF:
         cc = "CC_JUDGE_DOCUMENT_V1" if p in ("P0", "P1") else ("CC_JUDGE_AGAINST_COMPOSITION_V2" if p == "P3" else "CC_JUDGE_AGAINST_SNAPSHOT_V2")
         sources = [f"templates/{tmpl}.md", f"transformation/design/{mod}/rules.py",
