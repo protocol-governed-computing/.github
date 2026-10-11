@@ -1,5 +1,6 @@
 # Ledger entries deferred to the swap: the 11 dead transformation artifacts, drafted by
-# version_retirement, and the two lifecycle constitutions the rebuild supersedes (§6a).
+# version_retirement; the two lifecycle constitutions the rebuild supersedes (§6a); and the 12
+# transformation artifacts the rebuild supersedes (§8, identity).
 # They join retired_identities.yaml at the swap (transformation/doc/REBUILD_CHARTER.md §6).
 retired:
   - identity: transformation::CC_JUDGE_AGAINST_COMPOSITION_V0
@@ -62,3 +63,53 @@ retired:
     decided_by: bachipeachy
     determination: *lifecycle_v1
     change: *rebuild
+  - identity: transformation::WF_P0_SEED_ADMISSIBILITY_V0
+    decided_by: bachipeachy
+    determination: &superseded >-
+      Superseded in the rebuild. Its successor means something else, as `sameness` finds against the
+      oracle, and names it in `supersedes`. The oracle tag retains it, and v5 where v5 published it.
+    change: &identity transformation/doc/REBUILD_CHARTER.md §8 (identity)
+  - identity: transformation::WF_P1_CHANGE_REQUEST_ADMISSIBILITY_V0
+    decided_by: bachipeachy
+    determination: *superseded
+    change: *identity
+  - identity: transformation::CT_PURE_PARSE_REGISTERS_V0
+    decided_by: bachipeachy
+    determination: *superseded
+    change: *identity
+  - identity: transformation::CT_PURE_PARSE_PRIOR_PHASES_V0
+    decided_by: bachipeachy
+    determination: *superseded
+    change: *identity
+  - identity: transformation::CT_PURE_EVALUATE_RULES_V0
+    decided_by: bachipeachy
+    determination: *superseded
+    change: *identity
+  - identity: transformation::WF_P2_DOMAIN_MODEL_ADMISSIBILITY_V1
+    decided_by: bachipeachy
+    determination: *superseded
+    change: *identity
+  - identity: transformation::WF_P3_ANALYSIS_LOOP_ADMISSIBILITY_V1
+    decided_by: bachipeachy
+    determination: *superseded
+    change: *identity
+  - identity: transformation::WF_P4_BUSINESS_MODEL_ADMISSIBILITY_V1
+    decided_by: bachipeachy
+    determination: *superseded
+    change: *identity
+  - identity: transformation::WF_P5_BUSINESS_INTENT_ADMISSIBILITY_V1
+    decided_by: bachipeachy
+    determination: *superseded
+    change: *identity
+  - identity: transformation::WF_P6_GOVERNANCE_INTENT_ADMISSIBILITY_V1
+    decided_by: bachipeachy
+    determination: *superseded
+    change: *identity
+  - identity: transformation::WF_P7_DESIGN_INTENT_ADMISSIBILITY_V2
+    decided_by: bachipeachy
+    determination: *superseded
+    change: *identity
+  - identity: transformation::WF_P8_AUTHORING_MANDATE_ADMISSIBILITY_V1
+    decided_by: bachipeachy
+    determination: *superseded
+    change: *identity
