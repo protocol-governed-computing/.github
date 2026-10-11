@@ -30,9 +30,9 @@ steps:
   - id: human_block_fidelity
     section: checks
     # 535 → 536: WF_P7_DESIGN_INTENT_ADMISSIBILITY_V2 (binding_literals)
-    # 536 → 537: VOCAB_DESIGN_REGISTER_TERMS_V0 (rebuild M3.1); 538: WF_P1_V1 (rebuild M3.3b); 539: WF_P0_V1 (M3.4a); 561: 20 lifecycle invariants
+    # 536 → 537: VOCAB_DESIGN_REGISTER_TERMS_V0 (rebuild M3.1); 538: WF_P1_V1 (rebuild M3.3b); 539: WF_P0_V1 (M3.4a); 561: 20 lifecycle invariants; 562: STRUCTURE_REGISTER_SCHEMA_DISPATCH_V0 (M3.4c)
     # and 2 lifecycle constitution successors in software_governance (M3.4b)
-    expect: ["HUMAN BLOCK FIDELITY PASSED — 561 artifacts"]
+    expect: ["HUMAN BLOCK FIDELITY PASSED — 562 artifacts"]
   - id: evidence_determinism
     section: checks
     expect: ["EVIDENCE DETERMINISM PASSED"]
