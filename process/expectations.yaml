@@ -29,8 +29,9 @@ steps:
   - id: human_block_fidelity
     section: checks
     # 535 → 536: WF_P7_DESIGN_INTENT_ADMISSIBILITY_V2 (binding_literals)
-    # 536 → 537: VOCAB_DESIGN_REGISTER_TERMS_V0 (rebuild M3.1); 538: WF_P1_V1 (rebuild M3.3b); 539: WF_P0_V1 (M3.4a)
-    expect: ["HUMAN BLOCK FIDELITY PASSED — 539 artifacts"]
+    # 536 → 537: VOCAB_DESIGN_REGISTER_TERMS_V0 (rebuild M3.1); 538: WF_P1_V1 (rebuild M3.3b); 539: WF_P0_V1 (M3.4a); 561: 20 invariants and 2
+    # constitutions authored, compiled once they move to software_governance (M3.4b)
+    expect: ["HUMAN BLOCK FIDELITY PASSED — 561 artifacts"]
   - id: evidence_determinism
     section: checks
     expect: ["EVIDENCE DETERMINISM PASSED"]
