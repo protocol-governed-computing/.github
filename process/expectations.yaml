@@ -52,8 +52,9 @@ steps:
     section: checks
     # p7 243 → 254, p8 33 → 34: a type rule per structured column, TEST_VALUE_UNPARSEABLE retired
     # (rebuild M3.3a); p7 254 → 276: a type rule per citation column (rebuild M3.3b); 276 → 279: two procedures restated
-    # as three and two gated constraints (M3.4a)
-    expect: ["p7\\s+279 rules", "p8\\s+34 rules"]
+    # as three and two gated constraints (M3.4a); 279 → 284, 34 → 39: the header is `document`, its two rules
+    # become six derived ones plus one for the approval (M4)
+    expect: ["p7\\s+284 rules", "p8\\s+39 rules"]
   - id: build_payloads
     section: checks
     expect: ["OK\\s+83 payload\\(s\\) agree"]
@@ -69,6 +70,9 @@ steps:
   - id: closure_test
     section: checks
     expect: ["CLOSURE PASSED — 9 phase\\(s\\) close over lifecycle::CONSTITUTION_CHANGE_MGMT_V1"]
+  - id: effectivity_test
+    section: checks
+    expect: ["EFFECTIVITY PASSED — 9 rule sets at their recorded revision"]
   - id: differential
     section: checks
     expect: ["DIFFERENTIAL PASSED — 83 document\\(s\\) across 9 phase\\(s\\)"]
