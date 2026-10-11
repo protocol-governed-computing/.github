@@ -28,7 +28,8 @@ steps:
   - id: human_block_fidelity
     section: checks
     # 535 → 536: WF_P7_DESIGN_INTENT_ADMISSIBILITY_V2 (binding_literals)
-    expect: ["HUMAN BLOCK FIDELITY PASSED — 536 artifacts"]
+    # 536 → 537: VOCAB_DESIGN_REGISTER_TERMS_V0 (rebuild M3.1)
+    expect: ["HUMAN BLOCK FIDELITY PASSED — 537 artifacts"]
   - id: evidence_determinism
     section: checks
     expect: ["EVIDENCE DETERMINISM PASSED"]
