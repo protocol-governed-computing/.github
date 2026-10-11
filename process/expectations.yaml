@@ -47,8 +47,9 @@ steps:
       GAP-09), the address path and type, wallet's fields, and one transformation prior
   - id: emit_rule_sets
     section: checks
-    # p7 242 → 243: GENERATED_SOURCE_WITHOUT_GENERATOR (binding_literals)
-    expect: ["p7\\s+243 rules", "p8\\s+33 rules"]
+    # p7 243 → 254, p8 33 → 34: a type rule per structured column, TEST_VALUE_UNPARSEABLE retired
+    # (rebuild M3.3a)
+    expect: ["p7\\s+254 rules", "p8\\s+34 rules"]
   - id: build_payloads
     section: checks
     expect: ["OK\\s+83 payload\\(s\\) agree"]
@@ -90,14 +91,12 @@ steps:
   - id: keyed_node_design_test
     section: checks
     # a route to a place the composition already has resolves (A batch, wave 2 — B6); a contract
-    # redeclared whole requires only what it now declares (cr_05_identity)
-    expect: ["7/7 passed"]
+    # redeclared whole requires only what it now declares (cr_05_identity); 7 → 6: text literal
+    # parsing retired with typed bindings (rebuild M3.3a)
+    expect: ["6/6 passed"]
   - id: refusal_moment_design_test
     section: checks
     expect: ["4/4 passed"]
-  - id: vector_value_design_test
-    section: checks
-    expect: ["3/3 passed"]
   - id: semantic_change_design_test
     section: checks
     # a change of meaning is a new identity; a replacement accounts for its reach (semantic_change)
