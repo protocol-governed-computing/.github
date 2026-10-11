@@ -2,7 +2,9 @@
 
 `retention.yaml` declares when a replaced version is retained (`4e` SU-7). `retired_identities.yaml`
 records each deletion (`4e` SU-12): the identity, who decided, the determination that no retention
-condition held, and the change that deleted it. This module reads both and refuses a malformed
+condition held, and the change that deleted it. A deleted artifact that was superseded also records
+its successor, `superseded_by`: the relation is no longer stated on any live artifact once both ends
+of it are deleted, and the ledger is where deleted history is kept. This module reads both and refuses a malformed
 record. It decides nothing about the composition; the checks do that.
 
 `naming(frontmatter, retired)` answers which retired identities a live artifact names. A
@@ -44,6 +46,10 @@ def retired() -> dict[str, dict]:
         identity = entry["identity"]
         if "::" not in identity:
             raise SystemExit(f"{LEDGER.name}: {identity} is not a full identity")
+        successor = entry.get("superseded_by")
+        if successor is not None and (not isinstance(successor, str) or "::" not in successor):
+            raise SystemExit(f"{LEDGER.name}: {identity} names its successor by a full identity, "
+                             f"or not at all")
         if identity in out:
             raise SystemExit(f"{LEDGER.name}: {identity} recorded twice")
         unaddressed = set(conditions) - set(entry.get("conditions_not_holding") or [])
