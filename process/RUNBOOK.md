@@ -251,6 +251,7 @@ python ~/protocol-governed-computing/.github/process/frontmatter_fidelity.py
 
 # the phase testbeds
 python ~/protocol-governed-computing/transformation/scripts/testbed/meta_test.py
+python ~/protocol-governed-computing/transformation/scripts/testbed/closure_test.py
 python ~/protocol-governed-computing/transformation/scripts/testbed/differential.py
 python ~/protocol-governed-computing/transformation/scripts/testbed/e2e_phases_test.py
 python ~/protocol-governed-computing/transformation/scripts/testbed/projection_test.py
@@ -328,6 +329,7 @@ explains it. The step ids there are the names below.
 | `author_transport_contracts.py --check` | `OK` — every `si.` boundary contract matches the declaration that generates it. A `DRIFTED` line is a hand-edited artifact; fix the declaration, never the artifact |
 | `frontmatter_fidelity.py` | `FRONTMATTER FIDELITY PASSED` — every authored Machine Block value survived compilation. The compiler may add; it may never overwrite |
 | `meta_test.py` | `META PASSED` — every declared rule resolves to a check kind, and every kind is declared |
+| `closure_test.py` | `CLOSURE PASSED` — every `x-realises` resolves, every design invariant is realised, every template agrees with its schema |
 | `differential.py` | `DIFFERENTIAL PASSED` — the sealed rule set and the declared one agree on every corpus document |
 | `e2e_phases_test.py` | `E2E PASSED` — every phase, both admissible and inadmissible, through the runtime |
 | `projection_test.py` | `PROJECTION PASSED` — reproducible, general, and refusing an inadmissible prior |

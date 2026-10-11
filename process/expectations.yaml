@@ -66,6 +66,9 @@ steps:
   - id: meta_test
     section: checks
     expect: ["META PASSED"]
+  - id: closure_test
+    section: checks
+    expect: ["CLOSURE PASSED — 9 phase\\(s\\) close over lifecycle::CONSTITUTION_CHANGE_MGMT_V1"]
   - id: differential
     section: checks
     expect: ["DIFFERENTIAL PASSED — 83 document\\(s\\) across 9 phase\\(s\\)"]

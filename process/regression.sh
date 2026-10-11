@@ -113,7 +113,7 @@ if [[ "$MODE" == "--all" ]]; then
   step author_transport_contracts env PYTHONPATH="$W/snapshot_inspector" \
     python "$W/snapshot_inspector/scripts/author_transport_contracts.py" --check
   step frontmatter_fidelity python "$W/.github/process/frontmatter_fidelity.py"
-  for t in meta_test differential e2e_phases_test projection_test construction_acceptance \
+  for t in meta_test closure_test differential e2e_phases_test projection_test construction_acceptance \
            molecule_design_test vector_design_test keyed_node_design_test \
            refusal_moment_design_test semantic_change_design_test \
            entrance_gate_design_test binding_literal_design_test; do
