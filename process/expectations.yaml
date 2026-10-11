@@ -24,13 +24,14 @@ steps:
   - id: supersession_agreement
     section: checks
     # 34 → 35: WF_P7_DESIGN_INTENT_ADMISSIBILITY_V2 supersedes V1 (binding_literals); 36:
-    # WF_P1_CHANGE_REQUEST_ADMISSIBILITY_V1 supersedes V0 (rebuild M3.3b); 37: WF_P0_V1 (M3.4a)
-    expect: ["SUPERSESSION AGREEMENT PASSED — 37 relation\\(s\\), both sides agree on 37, 0 predecessor\\(s\\) deleted by record"]
+    # WF_P1_CHANGE_REQUEST_ADMISSIBILITY_V1 supersedes V0 (rebuild M3.3b); 37: WF_P0_V1 (M3.4a); 39:
+    # lifecycle::CONSTITUTION_CHANGE_MGMT_V1 and CONSTITUTION_CONSTRUCTION_V1 (M3.4b)
+    expect: ["SUPERSESSION AGREEMENT PASSED — 39 relation\\(s\\), both sides agree on 39, 0 predecessor\\(s\\) deleted by record"]
   - id: human_block_fidelity
     section: checks
     # 535 → 536: WF_P7_DESIGN_INTENT_ADMISSIBILITY_V2 (binding_literals)
-    # 536 → 537: VOCAB_DESIGN_REGISTER_TERMS_V0 (rebuild M3.1); 538: WF_P1_V1 (rebuild M3.3b); 539: WF_P0_V1 (M3.4a); 561: 20 invariants and 2
-    # constitutions authored, compiled once they move to software_governance (M3.4b)
+    # 536 → 537: VOCAB_DESIGN_REGISTER_TERMS_V0 (rebuild M3.1); 538: WF_P1_V1 (rebuild M3.3b); 539: WF_P0_V1 (M3.4a); 561: 20 lifecycle invariants
+    # and 2 lifecycle constitution successors in software_governance (M3.4b)
     expect: ["HUMAN BLOCK FIDELITY PASSED — 561 artifacts"]
   - id: evidence_determinism
     section: checks
