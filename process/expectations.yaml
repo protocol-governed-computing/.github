@@ -26,13 +26,13 @@ steps:
     # 34 → 35: WF_P7_DESIGN_INTENT_ADMISSIBILITY_V2 supersedes V1 (binding_literals); 36:
     # WF_P1_CHANGE_REQUEST_ADMISSIBILITY_V1 supersedes V0 (rebuild M3.3b); 37: WF_P0_V1 (M3.4a); 39:
     # lifecycle::CONSTITUTION_CHANGE_MGMT_V1 and CONSTITUTION_CONSTRUCTION_V1 (M3.4b)
-    expect: ["SUPERSESSION AGREEMENT PASSED — 39 relation\\(s\\), both sides agree on 39, 0 predecessor\\(s\\) deleted by record"]
+    expect: ["SUPERSESSION AGREEMENT PASSED — 42 relation\\(s\\), both sides agree on 42, 0 predecessor\\(s\\) deleted by record"]
   - id: human_block_fidelity
     section: checks
     # 535 → 536: WF_P7_DESIGN_INTENT_ADMISSIBILITY_V2 (binding_literals)
     # 536 → 537: VOCAB_DESIGN_REGISTER_TERMS_V0 (rebuild M3.1); 538: WF_P1_V1 (rebuild M3.3b); 539: WF_P0_V1 (M3.4a); 561: 20 lifecycle invariants; 562: STRUCTURE_REGISTER_SCHEMA_DISPATCH_V0 (M3.4c)
     # and 2 lifecycle constitution successors in software_governance (M3.4b)
-    expect: ["HUMAN BLOCK FIDELITY PASSED — 562 artifacts"]
+    expect: ["HUMAN BLOCK FIDELITY PASSED — 570 artifacts"]
   - id: evidence_determinism
     section: checks
     expect: ["EVIDENCE DETERMINISM PASSED"]
@@ -80,6 +80,9 @@ steps:
   - id: construction_mapping_test
     section: checks
     expect: ["CONSTRUCTION MAPPING PASSED — 184 fields over 12 kinds"]
+  - id: interface_structures_test
+    section: checks
+    expect: ["INTERFACE STRUCTURES PASSED — 4 checks, 5 structures"]
   - id: differential
     section: checks
     expect: ["DIFFERENTIAL PASSED — 83 document\\(s\\) across 9 phase\\(s\\)"]
@@ -131,7 +134,7 @@ steps:
     expect: ["8/8 passed"]
   - id: implementation_closure
     section: checks
-    expect: ["IMPLEMENTATION CLOSURE PASSED — 37 transform\\(s\\)"]
+    expect: ["IMPLEMENTATION CLOSURE PASSED — 40 transform\\(s\\)"]
   - id: test_inspector
     section: checks
     # si.behavior_logic.list names each workflow's nodes by key (B6); si.execution.explain adds 29

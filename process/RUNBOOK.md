@@ -255,6 +255,7 @@ python ~/protocol-governed-computing/transformation/scripts/testbed/closure_test
 python ~/protocol-governed-computing/transformation/scripts/testbed/effectivity_test.py
 python ~/protocol-governed-computing/transformation/scripts/testbed/render_vectors_test.py
 python ~/protocol-governed-computing/transformation/scripts/testbed/construction_mapping_test.py
+python ~/protocol-governed-computing/transformation/scripts/testbed/interface_structures_test.py
 python ~/protocol-governed-computing/transformation/scripts/testbed/differential.py
 python ~/protocol-governed-computing/transformation/scripts/testbed/e2e_phases_test.py
 python ~/protocol-governed-computing/transformation/scripts/testbed/projection_test.py
@@ -336,6 +337,7 @@ explains it. The step ids there are the names below.
 | `effectivity_test.py` | `EFFECTIVITY PASSED` — every rule set is its schema's last revision; header, approval and rule-difference cases hold |
 | `render_vectors_test.py` | `RENDER VECTORS PASSED` — every value form renders as DESIGN_LANGUAGE §1.2 specifies |
 | `construction_mapping_test.py` | `CONSTRUCTION MAPPING PASSED` — CONSTRUCTION_MAPPING.md states every field construction writes, with its class |
+| `interface_structures_test.py` | `INTERFACE STRUCTURES PASSED` — what the readers and the evaluator return conforms to the STRUCTURE each field names |
 | `differential.py` | `DIFFERENTIAL PASSED` — the sealed rule set and the declared one agree on every corpus document |
 | `e2e_phases_test.py` | `E2E PASSED` — every phase, both admissible and inadmissible, through the runtime |
 | `projection_test.py` | `PROJECTION PASSED` — reproducible, general, and refusing an inadmissible prior |
