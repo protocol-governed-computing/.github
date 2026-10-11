@@ -24,13 +24,13 @@ steps:
   - id: supersession_agreement
     section: checks
     # 34 → 35: WF_P7_DESIGN_INTENT_ADMISSIBILITY_V2 supersedes V1 (binding_literals); 36:
-    # WF_P1_CHANGE_REQUEST_ADMISSIBILITY_V1 supersedes V0 (rebuild M3.3b)
-    expect: ["SUPERSESSION AGREEMENT PASSED — 36 relation\\(s\\), both sides agree on 36, 0 predecessor\\(s\\) deleted by record"]
+    # WF_P1_CHANGE_REQUEST_ADMISSIBILITY_V1 supersedes V0 (rebuild M3.3b); 37: WF_P0_V1 (M3.4a)
+    expect: ["SUPERSESSION AGREEMENT PASSED — 37 relation\\(s\\), both sides agree on 37, 0 predecessor\\(s\\) deleted by record"]
   - id: human_block_fidelity
     section: checks
     # 535 → 536: WF_P7_DESIGN_INTENT_ADMISSIBILITY_V2 (binding_literals)
-    # 536 → 537: VOCAB_DESIGN_REGISTER_TERMS_V0 (rebuild M3.1); 538: WF_P1_V1 (rebuild M3.3b)
-    expect: ["HUMAN BLOCK FIDELITY PASSED — 538 artifacts"]
+    # 536 → 537: VOCAB_DESIGN_REGISTER_TERMS_V0 (rebuild M3.1); 538: WF_P1_V1 (rebuild M3.3b); 539: WF_P0_V1 (M3.4a)
+    expect: ["HUMAN BLOCK FIDELITY PASSED — 539 artifacts"]
   - id: evidence_determinism
     section: checks
     expect: ["EVIDENCE DETERMINISM PASSED"]
@@ -49,8 +49,9 @@ steps:
   - id: emit_rule_sets
     section: checks
     # p7 243 → 254, p8 33 → 34: a type rule per structured column, TEST_VALUE_UNPARSEABLE retired
-    # (rebuild M3.3a); p7 254 → 276: a type rule per citation column (rebuild M3.3b)
-    expect: ["p7\\s+276 rules", "p8\\s+34 rules"]
+    # (rebuild M3.3a); p7 254 → 276: a type rule per citation column (rebuild M3.3b); 276 → 279: two procedures restated
+    # as three and two gated constraints (M3.4a)
+    expect: ["p7\\s+279 rules", "p8\\s+34 rules"]
   - id: build_payloads
     section: checks
     expect: ["OK\\s+83 payload\\(s\\) agree"]
