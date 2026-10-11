@@ -13,6 +13,35 @@ ruling overturns an earlier one, and it names the ruling it replaces.
 
 ## Transformation
 
+### The transformation module is rebuilt against a frozen oracle — rebuild charter, v6
+
+**Ruling.** The transformation module is rebuilt once, outside its own lifecycle, on the branch
+`rebuild/transformation`. It is measured against the module frozen at the tag
+`oracle/transformation`, and replaces that module whole. `transformation/doc/REBUILD_CHARTER.md`
+holds the scope, the acceptance and the sequence.
+
+**It replaces** the boundary rule `THE_LAST_EXCEPTION` (`generated_artifacts`), which declared that
+change the last delivered by hand. That rule stands for every change except this rebuild.
+
+**Conditions:**
+- **The oracle decides admissibility.** The rebuild must give every corpus document the oracle's
+  verdict and findings, reproduce every artifact the oracle reproduces, and keep the regression
+  green (charter §5). A deliberate difference is entered in the charter before it is built.
+- **A human approves the design before any code, and approves the swap.**
+- **The genesis dossier closes the exception.** It describes the rebuilt module in the new form, and
+  the rebuilt module admits it.
+- **The exception is spent at the swap.** From then on, every change to transformation goes through
+  the lifecycle, judged by the rebuilt module. No later change may claim this ruling.
+
+**Why.** The module was judging its own redesign. Each defect in it blocked the dossier that would
+fix it, so every fix needed a fix of its own first. Five dossiers were opened: two delivered fixes,
+two parked, and none reached the target. The oracle measures the rebuild against something other
+than itself, which the lifecycle could not do here.
+
+**Applied.** `transformation` at `oracle/transformation` is the oracle. `register_format` and
+`version_retirement` are parked as evidence. The platform fix that lets a successor name a deleted
+predecessor goes through the lifecycle on `dev/18`, judged by the oracle.
+
 ### A dossier is admitted on what it says, not on how it was written — C1, v5
 
 **Ruling.** The phase checks admit a document; they do not see how it was produced. A generated

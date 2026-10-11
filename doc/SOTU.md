@@ -4,6 +4,7 @@
 
 ### Changes Made
 - `transformation/doc/REBUILD_CHARTER.md` — new. Freezes transformation as the oracle and rebuilds the module on a branch, designed once from the unravel. Scope, acceptance against the oracle, identity at the swap, the governance exception, sequence, open decisions.
+- `transformation/doc/REBUILD_CHARTER.md` — added §10a (branches, oracle worktree, backup, swap, rollback); single instance per artifact with its check; node keys follow their contract; genesis dossier as acceptance item 7; swap deletes all dead transformation code; sweep of the other domains' 22 stood-down artifacts, then the single-instance check workspace-wide.
 - `transformation/doc/TRANSFORMATION_UNRAVEL.md` — §10 vehicle: the charter replaces the dossier-per-change plan.
 - `transformation/dossiers/version_retirement/` — P0–P6 ADMISSIBLE, terminal at P6. Parked as evidence and not delivered.
 - `transformation/dossiers/register_format/` — P0–P7 ADMISSIBLE. Parked as evidence and not delivered.
@@ -24,7 +25,7 @@ PASSING. `regression.sh --all`: 71/71 as expected.
 - Earlier open issues stand: `emit.sources()` template path; the `generated` gate is case-insensitive.
 
 ### Architectural Concerns
-- The charter re-opens the "last exception" ruling. Record it in `.github/process/rulings.md` once the charter is approved, before the branch opens.
+- Charter approved; checkpoint committed (`transformation` a1be97c, charter update 03498f9; `.github` 0a44614); oracle tag `oracle/transformation` on a1be97c. Ruling recorded in `.github/process/rulings.md` ("rebuilt against a frozen oracle"), replacing `THE_LAST_EXCEPTION` for this rebuild only.
 
 ### Next Session Should Start With
 The human approves `transformation/doc/REBUILD_CHARTER.md` and its open decisions (§11), commits the checkpoint, and tags the oracle. Then write the ruling, then `REBUILD_DESIGN.md`.
