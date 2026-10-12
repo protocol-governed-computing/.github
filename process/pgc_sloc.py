@@ -27,13 +27,13 @@ MACHINE = re.compile(r"```yaml\n(.*?)```", re.S)
 COLUMNS = ["artifacts", "yaml_artifact", "yaml_file", "py_impl", "py_test", "py_tools", "dossier_md"]
 
 PLATFORM = ["software_governance", "conformance_workloads", "protocol_compiler", "snapshot_assembler",
-            "protocol_runtime", "protocol_transport", "snapshot_inspector", "transformation"]
+            "protocol_runtime", "protocol_transport", "snapshot_inspector", "transformation_compilers"]
 LAYERS = {
     "governance surface": ["software_governance"],
     "conformance workload": ["conformance_workloads"],
     "toolchain": ["protocol_compiler", "snapshot_assembler", "protocol_runtime", "protocol_transport",
                   "snapshot_inspector"],
-    "transformation": ["transformation"],
+    "transformation": ["transformation_compilers"],
 }
 
 

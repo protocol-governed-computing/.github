@@ -162,7 +162,7 @@ export PGC_SNAPSHOT_PROFILE=GOVERNANCE_SURFACE_PROFILE_V0
 
 ~/protocol-governed-computing/protocol_compiler/compile_domain.sh ~/protocol-governed-computing/conformance_workloads/workloads/collatz
 
-~/protocol-governed-computing/protocol_compiler/compile_domain.sh ~/protocol-governed-computing/transformation
+~/protocol-governed-computing/protocol_compiler/compile_domain.sh ~/protocol-governed-computing/transformation_compilers
 
 ~/protocol-governed-computing/protocol_compiler/compile_domain.sh ~/protocol-governed-computing/snapshot_inspector
 
@@ -243,23 +243,23 @@ python ~/protocol-governed-computing/.github/process/supersession_agreement.py
 python ~/protocol-governed-computing/.github/process/human_block_fidelity.py
 python ~/protocol-governed-computing/.github/process/evidence_determinism.py
 python ~/protocol-governed-computing/.github/process/admission_contract_fidelity.py
-python ~/protocol-governed-computing/transformation/scripts/emit_rule_sets.py --check
-python ~/protocol-governed-computing/transformation/scripts/testbed/build_payloads.py --check
+python ~/protocol-governed-computing/transformation_compilers/scripts/emit_rule_sets.py --check
+python ~/protocol-governed-computing/transformation_compilers/scripts/testbed/build_payloads.py --check
 PYTHONPATH=~/protocol-governed-computing/snapshot_inspector \
   python ~/protocol-governed-computing/snapshot_inspector/scripts/author_transport_contracts.py --check
 python ~/protocol-governed-computing/.github/process/frontmatter_fidelity.py
 
 # the phase testbeds
-python ~/protocol-governed-computing/transformation/scripts/testbed/meta_test.py
-python ~/protocol-governed-computing/transformation/scripts/testbed/closure_test.py
-python ~/protocol-governed-computing/transformation/scripts/testbed/effectivity_test.py
-python ~/protocol-governed-computing/transformation/scripts/testbed/render_vectors_test.py
-python ~/protocol-governed-computing/transformation/scripts/testbed/construction_mapping_test.py
-python ~/protocol-governed-computing/transformation/scripts/testbed/interface_structures_test.py
-python ~/protocol-governed-computing/transformation/scripts/testbed/differential.py
-python ~/protocol-governed-computing/transformation/scripts/testbed/e2e_phases_test.py
-python ~/protocol-governed-computing/transformation/scripts/testbed/projection_test.py
-python ~/protocol-governed-computing/transformation/scripts/testbed/construction_acceptance.py
+python ~/protocol-governed-computing/transformation_compilers/scripts/testbed/meta_test.py
+python ~/protocol-governed-computing/transformation_compilers/scripts/testbed/closure_test.py
+python ~/protocol-governed-computing/transformation_compilers/scripts/testbed/effectivity_test.py
+python ~/protocol-governed-computing/transformation_compilers/scripts/testbed/render_vectors_test.py
+python ~/protocol-governed-computing/transformation_compilers/scripts/testbed/construction_mapping_test.py
+python ~/protocol-governed-computing/transformation_compilers/scripts/testbed/interface_structures_test.py
+python ~/protocol-governed-computing/transformation_compilers/scripts/testbed/differential.py
+python ~/protocol-governed-computing/transformation_compilers/scripts/testbed/e2e_phases_test.py
+python ~/protocol-governed-computing/transformation_compilers/scripts/testbed/projection_test.py
+python ~/protocol-governed-computing/transformation_compilers/scripts/testbed/construction_acceptance.py
 
 # closure and environment
 python ~/protocol-governed-computing/.github/process/implementation_closure.py
@@ -380,7 +380,7 @@ explains it. The step ids there are the names below.
 | `execution_validation.py` (model_response) | `27/27 criteria hold` — CLM CR-1: a model answers only in service, only on what it may read, only in words the rules permit; refusals recorded and announced; a replay agrees on every determinative event |
 | `blockchain/testbed/routing_closure/execution_validation.py` | `6/6 criteria hold (2 not exercised)` — a failed record ends every identity and wallet act at `EXIT_REJECTED`, at the step that failed, through the V1 acts `cr_06_routing_closure` built |
 | `ai_governance/testbed/routing_closure/execution_validation.py` | `4/4 criteria hold (0 not exercised)` — a reclaim the registry refuses ends at `EXIT_ACTIVE` with the license still assigned and no revocation announced, through `CC_RECLAIM_UNUSED_LICENSE_V1` |
-| `transformation/testbed/routing_closure/execution_validation.py` | `4/4 criteria hold (1 not exercised)` — a phase whose observation reports NOT_FOUND ends at `EXIT_REJECTED` and judges nothing; every way the observing capability answers is answered by every observing step and routed by every phase, read from the contract each node runs (`code`); an outcome the capability gains is answered at the next emission |
+| `transformation_compilers/testbed/routing_closure/execution_validation.py` | `4/4 criteria hold (1 not exercised)` — a phase whose observation reports NOT_FOUND ends at `EXIT_REJECTED` and judges nothing; every way the observing capability answers is answered by every observing step and routed by every phase, read from the contract each node runs (`code`); an outcome the capability gains is answered at the next emission |
 | `trace_schema_conformance.py` | `TRACE SCHEMA CONFORMANCE PASSED` — every line of every trace the execution block wrote conforms to `SCHEMA_TRACE_EVENT_V2` |
 
 ### Choosing a store operation
@@ -617,7 +617,7 @@ rsync -rc ~/protocol-governed-computing/data/transformation/construction/registr
 # acceptance compares a render against artifacts that already exist and only that domain was ever
 # hand-authored. A domain emitted by `tc construction emit` is covered by `tc construction check`
 # instead. Pass dossiers as arguments to widen it.
-python ~/protocol-governed-computing/transformation/scripts/testbed/construction_acceptance.py
+python ~/protocol-governed-computing/transformation_compilers/scripts/testbed/construction_acceptance.py
 
 ~/protocol-governed-computing/protocol_compiler/compile_domain.sh ~/protocol-governed-computing/business_domains/book_library_mgmt
 PGC_SNAPSHOT_PROFILE=GOVERNANCE_SURFACE_PROFILE_V0 ~/protocol-governed-computing/snapshot_assembler/assemble.sh
@@ -930,14 +930,14 @@ done
 
 # 1. Wipe every build output: the assembled snapshot, each domain's compiled projections, runtime data.
 rm -rf $W/snapshot $W/data \
-       $W/software_governance/snapshot $W/snapshot_inspector/snapshot $W/transformation/snapshot \
+       $W/software_governance/snapshot $W/snapshot_inspector/snapshot $W/transformation_compilers/snapshot \
        $W/business_domains/*/snapshot $W/conformance_workloads/workloads/*/snapshot
 
 # 2. Platform first — a domain resolves its references against the compiled governance surface.
 $W/protocol_compiler/compile.sh STRUCTURE_BUILD_PLATFORM_CONFIG_V2
 
 # 3. Every domain in the composition. Omitting one assembles it from stale output that no longer exists.
-for d in $W/transformation $W/snapshot_inspector $W/conformance_workloads/workloads/collatz \
+for d in $W/transformation_compilers $W/snapshot_inspector $W/conformance_workloads/workloads/collatz \
          $W/business_domains/ai_governance $W/business_domains/book_library_mgmt \
          $W/business_domains/blockchain; do
   $W/protocol_compiler/compile_domain.sh $d
@@ -954,7 +954,7 @@ not deterministic — and the second is the one worth chasing.
 Then the full surface:
 
 ```bash
-cd $W/transformation
+cd $W/transformation_compilers
 for s in meta_test e2e_phases_test differential projection_test construction_acceptance; do
   python scripts/testbed/$s.py
 done
@@ -997,11 +997,11 @@ workflow artifact. Editing the declaration alone leaves `tc phase check` and the
 evaluating different rule sets:
 
 ```bash
-python ~/protocol-governed-computing/transformation/scripts/emit_rule_sets.py           # re-seal
-~/protocol-governed-computing/protocol_compiler/compile_domain.sh ~/protocol-governed-computing/transformation
+python ~/protocol-governed-computing/transformation_compilers/scripts/emit_rule_sets.py           # re-seal
+~/protocol-governed-computing/protocol_compiler/compile_domain.sh ~/protocol-governed-computing/transformation_compilers
 PGC_SNAPSHOT_PROFILE=GOVERNANCE_SURFACE_PROFILE_V0 ~/protocol-governed-computing/snapshot_assembler/assemble.sh
-python ~/protocol-governed-computing/transformation/scripts/testbed/build_fixtures.py   # derive
-python ~/protocol-governed-computing/transformation/scripts/testbed/build_payloads.py
+python ~/protocol-governed-computing/transformation_compilers/scripts/testbed/build_fixtures.py   # derive
+python ~/protocol-governed-computing/transformation_compilers/scripts/testbed/build_payloads.py
 ```
 
 `--check` first will name the drifted phase. Fixtures and payloads are **derived from the live
@@ -1009,7 +1009,7 @@ dossier** — never hand-edit one; change the dossier or the mutator in `build_f
 fixture cannot go stale silently: the derivation raises rather than producing a wrong fixture.
 
 A new rule needs four things, or it is untested: its declaration in the phase's register schema
-(`transformation/registry/schema/REGISTER_SCHEMA_P<n>_V0.json`), recorded as a revision with
+(`transformation_compilers/registry/schema/REGISTER_SCHEMA_P<n>_V0.json`), recorded as a revision with
 `tc phase revise`, plus a procedure module under `design/evaluate/procedures/` only if no keyword or
 annotation can state it; a mutator plus `FIXTURES` row in `build_fixtures.py`; and entries in
 `build_payloads.py` (source, priors, register key), `e2e_phases_test.py` (`CASES`) and
@@ -1037,7 +1037,7 @@ tc phase check --phase p0 <seed.md>
 tc phase check --phase p1 <register.md>
 tc phase check --phase p2 <register.md> --snapshot ~/protocol-governed-computing/snapshot
 
-cd ~/protocol-governed-computing/transformation && python scripts/testbed/differential.py
+cd ~/protocol-governed-computing/transformation_compilers && python scripts/testbed/differential.py
 ```
 
 From P2 a phase also needs its **priors**, or the handoff between phases goes unchecked:
@@ -1081,7 +1081,7 @@ S=$(mktemp -d); OUT=/tmp/pgc_cr02_design_baseline
 (cd ~/protocol-governed-computing/business_domains && git archive 32e5774 book_library_mgmt) | tar -x -C $S
 ~/protocol-governed-computing/protocol_compiler/compile_domain.sh $S/book_library_mgmt
 W=~/protocol-governed-computing; rm -rf $OUT
-PGC_SOURCE_ROOTS="$W/software_governance/snapshot/compiled:$W/conformance_workloads/workloads/collatz/snapshot/compiled:$W/business_domains/ai_governance/snapshot/compiled:$W/snapshot_inspector/snapshot/compiled:$W/transformation/snapshot/compiled:$S/book_library_mgmt/snapshot/compiled" \
+PGC_SOURCE_ROOTS="$W/software_governance/snapshot/compiled:$W/conformance_workloads/workloads/collatz/snapshot/compiled:$W/business_domains/ai_governance/snapshot/compiled:$W/snapshot_inspector/snapshot/compiled:$W/transformation_compilers/snapshot/compiled:$S/book_library_mgmt/snapshot/compiled" \
   PGC_SNAPSHOT_OUT=$OUT PGC_SNAPSHOT_PROFILE=GOVERNANCE_SURFACE_PROFILE_V0 ~/protocol-governed-computing/snapshot_assembler/assemble.sh
 ```
 

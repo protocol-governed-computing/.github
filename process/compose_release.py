@@ -46,7 +46,7 @@ COMPONENTS = [
     "snapshot_assembler",
     "protocol_transport",
     "snapshot_inspector",
-    "transformation",
+    "transformation_compilers",
 ]
 
 

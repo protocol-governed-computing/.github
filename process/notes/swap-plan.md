@@ -135,15 +135,15 @@ On the three rebuild branches, after reviewing step A:
 
 ```
 cd ~/protocol-governed-computing
-for r in transformation .github software_governance; do git -C $r add -A; git -C $r commit -m "Swap: <summary>"; done
-for r in transformation .github software_governance; do git -C $r push origin rebuild/transformation; done
+for r in transformation_compilers .github software_governance; do git -C $r add -A; git -C $r commit -m "Swap: <summary>"; done
+for r in transformation_compilers .github software_governance; do git -C $r push origin rebuild/transformation; done
 ```
 
 Squash each into `dev/18` as one commit, in this order: the platform first, so the domain compiles
 against it.
 
 ```
-for r in software_governance transformation .github; do
+for r in software_governance transformation_compilers .github; do
   git -C $r checkout dev/18 && git -C $r merge --squash rebuild/transformation && \
   git -C $r commit -m "Rebuild of the transformation module, swapped in (charter §10 step 6)"
 done
@@ -152,9 +152,8 @@ done
 Then I run `regression.sh --all` on `dev/18` in all repos. Once it passes and you have checked it:
 
 ```
-for r in transformation .github software_governance; do git -C $r push origin dev/18; done
-for r in transformation .github software_governance; do git -C $r branch -m rebuild/transformation archive/rebuild-transformation; done
-git -C transformation worktree remove ~/pgc-oracle/transformation
+for r in transformation_compilers .github software_governance; do git -C $r push origin dev/18; done
+for r in transformation_compilers .github software_governance; do git -C $r branch -m rebuild/transformation archive/rebuild-transformation; done
 ```
 
 The oracle tag stays.

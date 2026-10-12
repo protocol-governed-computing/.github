@@ -205,7 +205,7 @@ assembled from these components under a conformance profile; no single repositor
 | `protocol_runtime` | Reads the sealed snapshot and executes workflows |
 | `protocol_transport` | The transport boundary — protocol-neutral ingress and egress |
 | `snapshot_inspector` | Read-only snapshot inspection |
-| `transformation` | The transformation lifecycle: design compiler and construction compiler |
+| `transformation_compilers` | The transformation lifecycle: design compiler and construction compiler |
 | `pgc_release` | One composition, sealed and cited: the assembled snapshot and the manifest naming its components |
 | `pgc_install` | The composition as installable software: one PyPI distribution pinning every component |
 

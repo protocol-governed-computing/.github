@@ -105,7 +105,7 @@ if [[ "$MODE" == "--build" || "$MODE" == "--all" ]]; then
   surface_unchanged "the federated platform compile"
   "$W/protocol_compiler/compile.sh" STRUCTURE_BUILD_PLATFORM_MULTIWORKER_CONFIG_V2 || rebuild_failed
   surface_unchanged "the multiworker platform compile"
-  for d in conformance_workloads/workloads/collatz transformation snapshot_inspector \
+  for d in conformance_workloads/workloads/collatz transformation_compilers snapshot_inspector \
            business_domains/ai_governance business_domains/book_library_mgmt \
            business_domains/blockchain business_domains/causal_language_model; do
     "$W/protocol_compiler/compile_domain.sh" "$W/$d" || rebuild_failed
@@ -136,8 +136,8 @@ if [[ "$MODE" == "--all" ]]; then
            human_block_fidelity evidence_determinism admission_contract_fidelity; do
     step "$c" python "$W/.github/process/$c.py"
   done
-  step emit_rule_sets python "$W/transformation/scripts/emit_rule_sets.py" --snapshot "$W/snapshot" --check
-  step build_payloads python "$W/transformation/scripts/testbed/build_payloads.py" --check
+  step emit_rule_sets python "$W/transformation_compilers/scripts/emit_rule_sets.py" --snapshot "$W/snapshot" --check
+  step build_payloads python "$W/transformation_compilers/scripts/testbed/build_payloads.py" --check
   step author_transport_contracts env PYTHONPATH="$W/snapshot_inspector" \
     python "$W/snapshot_inspector/scripts/author_transport_contracts.py" --check
   step frontmatter_fidelity python "$W/.github/process/frontmatter_fidelity.py"
@@ -145,7 +145,7 @@ if [[ "$MODE" == "--all" ]]; then
            molecule_design_test vector_design_test keyed_node_design_test \
            refusal_moment_design_test semantic_change_design_test \
            entrance_gate_design_test binding_literal_design_test; do
-    step "$t" python "$W/transformation/scripts/testbed/$t.py"
+    step "$t" python "$W/transformation_compilers/scripts/testbed/$t.py"
   done
   step implementation_closure python "$W/.github/process/implementation_closure.py"
   step test_inspector env PYTHONPATH="$W/snapshot_inspector" \
@@ -264,7 +264,7 @@ echo; echo "=== blockchain: routing closure (each case on its own scratch root) 
 step blockchain_routing_closure python "$W/business_domains/blockchain/testbed/routing_closure/execution_validation.py"
 
 echo; echo "=== transformation: routing closure (a phase whose observation finds nothing rejects) ==="
-step transformation_routing_closure python "$W/transformation/testbed/routing_closure/execution_validation.py"
+step transformation_routing_closure python "$W/transformation_compilers/testbed/routing_closure/execution_validation.py"
 
 echo; echo "=== ai_governance: reclaim closure (a reclaim the registry refuses stays active) ==="
 step ai_governance_reclaim_closure python "$W/business_domains/ai_governance/testbed/routing_closure/execution_validation.py"

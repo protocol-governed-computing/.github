@@ -50,7 +50,7 @@ SOURCE_ROOTS = (
     "business_domains",
     "conformance_workloads",
     "snapshot_inspector",
-    "transformation",
+    "transformation_compilers",
 )
 
 MACHINE_BLOCK = re.compile(r"```yaml\n(.*?)\n```", re.S)
