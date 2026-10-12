@@ -16,6 +16,13 @@ import yaml
 
 import live_inventory
 
+
+class Plain(yaml.SafeDumper):
+    """Writes every row out in full: a reader of the design never resolves an anchor."""
+
+    def ignore_aliases(self, data):
+        return True
+
 NS = "transformation::"
 REUSED = {
     "capability_side_effects::CS_SNAPSHOT_QUERY_V0": "Observes an assembled composition read-only through the inspection surface",
@@ -265,8 +272,8 @@ def main(out_path: str) -> None:
     }
     header = {"phase": "p7", "domain": "transformation", "subdomain": ["design", "build"],
               "cr": "genesis", "rule_set": "transformation.schemas.REGISTER_SCHEMA_P7_V0"}
-    block = yaml.safe_dump({"document": header, "registers": registers}, sort_keys=False,
-                           allow_unicode=True, width=100)
+    block = yaml.dump({"document": header, "registers": registers}, Dumper=Plain, sort_keys=False,
+                      allow_unicode=True, width=100)
     Path(out_path).write_text(TITLE + "\n\n## Machine\n\n```yaml\n" + block + "```\n" + PROSE)
 
 
