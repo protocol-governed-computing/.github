@@ -5,7 +5,7 @@
 measured against, so the check compares every identity in the sealed v5 composition
 (`pgc_release/snapshot`) with the same identity in the working composition (`snapshot/`). It compares
 them by the platform's declaration of what carries meaning
-(`artifact::VOCAB_DECLARATION_REPRESENTATION_V0`, read through `transformation.build.sameness`).
+(`artifact::VOCAB_DECLARATION_REPRESENTATION_V1`, read through `transformation.build.sameness`).
 
 Two differences are not a change of meaning:
 - a stand-down marking (`superseded_by`) on the published identity;
@@ -47,11 +47,13 @@ def frontmatters(root: Path) -> dict[str, dict]:
     return out
 
 
-def successors(working: dict[str, dict]) -> dict[str, str]:
-    """Each artifact stood down with one successor, by full name and by short code.
+def successors(working: dict[str, dict], retired: dict[str, dict]) -> dict[str, str]:
+    """Each superseded artifact's one successor, by full name and by short code.
 
-    A chain is followed to its end: a reference moved from V0 to V2 moved to V0's successor's
-    successor, which is the version in force."""
+    The relation is read wherever it is still stated: `superseded_by` on a predecessor in the
+    composition, `supersedes` on a live successor whose predecessor is deleted, and `superseded_by`
+    in the ledger where both ends are deleted. A chain is followed to its end: a reference moved
+    from V0 to V3 moved to the version in force."""
     step: dict[str, str] = {}
     for fqdn, frontmatter in working.items():
         named = frontmatter.get("superseded_by")
@@ -59,6 +61,12 @@ def successors(working: dict[str, dict]) -> dict[str, str]:
             named = [named]
         if named and len(named) == 1:
             step[fqdn] = named[0]
+        predecessor = frontmatter.get("supersedes")
+        if isinstance(predecessor, str) and predecessor not in working:
+            step.setdefault(predecessor, fqdn)
+    for fqdn, entry in retired.items():
+        if entry.get("superseded_by"):
+            step.setdefault(fqdn, entry["superseded_by"])
     out: dict[str, str] = {}
     for fqdn, nxt in step.items():
         seen = {fqdn}
@@ -74,8 +82,8 @@ def main() -> int:
     published = frontmatters(PUBLISHED)
     working = frontmatters(WORKING)
     declaration = sameness.read(WORKING)
-    successor = successors(working)
     retired = retirement.retired()
+    successor = successors(working, retired)
 
     findings: list[str] = []
     for fqdn in sorted(set(published) - set(working)):

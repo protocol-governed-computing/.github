@@ -24,6 +24,7 @@ wrong. All are called by `regression.sh --all`, and each is runnable alone.
 | `governance_chain_closure.py` | every authored invariant is named by a constitution rule |
 | `supersession_agreement.py` | a supersession is stated on both sides and the two agree |
 | `published_identity_check.py` | nothing v5 published has changed meaning (SU-11) |
+| `single_instance_check.py` | no artifact name is live in two versions, in the namespaces it is given |
 | `human_block_fidelity.py` | prose beside a machine block declares nothing |
 | `frontmatter_fidelity.py` | every authored machine-block value survived compilation |
 | `evidence_determinism.py` | determinative evidence content is identical across runs; observational content differs |
@@ -38,6 +39,7 @@ wrong. All are called by `regression.sh --all`, and each is runnable alone.
 |---|---|
 | `compose_release.py` | regenerates `pgc_release` from the sealed snapshot. Called only by `release.sh --publish-composition` |
 | `notes/release-<N>.md` | one file per cycle, written before the cut. The durable record of what a composition was |
+| `publish_component_releases.sh` | publishes the GitHub release of each component, which mints its Zenodo DOI. Run before `release.sh --publish-composition`, which refuses until every component DOI exists; `--verify` lists which exist |
 
 **Reference.**
 
@@ -45,7 +47,8 @@ wrong. All are called by `regression.sh --all`, and each is runnable alone.
 |---|---|
 | `RUNBOOK.md` | the end-to-end sequence by hand, and the expected result of every check |
 | `requirements-domains.txt` | optional domain dependencies, never needed by the core compile path |
-| `task_environment_profile*.md` | an authoring task given to an external party, kept with its operator brief |
+| `retired_identities.yaml`, `retention.yaml`, `retirement.py` | the deletion ledger (SU-12), the retention policy, and the reader both checks share |
+| `pgc_sloc.py` | how much of PGC is declared behaviour and how much is implementation, per repository and layer. Run by hand |
 
 ## What belongs here, and what does not
 

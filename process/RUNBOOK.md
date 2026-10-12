@@ -162,7 +162,7 @@ export PGC_SNAPSHOT_PROFILE=GOVERNANCE_SURFACE_PROFILE_V0
 
 ~/protocol-governed-computing/protocol_compiler/compile_domain.sh ~/protocol-governed-computing/conformance_workloads/workloads/collatz
 
-~/protocol-governed-computing/protocol_compiler/compile_domain.sh ~/protocol-governed-computing/transformation
+~/protocol-governed-computing/protocol_compiler/compile_domain.sh ~/protocol-governed-computing/transformation_compilers
 
 ~/protocol-governed-computing/protocol_compiler/compile_domain.sh ~/protocol-governed-computing/snapshot_inspector
 
@@ -243,18 +243,23 @@ python ~/protocol-governed-computing/.github/process/supersession_agreement.py
 python ~/protocol-governed-computing/.github/process/human_block_fidelity.py
 python ~/protocol-governed-computing/.github/process/evidence_determinism.py
 python ~/protocol-governed-computing/.github/process/admission_contract_fidelity.py
-python ~/protocol-governed-computing/transformation/scripts/emit_rule_sets.py --check
-python ~/protocol-governed-computing/transformation/scripts/testbed/build_payloads.py --check
+python ~/protocol-governed-computing/transformation_compilers/scripts/emit_rule_sets.py --check
+python ~/protocol-governed-computing/transformation_compilers/scripts/testbed/build_payloads.py --check
 PYTHONPATH=~/protocol-governed-computing/snapshot_inspector \
   python ~/protocol-governed-computing/snapshot_inspector/scripts/author_transport_contracts.py --check
 python ~/protocol-governed-computing/.github/process/frontmatter_fidelity.py
 
 # the phase testbeds
-python ~/protocol-governed-computing/transformation/scripts/testbed/meta_test.py
-python ~/protocol-governed-computing/transformation/scripts/testbed/differential.py
-python ~/protocol-governed-computing/transformation/scripts/testbed/e2e_phases_test.py
-python ~/protocol-governed-computing/transformation/scripts/testbed/projection_test.py
-python ~/protocol-governed-computing/transformation/scripts/testbed/construction_acceptance.py
+python ~/protocol-governed-computing/transformation_compilers/scripts/testbed/meta_test.py
+python ~/protocol-governed-computing/transformation_compilers/scripts/testbed/closure_test.py
+python ~/protocol-governed-computing/transformation_compilers/scripts/testbed/effectivity_test.py
+python ~/protocol-governed-computing/transformation_compilers/scripts/testbed/render_vectors_test.py
+python ~/protocol-governed-computing/transformation_compilers/scripts/testbed/construction_mapping_test.py
+python ~/protocol-governed-computing/transformation_compilers/scripts/testbed/interface_structures_test.py
+python ~/protocol-governed-computing/transformation_compilers/scripts/testbed/differential.py
+python ~/protocol-governed-computing/transformation_compilers/scripts/testbed/e2e_phases_test.py
+python ~/protocol-governed-computing/transformation_compilers/scripts/testbed/projection_test.py
+python ~/protocol-governed-computing/transformation_compilers/scripts/testbed/construction_acceptance.py
 
 # closure and environment
 python ~/protocol-governed-computing/.github/process/implementation_closure.py
@@ -319,7 +324,7 @@ explains it. The step ids there are the names below.
 | `governance_closure.py` | `GOVERNANCE CLOSURE PASSED` — every compiler handler is named by an invariant, and no layer is declared two ways |
 | `governance_chain_closure.py` | `GOVERNANCE CHAIN PASSED` — every authored invariant is named by a constitution rule, and every authoring build reaches the chain. An `orphan invariant` line means an obligation nobody's constitution names: author the rule, or the obligation is ungoverned rather than leniently governed |
 | `supersession_agreement.py` | `SUPERSESSION AGREEMENT PASSED — N relation(s), both sides agree on M, K predecessor(s) deleted by record` — the relation is stated twice, on the successor and on the predecessor, and this compares them. A successor may name an absent predecessor only when `retired_identities.yaml` records its deletion. **It does not close SU-3**, which asks for it once with the other side derived; what it closes is a disagreement nothing would report. `superseded_by` is written as a list by construction and may be written as one identity by hand: both spellings are one declaration and the closure handler normalizes them |
-| `published_identity_check.py` | `PUBLISHED IDENTITY PASSED — 500 identities published in v5, none changed meaning, 1 deleted by record; 1 identities retired, none reused or named` — compares every identity in `pgc_release/snapshot` with the working composition by the platform's declaration of what carries meaning (`4e` SU-11). A stand-down marking and a re-point to a declared successor are not a change. A published identity missing from the composition is a finding unless `retired_identities.yaml` records its deletion (`4e` SU-12). A recorded identity still present, or named by a live artifact other than its successor, is a finding; a node's name and a routing target are places, not references. When retention applies is declared in `retention.yaml` |
+| `published_identity_check.py` | `PUBLISHED IDENTITY PASSED — 500 identities published in v5, none changed meaning, 20 deleted by record; 29 identities retired, none reused or named` — compares every identity in `pgc_release/snapshot` with the working composition by the platform's declaration of what carries meaning (`4e` SU-11). A stand-down marking and a re-point to a declared successor are not a change. A published identity missing from the composition is a finding unless `retired_identities.yaml` records its deletion (`4e` SU-12). A recorded identity still present, or named by a live artifact other than its successor, is a finding; a node's name and a routing target are places, not references. When retention applies is declared in `retention.yaml` |
 | `human_block_fidelity.py` | `HUMAN BLOCK FIDELITY PASSED` — the prose beside a machine block declares nothing. A `RESTATED` line means delete the prose copy, never edit the machine block; a `SECTION` line means the section is named as if it states a rule. The policy is `vocabulary::VOCAB_HUMAN_BLOCK_CONSTRAINTS_V0`, read from the sealed composition — add a forbidden name there, never here. Reasoning: Field Manual, *The human block* |
 | `evidence_determinism.py` | **Give `PGC_SNAPSHOT_ROOT` an absolute path or leave it unset** — this check shells out to `run.sh`, which resolves a relative one against its own directory and fails in a way that reads like a determinism defect. `EVIDENCE DETERMINISM PASSED` — one workflow run twice; determinative content identical, observational content differs. A `DETERMINATIVE CONTENT DIFFERS` line means something non-deterministic is classified determinative; a `vacuous` line means nothing observational varies, so the split is untested. Policy: `vocabulary::VOCAB_EVIDENCE_CONTENT_CLASSIFICATION_V1` |
 | `admission_contract_fidelity.py` | `ADMISSION CONTRACT FIDELITY PASSED` — every IN gate's declared contract matches what its workflow binds. `OVER-DECLARED` means the gate requires a field nothing consumes, so a correct payload is refused; `UNDER-DECLARED` means the gate admits a payload the workflow cannot resolve. **Currently red on 11 findings over 37 gates, all deliberate**: blockchain's identity and wallet gates and one transformation gate, each that domain's own business to correct through a change request |
@@ -328,12 +333,17 @@ explains it. The step ids there are the names below.
 | `author_transport_contracts.py --check` | `OK` — every `si.` boundary contract matches the declaration that generates it. A `DRIFTED` line is a hand-edited artifact; fix the declaration, never the artifact |
 | `frontmatter_fidelity.py` | `FRONTMATTER FIDELITY PASSED` — every authored Machine Block value survived compilation. The compiler may add; it may never overwrite |
 | `meta_test.py` | `META PASSED` — every declared rule resolves to a check kind, and every kind is declared |
+| `closure_test.py` | `CLOSURE PASSED` — every `x-realises` resolves, every design invariant is realised, every template agrees with its schema |
+| `effectivity_test.py` | `EFFECTIVITY PASSED` — every rule set is its schema's last revision; header, approval and rule-difference cases hold |
+| `render_vectors_test.py` | `RENDER VECTORS PASSED` — every value form renders as DESIGN_LANGUAGE §1.2 specifies |
+| `construction_mapping_test.py` | `CONSTRUCTION MAPPING PASSED` — CONSTRUCTION_MAPPING.md states every field construction writes, with its class |
+| `interface_structures_test.py` | `INTERFACE STRUCTURES PASSED` — what the readers and the evaluator return conforms to the STRUCTURE each field names |
 | `differential.py` | `DIFFERENTIAL PASSED` — the sealed rule set and the declared one agree on every corpus document |
 | `e2e_phases_test.py` | `E2E PASSED` — every phase, both admissible and inadmissible, through the runtime |
 | `projection_test.py` | `PROJECTION PASSED` — reproducible, general, and refusing an inadmissible prior |
 | `construction_acceptance.py` | `182/184 artifacts reproduced across 7 domain(s) (2 field difference(s))`, exit 1, **red by design** — the two differences are `book_library_mgmt`'s `IN_`/`WF_UPDATE_BIBLIOGRAPHIC_INFORMATION_V1`, published in v5 with `version: v0`; the renderer now writes the version from the identity, and a published identity keeps its sealed text. `book_library_mgmt` from maintained fixtures; `blockchain`, `causal_language_model`, `ai_governance` and the Collatz workload (partial) and the two base-code roots from their delivered dossiers. A base-code root carries **no order**, so the harness takes its dossiers as a set and refuses if two of them determine one artifact; a partial registry reports its undetermined tail rather than counting it as reproduced. A later design's REPOINT is applied to the artifact an earlier design rendered, as construction applied it. An `UNCOVERED` line is a dossier root determining artifacts that nothing compares — add it to `DOMAINS`, or say why not |
 | `molecule_design_test.py`, `vector_design_test.py` | `5/5 passed`, `6/6 passed` — the design language renders a molecule's steps, and a transform's cases as its vector, and each rule that holds them fires on the defect it names |
-| `keyed_node_design_test.py`, `refusal_moment_design_test.py`, `vector_value_design_test.py` | `7/7`, `4/4`, `3/3 passed` — a node is a key and the contract it runs a column, and a route to a place the composition already has resolves; a refusing ending announces only a declared refusal moment; a vector value parses as a YAML literal, and a step-binding literal that does not parse is refused |
+| `keyed_node_design_test.py`, `refusal_moment_design_test.py` | `6/6`, `4/4 passed` — a node is a key and the contract it runs a column, and a route to a place the composition already has resolves; a refusing ending announces only a declared refusal moment |
 | `semantic_change_design_test.py` | `18/18 passed` — construction compares every amendment with the composition by the platform's declaration and refuses a change of meaning under an old identity; an amendment built without `--snapshot` is refused; a design re-points a reference with `REPOINT`; a replacement whose live referrer the design does not account for is refused; P7 refuses a `withdrawn_facts` row |
 | `implementation_closure.py` | `IMPLEMENTATION CLOSURE PASSED` — every transform module named by an artifact, every named module present |
 | `test_inspector.py` | `PASSED: 122/122` |
@@ -342,7 +352,7 @@ explains it. The step ids there are the names below.
 | `test_indexes.py` | `PASSED: 13/13` — assembler index construction, including that a republished identity resolves to its authoring copy and that resolution does not track domain-name order |
 | `test_transform_conformance_evidence.py` | `PASSED: 36/36` — every build's conformance result, the platform's included, is carried, names each transform the build supplies with none refused, names as carried exactly what its attestation records, and is a manifest constituent; the platform proves every transform it has a vector for; `conformance/` holds only `composition.json` |
 | `test_transform_conformance.py`, `test_vector_build.py` | `10/10 passed`, `4/4 passed` — the compiler refuses a malformed vector before conformance runs, and a wrong expectation fails the build at conformance |
-| `test_reference_semantics.py` | `15/15 passed` — every place that finds a reference reads it from `artifact::VOCAB_DECLARATION_REPRESENTATION_V0`, and a full name in an undeclared part is refused (E105) |
+| `test_reference_semantics.py` | `17/17 passed` — every place that finds a reference reads it from `artifact::VOCAB_DECLARATION_REPRESENTATION_V1`, and a full name in an undeclared part is refused (E105) |
 | `test_routing_closure.py`, `test_routing_lookup.py` | `12/12`, `6/6 passed` — a workflow routes every outcome its contracts can end with, and a step answers every outcome its capability declares; routing is a lookup of `continue` or `exit`, a contract declares no `evaluation` block, and a stood-down contract is checked by neither |
 | `test_platform_vectors.py` | `3/3 passed` — the platform materializes its vectors and writes their cases; each defect in a platform vector stops the platform build on its own rule; a build records what it carried in, and the platform carries nothing |
 | `test_transform_conformance_runner.py` | `OK` (10 tests) — a molecule is proven from recorded results without running its non-deterministic step; a missing or unused record refuses; what a build supplies is read from its attestation, never a name; a failed case for a carried transform refuses the build |
@@ -370,7 +380,7 @@ explains it. The step ids there are the names below.
 | `execution_validation.py` (model_response) | `27/27 criteria hold` — CLM CR-1: a model answers only in service, only on what it may read, only in words the rules permit; refusals recorded and announced; a replay agrees on every determinative event |
 | `blockchain/testbed/routing_closure/execution_validation.py` | `6/6 criteria hold (2 not exercised)` — a failed record ends every identity and wallet act at `EXIT_REJECTED`, at the step that failed, through the V1 acts `cr_06_routing_closure` built |
 | `ai_governance/testbed/routing_closure/execution_validation.py` | `4/4 criteria hold (0 not exercised)` — a reclaim the registry refuses ends at `EXIT_ACTIVE` with the license still assigned and no revocation announced, through `CC_RECLAIM_UNUSED_LICENSE_V1` |
-| `transformation/testbed/routing_closure/execution_validation.py` | `4/4 criteria hold (1 not exercised)` — a phase whose observation reports NOT_FOUND ends at `EXIT_REJECTED` and judges nothing; every way the observing capability answers is answered by every observing step and routed by every phase, read from the contract each node runs (`code`); an outcome the capability gains is answered at the next emission |
+| `transformation_compilers/testbed/routing_closure/execution_validation.py` | `4/4 criteria hold (1 not exercised)` — a phase whose observation reports NOT_FOUND ends at `EXIT_REJECTED` and judges nothing; every way the observing capability answers is answered by every observing step and routed by every phase, read from the contract each node runs (`code`); an outcome the capability gains is answered at the next emission |
 | `trace_schema_conformance.py` | `TRACE SCHEMA CONFORMANCE PASSED` — every line of every trace the execution block wrote conforms to `SCHEMA_TRACE_EVENT_V2` |
 
 ### Choosing a store operation
@@ -607,7 +617,7 @@ rsync -rc ~/protocol-governed-computing/data/transformation/construction/registr
 # acceptance compares a render against artifacts that already exist and only that domain was ever
 # hand-authored. A domain emitted by `tc construction emit` is covered by `tc construction check`
 # instead. Pass dossiers as arguments to widen it.
-python ~/protocol-governed-computing/transformation/scripts/testbed/construction_acceptance.py
+python ~/protocol-governed-computing/transformation_compilers/scripts/testbed/construction_acceptance.py
 
 ~/protocol-governed-computing/protocol_compiler/compile_domain.sh ~/protocol-governed-computing/business_domains/book_library_mgmt
 PGC_SNAPSHOT_PROFILE=GOVERNANCE_SURFACE_PROFILE_V0 ~/protocol-governed-computing/snapshot_assembler/assemble.sh
@@ -920,14 +930,14 @@ done
 
 # 1. Wipe every build output: the assembled snapshot, each domain's compiled projections, runtime data.
 rm -rf $W/snapshot $W/data \
-       $W/software_governance/snapshot $W/snapshot_inspector/snapshot $W/transformation/snapshot \
+       $W/software_governance/snapshot $W/snapshot_inspector/snapshot $W/transformation_compilers/snapshot \
        $W/business_domains/*/snapshot $W/conformance_workloads/workloads/*/snapshot
 
 # 2. Platform first — a domain resolves its references against the compiled governance surface.
 $W/protocol_compiler/compile.sh STRUCTURE_BUILD_PLATFORM_CONFIG_V2
 
 # 3. Every domain in the composition. Omitting one assembles it from stale output that no longer exists.
-for d in $W/transformation $W/snapshot_inspector $W/conformance_workloads/workloads/collatz \
+for d in $W/transformation_compilers $W/snapshot_inspector $W/conformance_workloads/workloads/collatz \
          $W/business_domains/ai_governance $W/business_domains/book_library_mgmt \
          $W/business_domains/blockchain; do
   $W/protocol_compiler/compile_domain.sh $d
@@ -944,7 +954,7 @@ not deterministic — and the second is the one worth chasing.
 Then the full surface:
 
 ```bash
-cd $W/transformation
+cd $W/transformation_compilers
 for s in meta_test e2e_phases_test differential projection_test construction_acceptance; do
   python scripts/testbed/$s.py
 done
@@ -987,19 +997,21 @@ workflow artifact. Editing the declaration alone leaves `tc phase check` and the
 evaluating different rule sets:
 
 ```bash
-python ~/protocol-governed-computing/transformation/scripts/emit_rule_sets.py           # re-seal
-~/protocol-governed-computing/protocol_compiler/compile_domain.sh ~/protocol-governed-computing/transformation
+python ~/protocol-governed-computing/transformation_compilers/scripts/emit_rule_sets.py           # re-seal
+~/protocol-governed-computing/protocol_compiler/compile_domain.sh ~/protocol-governed-computing/transformation_compilers
 PGC_SNAPSHOT_PROFILE=GOVERNANCE_SURFACE_PROFILE_V0 ~/protocol-governed-computing/snapshot_assembler/assemble.sh
-python ~/protocol-governed-computing/transformation/scripts/testbed/build_fixtures.py   # derive
-python ~/protocol-governed-computing/transformation/scripts/testbed/build_payloads.py
+python ~/protocol-governed-computing/transformation_compilers/scripts/testbed/build_fixtures.py   # derive
+python ~/protocol-governed-computing/transformation_compilers/scripts/testbed/build_payloads.py
 ```
 
 `--check` first will name the drifted phase. Fixtures and payloads are **derived from the live
 dossier** — never hand-edit one; change the dossier or the mutator in `build_fixtures.py`. A derived
 fixture cannot go stale silently: the derivation raises rather than producing a wrong fixture.
 
-A new rule needs four things, or it is untested: the check in `design/checks.py`, the `Rule` in the
-phase's `rules.py`, a mutator plus `FIXTURES` row in `build_fixtures.py`, and entries in
+A new rule needs four things, or it is untested: its declaration in the phase's register schema
+(`transformation_compilers/registry/schema/REGISTER_SCHEMA_P<n>_V0.json`), recorded as a revision with
+`tc phase revise`, plus a procedure module under `design/evaluate/procedures/` only if no keyword or
+annotation can state it; a mutator plus `FIXTURES` row in `build_fixtures.py`; and entries in
 `build_payloads.py` (source, priors, register key), `e2e_phases_test.py` (`CASES`) and
 `differential.py` (`PRIORS_BY_DOCUMENT`).
 
@@ -1025,7 +1037,7 @@ tc phase check --phase p0 <seed.md>
 tc phase check --phase p1 <register.md>
 tc phase check --phase p2 <register.md> --snapshot ~/protocol-governed-computing/snapshot
 
-cd ~/protocol-governed-computing/transformation && python scripts/testbed/differential.py
+cd ~/protocol-governed-computing/transformation_compilers && python scripts/testbed/differential.py
 ```
 
 From P2 a phase also needs its **priors**, or the handoff between phases goes unchecked:
@@ -1069,7 +1081,7 @@ S=$(mktemp -d); OUT=/tmp/pgc_cr02_design_baseline
 (cd ~/protocol-governed-computing/business_domains && git archive 32e5774 book_library_mgmt) | tar -x -C $S
 ~/protocol-governed-computing/protocol_compiler/compile_domain.sh $S/book_library_mgmt
 W=~/protocol-governed-computing; rm -rf $OUT
-PGC_SOURCE_ROOTS="$W/software_governance/snapshot/compiled:$W/conformance_workloads/workloads/collatz/snapshot/compiled:$W/business_domains/ai_governance/snapshot/compiled:$W/snapshot_inspector/snapshot/compiled:$W/transformation/snapshot/compiled:$S/book_library_mgmt/snapshot/compiled" \
+PGC_SOURCE_ROOTS="$W/software_governance/snapshot/compiled:$W/conformance_workloads/workloads/collatz/snapshot/compiled:$W/business_domains/ai_governance/snapshot/compiled:$W/snapshot_inspector/snapshot/compiled:$W/transformation_compilers/snapshot/compiled:$S/book_library_mgmt/snapshot/compiled" \
   PGC_SNAPSHOT_OUT=$OUT PGC_SNAPSHOT_PROFILE=GOVERNANCE_SURFACE_PROFILE_V0 ~/protocol-governed-computing/snapshot_assembler/assemble.sh
 ```
 

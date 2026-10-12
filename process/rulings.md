@@ -18,7 +18,8 @@ ruling overturns an earlier one, and it names the ruling it replaces.
 **Ruling.** The transformation module is rebuilt once, outside its own lifecycle, on the branch
 `rebuild/transformation`. It is measured against the module frozen at the tag
 `oracle/transformation`, and replaces that module whole. `transformation/doc/REBUILD_CHARTER.md`
-holds the scope, the acceptance and the sequence.
+held the scope, the acceptance and the sequence. It was deleted at the swap and is held by git;
+`.github/process/notes/swap-plan.md` records how the swap was done.
 
 **It replaces** the boundary rule `THE_LAST_EXCEPTION` (`generated_artifacts`), which declared that
 change the last delivered by hand. That rule stands for every change except this rebuild.

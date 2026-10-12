@@ -24,7 +24,7 @@ import sys
 from pathlib import Path
 
 ROOTS = ("software_governance", "conformance_workloads", "business_domains",
-         "transformation", "snapshot_inspector")
+         "transformation_compilers", "snapshot_inspector")
 
 ARTIFACT = re.compile(r"^[A-Z]{2,}[A-Z_]*_.*_V\d+\.md$")
 YAML_BLOCK = re.compile(r"```yaml.*?```", re.S)

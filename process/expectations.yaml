@@ -23,12 +23,19 @@ steps:
     expect: ["GOVERNANCE CHAIN PASSED"]
   - id: supersession_agreement
     section: checks
-    # 34 → 35: WF_P7_DESIGN_INTENT_ADMISSIBILITY_V2 supersedes V1 (binding_literals)
-    expect: ["SUPERSESSION AGREEMENT PASSED — 35 relation\\(s\\), both sides agree on 35, 0 predecessor\\(s\\) deleted by record"]
+    # 34 → 35: WF_P7_DESIGN_INTENT_ADMISSIBILITY_V2 supersedes V1 (binding_literals); 36:
+    # WF_P1_CHANGE_REQUEST_ADMISSIBILITY_V1 supersedes V0 (rebuild M3.3b); 37: WF_P0_V1 (M3.4a); 39:
+    # lifecycle::CONSTITUTION_CHANGE_MGMT_V1 and CONSTITUTION_CONSTRUCTION_V1 (M3.4b)
+    # swap: the 28 identities the rebuild superseded are deleted by record. 20 of them were published
+    # in v5, so their successors name a predecessor the ledger holds: 52 → 44 relations, 24 live pairs.
+    expect: ["SUPERSESSION AGREEMENT PASSED — 44 relation\\(s\\), both sides agree on 24, 20 predecessor\\(s\\) deleted by record"]
   - id: human_block_fidelity
     section: checks
     # 535 → 536: WF_P7_DESIGN_INTENT_ADMISSIBILITY_V2 (binding_literals)
-    expect: ["HUMAN BLOCK FIDELITY PASSED — 536 artifacts"]
+    # 536 → 537: VOCAB_DESIGN_REGISTER_TERMS_V0 (rebuild M3.1); 538: WF_P1_V1 (rebuild M3.3b); 539: WF_P0_V1 (M3.4a); 561: 20 lifecycle invariants; 562: STRUCTURE_REGISTER_SCHEMA_DISPATCH_V0 (M3.4c)
+    # and 2 lifecycle constitution successors in software_governance (M3.4b)
+    # swap: 586 → 558, the 28 identities deleted by record.
+    expect: ["HUMAN BLOCK FIDELITY PASSED — 558 artifacts"]
   - id: evidence_determinism
     section: checks
     expect: ["EVIDENCE DETERMINISM PASSED"]
@@ -46,8 +53,12 @@ steps:
       GAP-09), the address path and type, wallet's fields, and one transformation prior
   - id: emit_rule_sets
     section: checks
-    # p7 242 → 243: GENERATED_SOURCE_WITHOUT_GENERATOR (binding_literals)
-    expect: ["p7\\s+243 rules", "p8\\s+33 rules"]
+    # p7 243 → 254, p8 33 → 34: a type rule per structured column, TEST_VALUE_UNPARSEABLE retired
+    # (rebuild M3.3a); p7 254 → 276: a type rule per citation column (rebuild M3.3b); 276 → 279: two procedures restated
+    # as three and two gated constraints (M3.4a); 279 → 284, 34 → 39: the header is `document`, its two rules
+    # become six derived ones plus one for the approval (M4); 284 → 280: the Module column and its three rules
+    # go, and a property value takes any type (M5)
+    expect: ["p7\\s+280 rules", "p8\\s+39 rules"]
   - id: build_payloads
     section: checks
     expect: ["OK\\s+83 payload\\(s\\) agree"]
@@ -60,6 +71,21 @@ steps:
   - id: meta_test
     section: checks
     expect: ["META PASSED"]
+  - id: closure_test
+    section: checks
+    expect: ["CLOSURE PASSED — 9 phase\\(s\\) close over lifecycle::CONSTITUTION_CHANGE_MGMT_V1"]
+  - id: effectivity_test
+    section: checks
+    expect: ["EFFECTIVITY PASSED — 9 rule sets at their recorded revision"]
+  - id: render_vectors_test
+    section: checks
+    expect: ["RENDER VECTORS PASSED — 27 vectors"]
+  - id: construction_mapping_test
+    section: checks
+    expect: ["CONSTRUCTION MAPPING PASSED — 184 fields over 12 kinds"]
+  - id: interface_structures_test
+    section: checks
+    expect: ["INTERFACE STRUCTURES PASSED — 4 checks, 5 structures"]
   - id: differential
     section: checks
     expect: ["DIFFERENTIAL PASSED — 83 document\\(s\\) across 9 phase\\(s\\)"]
@@ -72,7 +98,9 @@ steps:
   - id: construction_acceptance
     section: checks
     exit: 1
-    expect: ["183/185 artifacts reproduced across 7 domain\\(s\\)\\s+\\(2 field difference\\(s\\)\\)",
+    # swap: 183/185 → 182/184. CT_PURE_ATTRIBUTE_PROVENANCE_V0 is deleted by record; its delivered
+    # design is reported RETIRED BY RECORD, not counted.
+    expect: ["182/184 artifacts reproduced across 7 domain\\(s\\)\\s+\\(2 field difference\\(s\\)\\)",
              "DIFF  IN_UPDATE_BIBLIOGRAPHIC_INFORMATION_V1\\s+1 field", "DIFF  WF_UPDATE_BIBLIOGRAPHIC_INFORMATION_V1\\s+1 field"]
     red_by_design: >-
       book_library_mgmt's two _V1 artifacts were published in v5 with `version: v0`; identity is fixed at
@@ -89,14 +117,12 @@ steps:
   - id: keyed_node_design_test
     section: checks
     # a route to a place the composition already has resolves (A batch, wave 2 — B6); a contract
-    # redeclared whole requires only what it now declares (cr_05_identity)
-    expect: ["7/7 passed"]
+    # redeclared whole requires only what it now declares (cr_05_identity); 7 → 6: text literal
+    # parsing retired with typed bindings (rebuild M3.3a)
+    expect: ["6/6 passed"]
   - id: refusal_moment_design_test
     section: checks
     expect: ["4/4 passed"]
-  - id: vector_value_design_test
-    section: checks
-    expect: ["3/3 passed"]
   - id: semantic_change_design_test
     section: checks
     # a change of meaning is a new identity; a replacement accounts for its reach (semantic_change)
@@ -113,6 +139,7 @@ steps:
     expect: ["8/8 passed"]
   - id: implementation_closure
     section: checks
+    # swap: 41 → 37, the four V0 transforms deleted with their modules.
     expect: ["IMPLEMENTATION CLOSURE PASSED — 37 transform\\(s\\)"]
   - id: test_inspector
     section: checks
@@ -142,7 +169,7 @@ steps:
     expect: ["4/4 passed"]
   - id: test_reference_semantics
     section: checks
-    expect: ["15/15 passed"]
+    expect: ["17/17 passed"]
   - id: test_routing_closure
     section: checks
     # a workflow routes every outcome its contracts can end with (GC-15), a step answers every outcome its capability declares (CP-13)
@@ -224,9 +251,12 @@ steps:
     section: checks
     # execution refuses a routing answer other than continue or exit
     expect: ["3/3 passed"]
+  - id: single_instance
+    section: checks
+    expect: ["SINGLE INSTANCE PASSED — \\d+ artifacts in transformation, artifact, lifecycle, each in one version"]
   - id: published_identity
     section: checks
-    expect: ["PUBLISHED IDENTITY PASSED — 500 identities published in v5, none changed meaning, 1 deleted by record; 1 identities retired, none reused or named"]
+    expect: ["PUBLISHED IDENTITY PASSED — 500 identities published in v5, none changed meaning, 20 deleted by record; 29 identities retired, none reused or named"]
   - id: si_snapshot_validate
     section: checks
     # Non-advisory checks all pass. Two advisory checks are red and exit 0 by design; their counts
@@ -297,3 +327,6 @@ steps:
   - id: trace_schema_conformance
     section: execution
     expect: ["TRACE SCHEMA CONFORMANCE PASSED — \\d+ trace\\(s\\)"]
+  - id: temp_hygiene
+    section: execution
+    expect: ["TEMP HYGIENE PASSED — no step left anything in its TMPDIR"]

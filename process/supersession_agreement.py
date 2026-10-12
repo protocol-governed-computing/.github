@@ -18,7 +18,8 @@ projection, which is a larger change than the defect currently warrants.
 
 Reads the assembled composition, because the canonical projection is what a reader consults. A
 successor may name a predecessor the composition no longer holds only when
-`retired_identities.yaml` records that predecessor's deletion (`4e` SU-12).
+`retired_identities.yaml` records that predecessor's deletion (`4e` SU-12). Where the record names
+the predecessor's successor, the two must agree.
 
 Exit 0 when every supersession agrees on both sides, 1 otherwise.
 """
@@ -63,6 +64,12 @@ def main() -> int:
         for predecessor in sorted(predecessors):
             if predecessor in retired and predecessor not in present:
                 deleted += 1
+                recorded = retired[predecessor].get("superseded_by")
+                if recorded and recorded != successor:
+                    findings.append(
+                        f"{successor}\n"
+                        f"   claims to supersede {predecessor}, whose deletion record names "
+                        f"{recorded} as its successor")
                 continue
             if successor not in backward.get(predecessor, set()):
                 findings.append(

@@ -188,7 +188,7 @@ fi
 
 REPOS="software_governance conformance_workloads business_domains protocol_compiler \
 protocol_runtime snapshot_assembler protocol_transport snapshot_inspector \
-transformation .github"
+transformation_compilers .github"
 
 # One notes file per cycle, kept whether or not the cycle is published. It was formerly the squash
 # commit message, and is now simply the record of what a composition was — which is what it always
@@ -321,7 +321,7 @@ else
   for d in "$WORKSPACE"/conformance_workloads/workloads/* "$WORKSPACE"/business_domains/*; do
     [[ -d "$d" ]] && DOMAIN_ROOTS+=("$d")
   done
-  DOMAIN_ROOTS+=("$WORKSPACE/snapshot_inspector" "$WORKSPACE/transformation")
+  DOMAIN_ROOTS+=("$WORKSPACE/snapshot_inspector" "$WORKSPACE/transformation_compilers")
 
   BUILDABLE=()
   for root in "${DOMAIN_ROOTS[@]}"; do
