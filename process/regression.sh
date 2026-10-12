@@ -14,6 +14,12 @@
 set -u
 cd ~/protocol-governed-computing || exit 1
 W=~/protocol-governed-computing
+# Every step writes its temporary files into one directory owned by this run. It must be empty when
+# the run ends, so a step that leaves anything behind fails the run and names what it left. The
+# build's own backup and kept evidence go to the real temporary directory, outside that check.
+REAL_TMP="${TMPDIR:-/tmp}"; REAL_TMP="${REAL_TMP%/}"
+TEST_TMP="$(mktemp -d "$REAL_TMP/pgc_regression_tmp.XXXXXX")" || exit 1
+export TMPDIR="$TEST_TMP"
 # Overridable so a second profile can be read against the same compiled domains without editing
 # this file:  PGC_SNAPSHOT_PROFILE=<IDENTITY> regression.sh --build
 export PGC_SNAPSHOT_PROFILE="${PGC_SNAPSHOT_PROFILE:-GOVERNANCE_SURFACE_PROFILE_V0}"
@@ -35,7 +41,7 @@ if [[ "$MODE" == "--build" || "$MODE" == "--all" ]]; then
   # The previous build output is moved aside, not deleted, and comes back if the rebuild fails. A
   # failed build used to leave no snapshot at all, and every later check then failed for that
   # reason instead of its own. It is deleted only once the new build has been assembled.
-  BACKUP="$(mktemp -d "${TMPDIR:-/tmp}/pgc_rebuild.XXXXXX")" || exit 1
+  BACKUP="$(mktemp -d "$REAL_TMP/pgc_rebuild.XXXXXX")" || exit 1
   build_output() {
     find "$W" -type d \( -name snapshot -o -name snapshot_fed -o -name snapshot_mw \) \
          -not -path "$W/.venv/*" -not -path "$W/pgc_release/*" -prune -print
@@ -48,7 +54,7 @@ if [[ "$MODE" == "--build" || "$MODE" == "--all" ]]; then
   rebuild_failed() {
     # Keep the failing output before the restore replaces it: a failure that passes on rerun is
     # otherwise undiagnosable, because the restore is what erases its evidence.
-    KEPT="$(mktemp -d "${TMPDIR:-/tmp}/pgc_failed_build.XXXXXX")"
+    KEPT="$(mktemp -d "$REAL_TMP/pgc_failed_build.XXXXXX")"
     build_output | while IFS= read -r d; do
       rel="${d#"$W"/}"; mkdir -p "$KEPT/$(dirname "$rel")" && cp -R "$d" "$KEPT/$rel"
     done
@@ -60,7 +66,7 @@ if [[ "$MODE" == "--build" || "$MODE" == "--all" ]]; then
         mkdir -p "$W/$(dirname "$rel")" && mv "$BACKUP/$rel" "$W/$rel"
       done < "$BACKUP/.moved"
     fi
-    rm -rf "$BACKUP"
+    rm -rf "$BACKUP" "$TEST_TMP"
     exit 1
   }
 
@@ -71,6 +77,8 @@ if [[ "$MODE" == "--build" || "$MODE" == "--all" ]]; then
   # .DS_Store is never a constituent. This sweeps the workspace, `pgc_release` included, because
   # that is the one snapshot no rebuild would otherwise clean.
   find "$W" -name .DS_Store -not -path "$W/.venv/*" -delete
+  # Bytecode is build output too. A clean rebuild compiles every module from its source.
+  find "$W" -name __pycache__ -type d -not -path "$W/.venv/*" -prune -exec rm -rf {} +
 
   if [[ ! -f "$W/pgc_release/snapshot/manifest.json" ]]; then
     echo "ABORT: the cleanup removed pgc_release/snapshot — sealed evidence, not build output." >&2
@@ -188,6 +196,8 @@ if [[ "$MODE" == "--all" ]]; then
 
   # What v5 published still means what it meant (`4e` SU-11), against the sealed composition.
   step published_identity python "$W/.github/process/published_identity_check.py"
+  step single_instance python "$W/.github/process/single_instance_check.py" \
+    --namespace transformation --namespace artifact --namespace lifecycle
 
   step pgc_env_check python "$W/.github/process/pgc_env_check.py"
   step test_regression_verdict python "$W/.github/process/test_regression_verdict.py"
@@ -263,6 +273,11 @@ step trace_schema_conformance python "$W/.github/process/trace_schema_conformanc
   "$W/data/collatz" "$W/data/ai_governance" "$W/data/book_library_mgmt" \
   "$W/data/book_library_mgmt_cr02" "$W/data/blockchain" "$W/data/causal_language_model" \
   "$W/data/causal_language_model_hosted"
+
+step temp_hygiene bash -c 'left="$(ls -A "$1")"
+  if [[ -n "$left" ]]; then echo "TEMP HYGIENE FAILED — steps left these in their TMPDIR:"; echo "$left"; exit 1; fi
+  echo "TEMP HYGIENE PASSED — no step left anything in its TMPDIR"' _ "$TEST_TMP"
+rm -rf "$TEST_TMP"
 
 echo; echo "=== VERDICT ==="
 python "$W/.github/process/regression_verdict.py" "$RUN"
