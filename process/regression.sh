@@ -46,6 +46,13 @@ if [[ "$MODE" == "--build" || "$MODE" == "--all" ]]; then
     mkdir -p "$BACKUP/$(dirname "$rel")" && mv "$d" "$BACKUP/$rel" && echo "$rel" >> "$BACKUP/.moved"
   done
   rebuild_failed() {
+    # Keep the failing output before the restore replaces it: a failure that passes on rerun is
+    # otherwise undiagnosable, because the restore is what erases its evidence.
+    KEPT="$(mktemp -d "${TMPDIR:-/tmp}/pgc_failed_build.XXXXXX")"
+    build_output | while IFS= read -r d; do
+      rel="${d#"$W"/}"; mkdir -p "$KEPT/$(dirname "$rel")" && cp -R "$d" "$KEPT/$rel"
+    done
+    echo "BUILD FAILED — the failing output is kept in $KEPT" >&2
     echo "BUILD FAILED — restoring the previous build output from $BACKUP" >&2
     build_output | while IFS= read -r d; do rm -rf "$d"; done
     if [[ -f "$BACKUP/.moved" ]]; then
@@ -71,17 +78,30 @@ if [[ "$MODE" == "--build" || "$MODE" == "--all" ]]; then
     rebuild_failed
   fi
   "$W/protocol_compiler/compile.sh" STRUCTURE_BUILD_PLATFORM_CONFIG_V2 || rebuild_failed
+  # Every domain compiles against this surface, so nothing after this point may change it. Its
+  # fingerprint is taken once and re-read after each later compile; a step that alters it is named.
+  surface() { (cd "$W/software_governance/snapshot" && find . -type f -print0 | sort -z |
+               xargs -0 shasum | shasum | cut -d' ' -f1); }
+  SURFACE="$(surface)"
+  surface_unchanged() {
+    [[ "$(surface)" == "$SURFACE" ]] && return 0
+    echo "BUILD FAILED — the platform surface changed during: $1" >&2
+    rebuild_failed
+  }
   # The platform's other two placements, each into its own root. They are compiled against the
   # same governance surface as the default build, so a governance change leaves them stale until they
   # are rebuilt — and the assembler then refuses to compose them with freshly compiled domains, which
   # surfaced as a red test_federation after a change that touched no federation code.
   # Each configuration declares its own root (output_configuration.root), so none is passed here.
   "$W/protocol_compiler/compile.sh" STRUCTURE_BUILD_PLATFORM_FEDERATED_CONFIG_V2 || rebuild_failed
+  surface_unchanged "the federated platform compile"
   "$W/protocol_compiler/compile.sh" STRUCTURE_BUILD_PLATFORM_MULTIWORKER_CONFIG_V2 || rebuild_failed
+  surface_unchanged "the multiworker platform compile"
   for d in conformance_workloads/workloads/collatz transformation snapshot_inspector \
            business_domains/ai_governance business_domains/book_library_mgmt \
            business_domains/blockchain business_domains/causal_language_model; do
     "$W/protocol_compiler/compile_domain.sh" "$W/$d" || rebuild_failed
+    surface_unchanged "the $d compile"
   done
   "$W/snapshot_assembler/assemble.sh" || rebuild_failed
   rm -rf "$BACKUP"
