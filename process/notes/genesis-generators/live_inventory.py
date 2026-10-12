@@ -9,7 +9,7 @@ from pathlib import Path
 
 import yaml
 
-REPO = Path(__file__).resolve().parents[4] / "transformation"
+REPO = Path(__file__).resolve().parents[4] / "transformation_compilers"
 MACHINE = re.compile(r"^```yaml\n(.*?)^```$", re.S | re.M)
 FAMILY = {"ACTOR": "AC", "INTENT": "IN", "WORKFLOW": "WF", "CAPABILITY_CONTRACT": "CC",
           "CAPABILITY_TRANSFORM": "CT", "RUNTIME_BINDING": "RB", "VOCABULARY": "VOCAB",

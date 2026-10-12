@@ -28,29 +28,31 @@ steps:
     # lifecycle::CONSTITUTION_CHANGE_MGMT_V1 and CONSTITUTION_CONSTRUCTION_V1 (M3.4b)
     # swap: the 28 identities the rebuild superseded are deleted by record. 20 of them were published
     # in v5, so their successors name a predecessor the ledger holds: 52 → 44 relations, 24 live pairs.
-    expect: ["SUPERSESSION AGREEMENT PASSED — 44 relation\\(s\\), both sides agree on 24, 20 predecessor\\(s\\) deleted by record"]
+    # 44 → 45: genesis G-12, IN_BUSINESS_INTENT_SUBMITTED_V1 supersedes V0, deleted by record.
+    # 45 → 47, 24 → 16 agree, 21 → 31 deleted: cr_07_own_values retires fourteen blockchain identities.
+    expect: ["SUPERSESSION AGREEMENT PASSED — 47 relation\\(s\\), both sides agree on 16, 31 predecessor\\(s\\) deleted by record"]
   - id: human_block_fidelity
     section: checks
     # 535 → 536: WF_P7_DESIGN_INTENT_ADMISSIBILITY_V2 (binding_literals)
     # 536 → 537: VOCAB_DESIGN_REGISTER_TERMS_V0 (rebuild M3.1); 538: WF_P1_V1 (rebuild M3.3b); 539: WF_P0_V1 (M3.4a); 561: 20 lifecycle invariants; 562: STRUCTURE_REGISTER_SCHEMA_DISPATCH_V0 (M3.4c)
     # and 2 lifecycle constitution successors in software_governance (M3.4b)
     # swap: 586 → 558, the 28 identities deleted by record.
-    expect: ["HUMAN BLOCK FIDELITY PASSED — 558 artifacts"]
+    # cr_07_own_values: 558 → 552, eight successors authored and fourteen identities deleted by record.
+    expect: ["HUMAN BLOCK FIDELITY PASSED — 552 artifacts"]
   - id: evidence_determinism
     section: checks
     expect: ["EVIDENCE DETERMINISM PASSED"]
   - id: admission_contract_fidelity
     section: checks
-    exit: 1
     # 36 → 34 gates, 31 → 26 findings: a superseded intent is no admission gate (A11), and the five
     # were all on the superseded WF_RECORD_VERIFICATION_DECISION_V0's gate. 26 → 12: cr_05_identity
     # stopped the identity acts reading rules from the request, which cleared fourteen. 12 → 11:
     # cr_05_catalog records the subject callers send, clearing IN_REGISTER_BOOK_V0's `subject`.
     # 34 → 37 gates: cr_02_hosted_model adds three, each declaring exactly what its act binds.
-    expect: ["ADMISSION CONTRACT FIDELITY FAILED — 11 finding\\(s\\) over 37 gate\\(s\\)"]
-    red_by_design: >-
-      11 deliberate findings — the moment and stream each blockchain act records (cr_05_identity
-      GAP-09), the address path and type, wallet's fields, and one transformation prior
+    # 11 → 10: genesis G-12, IN_BUSINESS_INTENT_SUBMITTED_V1 declares the `prior_texts` P5 reads.
+    # 10 → 0: cr_07_own_values, each blockchain act states the moment, trail, address place and
+    # wallet values it took from the request (cr_05_identity GAP-09).
+    expect: ["ADMISSION CONTRACT FIDELITY PASSED — 37 gate\\(s\\), no under-declared input"]
   - id: emit_rule_sets
     section: checks
     # p7 243 → 254, p8 33 → 34: a type rule per structured column, TEST_VALUE_UNPARSEABLE retired
@@ -82,7 +84,8 @@ steps:
     expect: ["RENDER VECTORS PASSED — 27 vectors"]
   - id: construction_mapping_test
     section: checks
-    expect: ["CONSTRUCTION MAPPING PASSED — 184 fields over 12 kinds"]
+    # 184 → 185: cr_07_own_values, a transport ingress successor states `supersedes`.
+    expect: ["CONSTRUCTION MAPPING PASSED — 185 fields over 12 kinds"]
   - id: interface_structures_test
     section: checks
     expect: ["INTERFACE STRUCTURES PASSED — 4 checks, 5 structures"]
@@ -100,7 +103,9 @@ steps:
     exit: 1
     # swap: 183/185 → 182/184. CT_PURE_ATTRIBUTE_PROVENANCE_V0 is deleted by record; its delivered
     # design is reported RETIRED BY RECORD, not counted.
-    expect: ["182/184 artifacts reproduced across 7 domain\\(s\\)\\s+\\(2 field difference\\(s\\)\\)",
+    # cr_07_own_values: 182/184 → 176/178. Fourteen blockchain designs are reported RETIRED BY RECORD,
+    # and its eight successors are reproduced.
+    expect: ["176/178 artifacts reproduced across 7 domain\\(s\\)\\s+\\(2 field difference\\(s\\)\\)",
              "DIFF  IN_UPDATE_BIBLIOGRAPHIC_INFORMATION_V1\\s+1 field", "DIFF  WF_UPDATE_BIBLIOGRAPHIC_INFORMATION_V1\\s+1 field"]
     red_by_design: >-
       book_library_mgmt's two _V1 artifacts were published in v5 with `version: v0`; identity is fixed at
@@ -256,7 +261,7 @@ steps:
     expect: ["SINGLE INSTANCE PASSED — \\d+ artifacts in transformation, artifact, lifecycle, each in one version"]
   - id: published_identity
     section: checks
-    expect: ["PUBLISHED IDENTITY PASSED — 500 identities published in v5, none changed meaning, 20 deleted by record; 29 identities retired, none reused or named"]
+    expect: ["PUBLISHED IDENTITY PASSED — 500 identities published in v5, none changed meaning, 31 deleted by record; 44 identities retired, none reused or named"]
   - id: si_snapshot_validate
     section: checks
     # Non-advisory checks all pass. Two advisory checks are red and exit 0 by design; their counts
@@ -297,14 +302,16 @@ steps:
     # cr_05_identity: identity holds every rule it applies, through the entrance and directly.
     # 22 → 21 (RT-6): an acceptance stating no grounds records none, and TE_ACCEPT_ACTOR_V0's output
     # contract still owes `grounds`, so the entrance refuses the answer by name.
-    expect: ["21/22 criteria hold\\s+\\(3 not exercised\\)",
+    # 21/22 → 25/26: cr_07_own_values adds four criteria, each holding.
+    expect: ["25/26 criteria hold\\s+\\(3 not exercised\\)",
              "differing: \\{'accept': 'EXECUTION_FAILURE'\\}"]
     red_by_design: >-
       parked — the TE output contract cannot declare a field optional; once it can,
       `grounds` is declared optional and the entrance answers an acceptance without it
   - id: blockchain_wallet
     section: execution
-    expect: ["9/9 criteria hold\\s+\\(1 not exercised\\)"]
+    # 9/9 → 12/12: cr_07_own_values adds three criteria, each holding.
+    expect: ["12/12 criteria hold\\s+\\(1 not exercised\\)"]
   - id: clm_model_response
     section: execution
     expect: ["27/27 criteria hold"]

@@ -213,3 +213,82 @@ retired:
       the oracle, and names it in `supersedes`. The oracle tag retains it, and v5 where v5 published it.
     change: .github/process/notes/swap-plan.md (ruled in transformation/doc/REBUILD_CHARTER.md §8 (identity),
       held by git)
+  - identity: transformation::IN_BUSINESS_INTENT_SUBMITTED_V0
+    superseded_by: transformation::IN_BUSINESS_INTENT_SUBMITTED_V1
+    decided_by: bachipeachy
+    determination: Superseded. P5's workflow reads `prior_texts` from the payload and its gate did not
+      declare it, so the gate admitted a payload the workflow could not resolve. Every other phase's
+      gate declares it. The successor requires it; v5 retains the predecessor.
+    change: transformation_compilers/dossiers/genesis/delivery.md (G-12)
+  - identity: blockchain::WF_REGISTER_ACTOR_V1
+    superseded_by: blockchain::WF_REGISTER_ACTOR_V2
+    decided_by: bachipeachy
+    determination: Superseded by cr_07_own_values. It took from the request a value only the business may decide; its successor states it. Never published.
+    change: business_domains/blockchain/cr_dossiers/cr_07_own_values
+  - identity: blockchain::WF_ACCEPT_ACTOR_V1
+    superseded_by: blockchain::WF_ACCEPT_ACTOR_V2
+    decided_by: bachipeachy
+    determination: Superseded by cr_07_own_values. It took from the request a value only the business may decide; its successor states it. Never published.
+    change: business_domains/blockchain/cr_dossiers/cr_07_own_values
+  - identity: blockchain::WF_REJECT_ACTOR_V1
+    superseded_by: blockchain::WF_REJECT_ACTOR_V2
+    decided_by: bachipeachy
+    determination: Superseded by cr_07_own_values. It took from the request a value only the business may decide; its successor states it. Never published.
+    change: business_domains/blockchain/cr_dossiers/cr_07_own_values
+  - identity: blockchain::WF_CREATE_WALLET_V1
+    superseded_by: blockchain::WF_CREATE_WALLET_V2
+    decided_by: bachipeachy
+    determination: Superseded by cr_07_own_values. It took from the request a value only the business may decide; its successor states it. Never published.
+    change: business_domains/blockchain/cr_dossiers/cr_07_own_values
+  - identity: blockchain::TI_REGISTER_ACTOR_V0
+    superseded_by: blockchain::TI_REGISTER_ACTOR_V1
+    decided_by: bachipeachy
+    determination: Superseded by cr_07_own_values. It sent or declared a value only the business may decide; its successor does not. v5 retains it.
+    change: business_domains/blockchain/cr_dossiers/cr_07_own_values
+  - identity: blockchain::TI_ACCEPT_ACTOR_V0
+    superseded_by: blockchain::TI_ACCEPT_ACTOR_V1
+    decided_by: bachipeachy
+    determination: Superseded by cr_07_own_values. It sent or declared a value only the business may decide; its successor does not. v5 retains it.
+    change: business_domains/blockchain/cr_dossiers/cr_07_own_values
+  - identity: blockchain::TI_REJECT_ACTOR_V0
+    superseded_by: blockchain::TI_REJECT_ACTOR_V1
+    decided_by: bachipeachy
+    determination: Superseded by cr_07_own_values. It sent or declared a value only the business may decide; its successor does not. v5 retains it.
+    change: business_domains/blockchain/cr_dossiers/cr_07_own_values
+  - identity: blockchain::IN_WALLET_CREATION_V0
+    superseded_by: blockchain::IN_WALLET_CREATION_V1
+    decided_by: bachipeachy
+    determination: Superseded by cr_07_own_values. It sent or declared a value only the business may decide; its successor does not. v5 retains it.
+    change: business_domains/blockchain/cr_dossiers/cr_07_own_values
+  - identity: blockchain::WF_REGISTER_ACTOR_V0
+    superseded_by: blockchain::WF_REGISTER_ACTOR_V1
+    decided_by: bachipeachy
+    determination: Stood down by cr_06_routing_closure and published in v5. It names in superseded_by the act cr_07 retires, so it is retired by record with it. v5 retains it.
+    change: business_domains/blockchain/cr_dossiers/cr_07_own_values
+  - identity: blockchain::WF_ACCEPT_ACTOR_V0
+    superseded_by: blockchain::WF_ACCEPT_ACTOR_V1
+    decided_by: bachipeachy
+    determination: Stood down by cr_06_routing_closure and published in v5. It names in superseded_by the act cr_07 retires, so it is retired by record with it. v5 retains it.
+    change: business_domains/blockchain/cr_dossiers/cr_07_own_values
+  - identity: blockchain::WF_REJECT_ACTOR_V0
+    superseded_by: blockchain::WF_REJECT_ACTOR_V1
+    decided_by: bachipeachy
+    determination: Stood down by cr_06_routing_closure and published in v5. It names in superseded_by the act cr_07 retires, so it is retired by record with it. v5 retains it.
+    change: business_domains/blockchain/cr_dossiers/cr_07_own_values
+  - identity: blockchain::WF_CREATE_WALLET_V0
+    superseded_by: blockchain::WF_CREATE_WALLET_V1
+    decided_by: bachipeachy
+    determination: Stood down by cr_06_routing_closure and published in v5. It names in superseded_by the act cr_07 retires, so it is retired by record with it. v5 retains it.
+    change: business_domains/blockchain/cr_dossiers/cr_07_own_values
+  - identity: blockchain::WF_RECORD_VERIFICATION_DECISION_V0
+    decided_by: bachipeachy
+    determination: Stood down by cr_04_wallet, which split it into blockchain::WF_ACCEPT_ACTOR_V0 and
+      blockchain::WF_REJECT_ACTOR_V0, and published in v5. cr_07 retires both, so it is retired by record
+      with them. v5 retains it.
+    change: business_domains/blockchain/cr_dossiers/cr_07_own_values
+  - identity: blockchain::IN_ACTOR_VERIFIED_V0
+    decided_by: bachipeachy
+    determination: Stood down by cr_04_wallet, which split it into blockchain::IN_ACTOR_ACCEPTANCE_V0 and
+      blockchain::IN_ACTOR_REJECTION_V0, and published in v5. It starts blockchain::WF_RECORD_VERIFICATION_DECISION_V0,
+      which cr_07 retires, so it is retired by record with it. v5 retains it.
+    change: business_domains/blockchain/cr_dossiers/cr_07_own_values
