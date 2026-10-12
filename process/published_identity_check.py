@@ -5,7 +5,7 @@
 measured against, so the check compares every identity in the sealed v5 composition
 (`pgc_release/snapshot`) with the same identity in the working composition (`snapshot/`). It compares
 them by the platform's declaration of what carries meaning
-(`artifact::VOCAB_DECLARATION_REPRESENTATION_V0`, read through `transformation.build.sameness`).
+(`artifact::VOCAB_DECLARATION_REPRESENTATION_V1`, read through `transformation.build.sameness`).
 
 Two differences are not a change of meaning:
 - a stand-down marking (`superseded_by`) on the published identity;

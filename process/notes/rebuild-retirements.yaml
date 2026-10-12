@@ -138,3 +138,18 @@ retired:
     decided_by: bachipeachy
     determination: *superseded
     change: *identity
+  - identity: transformation::STRUCTURE_BUILD_TRANSFORMATION_CONFIG_V0
+    superseded_by: transformation::STRUCTURE_BUILD_TRANSFORMATION_CONFIG_V1
+    decided_by: bachipeachy
+    determination: *superseded
+    change: *identity
+  - identity: transformation::CT_PURE_ATTRIBUTE_PROVENANCE_V0
+    superseded_by: transformation::CT_PURE_ATTRIBUTE_PROVENANCE_V1
+    decided_by: bachipeachy
+    determination: *superseded
+    change: *identity
+  - identity: artifact::VOCAB_DECLARATION_REPRESENTATION_V0
+    superseded_by: artifact::VOCAB_DECLARATION_REPRESENTATION_V1
+    decided_by: bachipeachy
+    determination: *superseded
+    change: *identity
