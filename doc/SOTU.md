@@ -2,32 +2,48 @@
 
 Only the current handoff is kept here. Earlier handoffs are in git history: `git log -p -- doc/SOTU.md`.
 
-## SOTU Handoff — 2026-10-12 · swap step A done, repo renamed; ready for the squash
+## SOTU Handoff — 2026-10-12 · rebuild swapped into dev/18; admission fidelity green
 
 ### Changes Made
-- All on the rebuild branches (`transformation`, `.github`, `software_governance`) plus `protocol_runtime` on `dev/18`. Plan and outcome: `.github/process/notes/swap-plan.md` §3–3a. All six decisions D1–D6 were approved as recommended.
-- Deleted: 28 identities by record (25 transformation, 2 lifecycle constitutions, `VOCAB_DECLARATION_REPRESENTATION_V0`); 4 V0 transform modules; `dossiers/` except genesis; `scripts/rebuild/`; the 5 working docs (charter, design, unravel, coverage verification, genesis triage).
-- `.github/process/retired_identities.yaml` — 29 entries; `notes/rebuild-retirements.yaml` deleted (staged with `git rm`).
-- `transformation/CLAUDE.md` — rulings restated: phase document, declared rules, one live version, vectors, platform governance, genesis. `README.md` and `ARCHITECTURE.md` corrected.
-- `regression.sh` — pristine and leak-detecting: per-run `TMPDIR` checked empty (`temp_hygiene`), bytecode cleared, the `single_instance` step (transformation, artifact, lifecycle). `e2e_phases_test.py` keeps the design baseline in `traces/`. `construction_acceptance.py` reports RETIRED BY RECORD. `differential.py` uses the V1 modules. 3 corpus docs and 4 payloads cite the live identities. `test_examine.py` no longer leaks.
-- `software_governance/surface_map/governance_surface_map.yaml` regenerated; `INVARIANT_RENDER_INVENTS_NOTHING_V0` names the V1 transform.
-- Genesis re-pinned to `37968c3e…` (503); P0–P8 ADMISSIBLE, 0 findings.
-- Cleanup before step B: `.github` ephemera removed (rule-effectivity generators, SOTU archive, trial instruments; SOTU trimmed to this entry); `doc/parked_rulings.md` moved to `standards/doc/`; all 10 `software_governance/dossiers/` deleted (table form, unjudgeable by the rebuilt module; 9 held at tag v5, `data_parts` on the archived rebuild branch); test docstrings point at the tag. The 17 business/workload dossiers were converted in place to the Machine form by the oracle's reader (153 documents; P7/P8 byte-identical to the corpus; all parse), the testbed reads them in place, and `delivered_copies/` keeps only the two base-code roots. Ruling in `transformation/CLAUDE.md`; note in `business_domains/README.md`. Regression `--all` clean: 77/77.
-- Found, not fixed: `business_domains/CLAUDE.md` still describes RI-0 (`pgs_*`).
-
-- **Rename (step C, done before the squash):** `transformation` → `transformation_compilers`, on GitHub and on disk; the oracle worktree was removed (tag `oracle/transformation` stays); editable install re-pointed. Path uses re-pointed in `regression.sh` (incl. the domain build list), `release.sh` (REPOS and DOMAIN_ROOTS), `RUNBOOK.md`, `assemble.sh` candidates, `compose_release.py`, `frontmatter_fidelity.py`, `human_block_fidelity.py`, `pgc_sloc.py`, 7 business-domain execution validations, `construction_acceptance.py`, and the package tables in 7 READMEs plus the workspace and org-profile repo tables. Unchanged by design: the domain `transformation`, the `transformation::` namespace, the import package and PyPI `pgc-transformation`, `data/transformation`, and the corpus mirror path `delivered_copies/transformation/`.
+- **Swap done.** `rebuild/transformation` was squashed into `dev/18` in software_governance, transformation_compilers and .github; the repo is `transformation_compilers`. Plan and outcome: `.github/process/notes/swap-plan.md`. The branch tips are tagged `archive/rebuild-transformation`, and the branches are deleted. The tag holds the `data_parts` dossier (G-11).
+- **Genesis G-12.**
+  - What changed: `transformation::IN_BUSINESS_INTENT_SUBMITTED_V1` declares the `prior_texts` that P5 reads. Every other phase's entry point already declared it. V0 is retired by record.
+  - Genesis: P5's code row was updated, and P7 and P8 were regenerated; the pin is unchanged at `37968c3e…`; P0–P8 are admissible with 0 findings.
+  - Generators: `genesis-generators/live_inventory.py` now reads `transformation_compilers`. It was missed by the rename.
+- **blockchain `cr_07_own_values`** (P0–P8, Gates 0–2 approved, delivered):
+  - Identity and wallet acts state what the request used to supply: the moment, the trail, where the contact address sits, the wallet's record (holder from the resolved person, balance 0, BACHI, DEFAULT, ACTIVE), the prefix `wal`, and `WALLET_CREATED`. This closes cr_05's GAP-09.
+  - Successors: `WF_*_ACTOR_V2` ×3, `WF_CREATE_WALLET_V2`, `TI_*_ACTOR_V1` ×3, `IN_WALLET_CREATION_V1`. The three identity entry points were re-pointed.
+  - 14 identities were retired by record: the 8 predecessors, the 4 stood-down `WF_*_V0`, `WF_RECORD_VERIFICATION_DECISION_V0` and `IN_ACTOR_VERIFIED_V0`. The ledger now holds 44.
+  - P7 was generated by `.github/process/notes/cr07-generators/gen_cr07_p7.py`. `delivery.md` says so and lists the corrections made at delivery.
+  - The validations, test payloads, RUNBOOK loops, client pages and README/ARCHITECTURE examples run the new versions; the payloads no longer send the constants.
+  - New criteria: identity +4, wallet +3.
+- **Fixes found along the way:**
+  - `CONSTRUCTION_MAPPING.md` now says a transport ingress carries `supersedes`.
+  - `semantic_change_design_test.py` counts referrers from the canonical record instead of a fixed floor.
+  - The ledger takes one successor or none.
+  - `transformation_compilers/CLAUDE.md` now says construction refuses any amendment that changes meaning, published or not.
+- `expectations.yaml`: each moved count records its cause.
 
 ### Build & Test Status
-PASSING. `regression.sh --all` from a clean workspace, after the rename: 77/77, exit 0; no build failure, the platform surface unchanged, `temp_hygiene` passes. Final oracle comparisons before `scripts/rebuild/` was deleted: 193 / 884 / 189 identical. The oracle can no longer be run.
+PASSING. A clean `regression.sh --all` on `dev/18` gives 77/77, exit 0.
+- `admission_contract_fidelity` now **passes**: 37 gates, no under-declared input (it had 11 findings).
+- Supersession agreement: 47 relations, 16 agree, 31 deleted by record.
+- Published identity: 31 deleted by record, 44 retired.
+- Construction acceptance: 176/178.
+- Identity 25/26, wallet 12/12.
+- Red by design: construction_acceptance (2 book_library differences), si_snapshot_validate (17 advisory), blockchain_identity (an acceptance without grounds through an entrance).
 
 ### Open Issues
-- The squash (the user's): squash `rebuild/transformation` into `dev/18` in software_governance, transformation_compilers, .github (swap-plan §4); then regression on `dev/18`; push; rename the branches `archive/rebuild-transformation`.
-- Zenodo: before the v6 release, run `publish_component_releases.sh --verify` to confirm the GitHub–Zenodo webhook survived the rename; deposits will be titled `(transformation_compilers)`.
-- The flaky first `--all` is still unreproduced; the traps stay.
-- `dist/` and `build/` in several repos hold v5 release packages. They are gitignored and were not cleaned.
+- **TE optional output.** An acceptance stating no grounds cannot be answered through `TE_ACCEPT_ACTOR_V0`. The transport standard cannot yet declare an output field optional. This is the only `blockchain_identity` failure.
+- **Republished-copy drift.** 16 platform transforms and side effects are republished into domains with divergent fields, which `si_snapshot_validate` reports as advisory. There is also 1 undeclared store path in ai_governance.
+- **Stood-down artifacts left over.** Blockchain has 4: `CC_RESOLVE_ACTOR_V0` and three wallet contracts' V0s. The acts still run their V1 under those V0 place labels, against the "node key is the live name" rule. Other domains still have stood-down artifacts that are not yet swept.
+- **Genesis.** G-2, G-3, G-4 and G-8 are open. Gates 0–2 are the author's.
+- **Zenodo.** Run `publish_component_releases.sh --verify` before v6, to confirm the webhook survived the rename.
+- The flaky first `--all` is still unreproduced, and the traps stay.
 
 ### Architectural Concerns
-- Delivered-dossier test copies are now corpus fixtures that follow the live composition (D2). The originals are held by the oracle tag.
+- The design language cannot withdraw an artifact. A retirement with no successor is done by hand and recorded in the ledger. Construction marks the predecessors and never deletes them.
+- An entry point admits request fields it does not declare. Callers that still send the old constants are admitted, and the act ignores the values.
 
 ### Next Session Should Start With
-Run `regression.sh --all` on `dev/18` after the user's squash.
+Choose the next v6 item: the TE optional-output field (transport standard), or the sweep of stood-down artifacts, which starts with blockchain's 4 V0 contracts and their place labels.
