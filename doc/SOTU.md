@@ -8,8 +8,9 @@ Only the current handoff is kept here. Earlier handoffs are in git history: `git
 - **Swap done.** `rebuild/transformation` was squashed into `dev/18` in software_governance, transformation_compilers and .github; the repo is `transformation_compilers`. Plan and outcome: `.github/process/notes/swap-plan.md`. The branch tips are tagged `archive/rebuild-transformation`, and the branches are deleted. The tag holds the `data_parts` dossier (G-11).
 - **Genesis G-12.**
   - What changed: `transformation::IN_BUSINESS_INTENT_SUBMITTED_V1` declares the `prior_texts` that P5 reads. Every other phase's entry point already declared it. V0 is retired by record.
-  - Genesis: P5's code row was updated, and P7 and P8 were regenerated; the pin is unchanged at `37968c3e…`; P0–P8 are admissible with 0 findings.
-  - Generators: `genesis-generators/live_inventory.py` now reads `transformation_compilers`. It was missed by the rename.
+  - Genesis: P5's code row was updated, and P7 and P8 were regenerated; P0–P8 are admissible with 0 findings.
+  - Generators moved to `transformation_compilers/scripts/genesis/`, the repo they read; regenerating from there reproduces P7 and P8 byte for byte.
+  - Re-pinned to `72ff39c8…` (497) after cr_07 changed blockchain; P0–P8 admissible, 0 findings.
 - **blockchain `cr_07_own_values`** (P0–P8, Gates 0–2 approved, delivered):
   - Identity and wallet acts state what the request used to supply: the moment, the trail, where the contact address sits, the wallet's record (holder from the resolved person, balance 0, BACHI, DEFAULT, ACTIVE), the prefix `wal`, and `WALLET_CREATED`. This closes cr_05's GAP-09.
   - Successors: `WF_*_ACTOR_V2` ×3, `WF_CREATE_WALLET_V2`, `TI_*_ACTOR_V1` ×3, `IN_WALLET_CREATION_V1`. The three identity entry points were re-pointed.

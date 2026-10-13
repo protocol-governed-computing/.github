@@ -49,7 +49,8 @@ predecessor goes through the lifecycle on `dev/18`, judged by the oracle.
 dossier is permitted, and this is a stated limit for v5.
 
 **Conditions:**
-- **Keep the generator as evidence,** exactly as it ran.
+- **Keep the generator as evidence,** exactly as it ran: commit it with the dossier it wrote. Once the
+  dossier is delivered, git holds the generator, and the working tree does not.
 - **Say it was generated** in the dossier's `delivery.md`.
 - **A generator is not a design authority.** Anything it infers that no register states is caught
   by construction completeness, which must still be 100%.
@@ -58,8 +59,10 @@ dossier is permitted, and this is a stated limit for v5.
 and P6. Every rule admitted them as it would have admitted the same text typed by hand. Governing
 generation, or making the design language small enough to write by hand, is larger than v5.
 
-**Applied.** CLM's generators are in `notes/clm-generators/`, and its `delivery.md` states they were
-used. Governed generation is v6 work.
+**Applied.** CLM's generators were committed in `notes/clm-generators/`, and its `delivery.md` states
+they were used. Delivered dossiers' generators were removed from the working tree at v6; git holds
+them at the commits that delivered their dossiers. The genesis generators stay: genesis is
+regenerated whenever the module changes. Governed generation is v6 work.
 
 ### A change request pins the composition without its own output — lesson 4
 
