@@ -243,10 +243,9 @@ for r in $REPOS; do
   # so nothing else would notice a repo left on the previous identity's number — and a wheel
   # uploaded under a version that already exists on PyPI cannot be replaced.
   #
-  # Only a STATIC literal is checked. `protocol_transport` declares `dynamic = ["version"]` reading
-  # `VERSION`, so its version is the composition ordinal rather than a public identity — it is the
-  # one repo that does what this file's comment used to claim they all do, and it publishes nothing
-  # to PyPI. A repo with no literal has no published version for this rule to be about.
+  # Only a STATIC literal is checked; a repo with no literal has no published version for this rule
+  # to be about. `protocol_transport` publishes `pgc-transport` from dev/18 on, so it now carries a
+  # literal like the rest.
   # The file guard is load-bearing under `set -euo pipefail`: `.github` and `pgc_release` carry no
   # pyproject, and a `sed` on a missing file fails the pipeline, fails the assignment, and kills the
   # script mid-section with no message. Redirecting stderr hides the diagnosis, not the exit status.
