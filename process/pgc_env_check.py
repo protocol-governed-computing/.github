@@ -19,11 +19,12 @@ EXPECTED_PREFIX = WORKSPACE / ".venv"
 
 PGC_PACKAGES = ("compiler", "assembler", "runtime", "inspector")
 
-# transport is NOT installed into the venv: its import roots (`adapters`, `resolver`) are
+# transport is NOT installed into the venv: its import package (`pgc_transport`) is
 # env-provisioned from the repo root by run_http.sh, per protocol_transport/CLAUDE.md. Checked in a
 # subprocess with that root on PYTHONPATH, exactly as the launcher provisions it.
 TRANSPORT_ROOT = WORKSPACE / "protocol_transport"
-TRANSPORT_MODULES = ("resolver.resolver", "resolver.registry", "adapters.http.binding")
+TRANSPORT_MODULES = ("pgc_transport.resolver.resolver", "pgc_transport.resolver.registry",
+                     "pgc_transport.adapters.http.binding")
 THIRD_PARTY = ("click", "yaml", "jsonschema")
 RI0_PACKAGES = (
     "pgs_governance",
@@ -61,7 +62,7 @@ def main() -> int:
     if probe.returncode != 0:
         failures.append(f"transport roots not importable from {TRANSPORT_ROOT}: {probe.stderr.strip()}")
     else:
-        print(f"ok      {'transport':12} {TRANSPORT_ROOT} (PYTHONPATH-provisioned: adapters, resolver)")
+        print(f"ok      {'transport':12} {TRANSPORT_ROOT} (PYTHONPATH-provisioned: pgc_transport)")
 
     for name in RI0_PACKAGES:
         if importlib.util.find_spec(name) is not None:

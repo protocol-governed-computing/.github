@@ -261,17 +261,20 @@ steps:
     expect: ["SINGLE INSTANCE PASSED — \\d+ artifacts in transformation, artifact, lifecycle, each in one version"]
   - id: published_identity
     section: checks
-    expect: ["PUBLISHED IDENTITY PASSED — 500 identities published in v5, none changed meaning, 31 deleted by record; 44 identities retired, none reused or named"]
+    exit: 1
+    # The v6 baseline changes meaning on purpose (rulings.md, "v6 is built as a baseline"), so it
+    # differs from the sealed v5 composition. At the cut, pgc_release holds v6, the check passes, and
+    # the verdict reports an unexpected pass until this entry is restored to a plain pass.
+    expect: ["PUBLISHED IDENTITY FAILED — \\d+ of \\d+ identities published in v5"]
+    red_by_design: >-
+      the v6 baseline is built outside the lifecycle and changes what v5 published, by ruling; it
+      compares against v6 from the cut
   - id: si_snapshot_validate
     section: checks
-    # Non-advisory checks all pass. Two advisory checks are red and exit 0 by design; their counts
-    # are pinned, so a count that moves either way is reported.
+    # --strict: an advisory finding fails the step, so every check, advisory or not, holds at zero.
     expect: ["valid\\s+True", "failed_checks: —",
-             "check\\s+republished_copies_agree\\s+examined\\s+\\d+\\s+violation_count\\s+16\\b",
-             "check\\s+bound_paths_declared_as_stores\\s+examined\\s+\\d+\\s+violation_count\\s+1\\b"]
-    red_by_design: >-
-      advisory — 16 platform side effects and transforms republished in each domain that uses them, and diverging;
-      one ai_governance binding to a path no store declares
+             "check\\s+republished_copies_agree\\s+examined\\s+\\d+\\s+violation_count\\s+0\\b",
+             "check\\s+bound_paths_declared_as_stores\\s+examined\\s+\\d+\\s+violation_count\\s+0\\b"]
   - id: pgc_env_check
     section: checks
     expect: ["PGC ENVIRONMENT CHECK PASSED"]
@@ -331,6 +334,16 @@ steps:
     section: execution
     # cr_02_reclaim_and_parameters: a reclaim the registry refuses ends as still active, license kept
     expect: ["4/4 criteria hold\\s+\\(0 not exercised\\)"]
+  - id: transport_cli
+    section: execution
+    # pgc_transport call: the Result Class → exit status projection (0, 1, 5, and 2 for a malformed
+    # invocation) and the response, for execution and for inspection through one command.
+    expect: ["TRANSPORT CLI PASSED — 8/8 cases"]
+  - id: demo_script
+    section: execution
+    # pgc_install/demo/pgc-demo.sh in workspace mode: play, the refusals, set-limit and its
+    # reproduced identity, tamper refused at acceptance, reset. The web pages are not served.
+    expect: ["DEMO SCRIPT PASSED — 12/12 cases"]
   - id: trace_schema_conformance
     section: execution
     expect: ["TRACE SCHEMA CONFORMANCE PASSED — \\d+ trace\\(s\\)"]

@@ -192,7 +192,7 @@ if [[ "$MODE" == "--all" ]]; then
   # against fixtures and says nothing about THIS snapshot; without this line a fully green run can
   # sit on top of a composition carrying advisory failures, which is how fifteen divergent copies
   # went unreported. Advisory failures exit 0 by design — `--strict` is what turns them red.
-  step si_snapshot_validate si --snapshot "$W/snapshot" snapshot validate
+  step si_snapshot_validate si --snapshot "$W/snapshot" snapshot validate --strict
 
   # What v5 published still means what it meant (`4e` SU-11), against the sealed composition.
   step published_identity python "$W/.github/process/published_identity_check.py"
@@ -268,6 +268,12 @@ step transformation_routing_closure python "$W/transformation_compilers/testbed/
 
 echo; echo "=== ai_governance: reclaim closure (a reclaim the registry refuses stays active) ==="
 step ai_governance_reclaim_closure python "$W/business_domains/ai_governance/testbed/routing_closure/execution_validation.py"
+
+echo; echo "=== transport: the pgc_transport command (exit status and response, per Result Class) ==="
+step transport_cli bash "$W/.github/process/transport_cli_check.sh"
+
+echo; echo "=== demo: pgc-demo.sh in workspace mode, every terminal step README_DEMO.md walks ==="
+step demo_script bash "$W/.github/process/demo_script_check.sh"
 
 step trace_schema_conformance python "$W/.github/process/trace_schema_conformance.py" \
   "$W/data/collatz" "$W/data/ai_governance" "$W/data/book_library_mgmt" \
