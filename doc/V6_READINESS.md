@@ -67,7 +67,8 @@ Each item states what done means. Items under **A** are decisions. Order: B6 →
 - **C1. `blockchain_identity` 25/26.** The TE output contract can declare a field optional, and
   `grounds` is declared optional. Done when the step is green and loses `red_by_design`.
 - **C2. `construction_acceptance`.** Book library's two `_V1` artifacts carry `version: v0`.
-  The reset in A1 resolves it; done when the step is green.
+  The reset in A1 resolves it, and B7 resolves blockchain's undesigned vector (C10); done when
+  the step is green.
 - **C3. `si snapshot validate` advisories. Done.**
   - A domain that runs a platform capability carries a copy that records exactly what the platform
     records.
@@ -83,13 +84,12 @@ Each item states what done means. Items under **A** are decisions. Order: B6 →
 - **C7. Genesis G-4.** P7 states the three refusals as out of scope (A4).
 - **C8. The flaky first `--all`.** Reproduce it or close it with evidence.
 - **C9. `pgc_sloc.py`.** It counts `registry/schema/*.json`.
-- **C10. Every transform proven.** Eight transforms carry no vectors:
-  - `capability_transforms::CT_PURE_COMPARE_EQUAL_V0`;
-  - collatz's `CT_PURE_COLLATZ_STEP_V0` and `CT_PURE_TERMINATION_CHECK_V0`;
-  - book_library_mgmt's four;
-  - blockchain's `CT_PURE_DERIVE_WALLET_ADDRESS_V0`.
-
-  Done when every domain's conformance line reports 0 unproven.
+- **C10. Every transform proven. Done.** Every domain's conformance line reports 0 unproven. The
+  book catalog's four vectors are the ones its designs already stated. Two findings carry forward:
+  - blockchain's designs state no vector for `CT_PURE_DERIVE_WALLET_ADDRESS_V0`, so
+    `construction_acceptance` reports it as a miss until B7 generates the baseline design;
+  - `CT_PURE_FORM_BOOK_IDENTITY_KEY_V0` declares `refusal: never`, and its designed vector expects a
+    refusal of a blank title. The declaration or the vector is wrong; settle it at B1.
 
 Done for C as a whole: `expectations.yaml` holds no `red_by_design` except `published_identity`.
 That one is red by ruling while the baseline is built, and it returns to a plain pass at the cut

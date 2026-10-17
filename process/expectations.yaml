@@ -33,12 +33,7 @@ steps:
     expect: ["SUPERSESSION AGREEMENT PASSED — 47 relation\\(s\\), both sides agree on 16, 31 predecessor\\(s\\) deleted by record"]
   - id: human_block_fidelity
     section: checks
-    # 535 → 536: WF_P7_DESIGN_INTENT_ADMISSIBILITY_V2 (binding_literals)
-    # 536 → 537: VOCAB_DESIGN_REGISTER_TERMS_V0 (rebuild M3.1); 538: WF_P1_V1 (rebuild M3.3b); 539: WF_P0_V1 (M3.4a); 561: 20 lifecycle invariants; 562: STRUCTURE_REGISTER_SCHEMA_DISPATCH_V0 (M3.4c)
-    # and 2 lifecycle constitution successors in software_governance (M3.4b)
-    # swap: 586 → 558, the 28 identities deleted by record.
-    # cr_07_own_values: 558 → 552, eight successors authored and fourteen identities deleted by record.
-    expect: ["HUMAN BLOCK FIDELITY PASSED — 552 artifacts"]
+    expect: ["HUMAN BLOCK FIDELITY PASSED — 560 artifacts"]
   - id: evidence_determinism
     section: checks
     expect: ["EVIDENCE DETERMINISM PASSED"]
@@ -101,16 +96,13 @@ steps:
   - id: construction_acceptance
     section: checks
     exit: 1
-    # swap: 183/185 → 182/184. CT_PURE_ATTRIBUTE_PROVENANCE_V0 is deleted by record; its delivered
-    # design is reported RETIRED BY RECORD, not counted.
-    # cr_07_own_values: 182/184 → 176/178. Fourteen blockchain designs are reported RETIRED BY RECORD,
-    # and its eight successors are reproduced.
-    expect: ["176/178 artifacts reproduced across 7 domain\\(s\\)\\s+\\(2 field difference\\(s\\)\\)",
+    expect: ["180/183 artifacts reproduced across 7 domain\\(s\\)\\s+\\(2 field difference\\(s\\)\\)",
              "DIFF  IN_UPDATE_BIBLIOGRAPHIC_INFORMATION_V1\\s+1 field", "DIFF  WF_UPDATE_BIBLIOGRAPHIC_INFORMATION_V1\\s+1 field"]
     red_by_design: >-
       book_library_mgmt's two _V1 artifacts were published in v5 with `version: v0`; identity is fixed at
       publication, so they keep the sealed text, and the renderer, which now writes the version from the
-      identity, differs from them in that one field
+      identity, differs from them in that one field. blockchain's designs state no vector for
+      CT_PURE_DERIVE_WALLET_ADDRESS_V0, so its built vector is a miss until the baseline designs (B7)
   - id: molecule_design_test
     section: checks
     expect: ["5/5 passed"]
