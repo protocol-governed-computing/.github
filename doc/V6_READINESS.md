@@ -194,14 +194,18 @@ That one is red by ruling while the baseline is built, and it returns to a plain
 
 ## E. Code and repository hygiene
 
-- **E1.** `to_canonical_request` moves to a protocol-neutral module in `pgc_transport`, so the CLI
-  adapter no longer imports from the HTTP adapter.
-- **E2.** `workflow_diagram.js` lives once. Both clients load the same file, or one client owns it
-  and the other is served it.
-- **E3.** `standards/doc/realization_map.md` points at `pgc_transport/…` paths. This is declared in
-  `revisions.md`.
-- **E4.** Every repository's `README`, `ARCHITECTURE` and `CLAUDE.md` describes the v6 layout and
-  nothing earlier.
+- **E1. Done.** `to_canonical_request` is in `pgc_transport/request.py`, which knows no protocol.
+  Both adapters import it from there, and the CLI adapter no longer imports from the HTTP adapter.
+- **E2. Done.** `workflow_diagram.js` lives once, in the inspector's client. The Collatz client
+  loads it from `/diagram/`, which `serve.sh`, `pgc-demo.sh` and `README_DEV.md` mount from the
+  inspector.
+- **E3. Done, no change.** The realization map names one transport path, `protocol_transport/CLAUDE.md`,
+  and that file exists. The map does not take part in revision (§0), so `revisions.md` declares
+  nothing.
+- **E4. Done.** Each `README`, `ARCHITECTURE` and `CLAUDE.md` states only what is true of v6. Wrong
+  paths, version claims, the RI-0 fidelity criterion and rebuild history are gone. One sentence
+  of RI-0 provenance stays where a repo began as a fork. A domain's design of record is in
+  `design/`, and a change is authored in `cr_dossiers/`.
 - **E5.** Each repository is clean on `dev/18`, and `pgc_install` `dev/18` is backed up.
 
 ## F. Cut
