@@ -175,18 +175,22 @@ Done for C as a whole: `expectations.yaml` holds no `red_by_design` except `publ
 That one is red by ruling while the baseline is built, and it returns to a plain pass at the cut
 (F1).
 
-## D. Versioning
+## D. Versioning — Done
 
-- **D1.** Each distribution carries its own version per A2:
+- **D1.** Each distribution carries its own version per A2, and every one starts at `6.0.0`:
   - `pgc-governance`, `pgc-compiler`, `pgc-assembler`, `pgc-runtime`, `pgc-inspector`;
   - `pgc-transport`, new in v6;
   - `pgc-transformation`, `pgc-workloads`, `pgc-domains`.
-- **D2.** `release.sh` enforces the A2 rule instead of lockstep. It reads what a version is from the
-  `pgc_release` manifest, not from `process/notes/release-<N>.md`, which B6 removes, and
-  `pgc_install`'s pins are generated from that manifest.
-- **D3.** The composition record names every component version and the snapshot identity, and
-  `pgc_release/MANIFEST.md` is generated from it.
-- **D4.** `pgc` reports the composition it was installed as.
+- **D2.** `release.sh` enforces A2 instead of lockstep. A repo whose tree changed since the previous
+  public tag must declare a version that tag did not, and `--publish` refuses a version PyPI already
+  holds. The previous version is read from the previous public tag, because the v5 manifest records
+  no versions. The release-notes requirement is gone.
+- **D3.** `compose_release.py` writes `pgc_release/composition.json`: each component's distribution,
+  version, commit and DOI, and the snapshot identity. `MANIFEST.md`, `pgc_install`'s pins and
+  `pgc/composition.py` are generated from it. The snapshot's provenance records
+  `component_versions`: each contributing repo's version, and the assembler's own.
+- **D4.** `pgc status` names the composition it was installed as, and flags a package whose version
+  differs from its pin. A source install reports that it has no composition.
 
 ## E. Code and repository hygiene
 

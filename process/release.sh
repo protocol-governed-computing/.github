@@ -22,17 +22,13 @@
 # The release ordinal is read from `.github/VERSION`; the public identity from
 # `.github/PUBLIC_VERSION`. Neither is edited here, and neither is derived from the other.
 #
-# PGC versions the COMPOSITION, not each repo independently: all repos release together and the
-# governance closure forces lockstep, so one monotonic integer names which composition a repo
-# belongs to. `VERSION` is the single declaration of the ORDINAL, and step 4 writes it across every
-# repo, because ten repos declaring one composition is one act and ten hand-edits is ten chances to
-# leave a repo declaring the release it was just cut out of.
-#
-# The PUBLISHED version is a different number and is NOT derived from anything. Each pyproject
-# carries a hand-edited literal, and nothing computes it from `VERSION` or from `PUBLIC_VERSION`.
-# An unbumped literal lets one version name two different byte sets — the wheels on PyPI, and
-# anything built from a later cycle. The preflight below asserts the mapping rather than leaving it
-# to prose.
+# THREE NUMBERS, THREE THINGS. `VERSION` is the cycle ordinal: it names `dev/<N>`, and step 4
+# writes it across every repo so a cycle opens as one act. `PUBLIC_VERSION` names the composition.
+# Each pyproject's `version` names one distribution, and it moves on its own: a repo that changed
+# since the previous publication bumps it, and an unchanged repo keeps it. Nothing derives one
+# number from another. An unbumped literal on a changed repo would let one version name two byte
+# sets, so the preflight refuses it, and `--publish` refuses a version PyPI already holds.
+# `compose_release.py` records which version of each distribution the composition holds.
 #
 # THE COMPOSITION IS A SECOND PHASE. `pgc_release` publishes the sealed snapshot and names the
 # nine component version DOIs as `hasPart`. Those DOIs do not exist until Zenodo has minted
@@ -43,7 +39,8 @@
 #
 #   release.sh --publish              nine repos + .github published; Zenodo mints
 #   (wait for the mints)
-#   release.sh --publish-composition  compose, commit, tag, push; Zenodo mints the bundle
+#   release.sh --publish-composition  compose, commit, tag, push; Zenodo mints the bundle;
+#                                     pgc_install's pins are regenerated from the same record
 #
 # Read this before running it. It pushes and deletes remote refs.
 #
@@ -57,13 +54,6 @@
 #                           tag and push it. See THE COMPOSITION IS A SECOND PHASE below.
 #   SKIP_BUILD=1 release.sh skip the clean-rebuild gate (only when iterating; never to release)
 #
-# The squash message is CONTENT that changes every cycle; this script is PROCESS that does not. It
-# therefore lives in `.github/process/notes/release-<N>.md`, read by convention — there is no
-# flag, because a flag would be a second way to supply it, and a message typed at a prompt is
-# neither reviewable in a diff beforehand nor recoverable afterwards. Write the notes file, commit
-# it, run the script. The notes ship inside the release they describe, since `.github` is one of
-# the squashed repos, and they accumulate as a per-release history on main.
-#
 set -euo pipefail
 
 CHECK_ONLY=0
@@ -74,7 +64,7 @@ case "${1:-}" in
   --check)   CHECK_ONLY=1 ;;
   --publish) PUBLISH=1 ;;
   --publish-composition) COMPOSE=1 ;;
-  -h|--help) sed -n '2,55p' "$0"; exit 0 ;;
+  -h|--help) sed -n '2,56p' "$0"; exit 0 ;;
   *) echo "unknown argument: $1 (usage: release.sh [--check|--publish|--publish-composition])" >&2; exit 2 ;;
 esac
 
@@ -86,8 +76,8 @@ WORKSPACE="$HOME/protocol-governed-computing"
 # maintained by hand, with nothing to catch it going stale.
 #
 # Deriving it removes the step that can be missed. `.github/VERSION` is the reference copy because
-# `.github` is one of the released repos and carries the notes; the other nine are compared against
-# it, so lockstep is checked. Whether the reference itself is wrong has nothing to check it against.
+# `.github` is one of the released repos; the other nine are compared against it, so every repo is
+# checked to be in the same cycle. Whether the reference itself is wrong has nothing to check it against.
 # The branch and tag preconditions catch a VERSION bumped without a cycle behind it.
 RELEASE="$(cat "$WORKSPACE/.github/VERSION" 2>/dev/null || true)"
 case "$RELEASE" in
@@ -121,11 +111,9 @@ GATE_STRUCTURE="STRUCTURE_BUILD_PLATFORM_CONFIG_V0"
 GATE_PROFILE="GOVERNANCE_SURFACE_PROFILE_V0"
 
 # The composition — every repo that compiles, assembles, is assembled into a snapshot, reads one,
-# or transforms one into the next. `snapshot_inspector` joined at release 3 (it missed release 2
-# because it was not yet a git repo); `transformation` joins at release 4 and correctly
-# carries no earlier tag. `.github` was excluded while it held only the org profile page; it now
-# also holds the snapshot assembly contract that `snapshot_assembler` and `protocol_runtime` cite
-# as the contract they implement, so it carries composition surface and releases in lockstep.
+# or transforms one into the next. `.github` holds the snapshot assembly contract that
+# `snapshot_assembler` and `protocol_runtime` cite as the contract they implement, so it is released
+# with them.
 # ---------------------------------------------------------------------------
 # THE COMPOSITION — second phase, and a complete act on its own
 #
@@ -179,18 +167,15 @@ with the manifest naming the components it was built from."
   echo "Composition published as $PUBLIC. Zenodo mints within a minute or two; confirm with:"
   echo "  curl -s 'https://zenodo.org/api/records?q=%22composed+platform%22&sort=newest&size=1' | python3 -m json.tool | grep -m1 doi"
   echo "Then cite the VERSION DOI (not the concept DOI) in the paper."
+  echo
+  echo "pgc_install's pins and pgc/composition.py were regenerated from pgc_release/composition.json."
+  echo "Commit pgc_install, build it, and upload it to PyPI."
   exit 0
 fi
 
 REPOS="software_governance conformance_workloads business_domains protocol_compiler \
 protocol_runtime snapshot_assembler protocol_transport snapshot_inspector \
 transformation_compilers .github"
-
-# One notes file per cycle, kept whether or not the cycle is published: the record of what a
-# composition was. A cycle that is cut and never published still has a notes file, and that file is
-# how anyone later reconstructs what happened between two published identities.
-NOTES="$WORKSPACE/.github/process/notes/release-$RELEASE.md"
-MSG="$([ -f "$NOTES" ] && cat "$NOTES" || true)"
 
 cd "$WORKSPACE"
 
@@ -211,16 +196,6 @@ else
 fi
 echo
 
-echo "Release notes:"
-if [ -z "$(printf '%s' "$MSG" | tr -d '[:space:]')" ]; then
-  fail "no release notes — write $NOTES"
-elif printf '%s' "$MSG" | grep -q "<what changed\|<state here"; then
-  fail "release notes are still the template — the squash commit is the only durable record on main"
-else
-  ok "release notes from $NOTES ($(printf '%s\n' "$MSG" | wc -l | tr -d ' ') lines)"
-fi
-echo
-
 echo "Per-repo state:"
 for r in $REPOS; do
   [ -d "$r/.git" ] || { fail "$r is not a git repo"; continue; }
@@ -233,26 +208,27 @@ for r in $REPOS; do
   [ -f "$r/VERSION" ] && [ "$(cat "$r/VERSION")" = "$RELEASE" ] \
     || fail "$r/VERSION is '$(cat "$r/VERSION" 2>/dev/null)', expected '$RELEASE'"
 
-  # The published version, checked rather than trusted. `PUBLIC_VERSION` is `v<N>` and each
-  # distribution publishes `<N>.<minor>.<patch>`, so the major must equal N. Nothing derives this,
-  # so nothing else would notice a repo left on the previous identity's number — and a wheel
-  # uploaded under a version that already exists on PyPI cannot be replaced.
+  # The published version, checked rather than trusted. A repo whose tree changed since the previous
+  # public tag must declare a version that tag did not. Nothing derives the version, so nothing else
+  # would notice a changed repo left on its old number — and PyPI never replaces an uploaded version.
   #
-  # Only a STATIC literal is checked; a repo with no literal has no published version for this rule
-  # to be about. `protocol_transport` publishes `pgc-transport` from dev/18 on, so it now carries a
-  # literal like the rest.
-  # The file guard is load-bearing under `set -euo pipefail`: `.github` and `pgc_release` carry no
-  # pyproject, and a `sed` on a missing file fails the pipeline, fails the assignment, and kills the
-  # script mid-section with no message. Redirecting stderr hides the diagnosis, not the exit status.
+  # The file guards are load-bearing under `set -euo pipefail`: `.github` carries no pyproject, and a
+  # `sed` on a missing file fails the pipeline and kills the script mid-section with no message.
   pv=""
   if [ -f "$r/pyproject.toml" ]; then
     pv="$(sed -n 's/^version *= *"\([^"]*\)".*/\1/p' "$r/pyproject.toml" | head -1)"
   fi
-  if [ -n "$pv" ]; then
-    case "$pv" in
-      "${PUBLIC#v}".*) : ;;
-      *) fail "$r/pyproject.toml declares version '$pv'; $PUBLIC requires major '${PUBLIC#v}'" ;;
-    esac
+  prev="$(git -C "$r" tag --list 'v[0-9]*' | grep -vx "$PUBLIC" | sort -V | tail -1 || true)"
+  if [ -n "$pv" ] && [ -n "$prev" ]; then
+    was="$(git -C "$r" show "$prev:pyproject.toml" 2>/dev/null | sed -n 's/^version *= *"\([^"]*\)".*/\1/p' | head -1 || true)"
+    if [ "$(git -C "$r" rev-parse "$prev^{tree}")" != "$(git -C "$r" rev-parse "HEAD^{tree}")" ] && [ "$was" = "$pv" ]; then
+      fail "$r changed since $prev and still declares version $pv"
+    fi
+  fi
+  if [ "$PUBLISH" -eq 1 ] && [ -n "$pv" ]; then
+    dist="$(sed -n 's/^name *= *"\([^"]*\)".*/\1/p' "$r/pyproject.toml" | head -1)"
+    curl -sf -o /dev/null --max-time 20 "https://pypi.org/pypi/$dist/$pv/json" \
+      && fail "$r: PyPI already holds $dist $pv"
   fi
 
   # NO origin/dev check. Development is local: the remotes carry a published commit and its tag,

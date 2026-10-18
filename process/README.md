@@ -37,7 +37,7 @@ wrong. All are called by `regression.sh --all`, and each is runnable alone.
 
 | | |
 |---|---|
-| `compose_release.py` | regenerates `pgc_release` from the sealed snapshot. Called only by `release.sh --publish-composition` |
+| `compose_release.py` | regenerates `pgc_release` from the sealed snapshot, with `composition.json` naming each component's version, and pins `pgc_install` to it. Called only by `release.sh --publish-composition` |
 | `publish_component_releases.sh` | publishes the GitHub release of each component, which mints its Zenodo DOI. Run before `release.sh --publish-composition`, which refuses until every component DOI exists; `--verify` lists which exist |
 
 **Reference.**
