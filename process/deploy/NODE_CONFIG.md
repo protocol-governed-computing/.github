@@ -1,7 +1,7 @@
 # Federated Node Group — End Configuration
 
 What each machine holds when the `FEDERATED_NODE` composition is running, and how to set it by hand.
-`PLAN.md` in this directory says why each piece is there.
+`DEPLOYMENT.md` in this directory says why each piece is there.
 
 | Host | Address | Role | Inbound allowed |
 |---|---|---|---|

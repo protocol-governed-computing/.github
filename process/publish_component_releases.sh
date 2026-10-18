@@ -6,9 +6,8 @@
 #
 # `release.sh --publish-composition` names every component by its version DOI, and `compose_release.py`
 # refuses to compose until all of them exist. A component's DOI is minted when a *GitHub release* of
-# its tag is published — pushing the tag alone does not fire the Zenodo webhook. Those releases were
-# made by hand in every cycle, from memory, and in v4 the missing step read as a network error. This
-# is that step, written down.
+# its tag is published — pushing the tag alone does not fire the Zenodo webhook. This is that step,
+# written down, so it is not done from memory.
 #
 # Safe to repeat: a component already released at $PUBLIC is skipped, so a partial run is finished by
 # running it again. It publishes nothing unless Zenodo answers first — a release published during an

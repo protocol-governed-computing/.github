@@ -86,7 +86,7 @@ of one repository naming the same root are refused, so the compositions cannot o
 `python -m compiler.cli output-root --structure <code>` prints where a configuration writes.
 
 The federated composition runs on a node group, not in place. Its nodes are configured by hand per
-`process/deploy/NODE_CONFIG.md`; `process/deploy/PLAN.md` gives the topology and the checks.
+`process/deploy/NODE_CONFIG.md`; `process/deploy/DEPLOYMENT.md` gives the topology and the checks.
 `protocol_runtime/testbed/pgc/test_federation.py` exercises the same arrangement as processes on one
 machine.
 
@@ -98,7 +98,7 @@ is why the profile's OB-1 is not exercised by it.
 **What a regression run does not establish about the signed profile.** It composes and it satisfies
 the machine-checked floor. The obligations about placement — several addressable nodes, an evidence
 store held by none of them, a build machine that is not one of them — are not exercised by any run
-on one host. `doc/profile_readback_signed_federated.md` records which hold and which do not.
+on one host. Only a deployment on a node group, read back against the profile, can show them.
 
 A default run answers whether the profile is *satisfiable* over the reference composition: seven
 domains, one of them a workload. It does not establish the narrower claim the profile is written for
@@ -267,7 +267,7 @@ python ~/protocol-governed-computing/.github/process/pgc_env_check.py
 
 # execution — from empty data roots
 rm -rf ~/protocol-governed-computing/data/collatz ~/protocol-governed-computing/data/ai_governance ~/protocol-governed-computing/data/book_library_mgmt \
-       ~/protocol-governed-computing/data/book_library_mgmt_cr02 ~/protocol-governed-computing/data/blockchain
+       ~/protocol-governed-computing/data/book_library_mgmt_works ~/protocol-governed-computing/data/blockchain
 
 ~/protocol-governed-computing/protocol_runtime/run.sh run --wf workload::WF_COLLATZ_CONJECTURE_V0 --payload ~/protocol-governed-computing/conformance_workloads/workloads/collatz/test_payloads/01_happy_path.json --data-root ~/protocol-governed-computing/data/collatz
 
@@ -280,7 +280,7 @@ cp ~/protocol-governed-computing/business_domains/ai_governance/testbed/agent_go
 
 python ~/protocol-governed-computing/business_domains/book_library_mgmt/testbed/catalog/execution_validation.py --data-root ~/protocol-governed-computing/data/book_library_mgmt
 
-python ~/protocol-governed-computing/business_domains/book_library_mgmt/testbed/catalog/execution_validation_cr02.py --data-root ~/protocol-governed-computing/data/book_library_mgmt_cr02
+python ~/protocol-governed-computing/business_domains/book_library_mgmt/testbed/catalog/execution_validation_works.py --data-root ~/protocol-governed-computing/data/book_library_mgmt_works
 
 python ~/protocol-governed-computing/business_domains/blockchain/testbed/identity/execution_validation.py --data-root ~/protocol-governed-computing/data/blockchain
 
@@ -368,8 +368,8 @@ included; this table explains what each step proves and states no counts. The st
 | collatz | `SUCCESS`, `all_terminate: true` |
 | govern agent action | `SUCCESS` |
 | provision licensing | `SUCCESS` — the block clears `data/` first, so this is always a first run |
-| `execution_validation.py` (catalog) | Every criterion holds — the catalog's nine workflows against CR-1's §15 |
-| `execution_validation_cr02.py` (catalog) | Every criterion holds — CR-2's criteria, and proof that CR-2 breaks none of CR-1's |
+| `execution_validation.py` (catalog) | Every criterion holds — the catalog's nine workflows against its registration criteria |
+| `execution_validation_works.py` (catalog) | Every criterion holds — the works criteria, including a record written before works existed |
 | `execution_validation.py` (identity) | Every criterion holds — those not exercised are a timed test and the transaction half of the wallet claim, which no function realizes |
 | `execution_validation.py` (wallet) | Every criterion holds — the one not exercised is a write through a consulted binding, which no act is authored to attempt |
 | `execution_validation.py` (model_response) | Every criterion holds — CLM CR-1: a model answers only in service, only on what it may read, only in words the rules permit; refusals recorded and announced; a replay agrees on every determinative event |

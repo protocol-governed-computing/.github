@@ -267,10 +267,10 @@ steps:
   - id: provision_licensing
     section: execution
     expect: ["Status:\\s+SUCCESS"]
-  - id: catalog_cr01
+  - id: catalog_registration
     section: execution
     expect: ["23/23 criteria hold"]
-  - id: catalog_cr02
+  - id: catalog_works
     section: execution
     # the catalog holds every rule it applies and checks what it records
     expect: ["27/27 criteria hold"]

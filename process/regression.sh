@@ -208,7 +208,7 @@ echo "execution" >> "$RUN/sections"
 echo; echo "=== EXECUTION ==="
 echo "=== clearing data roots ==="
 rm -rf "$W/data/collatz" "$W/data/ai_governance" "$W/data/book_library_mgmt" \
-       "$W/data/book_library_mgmt_cr02" "$W/data/blockchain" "$W/data/causal_language_model" \
+       "$W/data/book_library_mgmt_works" "$W/data/blockchain" "$W/data/causal_language_model" \
   "$W/data/causal_language_model_hosted"
 
 echo; echo "=== collatz ==="
@@ -235,12 +235,12 @@ step provision_licensing "$W/protocol_runtime/run.sh" run \
   --data-root "$W/data/ai_governance"
 
 echo; echo "=== book_library_mgmt: catalog (CR-1) ==="
-step catalog_cr01 python "$W/business_domains/book_library_mgmt/testbed/catalog/execution_validation.py" \
+step catalog_registration python "$W/business_domains/book_library_mgmt/testbed/catalog/execution_validation.py" \
   --data-root "$W/data/book_library_mgmt"
 
 echo; echo "=== book_library_mgmt: catalog (CR-2) ==="
-step catalog_cr02 python "$W/business_domains/book_library_mgmt/testbed/catalog/execution_validation_cr02.py" \
-  --data-root "$W/data/book_library_mgmt_cr02"
+step catalog_works python "$W/business_domains/book_library_mgmt/testbed/catalog/execution_validation_works.py" \
+  --data-root "$W/data/book_library_mgmt_works"
 
 echo; echo "=== blockchain: identity (must precede wallet) ==="
 step blockchain_identity python "$W/business_domains/blockchain/testbed/identity/execution_validation.py" \
@@ -278,7 +278,7 @@ step demo_script bash "$W/.github/process/demo_script_check.sh"
 
 step trace_schema_conformance python "$W/.github/process/trace_schema_conformance.py" \
   "$W/data/collatz" "$W/data/ai_governance" "$W/data/book_library_mgmt" \
-  "$W/data/book_library_mgmt_cr02" "$W/data/blockchain" "$W/data/causal_language_model" \
+  "$W/data/book_library_mgmt_works" "$W/data/blockchain" "$W/data/causal_language_model" \
   "$W/data/causal_language_model_hosted"
 
 step temp_hygiene bash -c 'left="$(ls -A "$1")"

@@ -16,8 +16,8 @@
 #
 # THE REMOTES CARRY ONE COMMIT AND ONE TAG. They are a publication surface, not a development
 # mirror: no dev branches, no release-<N>, no history-<N>. Everything this script archives, it
-# archives locally. `history-<N>` is what makes that safe — it pins the cycle tip permanently, and
-# it is the reason the 2026-08-28 rewrite lost nothing when every remote branch was deleted.
+# archives locally. `history-<N>` is what makes that safe — it pins the cycle tip permanently, so
+# deleting a remote branch loses nothing.
 #
 # The release ordinal is read from `.github/VERSION`; the public identity from
 # `.github/PUBLIC_VERSION`. Neither is edited here, and neither is derived from the other.
@@ -383,9 +383,8 @@ fi
 # ---------------------------------------------------------------------------
 # 2. Archive the cycle as a TAG — local, and the reason nothing is lost
 #
-#    A branch is a mutable pointer; a tag is the archival primitive. These tags are why deleting
-#    every remote branch on 2026-08-28 lost nothing: history-9, history-10 and history-11 already
-#    pinned the exact cycle tips, so the commits remained reachable without the branch names.
+#    A branch is a mutable pointer; a tag is the archival primitive. A history tag pins the exact
+#    cycle tip, so the commits stay reachable without the branch name.
 #
 #    Not pushed. The remote carries the publication, not the development that produced it.
 # ---------------------------------------------------------------------------
