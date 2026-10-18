@@ -50,6 +50,8 @@ Each item states what done means. Items under **A** are decisions. Order: B6 →
   - Stage 3 done: 16 predecessors are deleted and 65 identities renamed to `_V0`, with their
     handler and transform modules. No artifact carries `supersedes` and `retired_identities.yaml` is
     empty. Prose that narrated one version against another states the rule instead.
+  - Supersession is declared once, on the successor (`4e` SU-3, SU-5). No schema admits
+    `superseded_by`; the compiler derives which artifacts are superseded from every `supersedes`.
 - **B2. Legacy references. Done.** Zero matches for `pgs_`, `RI-0` and `bachipeachy/pgs` outside
   what must name them: the two guards that refuse a legacy package (`pgc_env_check.py`,
   `verify_release.py`), the frozen `TRANSPORT_STANDARD_V0.md`, the sealed `pgc_release`, and
@@ -78,7 +80,7 @@ Each item states what done means. Items under **A** are decisions. Order: B6 →
   the table's copies had drifted. Its former-failure notes state the rule they taught. Left for B7:
   the RUNBOOK's dossier paths, the construction sequence, and the "simple path" costs, which assume
   a domain has no design.
-- **B6. Pure history.** Delete what no test reads: `process/notes/` and the genesis dossier's
+- **B6. Pure history. Done.** Delete what no test reads: `process/notes/` and the genesis dossier's
   delivery note, and the references to them. `rulings.md` stays as present-tense doctrine: its rules
   are in force, and the one spent ruling is dropped. This comes first in B.
 - **B7. The dossier corpus. Done.** Delete `*/cr_dossiers` and the genesis dossier, generate the baseline
@@ -98,10 +100,9 @@ Each item states what done means. Items under **A** are decisions. Order: B6 →
     generators, and the delivered copies. The test fixtures stay as
     `transformation_compilers/scripts/testbed/fixtures/`: the catalog chain and the transformation
     phases' P0–P2. The RUNBOOK, READMEs, architectures and CLAUDE.md files describe designs of record.
-  - Open: `WF_AUTO_RECLAIM_V0` declared `core.admission` (requires a provisioned license, forbids a
-    revoked one). `transport::CONSTITUTION_ADMISSION_V0` states that form and nothing enforces it, so
-    it was removed. Event-based admission is declared by a constitution and realized nowhere.
-
+  - `WF_AUTO_RECLAIM_V0` declared `core.admission`, an event-log precondition form nothing realized,
+    so it was removed. `transport::CONSTITUTION_ADMISSION_V0` now states the admission the runtime
+    realizes: the IN gate judges the payload against its declared input contract.
 - **B8. RI-0 machinery still in the compiler. Done.** Found by B2:
   - `ASSERT_NO_SMART_EXECUTION_V0`'s handler scans runtime files that do not exist, so it always
     passes; `ASSERT_ATOM_OUTPUT_PURITY_V0` and `ASSERT_CT_OUTPUT_CONTRACT_MATCH_V0` may be the same.

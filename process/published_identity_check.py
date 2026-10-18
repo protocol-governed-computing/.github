@@ -7,9 +7,8 @@ measured against, so the check compares every identity in the sealed v5 composit
 them by the platform's declaration of what carries meaning
 (`artifact::VOCAB_DECLARATION_REPRESENTATION_V0`, read through `transformation.build.sameness`).
 
-Two differences are not a change of meaning:
-- a stand-down marking (`superseded_by`) on the published identity;
-- a reference moved to the declared successor of an artifact stood down with exactly one successor.
+A reference moved to the declared successor of an artifact superseded by exactly one successor is
+not a change of meaning.
 
 An identity added since v5 is not published, so it is not compared. An identity v5 published and the
 working composition no longer holds is a finding unless `retired_identities.yaml` records its
@@ -50,20 +49,16 @@ def frontmatters(root: Path) -> dict[str, dict]:
 def successors(working: dict[str, dict], retired: dict[str, dict]) -> dict[str, str]:
     """Each superseded artifact's one successor, by full name and by short code.
 
-    The relation is read wherever it is still stated: `superseded_by` on a predecessor in the
-    composition, `supersedes` on a live successor whose predecessor is deleted, and `superseded_by`
-    in the ledger where both ends are deleted. A chain is followed to its end: a reference moved
-    from V0 to V3 moved to the version in force."""
-    step: dict[str, str] = {}
+    The relation is declared once, on the successor, as `supersedes`, and recorded in the ledger
+    where both ends are deleted. A predecessor claimed by more than one successor has no one
+    successor. A chain is followed to its end: a reference moved from V0 to V3 moved to the version
+    in force."""
+    claimed: dict[str, list[str]] = {}
     for fqdn, frontmatter in working.items():
-        named = frontmatter.get("superseded_by")
-        if isinstance(named, str):
-            named = [named]
-        if named and len(named) == 1:
-            step[fqdn] = named[0]
-        predecessor = frontmatter.get("supersedes")
-        if isinstance(predecessor, str) and predecessor not in working:
-            step.setdefault(predecessor, fqdn)
+        named = frontmatter.get("supersedes")
+        for predecessor in [named] if isinstance(named, str) else (named or []):
+            claimed.setdefault(predecessor, []).append(fqdn)
+    step: dict[str, str] = {p: s[0] for p, s in claimed.items() if len(s) == 1}
     for fqdn, entry in retired.items():
         if entry.get("superseded_by"):
             step.setdefault(fqdn, entry["superseded_by"])
@@ -96,8 +91,7 @@ def main() -> int:
         for name in sorted(retirement.naming(frontmatter, retired, fqdn.split("::")[0])):
             findings.append(f"{fqdn}\n   names {name}, which is recorded as deleted")
     for fqdn in sorted(set(published) & set(working)):
-        was = {k: v for k, v in published[fqdn].items() if k != "superseded_by"}
-        now = {k: v for k, v in working[fqdn].items() if k != "superseded_by"}
+        was, now = published[fqdn], working[fqdn]
         differences = sameness.differences(was, now, declaration, successor)
         if differences:
             shown = "\n   ".join(differences[:6])

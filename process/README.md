@@ -22,7 +22,7 @@ wrong. All are called by `regression.sh --all`, and each is runnable alone.
 |---|---|
 | `governance_closure.py` | every compiler handler is named by an invariant; no layer is declared two ways |
 | `governance_chain_closure.py` | every authored invariant is named by a constitution rule |
-| `supersession_agreement.py` | a supersession is stated on both sides and the two agree |
+| `supersession_agreement.py` | every `supersedes` names a predecessor present, or one deleted by record |
 | `published_identity_check.py` | nothing v5 published has changed meaning (SU-11) |
 | `single_instance_check.py` | no artifact name is live in two versions, in the namespaces it is given |
 | `human_block_fidelity.py` | prose beside a machine block declares nothing |

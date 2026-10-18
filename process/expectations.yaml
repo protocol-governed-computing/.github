@@ -23,9 +23,9 @@ steps:
     expect: ["GOVERNANCE CHAIN PASSED"]
   - id: supersession_agreement
     section: checks
-    # every `supersedes` relation: both sides present and agreeing, or the predecessor deleted by
-    # record in the retirement ledger. The identity reset leaves none.
-    expect: ["SUPERSESSION AGREEMENT PASSED — 0 relation\\(s\\), both sides agree on 0, 0 predecessor\\(s\\) deleted by record"]
+    # every `supersedes` relation names a predecessor present, or one deleted by record in the
+    # retirement ledger. The identity reset leaves none.
+    expect: ["SUPERSESSION AGREEMENT PASSED — 0 relation\\(s\\), 0 predecessor\\(s\\) present, 0 deleted by record"]
   - id: human_block_fidelity
     section: checks
     expect: ["HUMAN BLOCK FIDELITY PASSED — 543 artifacts"]
@@ -103,7 +103,7 @@ steps:
   - id: semantic_change_design_test
     section: checks
     # a change of meaning is a new identity; a replacement accounts for its reach
-    expect: ["18/18 passed"]
+    expect: ["17/17 passed"]
   - id: entrance_gate_design_test
     section: checks
     # an entrance supplies what its gate requires
@@ -146,7 +146,7 @@ steps:
     expect: ["4/4 passed"]
   - id: test_reference_semantics
     section: checks
-    expect: ["17/17 passed"]
+    expect: ["18/18 passed"]
   - id: test_routing_closure
     section: checks
     # a workflow routes every outcome its contracts can end with (GC-15), a step answers every outcome its capability declares (CP-13)
@@ -171,7 +171,7 @@ steps:
   - id: test_force_and_output_root
     section: checks
     # nothing superseded is in force; a build writes only where it declares
-    expect: ["8/8 passed"]
+    expect: ["9/9 passed"]
   - id: test_governance_provenance
     section: checks
     # The script mutates governance to make its point; a run that died mid-mutation leaves it edited.

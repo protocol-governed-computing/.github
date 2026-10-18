@@ -1,27 +1,17 @@
 #!/usr/bin/env python3
-"""Supersession — the relation is stated twice, so the two statements must agree.
+"""Supersession — every relation a successor declares resolves.
 
 `4e` SU-3 asks for the relation **once, on the successor**, with the predecessor's status derived
-from it. The realization states it twice: `supersedes` on the successor and `superseded_by` on the
-predecessor. Two independent assertions of one relation can disagree, and until this check nothing
-compared them — which is realization-map finding 39.
+from it. The realization declares it so: `supersedes` on the successor, and nothing on the
+predecessor. The compiler derives which artifacts are superseded from those declarations.
 
-They already disagreed. `transformation::STRUCTURE_FIGURE_OF_MERIT_POLICY_V0` declared its
-predecessor and the predecessor said nothing, because that supersession was authored by hand while
-every other one was written by construction standing an artifact down. One relation, two producers,
-and no comparison.
+What remains to check is that each declaration is about something. A successor names a predecessor
+the composition holds, or one `retired_identities.yaml` records as deleted (`4e` SU-12). Where the
+deletion record names the predecessor's successor, the two must agree.
 
-**This does not close SU-3.** SU-3 is satisfied by deriving the back-reference, not by checking two
-copies against each other; a fact stated twice and reconciled is still a fact stated twice. What this
-closes is the harm — a disagreement nothing would report. Deriving is the fix and it changes the
-projection, which is a larger change than the defect currently warrants.
+Reads the assembled composition, because the canonical projection is what a reader consults.
 
-Reads the assembled composition, because the canonical projection is what a reader consults. A
-successor may name a predecessor the composition no longer holds only when
-`retired_identities.yaml` records that predecessor's deletion (`4e` SU-12). Where the record names
-the predecessor's successor, the two must agree.
-
-Exit 0 when every supersession agrees on both sides, 1 otherwise.
+Exit 0 when every supersession resolves, 1 otherwise.
 """
 from __future__ import annotations
 
@@ -43,7 +33,6 @@ def _listed(value) -> list[str]:
 
 def main() -> int:
     forward: dict[str, set[str]] = {}   # successor -> predecessors it claims
-    backward: dict[str, set[str]] = {}  # predecessor -> successors it names
     present: set[str] = set()
     for path in (SNAPSHOT / "canonical").rglob("*.json"):
         record = json.loads(path.read_text(encoding="utf-8"))
@@ -54,15 +43,15 @@ def main() -> int:
         present.add(fqdn)
         for predecessor in _listed(frontmatter.get("supersedes")):
             forward.setdefault(fqdn, set()).add(predecessor)
-        for successor in _listed(frontmatter.get("superseded_by")):
-            backward.setdefault(fqdn, set()).add(successor)
 
     retired = retirement.retired()
     findings: list[str] = []
     deleted = 0
     for successor, predecessors in sorted(forward.items()):
         for predecessor in sorted(predecessors):
-            if predecessor in retired and predecessor not in present:
+            if predecessor in present:
+                continue
+            if predecessor in retired:
                 deleted += 1
                 recorded = retired[predecessor].get("superseded_by")
                 if recorded and recorded != successor:
@@ -71,27 +60,20 @@ def main() -> int:
                         f"   claims to supersede {predecessor}, whose deletion record names "
                         f"{recorded} as its successor")
                 continue
-            if successor not in backward.get(predecessor, set()):
-                findings.append(
-                    f"{successor}\n"
-                    f"   claims to supersede {predecessor}, which does not name it back")
-    for predecessor, successors in sorted(backward.items()):
-        for successor in sorted(successors):
-            if predecessor not in forward.get(successor, set()):
-                findings.append(
-                    f"{predecessor}\n"
-                    f"   names {successor} as its successor, which claims no such thing")
+            findings.append(
+                f"{successor}\n"
+                f"   claims to supersede {predecessor}, which is neither in the composition nor "
+                f"recorded as deleted")
 
     pairs = sum(len(v) for v in forward.values())
     if not findings:
-        print(f"SUPERSESSION AGREEMENT PASSED — {pairs} relation(s), both sides agree on "
-              f"{pairs - deleted}, {deleted} predecessor(s) deleted by record")
+        print(f"SUPERSESSION AGREEMENT PASSED — {pairs} relation(s), {pairs - deleted} predecessor(s) "
+              f"present, {deleted} deleted by record")
         return 0
 
     for finding in findings:
         print(f"\n{finding}")
-    print(f"\nSUPERSESSION AGREEMENT FAILED — {len(findings)} disagreement(s) over "
-          f"{pairs} relation(s)")
+    print(f"\nSUPERSESSION AGREEMENT FAILED — {len(findings)} unresolved over {pairs} relation(s)")
     return 1
 
 
