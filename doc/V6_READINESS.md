@@ -80,9 +80,16 @@ Each item states what done means. Items under **A** are decisions. Order: B6 →
   and its origin derived. The measure reads the provenance it is handed, and a new vector case
   proves a renderer-supplied value is refused. Carried values were recorded under a path no leaf
   had, and are now attributed correctly.
-- **C5. Genesis G-3.** The design language states a field's `structure`. Through the lifecycle.
-- **C6. Genesis G-2.** The design language states which actor each workflow runs under. Through
-  the lifecycle.
+- **C5. Genesis G-3. Done.** P7's `interface_fields` states a field's shape in a `Structure`
+  column, and `FIELD_STRUCTURE_UNDECLARED` requires it to name a STRUCTURE the design declares or
+  carries over. Genesis is regenerated, re-pinned and admissible P0–P8, and its transforms rebuild
+  their structures. The mapping test reads genesis beside the acceptance corpus. Genesis rebuilds
+  20 of its 41 artifacts and measures 98.7% complete; the rest is B7's input:
+  - `supersedes` on five artifacts (A1 drops it);
+  - actors, contracts, bindings and the build manifest, which the design language cannot yet state;
+  - STRUCTURE `concern`, `layer` and `entity_stores`, which the renderer supplies;
+  - each workflow's actor (C6).
+- **C6. Genesis G-2.** The design language states which actor each workflow runs under.
 - **C7. Genesis G-4.** P7 states the three refusals as out of scope (A4).
 - **C8. The flaky first `--all`.** Reproduce it or close it with evidence.
 - **C9. `pgc_sloc.py`.** It counts `registry/schema/*.json`.

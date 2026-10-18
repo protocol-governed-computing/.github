@@ -55,7 +55,7 @@ steps:
     # as three and two gated constraints (M3.4a); 279 → 284, 34 → 39: the header is `document`, its two rules
     # become six derived ones plus one for the approval (M4); 284 → 280: the Module column and its three rules
     # go, and a property value takes any type (M5)
-    expect: ["p7\\s+281 rules", "p8\\s+39 rules"]
+    expect: ["p7\\s+282 rules", "p8\\s+39 rules"]
   - id: build_payloads
     section: checks
     expect: ["OK\\s+83 payload\\(s\\) agree"]
@@ -80,7 +80,7 @@ steps:
   - id: construction_mapping_test
     section: checks
     # 184 → 185: cr_07_own_values, a transport ingress successor states `supersedes`.
-    expect: ["CONSTRUCTION MAPPING PASSED — 186 fields over 12 kinds"]
+    expect: ["CONSTRUCTION MAPPING PASSED — 194 fields over 12 kinds"]
   - id: interface_structures_test
     section: checks
     expect: ["INTERFACE STRUCTURES PASSED — 4 checks, 5 structures"]
