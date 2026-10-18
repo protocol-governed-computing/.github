@@ -216,7 +216,8 @@ steps:
     expect: ["Ran 7 tests", "(?m)^OK$"]
   - id: test_transform_conformance_runner
     section: checks
-    expect: ["Ran 11 tests", "(?m)^OK$"]
+    # a completed result carries exactly the outputs its transform declares
+    expect: ["Ran 15 tests", "(?m)^OK$"]
   - id: test_no_default
     section: checks
     # a binding that reaches nothing is never given a value: a transform's path refuses,
@@ -230,6 +231,10 @@ steps:
   - id: test_unknown_continuation
     section: checks
     # execution refuses a routing answer other than continue or exit
+    expect: ["3/3 passed"]
+  - id: test_no_smart_execution
+    section: checks
+    # no runtime module converts a value by its declared type; a planted conversion is found
     expect: ["3/3 passed"]
   - id: single_instance
     section: checks

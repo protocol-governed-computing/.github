@@ -80,13 +80,21 @@ Each item states what done means. Items under **A** are decisions. Order: B6 →
 - **B7. The dossier corpus.** Delete `*/cr_dossiers` and the genesis dossier, generate the baseline
   designs (A6), and re-point `construction_acceptance`. This lands with B1.
 
-- **B8. RI-0 machinery still in the compiler.** Found by B2, not yet removed:
+- **B8. RI-0 machinery still in the compiler. Done.** Found by B2:
   - `ASSERT_NO_SMART_EXECUTION_V0`'s handler scans runtime files that do not exist, so it always
     passes; `ASSERT_ATOM_OUTPUT_PURITY_V0` and `ASSERT_CT_OUTPUT_CONTRACT_MATCH_V0` may be the same.
     Each either checks something real or its invariant states it is enforced elsewhere.
   - `ProtocolLoader.load` and `domain_resolver` read RI-0's workspace layout and nothing calls them.
   - `CONSTITUTION_FEDERATION_BOUNDARY_V0` describes `FB_*` directories and `fb.*` namespaces that
     no longer exist.
+  - Resolved: the three handlers are deleted, because none could fail. Each invariant is
+    `enforced_elsewhere` and states its rule as it stands. No smart execution is held by a new
+    runtime test (`test_no_smart_execution.py`). Output contract match is held by conformance, which
+    now fails a result whose keys differ from the declared outputs; that found twelve atoms returning
+    an undeclared `result_status`, now removed. Atom output purity is held by the CT executor and
+    conformance, in the schema's terms for `refusal`. The loader and resolver are deleted. The
+    federation constitution follows `AUTHORITY_VS_CONCERN_RULING.md`: a boundary is an authority,
+    `pgc.platform` is the only one, and namespaces are concerns.
 
 ## C. Close known defects, so nothing is red by design
 
@@ -138,7 +146,8 @@ Each item states what done means. Items under **A** are decisions. Order: B6 →
   - blockchain's designs state no vector for `CT_PURE_DERIVE_WALLET_ADDRESS_V0`, so
     `construction_acceptance` reports it as a miss until B7 generates the baseline design;
   - `CT_PURE_FORM_BOOK_IDENTITY_KEY_V0` declares `refusal: never`, and its designed vector expects a
-    refusal of a blank title. The declaration or the vector is wrong; settle it at B1.
+    refusal of a blank title. Settled by B8: neither is wrong. `SCHEMA_CAPABILITY_TRANSFORM_V0`
+    makes refusal a judgement about the subject, and every transform raises on malformed input.
 
 Done for C as a whole: `expectations.yaml` holds no `red_by_design` except `published_identity`.
 That one is red by ruling while the baseline is built, and it returns to a plain pass at the cut

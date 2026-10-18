@@ -175,6 +175,7 @@ if [[ "$MODE" == "--all" ]]; then
            "$W/protocol_runtime/testbed/pgc/test_step_outcome.py" \
            "$W/protocol_runtime/testbed/pgc/test_no_default.py" \
            "$W/protocol_runtime/testbed/pgc/test_unknown_continuation.py" \
+           "$W/protocol_runtime/testbed/pgc/test_no_smart_execution.py" \
            "$W/protocol_runtime/testbed/pgc/test_warm_boot.py" \
            "$W/protocol_runtime/testbed/pgc/test_resident_boot.py" \
            "$W/protocol_runtime/testbed/pgc/test_federation.py" \
