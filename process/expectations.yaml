@@ -55,7 +55,7 @@ steps:
     # as three and two gated constraints (M3.4a); 279 → 284, 34 → 39: the header is `document`, its two rules
     # become six derived ones plus one for the approval (M4); 284 → 280: the Module column and its three rules
     # go, and a property value takes any type (M5)
-    expect: ["p7\\s+280 rules", "p8\\s+39 rules"]
+    expect: ["p7\\s+281 rules", "p8\\s+39 rules"]
   - id: build_payloads
     section: checks
     expect: ["OK\\s+83 payload\\(s\\) agree"]
@@ -80,7 +80,7 @@ steps:
   - id: construction_mapping_test
     section: checks
     # 184 → 185: cr_07_own_values, a transport ingress successor states `supersedes`.
-    expect: ["CONSTRUCTION MAPPING PASSED — 185 fields over 12 kinds"]
+    expect: ["CONSTRUCTION MAPPING PASSED — 186 fields over 12 kinds"]
   - id: interface_structures_test
     section: checks
     expect: ["INTERFACE STRUCTURES PASSED — 4 checks, 5 structures"]
@@ -293,16 +293,7 @@ steps:
     expect: ["27/27 criteria hold"]
   - id: blockchain_identity
     section: execution
-    exit: 1
-    # cr_05_identity: identity holds every rule it applies, through the entrance and directly.
-    # 22 → 21 (RT-6): an acceptance stating no grounds records none, and TE_ACCEPT_ACTOR_V0's output
-    # contract still owes `grounds`, so the entrance refuses the answer by name.
-    # 21/22 → 25/26: cr_07_own_values adds four criteria, each holding.
-    expect: ["25/26 criteria hold\\s+\\(3 not exercised\\)",
-             "differing: \\{'accept': 'EXECUTION_FAILURE'\\}"]
-    red_by_design: >-
-      parked — the TE output contract cannot declare a field optional; once it can,
-      `grounds` is declared optional and the entrance answers an acceptance without it
+    expect: ["26/26 criteria hold\\s+\\(3 not exercised\\)"]
   - id: blockchain_wallet
     section: execution
     # 9/9 → 12/12: cr_07_own_values adds three criteria, each holding.

@@ -64,8 +64,10 @@ Each item states what done means. Items under **A** are decisions. Order: B6 →
 
 ## C. Close known defects, so nothing is red by design
 
-- **C1. `blockchain_identity` 25/26.** The TE output contract can declare a field optional, and
-  `grounds` is declared optional. Done when the step is green and loses `red_by_design`.
+- **C1. `blockchain_identity`. Done.** A TE output field is owed unless it declares
+  `required: false`, and the response omits an optional field the result does not carry. P7's
+  `transport_bindings` states it in a `Required` column, so construction writes it. `grounds` on
+  `TE_ACCEPT_ACTOR_V0` is optional, and the step holds 26/26.
 - **C2. `construction_acceptance`.** Book library's two `_V1` artifacts carry `version: v0`.
   The reset in A1 resolves it, and B7 resolves blockchain's undesigned vector (C10); done when
   the step is green.
