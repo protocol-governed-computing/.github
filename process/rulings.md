@@ -39,8 +39,9 @@ dossier is permitted, on three conditions:
 - A generator is not a design authority. Construction completeness must still be 100%, so anything
   it infers that no register states is caught.
 
-The genesis generators, in `transformation_compilers/scripts/genesis/`, stay in the working tree:
-genesis and each domain's baseline design are regenerated whenever the module changes.
+The design-of-record generator, `transformation.record`, stays in the working tree: each root's
+design of record is regenerated from its registry, and `write_baseline_designs.py --check` refuses a
+design its registry no longer generates.
 
 **Why.** A large design is impractical to type by hand, and every rule admits a generated document
 exactly as it would admit the same text typed. Governing generation itself is open work.

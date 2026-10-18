@@ -302,13 +302,10 @@ would leave the second refusing a root the first had already filled.
 composition: a transform module nobody names, and an artifact naming a module that is not on disk.
 Neither is visible to any phase rule, because neither has a design to judge.
 
-**`construction_acceptance` covers two domains**, and reads them from different places on purpose.
-`book_library_mgmt` is read from maintained fixtures, because its own harnesses judge those documents
-and a delivered dossier goes inadmissible as the design language grows. `blockchain` is read from its
-**delivered** dossiers, which works because rendering reads registers and never judges admissibility:
-a dossier that would be refused at P7 today still determines exactly the artifacts it determined when
-it was gated. `ai_governance` has no dossier, deliberately, so nothing determines its registry.
-Pass dossiers as arguments with `--registry` to run one sequence by hand.
+**`construction_acceptance` covers every designed root.** Each carries one design of record in
+`<root>/design/`, generated from its registry by `transformation.record`. Acceptance renders it and
+compares the result with the registry. `baseline_designs` refuses a design its registry no longer
+generates, so the two checks together say the design states the registry whole.
 
 Every path is absolute; the `cd` is convenience only.
 
@@ -339,7 +336,7 @@ included; this table explains what each step proves and states no counts. The st
 | `differential.py` | `DIFFERENTIAL PASSED` — the sealed rule set and the declared one agree on every corpus document |
 | `e2e_phases_test.py` | `E2E PASSED` — every phase, both admissible and inadmissible, through the runtime |
 | `projection_test.py` | `PROJECTION PASSED` — reproducible, general, and refusing an inadmissible prior |
-| `construction_acceptance.py` | `n/N artifacts reproduced across 7 domain(s)`, exit 1, **red by design** — the differences are `book_library_mgmt`'s `IN_`/`WF_UPDATE_BIBLIOGRAPHIC_INFORMATION_V1`, whose sealed text carries `version: v0` while the renderer writes the version from the identity, and blockchain's `CT_PURE_DERIVE_WALLET_ADDRESS_V0` vector, which no design states. `book_library_mgmt` from maintained fixtures; `blockchain`, `causal_language_model`, `ai_governance` and the Collatz workload (partial) and the two base-code roots from their delivered dossiers. A base-code root carries **no order**, so the harness takes its dossiers as a set and refuses if two of them determine one artifact; a partial registry reports its undetermined tail rather than counting it as reproduced. A later design's REPOINT is applied to the artifact an earlier design rendered, as construction applied it. An `UNCOVERED` line is a dossier root determining artifacts that nothing compares — add it to `DOMAINS`, or say why not |
+| `construction_acceptance.py` | `n/N artifacts reproduced across 6 domain(s)` — every designed root's design of record rendered and compared with its registry: the four business domains, the Collatz workload and transformation. An artifact a generator produces is reported `GEN` and compared by that generator's own check. A build manifest is determined by no design. The platform and the inspection surface carry no design of record: the platform's governance kinds are ones the design language cannot state, and the inspection contracts are generated from their declaration |
 | `molecule_design_test.py`, `vector_design_test.py` | The design language renders a molecule's steps, and a transform's cases as its vector, and each rule that holds them fires on the defect it names |
 | `keyed_node_design_test.py`, `refusal_moment_design_test.py` | A node is a key and the contract it runs a column, and a route to a place the composition already has resolves; a refusing ending announces only a declared refusal moment |
 | `semantic_change_design_test.py` | Construction compares every amendment with the composition by the platform's declaration and refuses a change of meaning under an old identity; an amendment built without `--snapshot` is refused; a design re-points a reference with `REPOINT`; a replacement whose live referrer the design does not account for is refused; P7 refuses a `withdrawn_facts` row |
@@ -571,36 +568,39 @@ identity by `content_hash` and refuses the composition when they disagree, namin
 the copies. A partial recompile fails the build instead of sealing a snapshot that answers from
 whichever copy the index happened to resolve.
 
-## Constructing a design into artifacts
+## Designs of record
 
-The loop to run after **any** edit to a dossier's P7 or P8. Skipping a step leaves the snapshot
-describing a design that no longer exists:
+Every designed root carries its design of record in `<root>/design/`: one P7 and one P8, generated
+from the registry. After any change to a registry, regenerate them and check them:
 
 ```bash
-D=~/protocol-governed-computing/business_domains/book_library_mgmt/cr_dossiers/cr_01_catalog
+cd ~/protocol-governed-computing/transformation_compilers
+python scripts/write_baseline_designs.py            # write every root's design/
+python scripts/write_baseline_designs.py --check    # exit 1 if a design is not the one its registry generates
+python scripts/testbed/construction_acceptance.py   # render each design and compare it with its registry
+```
 
-tc construction check $D --snapshot ~/protocol-governed-computing/snapshot
+A difference acceptance reports is a generator bug when the design states the fact, and a design
+insufficiency when it does not. A design of record is read by construction. It is not a phase
+document a rule set judges, because it has no P0 to P6 to cite.
+
+## Constructing a change into artifacts
+
+A change after the baseline is a dossier, `<domain>/cr_dossiers/cr_NN_<subject>/`, designed against
+the composition. The loop to run after **any** edit to its P7 or P8:
+
+```bash
+W=~/protocol-governed-computing
+D=$W/business_domains/<domain>/cr_dossiers/cr_NN_<subject>
+
+tc construction check $D --snapshot $W/snapshot
 #   100% or the design does not determine its artifacts, AND no amendment narrows what it replaces.
 #   `--snapshot` is what checks the second: an artifact inventoried EXTEND is rendered whole and
 #   replaces its predecessor, so a design stating only the delta deletes the rest — at 100%
 #   completeness, because completeness never looks at what already exists. Without the flag that
 #   check does not run and says so.
 
-python - <<'EOF'                               # construct + persist, through the governed workflow
-import sys; W = "/Users/bp/protocol-governed-computing"
-for r in ("software_governance", "business_domains", "transformation", "conformance_workloads"):
-    sys.path.insert(0, f"{W}/{r}")
-from pathlib import Path
-from runtime import api
-D = Path(W) / "business_domains/book_library_mgmt/cr_dossiers/cr_01_catalog"
-r = api.run_workflow(
-    wf_fqdn="transformation::WF_CONSTRUCT_ARTIFACTS_V0",
-    payload={"design_text": (D / "p7_design_intent_book_library_mgmt_catalog_v0.md").read_text(),
-             "mandate_text": (D / "p8_authoring_mandate_book_library_mgmt_catalog_v0.md").read_text(),
-             "threshold": 100.0},
-    snapshot_root=f"{W}/snapshot", data_root=f"{W}/data/transformation")
-print(r.status, (r.surface or {}).get("written"), "artifact(s)")
-EOF
+tc construction emit $D --root $W/business_domains/<domain> --snapshot $W/snapshot
 
 # A new CT is a protocol artifact AND a Python implementation. Construction renders the first; the
 # second is hand-authored at
@@ -608,41 +608,20 @@ EOF
 # with a callable `execute(inputs, context)` raising CTExecutionError. A CT whose module is missing
 # returns nothing, its contract yields VIOLATION, and every check above this line still passes.
 
-# promote — a separate, deliberate act; construction writes to data/, not into the domain
-rsync -rc ~/protocol-governed-computing/data/transformation/construction/registry/catalog/ \
-         ~/protocol-governed-computing/business_domains/book_library_mgmt/registry/catalog/
+$W/protocol_compiler/compile_domain.sh $W/business_domains/<domain>
+PGC_SNAPSHOT_PROFILE=GOVERNANCE_SURFACE_PROFILE_V0 $W/snapshot_assembler/assemble.sh
 
-# Scoped to book_library_mgmt: its DOSSIERS list names the two catalog change requests, because
-# acceptance compares a render against artifacts that already exist and only that domain was ever
-# hand-authored. A domain emitted by `tc construction emit` is covered by `tc construction check`
-# instead. Pass dossiers as arguments to widen it.
-python ~/protocol-governed-computing/transformation_compilers/scripts/testbed/construction_acceptance.py
-
-~/protocol-governed-computing/protocol_compiler/compile_domain.sh ~/protocol-governed-computing/business_domains/book_library_mgmt
-PGC_SNAPSHOT_PROFILE=GOVERNANCE_SURFACE_PROFILE_V0 ~/protocol-governed-computing/snapshot_assembler/assemble.sh
-
-python ~/protocol-governed-computing/business_domains/book_library_mgmt/testbed/catalog/execution_validation.py
-python ~/protocol-governed-computing/business_domains/book_library_mgmt/testbed/catalog/execution_validation_cr02.py
+(cd $W/transformation_compilers && python scripts/write_baseline_designs.py)   # the design of record follows the registry
 ```
 
-One validation per change request, and both are run: `execution_validation.py` asserts CR-1's
-criteria and proves the later change broke nothing, `execution_validation_cr02.py` asserts CR-2's and
-proves it did something. Neither substitutes for the other — every one of CR-1's criteria was
-satisfied before CR-2's work existed.
+The governed construction workflow, `transformation::WF_CONSTRUCT_ARTIFACTS_V0`, writes into
+`data/transformation/construction/registry/` through `CS_TEXT_ARTIFACT_V0 WRITE_ALL`. **Promotion into
+the domain is a separate act**, and no CLI performs it: one would duplicate a governed path with an
+ungoverned one.
 
-Construction writes into `data/transformation/construction/registry/` through
-`CS_TEXT_ARTIFACT_V0 WRITE_ALL`. **Promotion into the domain is a separate act**, and no CLI performs it: one would duplicate a
-governed path with an ungoverned one.
-
-`construction_acceptance.py` compares what the designs render against what the registry holds, and it
-renders the **sequence** — every dossier in order, a later change overriding an earlier one artifact
-by artifact, exactly as promotion did. Expect **51/52 at 0 field differences**: the one miss is the
-hand-authored `STRUCTURE_BUILD_BOOK_LIBRARY_MGMT_CONFIG_V0`, which no design renders.
-
-Pass dossiers explicitly to check a different sequence, and `--registry <path>` to compare against a
-registry other than the domain's. Rendering one dossier alone is only correct while one change
-request owns the domain: an earlier design still renders the artifacts a later one amended, so the
-differences it reports are history rather than defects.
+Each change carries its own execution validation in the domain's `testbed/`, one criterion per
+acceptance criterion, and every earlier one is run with it: a later change's suite proves it did
+something, and the earlier suites prove it broke nothing.
 
 ## Serving a domain over HTTP
 
@@ -783,8 +762,7 @@ top of this file: `compile_domain.sh`, then `assemble.sh`. Nothing below changes
 
 ### The simple path — artifacts you already have
 
-`ai_governance` and the catalog's first change request were both added this way, and it is correct
-whenever the artifacts are authored rather than derived:
+Correct whenever the artifacts are authored rather than derived:
 
 ```bash
 W=~/protocol-governed-computing
@@ -795,44 +773,43 @@ $W/protocol_compiler/compile_domain.sh $W/business_domains/<domain>
 PGC_SNAPSHOT_PROFILE=GOVERNANCE_SURFACE_PROFILE_V0 $W/snapshot_assembler/assemble.sh
 ```
 
-**What it costs.** No design means no P7, and no P7 means none of the composition-integrity rules
-ever judges the domain — not `STEP_INTERFACE_CONFORMS`, not `STEP_INPUT_UNBOUND`, none of them.
-`ai_governance` carried `timestamp: "{{timestamp}}"` in three audit contracts for as long as it has
-existed: an unresolvable literal in every audit record it ever wrote, invisible because nothing was
-looking. Correcting it meant hand-editing sealed artifacts, because there was no design to correct
-and regenerate from.
+Then give the domain its design of record: add its root to `ROOTS` in
+`transformation_compilers/scripts/write_baseline_designs.py` and to `DOMAINS` in
+`construction_acceptance.py`, and write it. Acceptance then reports every fact of the hand-authored
+registry the design language cannot state.
 
-**And the build manifest is the part that drifts.** `book_library_mgmt`'s described itself as the AI
-governance domain and listed that domain's subdomains — copied from a sibling and never corrected,
-because no rule governs a hand-written file. `tc construction emit` generates it from the mandate.
+**What it costs.** A design of record is read by construction, not judged by a phase's rules, so
+none of the composition-integrity rules judges a hand-authored domain — not
+`STEP_INTERFACE_CONFORMS`, not `STEP_INPUT_UNBOUND`, none of them. A literal no binding resolves sits
+in every record it writes, and nothing looks. Only a change request's P7 is judged in full.
+
+**The build manifest is hand-authored, and no rule governs it.** Copied from a sibling, it keeps the
+sibling's domain name and subdomains until someone corrects them.
 
 ### The governed path — a domain the pipeline produces
 
 Everything below is about *producing* the artifacts. A domain established by a change request has
-no baseline to extend and no registry to write into, and the order matters; every deviation this
-workspace has tried failed at a step that looks unrelated. Steps 1 and 5 exist only because a
-dossier is involved — they say nothing about the build.
+no baseline to extend and no registry to write into, and the order matters: a deviation fails at a
+step that looks unrelated. Steps 1 and 5 exist only because a dossier is involved — they say nothing
+about the build.
 
 ```bash
 W=~/protocol-governed-computing
-DOM=blockchain                                   # the namespace; artifacts are <DOM>::
-CR=$W/business_domains/$DOM/cr_dossiers/cr_01_identity
+DOM=<domain>                                     # the namespace; artifacts are <DOM>::
+SUB=<subdomain>
+CR=$W/business_domains/$DOM/cr_dossiers/cr_01_$SUB
 
 # 1. Pin the baseline the CR is validated against — the composition BEFORE this domain exists.
 mkdir -p $CR && tc baseline show --snapshot $W/snapshot > $CR/baseline.json
 
 # 2. Author P0 (problem statement + seed), project P1, author P2..P8.
-tc phase project --phase p1 --out $CR/p1_change_request_${DOM}_identity_v0.md $CR/p0_seed_${DOM}_identity_v0.md
+tc phase project --phase p1 --out $CR/p1_change_request_${DOM}_${SUB}_v0.md $CR/p0_seed_${DOM}_${SUB}_v0.md
 tc phase check --phase p7 --snapshot $W/snapshot \
    --prior p5=$CR/p5_*.md --prior p6=$CR/p6_*.md $CR/p7_*.md
 
-# 3. Emit. Writes the artifacts the mandate schedules — and NOT the build manifest.
-#    Construction stopped founding one: every field of a manifest is compiler configuration and no
-#    register states any of them, so writing one meant inferring the domain from the namespace of
-#    the first scheduled artifact — invisible for a business domain where the two are one word,
-#    wrong for the platform. Ruled: manifest production is construction machinery, not scheduled by
-#    design; and a manifest appearing where a glob finds it confers no authority to introduce a
-#    domain — `2e` §6, nothing is admitted by being present. Adding a domain is a governed
+# 3. Emit. Writes the artifacts the mandate schedules — and NOT the build manifest. Every field of
+#    a manifest is compiler configuration no register states, and a manifest appearing where a glob
+#    finds it confers no authority to introduce a domain (`2e` §6). Adding a domain is a governed
 #    transformation against an existing baseline (`6c` §10); a domain MUST NOT claim genesis (DP-11).
 #    So --root must already carry a STRUCTURE_BUILD_*_CONFIG, hand-authored as in the simple path
 #    above. `construction emit` refuses otherwise rather than founding one by inference.
@@ -845,6 +822,9 @@ PGC_SNAPSHOT_PROFILE=GOVERNANCE_SURFACE_PROFILE_V0 $W/snapshot_assembler/assembl
 # 5. Re-pin and re-approve — the composition now contains the domain, so the old pin is stale.
 tc baseline show --snapshot $W/snapshot > $CR/baseline.json
 for p in p2 p3 p4 p5 p6 p7 p8; do tc baseline approve --phase $p --by "$USER" $CR/baseline.json; done
+
+# 6. Give the domain its design of record, as in the simple path: add its root to ROOTS and DOMAINS.
+(cd $W/transformation_compilers && python scripts/write_baseline_designs.py)
 ```
 
 **Re-validating the CR after step 4 will fail**, with `NEW_CODE_ALREADY_EXISTS` on every artifact.
@@ -858,8 +838,9 @@ rm -rf $W/business_domains/$DOM/{registry,snapshot} && PGC_SNAPSHOT_PROFILE=GOVE
 Editing an artifact already sealed into a released composition is a `REPLACE` in a governed change
 request, not an edit. Rolling back is legitimate only while the domain is unreleased.
 
-**The assembler refuses a domain that declares source with no compiled output**, so never write the
-build manifest before the artifacts — `tc construction emit` writes both together for that reason.
+**The assembler refuses a domain that declares source with no compiled output**, so compile the
+domain before assembling: a manifest with no compiled artifacts is a domain the assembler cannot
+account for.
 
 ### What a new domain needs beyond its artifacts
 
@@ -912,15 +893,14 @@ The strongest check there is. Every other suite judges the composition; this jud
 composition can be *rebuilt* — and a `snapshot_id` that comes back unchanged proves the whole thing
 derives from committed source with nothing on disk carrying state nobody can regenerate.
 
-Safe only when every repo is clean. Both generated registries — `blockchain/registry`, written by
-`tc construction emit`, and `ai_governance/registry`, hand-authored — are **tracked**, so the wipe
-below removes nothing that is not derivable.
+Safe only when every repo is clean. Every registry and every design of record is **tracked**, so the
+wipe below removes nothing that is not derivable.
 
 ```bash
 W=~/protocol-governed-computing
 
 # 0. Refuse to start if anything is uncommitted. What is not in git is about to be lost.
-for r in transformation business_domains standards software_governance snapshot_inspector \
+for r in transformation_compilers business_domains standards software_governance snapshot_inspector \
          protocol_runtime protocol_compiler snapshot_assembler conformance_workloads; do
   printf "%-24s %s\n" $r "$(git -C $W/$r status --short | wc -l | tr -d ' ')"
 done
@@ -936,7 +916,7 @@ $W/protocol_compiler/compile.sh STRUCTURE_BUILD_PLATFORM_CONFIG_V2
 # 3. Every domain in the composition. Omitting one assembles it from stale output that no longer exists.
 for d in $W/transformation_compilers $W/snapshot_inspector $W/conformance_workloads/workloads/collatz \
          $W/business_domains/ai_governance $W/business_domains/book_library_mgmt \
-         $W/business_domains/blockchain; do
+         $W/business_domains/blockchain $W/business_domains/causal_language_model; do
   $W/protocol_compiler/compile_domain.sh $d
 done
 
@@ -956,11 +936,8 @@ for s in meta_test e2e_phases_test differential projection_test construction_acc
   python scripts/testbed/$s.py
 done
 python scripts/emit_rule_sets.py --check          # sealed rule sets match their declaration
-
-CR=$W/business_domains/blockchain/cr_dossiers/cr_01_identity
+python scripts/write_baseline_designs.py --check  # every design of record is the one its registry generates
 tc phase meta                                     # rule/mechanism parity
-tc baseline verify --snapshot $W/snapshot $CR/baseline.json
-tc construction check $CR --snapshot $W/snapshot
 ```
 
 and execute two domains against the snapshot just built, which is the only evidence that a
@@ -1001,8 +978,9 @@ python ~/protocol-governed-computing/transformation_compilers/scripts/testbed/bu
 python ~/protocol-governed-computing/transformation_compilers/scripts/testbed/build_payloads.py
 ```
 
-`--check` first will name the drifted phase. Fixtures and payloads are **derived from the live
-dossier** — never hand-edit one; change the dossier or the mutator in `build_fixtures.py`. A derived
+`--check` first will name the drifted phase. Fixtures and payloads are **derived from the fixture
+dossiers** in `scripts/testbed/fixtures/` — never hand-edit one; change the fixture or the mutator in
+`build_fixtures.py`. A derived
 fixture cannot go stale silently: the derivation raises rather than producing a wrong fixture.
 
 A new rule needs four things, or it is untested: its declaration in the phase's register schema
@@ -1049,7 +1027,7 @@ A phase that is *projected* rather than authored is written by the compiler, and
 before it is projected:
 
 ```bash
-D=~/protocol-governed-computing/business_domains/book_library_mgmt/cr_dossiers/cr_02_catalog
+D=~/protocol-governed-computing/transformation_compilers/scripts/testbed/fixtures/catalog/cr_02_catalog
 tc phase project --phase p1 $D/p0_seed_book_library_mgmt_catalog_v0.md \
    --out $D/p1_change_request_book_library_mgmt_catalog_v0.md --force
 ```
@@ -1058,11 +1036,11 @@ A seed carrying an open blocking clarification is refused rather than projected.
 while restating the seed amends the seed and is projected again — it never enters at P1.
 
 ```bash
-D=~/protocol-governed-computing/business_domains/book_library_mgmt/cr_dossiers/cr_01_catalog
+D=~/protocol-governed-computing/transformation_compilers/scripts/testbed/fixtures/catalog/cr_01_catalog
 tc phase check --phase p7 $D/p7_design_intent_book_library_mgmt_catalog_v0.md \
    --prior p5=$D/p5_business_intent_book_library_mgmt_catalog_v0.md \
    --prior p6=$D/p6_governance_intent_book_library_mgmt_catalog_v0.md \
-   --snapshot /tmp/pgc_cr01_design_baseline
+   --snapshot <the composition without book_library_mgmt>
 ```
 
 A CR is judged against the composition it was **designed** against, never one that already contains
@@ -1070,23 +1048,9 @@ its own output — every identity it assigns would collide. Once a CR is promote
 against the live snapshot reports its own codes as already existing; that is the rule working, not a
 defect.
 
-CR-2's baseline is reconstructed from the commit at which its design was complete and its
-construction had not run, which is exact and does not drift:
-
-```bash
-S=$(mktemp -d); OUT=/tmp/pgc_cr02_design_baseline
-(cd ~/protocol-governed-computing/business_domains && git archive 32e5774 book_library_mgmt) | tar -x -C $S
-~/protocol-governed-computing/protocol_compiler/compile_domain.sh $S/book_library_mgmt
-W=~/protocol-governed-computing; rm -rf $OUT
-PGC_SOURCE_ROOTS="$W/software_governance/snapshot/compiled:$W/conformance_workloads/workloads/collatz/snapshot/compiled:$W/business_domains/ai_governance/snapshot/compiled:$W/snapshot_inspector/snapshot/compiled:$W/transformation_compilers/snapshot/compiled:$S/book_library_mgmt/snapshot/compiled" \
-  PGC_SNAPSHOT_OUT=$OUT PGC_SNAPSHOT_PROFILE=GOVERNANCE_SURFACE_PROFILE_V0 ~/protocol-governed-computing/snapshot_assembler/assemble.sh
-```
-
-Expect **336 artifacts** — the composition of 345 less the nine CR-2 authored. CR-1's baseline is
-rebuilt from *current* sources minus `book_library_mgmt`, so it moves when any other domain does;
-CR-2's is anchored to a commit and does not. That baseline is reproduced on demand by
-`design_baseline()` in `e2e_phases_test.py`, and is stale whenever a source domain has been recompiled
-since it was built.
+`e2e_phases_test.py` reproduces the composition a catalog fixture is designed against with
+`design_baseline()`: every compiled root but `book_library_mgmt`, side-assembled. It rebuilds it
+whenever a source root has been recompiled since.
 
 `tc phase check` is the right loop while authoring a document. Phases through P1 judge a document
 alone and need no snapshot; from P2 a phase grounds claims against the composition, so `--snapshot`

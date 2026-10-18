@@ -90,6 +90,10 @@ Each item states what done means. Items under **A** are decisions. Order: B6 →
   - Hand-authored artifacts in ai_governance, transformation and collatz were rewritten in the form
     construction writes. Facts nothing reads were removed: EXIT `reason` and `status`, field `enum`,
     binding `host`/`type`/`operation`, a node's `payload_schema`, an attribute's `value`.
+  - Stage 2 done: the dossier corpus is deleted — every `cr_dossiers`, the genesis dossier and its
+    generators, and the delivered copies. The test fixtures stay as
+    `transformation_compilers/scripts/testbed/fixtures/`: the catalog chain and the transformation
+    phases' P0–P2. The RUNBOOK, READMEs, architectures and CLAUDE.md files describe designs of record.
   - Open: `WF_AUTO_RECLAIM_V0` declared `core.admission` (requires a provisioned license, forbids a
     revoked one). `transport::CONSTITUTION_ADMISSION_V0` states that form and nothing enforces it, so
     it was removed. Event-based admission is declared by a constitution and realized nowhere.

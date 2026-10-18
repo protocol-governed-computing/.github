@@ -9,7 +9,7 @@ A schema in a registry (`registry/schema/*.json`) is declared behaviour too: the
 each artifact kind may hold, and transformation's hold each phase's rules. Its non-blank lines are counted as `json_schema`, and count as
 behaviour beside the Machine blocks.
 
-Compiled snapshots, caches, virtualenvs, build output and fixture dossiers are excluded. Plain
+Compiled snapshots, caches, virtualenvs, build output and test fixtures are excluded. Plain
 `.yaml` files are listed separately; the only one today is the generated surface map.
 
 Run:  python .github/process/pgc_sloc.py
@@ -26,9 +26,9 @@ from pathlib import Path
 
 W = Path(__file__).resolve().parents[2]
 SKIP = {".git", ".venv", "__pycache__", "snapshot", "build", "data", "traces", "node_modules",
-        ".idea", "compiled", "fixture_dossiers"}
+        ".idea", "compiled", "fixtures"}
 MACHINE = re.compile(r"```yaml\n(.*?)```", re.S)
-COLUMNS = ["artifacts", "yaml_artifact", "json_schema", "yaml_file", "py_impl", "py_test", "py_tools", "dossier_md"]
+COLUMNS = ["artifacts", "yaml_artifact", "json_schema", "yaml_file", "py_impl", "py_test", "py_tools", "design_md"]
 
 PLATFORM = ["software_governance", "conformance_workloads", "protocol_compiler", "snapshot_assembler",
             "protocol_runtime", "protocol_transport", "snapshot_inspector", "transformation_compilers"]
@@ -90,8 +90,8 @@ def measure(root: Path) -> dict[str, int]:
                 out["yaml_file"] += yaml_sloc(path.read_text(errors="ignore"))
             elif name.endswith(".md"):
                 text = path.read_text(errors="ignore")
-                if "cr_dossiers" in rel.parts or "dossiers" in rel.parts:
-                    out["dossier_md"] += sum(1 for line in text.splitlines() if line.strip())
+                if rel.parent.name == "design" and name.startswith(("p7_", "p8_")):
+                    out["design_md"] += sum(1 for line in text.splitlines() if line.strip())
                 elif "artifact_kind:" in text:
                     out["artifacts"] += 1
                     out["yaml_artifact"] += sum(yaml_sloc(m) for m in MACHINE.findall(text))
