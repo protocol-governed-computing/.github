@@ -1,8 +1,8 @@
 """Every trace the regression produced conforms to the schema the constitution names.
 
 `CONSTITUTION_TRACE_EXECUTION_V1` §3 says every line of a trace MUST conform to
-`SCHEMA_TRACE_EVENT_V2`. Its predecessor described RI-0's trace format, and nothing compared a trace
-against it. The schema and the runtime drifted until they shared no field. This reads every trace
+`SCHEMA_TRACE_EVENT_V2`. A schema nothing compares a trace against drifts from the runtime until
+they share no field. This reads every trace
 under the data root and validates every line, so the next divergence is a failed step rather than
 a discovery.
 

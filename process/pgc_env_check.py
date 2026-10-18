@@ -2,7 +2,7 @@
 """PGC environment isolation check.
 
 Fails hard if the active interpreter is not the PGC workspace venv, if any PGC
-package is missing, or if any RI-0 `pgs_*` package is importable.
+package is missing, or if any legacy package it names is importable.
 
 Usage:  python .github/process/pgc_env_check.py
 """
@@ -26,7 +26,7 @@ TRANSPORT_ROOT = WORKSPACE / "protocol_transport"
 TRANSPORT_MODULES = ("pgc_transport.resolver.resolver", "pgc_transport.resolver.registry",
                      "pgc_transport.adapters.http.binding")
 THIRD_PARTY = ("click", "yaml", "jsonschema")
-RI0_PACKAGES = (
+LEGACY_PACKAGES = (
     "pgs_governance",
     "pgs_capabilities",
     "pgs_compiler",
@@ -64,9 +64,9 @@ def main() -> int:
     else:
         print(f"ok      {'transport':12} {TRANSPORT_ROOT} (PYTHONPATH-provisioned: pgc_transport)")
 
-    for name in RI0_PACKAGES:
+    for name in LEGACY_PACKAGES:
         if importlib.util.find_spec(name) is not None:
-            failures.append(f"RI-0 LEAK: {name} is importable in the PGC venv")
+            failures.append(f"LEGACY LEAK: {name} is importable in the PGC venv")
         else:
             print(f"clean   {name}")
 
@@ -76,7 +76,7 @@ def main() -> int:
             print(f"  - {failure}", file=sys.stderr)
         return 1
 
-    print("\nPGC ENVIRONMENT CHECK PASSED — no RI-0 dependency reachable")
+    print("\nPGC ENVIRONMENT CHECK PASSED — no legacy dependency reachable")
     return 0
 
 

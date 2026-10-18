@@ -368,7 +368,7 @@ explains it. The step ids there are the names below.
 | `test_examine.py` | `OK` (5 tests) — `runtime examine` reads `SCHEMA_TRACE_EVENT_V2`, refuses any other format (a v5 trace, written to V1, included), tells a completed run (refusals included) from a structural failure, and reads every trace under `data/` |
 | `test_step_outcome.py` | `8/8 passed` — a step outcome its contract declares no continuation for refuses, writes an ERROR and runs nothing after it (`3a` EX-18); every step record carries its outcome and the continuation it selected, an admission's being `route` (`3e` EV-19). A fault refuses the run with an ERROR and is never routed: a transform that will not load, an atom that breaks, a side effect that raises or states no outcome (`3a` §4.1, `3c` §7). An atom's own refusal still routes as VIOLATION. Needs an assembled snapshot |
 | `test_no_default.py`, `test_unknown_continuation.py` | `12/12`, `3/3 passed` — no resolver supplies a default (`3c` RT-6): a transform path that reaches nothing refuses, a result maps only on SUCCESS and must carry each field it maps, an absent source is left out and never set to null; execution refuses a routing answer other than `continue` or `exit` |
-| `pgc_env_check.py` | `PGC ENVIRONMENT CHECK PASSED` — no RI-0 dependency reachable |
+| `pgc_env_check.py` | `PGC ENVIRONMENT CHECK PASSED` — no legacy dependency reachable |
 | `test_regression_verdict.py` | `8/8 passed` — the verdict fails a run for every way it can differ from this table, including an unexpected pass and a suite that skipped everything |
 | collatz | `SUCCESS`, `all_terminate: true` |
 | govern agent action | `SUCCESS` |
@@ -775,10 +775,8 @@ are two acts, so each is an `<option>` value); it may not carry a mapping, a sch
 The one thing a page may keep is what the person just typed, to save retyping it — nothing the
 business does may depend on it being there.
 
-Legacy RI-0 clients at `~/pgs/pgs_blockchain/.../testbed/static/` are **read-only and lifted one
-way**. Their form structure and CSS salvage; their field names, their `/api/run` endpoint and their
-response envelope do not. A client that POSTs a workflow identity violates
-`OPERATION_IDENTITY_INDEPENDENCE`.
+A client that POSTs a workflow identity violates `OPERATION_IDENTITY_INDEPENDENCE`: it names an
+operation identity and reads the Canonical Transport Response, nothing else.
 
 ## Adding a new domain
 

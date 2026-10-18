@@ -46,8 +46,12 @@ Each item states what done means. Items under **A** are decisions. Order: B6 →
   - Every artifact is `_V0`, none carries `supersedes`, and the ledger is empty.
   - Hard-coded identities in compiler and runtime code are reviewed, not blindly replaced.
   - `standards` applies the same map, declared in `revisions.md`.
-- **B2. Legacy references.** Zero matches for `pgs_`, `RI-0` and `bachipeachy/pgs` across the
-  repositories. 194 today.
+- **B2. Legacy references. Done.** Zero matches for `pgs_`, `RI-0` and `bachipeachy/pgs` outside
+  what must name them: the two guards that refuse a legacy package (`pgc_env_check.py`,
+  `verify_release.py`), the frozen `TRANSPORT_STANDARD_V0.md`, the sealed `pgc_release`, and
+  `publications.md`, which reserves `v0` for that lineage. The store-entity payload key is
+  `__store_entity__`, the platform schemas' `$id`s are `software_governance.schemas.*`, and the RI-0
+  path registry, layout artifact, maintenance scripts, legacy runtime suite and web page are deleted.
 - **B3. History in prose.** Comments, docs and artifact text describe what is, not what was:
   "previously", "no longer", "before this", "formerly", "used to", "was once". 513 matches today;
   each one is rewritten or removed.
@@ -61,6 +65,14 @@ Each item states what done means. Items under **A** are decisions. Order: B6 →
   are in force, and the one spent ruling is dropped. This comes first in B.
 - **B7. The dossier corpus.** Delete `*/cr_dossiers` and the genesis dossier, generate the baseline
   designs (A6), and re-point `construction_acceptance`. This lands with B1.
+
+- **B8. RI-0 machinery still in the compiler.** Found by B2, not yet removed:
+  - `ASSERT_NO_SMART_EXECUTION_V0`'s handler scans runtime files that do not exist, so it always
+    passes; `ASSERT_ATOM_OUTPUT_PURITY_V0` and `ASSERT_CT_OUTPUT_CONTRACT_MATCH_V0` may be the same.
+    Each either checks something real or its invariant states it is enforced elsewhere.
+  - `ProtocolLoader.load` and `domain_resolver` read RI-0's workspace layout and nothing calls them.
+  - `CONSTITUTION_FEDERATION_BOUNDARY_V0` describes `FB_*` directories and `fb.*` namespaces that
+    no longer exist.
 
 ## C. Close known defects, so nothing is red by design
 

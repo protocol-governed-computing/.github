@@ -24,14 +24,10 @@ derives an ASSERT per invariant and binds its handler by convention. Measured be
 enforced outside the compiler. So a check here could never fail, and a check that cannot fail is
 what this repository keeps finding at the bottom of its worst defects.
 
-What relation 2 catches, and why it is here: three `STRUCTURE_REGISTRY_LOCATION_*_V0` artifacts
-declare `registry_module: pgs_governance.registry` and its siblings for GOVERNANCE,
-REUSABLE_TRANSFORMS and REUSABLE_SIDE_EFFECTS. `STRUCTURE_DISCOVERY_V0` declares the same three
-layers as `software_governance.registry`, `capability_transforms.registry` and
-`capability_side_effects.registry` — and says of itself that it is the "single source of truth for
-artifact discovery, replacing fragmented registry location and layer authority discovery
-definitions". So the supersession was declared and the superseded artifacts were left in place,
-still reading as authority. Nothing detected it; a person reading 58 references did.
+What relation 2 catches: `STRUCTURE_DISCOVERY_V0` is the single source of truth for where each
+layer lives, and the three `STRUCTURE_REGISTRY_LOCATION_*_V0` artifacts also describe the GOVERNANCE,
+REUSABLE_TRANSFORMS and REUSABLE_SIDE_EFFECTS layers. A root declared in both places and disagreeing
+reads as authority while resolving to nothing, and no build step would notice it.
 
 Reads artifacts as authored rather than a compiled snapshot, so it runs before a build.
 
@@ -54,8 +50,7 @@ REGISTRY = PLATFORM / "registry"
 HANDLER_PREFIX = "pgc_governance.handlers"
 
 # How a layer declaration says where its root is, in order of the compiler's own preference.
-# `registry_module` is last because it is RI-0 harvest naming kept for backward compatibility, and
-# it resolves only through a fixed map — which is exactly how three artifacts came to resolve to
+# `registry_module` is last because it resolves only through a fixed map — which is exactly how three artifacts came to resolve to
 # nothing while looking authoritative.
 LAYER_SUBPATH_KEYS = ("domain_subpath", "platform_subpath")
 MODULE_MAP = {

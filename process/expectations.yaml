@@ -33,7 +33,7 @@ steps:
     expect: ["SUPERSESSION AGREEMENT PASSED — 47 relation\\(s\\), both sides agree on 16, 31 predecessor\\(s\\) deleted by record"]
   - id: human_block_fidelity
     section: checks
-    expect: ["HUMAN BLOCK FIDELITY PASSED — 560 artifacts"]
+    expect: ["HUMAN BLOCK FIDELITY PASSED — 559 artifacts"]
   - id: evidence_determinism
     section: checks
     expect: ["EVIDENCE DETERMINISM PASSED"]

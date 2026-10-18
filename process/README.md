@@ -31,7 +31,7 @@ wrong. All are called by `regression.sh --all`, and each is runnable alone.
 | `admission_contract_fidelity.py` | an IN gate's declared contract matches what its workflow binds |
 | `implementation_closure.py` | every capability transform names a module and every named module exists |
 | `domain_authoring.py` | the domain-authoring path `pgc_install/README.md` documents, executed |
-| `pgc_env_check.py` | the active interpreter is the workspace venv and no RI-0 package is reachable |
+| `pgc_env_check.py` | the active interpreter is the workspace venv and no legacy package is reachable |
 
 **Release machinery.**
 

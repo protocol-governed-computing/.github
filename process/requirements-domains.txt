@@ -4,8 +4,8 @@
 #
 #   pip install -r .github/process/requirements-domains.txt
 #
-# Superset by design: carried over from RI-0 so domain CTs can be re-admitted without
-# re-deriving the dependency set. Installing more than is used is harmless; the core
+# Superset by design: a domain transform can be admitted without re-deriving the dependency
+# set. Installing more than is used is harmless; the core
 # compile path imports none of these.
 
 PyNaCl==1.6.2
