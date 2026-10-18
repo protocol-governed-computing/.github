@@ -79,6 +79,20 @@ Each item states what done means. Items under **A** are decisions. Order: B6 →
   are in force, and the one spent ruling is dropped. This comes first in B.
 - **B7. The dossier corpus.** Delete `*/cr_dossiers` and the genesis dossier, generate the baseline
   designs (A6), and re-point `construction_acceptance`. This lands with B1.
+  - Stage 1 done: `python -m transformation.record` writes each designed root's P7 and P8 from its
+    registry into `<root>/design/`, and `write_baseline_designs.py --check` keeps them current.
+    `construction_acceptance` renders one design per root and reproduces 279 of 280 artifacts; the
+    one difference is a predecessor the reset deletes.
+  - The design language gained a store's `Structure`, and a structure with no store and no layer
+    renders as a shape. The renderer writes typed property and policy values, every step's
+    `outputs`, and a transform's module under the namespace its build manifest declares. Actors are
+    governed by `actor::CONSTITUTION_ACTOR_IDENTITY_V0`.
+  - Hand-authored artifacts in ai_governance, transformation and collatz were rewritten in the form
+    construction writes. Facts nothing reads were removed: EXIT `reason` and `status`, field `enum`,
+    binding `host`/`type`/`operation`, a node's `payload_schema`, an attribute's `value`.
+  - Open: `WF_AUTO_RECLAIM_V0` declared `core.admission` (requires a provisioned license, forbids a
+    revoked one). `transport::CONSTITUTION_ADMISSION_V0` states that form and nothing enforces it, so
+    it was removed. Event-based admission is declared by a constitution and realized nowhere.
 
 - **B8. RI-0 machinery still in the compiler. Done.** Found by B2:
   - `ASSERT_NO_SMART_EXECUTION_V0`'s handler scans runtime files that do not exist, so it always

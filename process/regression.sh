@@ -137,6 +137,7 @@ if [[ "$MODE" == "--all" ]]; then
   done
   step emit_rule_sets python "$W/transformation_compilers/scripts/emit_rule_sets.py" --snapshot "$W/snapshot" --check
   step build_payloads python "$W/transformation_compilers/scripts/testbed/build_payloads.py" --check
+  step baseline_designs python "$W/transformation_compilers/scripts/write_baseline_designs.py" --check
   step author_transport_contracts env PYTHONPATH="$W/snapshot_inspector" \
     python "$W/snapshot_inspector/scripts/author_transport_contracts.py" --check
   step frontmatter_fidelity python "$W/.github/process/frontmatter_fidelity.py"

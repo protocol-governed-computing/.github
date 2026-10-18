@@ -44,6 +44,10 @@ steps:
   - id: build_payloads
     section: checks
     expect: ["OK\\s+83 payload\\(s\\) agree"]
+  - id: baseline_designs
+    section: checks
+    # every designed root's design of record is the one its registry generates
+    expect: ["BASELINE DESIGNS CURRENT — 0 stale"]
   - id: author_transport_contracts
     section: checks
     expect: ["OK\\s+38 contract\\(s\\) for 19 operations agree"]
@@ -64,7 +68,7 @@ steps:
     expect: ["RENDER VECTORS PASSED — 27 vectors"]
   - id: construction_mapping_test
     section: checks
-    expect: ["CONSTRUCTION MAPPING PASSED — 194 fields over 12 kinds"]
+    expect: ["CONSTRUCTION MAPPING PASSED — 191 fields over 12 kinds"]
   - id: interface_structures_test
     section: checks
     expect: ["INTERFACE STRUCTURES PASSED — 4 checks, 5 structures"]
@@ -80,13 +84,11 @@ steps:
   - id: construction_acceptance
     section: checks
     exit: 1
-    expect: ["180/183 artifacts reproduced across 7 domain\\(s\\)\\s+\\(2 field difference\\(s\\)\\)",
-             "DIFF  IN_UPDATE_BIBLIOGRAPHIC_INFORMATION_V1\\s+1 field", "DIFF  WF_UPDATE_BIBLIOGRAPHIC_INFORMATION_V1\\s+1 field"]
+    expect: ["279/280 artifacts reproduced across 6 domain\\(s\\)\\s+\\(1 field difference\\(s\\)\\)",
+             "DIFF  CC_VERIFY_TERMINATION_V0\\s+1 field"]
     red_by_design: >-
-      book_library_mgmt's two _V1 artifacts carry `version: v0` in their sealed text, and the renderer
-      writes the version from the identity, so they differ in that one field. blockchain's designs
-      state no vector for CT_PURE_DERIVE_WALLET_ADDRESS_V0, so its built vector is a miss. Both close
-      when each domain carries a baseline design
+      collatz's CC_VERIFY_TERMINATION_V0 is a stood-down predecessor whose `evaluation` block no design
+      language states; the identity reset deletes it
   - id: molecule_design_test
     section: checks
     expect: ["5/5 passed"]
