@@ -63,7 +63,10 @@ Each item states what done means. Items under **A** are decisions. Order: B6 →
   NOTICE now opens "PGC — Protocol-Governed Computing", except the sealed `pgc_release`.
 - **B4. Process markers in artifacts.** Zero `**Status:**` lines and zero "cut-#" or "Phase N"
   delivery notes in artifact text. 8 and 6 today. Example: `TI_COLLATZ_COMPUTE_V0`'s "cut-#1
-  hand-authored. Promoted… in Phase 3".
+  hand-authored. Promoted… in Phase 3". **Done.** Removed eight `**Status**: CANONICAL` headers
+  (seven STRUCTUREs and the collatz build manifest), the four "cut-#1… Phase 3" lines (the collatz
+  TI/TE and both transport contracts), and the Status label in `rule_ownership.md`. Kept: the
+  `status: active` machine-block fields, which are governed, and the frozen transport standard.
 - **B5. Expectations and RUNBOOK.** Comments in `expectations.yaml` and RUNBOOK sections that
   narrate count changes ("34 → 35", "swap:") are reduced to what each step checks.
 - **B6. Pure history.** Delete what no test reads: `process/notes/` and the genesis dossier's
