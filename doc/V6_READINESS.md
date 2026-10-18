@@ -41,15 +41,15 @@ Each item states what done means. Items under **A** are decisions. Order: B6 →
 
 ## B. Remove the breadcrumbs
 
-- **B1. Identities.** Apply A1. One landing, together with B7: the reset, the cr_dossiers
+- **B1. Identities. Done.** Apply A1. One landing, together with B7: the reset, the cr_dossiers
   deletion, the baseline designs (A6), and `construction_acceptance` re-pointed at them.
   - Every artifact is `_V0`, none carries `supersedes`, and the ledger is empty.
   - Hard-coded identities in compiler and runtime code are reviewed, not blindly replaced.
-  - `standards` applies the same map, declared in `revisions.md`.
+  - `standards` names no realization identity. `spec/` cites none, and `doc/realization_map.md` is
+    evidence about the snapshot its §0 names, so it keeps that snapshot's identities. Rebasing it is E3.
   - Stage 3 done: 16 predecessors are deleted and 65 identities renamed to `_V0`, with their
     handler and transform modules. No artifact carries `supersedes` and `retired_identities.yaml` is
-    empty. Prose that narrated one version against another states the rule instead. Open: the
-    `standards` map (stage 4).
+    empty. Prose that narrated one version against another states the rule instead.
 - **B2. Legacy references. Done.** Zero matches for `pgs_`, `RI-0` and `bachipeachy/pgs` outside
   what must name them: the two guards that refuse a legacy package (`pgc_env_check.py`,
   `verify_release.py`), the frozen `TRANSPORT_STANDARD_V0.md`, the sealed `pgc_release`, and
@@ -81,7 +81,7 @@ Each item states what done means. Items under **A** are decisions. Order: B6 →
 - **B6. Pure history.** Delete what no test reads: `process/notes/` and the genesis dossier's
   delivery note, and the references to them. `rulings.md` stays as present-tense doctrine: its rules
   are in force, and the one spent ruling is dropped. This comes first in B.
-- **B7. The dossier corpus.** Delete `*/cr_dossiers` and the genesis dossier, generate the baseline
+- **B7. The dossier corpus. Done.** Delete `*/cr_dossiers` and the genesis dossier, generate the baseline
   designs (A6), and re-point `construction_acceptance`. This lands with B1.
   - Stage 1 done: `python -m transformation.record` writes each designed root's P7 and P8 from its
     registry into `<root>/design/`, and `write_baseline_designs.py --check` keeps them current.
