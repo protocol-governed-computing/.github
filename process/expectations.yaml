@@ -55,7 +55,7 @@ steps:
     # as three and two gated constraints (M3.4a); 279 → 284, 34 → 39: the header is `document`, its two rules
     # become six derived ones plus one for the approval (M4); 284 → 280: the Module column and its three rules
     # go, and a property value takes any type (M5)
-    expect: ["p7\\s+282 rules", "p8\\s+39 rules"]
+    expect: ["p7\\s+283 rules", "p8\\s+39 rules"]
   - id: build_payloads
     section: checks
     expect: ["OK\\s+83 payload\\(s\\) agree"]

@@ -88,8 +88,13 @@ Each item states what done means. Items under **A** are decisions. Order: B6 →
   - `supersedes` on five artifacts (A1 drops it);
   - actors, contracts, bindings and the build manifest, which the design language cannot yet state;
   - STRUCTURE `concern`, `layer` and `entity_stores`, which the renderer supplies;
-  - each workflow's actor (C6).
-- **C6. Genesis G-2.** The design language states which actor each workflow runs under.
+  - exit-node `status` on `WF_CONSTRUCT_ARTIFACTS_V0`.
+- **C6. Genesis G-2. Done.** A workflow's actor is stated as its `actor_context` property, and
+  `WORKFLOW_ACTOR_UNDECLARED` requires it to resolve. Unstated, it is determined only when the design
+  has one actor to choose; among several, the renderer's choice is recorded as its own and refused
+  by the measure. Genesis states all fourteen. The measure found one real defect:
+  `WF_SUBMIT_USER_PROMPT_V0` ran as model staff, and the seed says requesters submit prompts. It now
+  runs as `AC_REQUESTER_V0`, and CLM's design states every workflow's actor.
 - **C7. Genesis G-4.** P7 states the three refusals as out of scope (A4).
 - **C8. The flaky first `--all`.** Reproduce it or close it with evidence.
 - **C9. `pgc_sloc.py`.** It counts `registry/schema/*.json`.
