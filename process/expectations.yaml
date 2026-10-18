@@ -23,13 +23,8 @@ steps:
     expect: ["GOVERNANCE CHAIN PASSED"]
   - id: supersession_agreement
     section: checks
-    # 34 → 35: WF_P7_DESIGN_INTENT_ADMISSIBILITY_V2 supersedes V1 (binding_literals); 36:
-    # WF_P1_CHANGE_REQUEST_ADMISSIBILITY_V1 supersedes V0 (rebuild M3.3b); 37: WF_P0_V1 (M3.4a); 39:
-    # lifecycle::CONSTITUTION_CHANGE_MGMT_V1 and CONSTITUTION_CONSTRUCTION_V1 (M3.4b)
-    # swap: the 28 identities the rebuild superseded are deleted by record. 20 of them were published
-    # in v5, so their successors name a predecessor the ledger holds: 52 → 44 relations, 24 live pairs.
-    # 44 → 45: genesis G-12, IN_BUSINESS_INTENT_SUBMITTED_V1 supersedes V0, deleted by record.
-    # 45 → 47, 24 → 16 agree, 21 → 31 deleted: cr_07_own_values retires fourteen blockchain identities.
+    # every `supersedes` relation: both sides present and agreeing, or the predecessor deleted by
+    # record in the retirement ledger
     expect: ["SUPERSESSION AGREEMENT PASSED — 47 relation\\(s\\), both sides agree on 16, 31 predecessor\\(s\\) deleted by record"]
   - id: human_block_fidelity
     section: checks
@@ -39,22 +34,12 @@ steps:
     expect: ["EVIDENCE DETERMINISM PASSED"]
   - id: admission_contract_fidelity
     section: checks
-    # 36 → 34 gates, 31 → 26 findings: a superseded intent is no admission gate (A11), and the five
-    # were all on the superseded WF_RECORD_VERIFICATION_DECISION_V0's gate. 26 → 12: cr_05_identity
-    # stopped the identity acts reading rules from the request, which cleared fourteen. 12 → 11:
-    # cr_05_catalog records the subject callers send, clearing IN_REGISTER_BOOK_V0's `subject`.
-    # 34 → 37 gates: cr_02_hosted_model adds three, each declaring exactly what its act binds.
-    # 11 → 10: genesis G-12, IN_BUSINESS_INTENT_SUBMITTED_V1 declares the `prior_texts` P5 reads.
-    # 10 → 0: cr_07_own_values, each blockchain act states the moment, trail, address place and
-    # wallet values it took from the request (cr_05_identity GAP-09).
+    # every admission gate in force declares each input its act binds; a superseded intent is no gate
     expect: ["ADMISSION CONTRACT FIDELITY PASSED — 37 gate\\(s\\), no under-declared input"]
   - id: emit_rule_sets
     section: checks
-    # p7 243 → 254, p8 33 → 34: a type rule per structured column, TEST_VALUE_UNPARSEABLE retired
-    # (rebuild M3.3a); p7 254 → 276: a type rule per citation column (rebuild M3.3b); 276 → 279: two procedures restated
-    # as three and two gated constraints (M3.4a); 279 → 284, 34 → 39: the header is `document`, its two rules
-    # become six derived ones plus one for the approval (M4); 284 → 280: the Module column and its three rules
-    # go, and a property value takes any type (M5)
+    # the P7 and P8 rule sets emitted from the design language: a type rule per structured and
+    # citation column, the gated constraints, and the `document` header's derived rules
     expect: ["p7\\s+283 rules", "p8\\s+39 rules"]
   - id: build_payloads
     section: checks
@@ -79,7 +64,6 @@ steps:
     expect: ["RENDER VECTORS PASSED — 27 vectors"]
   - id: construction_mapping_test
     section: checks
-    # 184 → 185: cr_07_own_values, a transport ingress successor states `supersedes`.
     expect: ["CONSTRUCTION MAPPING PASSED — 194 fields over 12 kinds"]
   - id: interface_structures_test
     section: checks
@@ -99,48 +83,47 @@ steps:
     expect: ["180/183 artifacts reproduced across 7 domain\\(s\\)\\s+\\(2 field difference\\(s\\)\\)",
              "DIFF  IN_UPDATE_BIBLIOGRAPHIC_INFORMATION_V1\\s+1 field", "DIFF  WF_UPDATE_BIBLIOGRAPHIC_INFORMATION_V1\\s+1 field"]
     red_by_design: >-
-      book_library_mgmt's two _V1 artifacts were published in v5 with `version: v0`; identity is fixed at
-      publication, so they keep the sealed text, and the renderer, which now writes the version from the
-      identity, differs from them in that one field. blockchain's designs state no vector for
-      CT_PURE_DERIVE_WALLET_ADDRESS_V0, so its built vector is a miss until the baseline designs (B7)
+      book_library_mgmt's two _V1 artifacts carry `version: v0` in their sealed text, and the renderer
+      writes the version from the identity, so they differ in that one field. blockchain's designs
+      state no vector for CT_PURE_DERIVE_WALLET_ADDRESS_V0, so its built vector is a miss. Both close
+      when each domain carries a baseline design
   - id: molecule_design_test
     section: checks
     expect: ["5/5 passed"]
   - id: vector_design_test
     section: checks
     # a manifest is generated for an amendment, names every subdomain the domain holds, and an
-    # emitted amendment keeps the descriptions it replaces (cr_01_licensing)
+    # emitted amendment keeps the descriptions it replaces
     expect: ["8/8 passed"]
   - id: keyed_node_design_test
     section: checks
-    # a route to a place the composition already has resolves (A batch, wave 2 — B6); a contract
-    # redeclared whole requires only what it now declares (cr_05_identity); 7 → 6: text literal
-    # parsing retired with typed bindings (rebuild M3.3a)
+    # a route to a place the composition already has resolves; a contract redeclared whole requires
+    # only what it declares
     expect: ["6/6 passed"]
   - id: refusal_moment_design_test
     section: checks
     expect: ["4/4 passed"]
   - id: semantic_change_design_test
     section: checks
-    # a change of meaning is a new identity; a replacement accounts for its reach (semantic_change)
+    # a change of meaning is a new identity; a replacement accounts for its reach
     expect: ["18/18 passed"]
   - id: entrance_gate_design_test
     section: checks
-    # an entrance supplies what its gate requires (B25)
+    # an entrance supplies what its gate requires
     expect: ["4/4 passed"]
   - id: binding_literal_design_test
     section: checks
     # a literal means one thing to every rule that judges a binding; a generated value is stated
-    # only where its owner names a generator (binding_literals); construction renders a quoted or
-    # decimal literal as its value (quoted_literals)
+    # only where its owner names a generator; construction renders a quoted or decimal literal as
+    # its value
     expect: ["8/8 passed"]
   - id: implementation_closure
     section: checks
-    # swap: 41 → 37, the four V0 transforms deleted with their modules.
+    # every transform module is named by an artifact, and every named module is on disk
     expect: ["IMPLEMENTATION CLOSURE PASSED — 37 transform\\(s\\)"]
   - id: test_inspector
     section: checks
-    # si.behavior_logic.list names each workflow's nodes by key (B6); si.execution.explain adds 29
+    # si.behavior_logic.list names each workflow's nodes by key; si.execution.explain is covered
     expect: ["PASSED: 152/152"]
   - id: domain_authoring
     section: checks
@@ -156,7 +139,7 @@ steps:
     expect: ["PASSED: 9/9"]
   - id: test_molecule_composition
     section: checks
-    # 9: an atom a contract runs directly is sealed with its declared purity (A batch, wave 1).
+    # an atom a contract runs directly is sealed with its declared purity
     expect: ["9/9 passed"]
   - id: test_transform_conformance
     section: checks
@@ -190,7 +173,7 @@ steps:
     expect: ["5/5 passed"]
   - id: test_force_and_output_root
     section: checks
-    # nothing superseded is in force; a build writes only where it declares (A batch, wave 3 — A11, A10)
+    # nothing superseded is in force; a build writes only where it declares
     expect: ["8/8 passed"]
   - id: test_governance_provenance
     section: checks
@@ -200,16 +183,16 @@ steps:
   # unittest suites: `^OK$` and not `OK (skipped=…)` — a suite that skipped everything is not a pass.
   - id: test_reference_collatz
     section: checks
-    # cr_01_termination_gate: a sequence that does not end at 1 now ends the run violated
+    # a sequence that does not end at 1 ends the run violated
     expect: ["Ran 6 tests", "(?m)^OK$"]
   - id: test_warm_boot
     section: checks
-    # a profile changed after sealing, and a manifest not covering its profile, are refused (A1)
+    # a profile changed after sealing, and a manifest not covering its profile, are refused
     expect: ["Ran 8 tests", "(?m)^OK$"]
   - id: test_resident_boot
     section: checks
-    # a process verifies a snapshot once; a rewritten manifest is verified afresh, one that no
-    # longer verifies is refused, and a run writes its evidence and no picture
+    # a process verifies a snapshot once; a rewritten manifest is verified afresh, one that fails
+    # verification is refused, and a run writes its evidence and no picture
     expect: ["Ran 4 tests", "(?m)^OK$"]
   - id: test_federation
     section: checks
@@ -222,11 +205,11 @@ steps:
     expect: ["Ran 11 tests", "(?m)^OK$"]
   - id: test_node_keyed_routing
     section: checks
-    # 4: the trace names each place the run passed through (A9).
+    # the trace names each place the run passed through
     expect: ["Ran 4 tests", "(?m)^OK$"]
   - id: test_examine
     section: checks
-    # the examiner reads SCHEMA_TRACE_EVENT_V1, and every trace the run wrote (B21)
+    # the examiner reads SCHEMA_TRACE_EVENT_V1, and every trace the run wrote
     expect: ["Ran 5 tests", "(?m)^OK$"]
   - id: test_trace_path
     section: checks
@@ -236,13 +219,13 @@ steps:
     expect: ["Ran 11 tests", "(?m)^OK$"]
   - id: test_no_default
     section: checks
-    # a binding that reaches nothing is never given a value (3c RT-6): a transform's path refuses,
+    # a binding that reaches nothing is never given a value: a transform's path refuses,
     # a result maps only on SUCCESS and must carry what it maps, an absent source is left out
     expect: ["12/12 passed"]
   - id: test_step_outcome
     section: checks
     # an unlisted step outcome refuses (EX-18); each step records its outcome and continuation (EV-19);
-    # a fault refuses rather than routing as VIOLATION, and an atom's own refusal still routes (3a §4.1)
+    # a fault refuses rather than routing as VIOLATION, and an atom's own refusal still routes
     expect: ["8/8 passed"]
   - id: test_unknown_continuation
     section: checks
@@ -254,9 +237,7 @@ steps:
   - id: published_identity
     section: checks
     exit: 1
-    # The v6 baseline changes meaning on purpose (rulings.md, "v6 is built as a baseline"), so it
-    # differs from the sealed v5 composition. At the cut, pgc_release holds v6, the check passes, and
-    # the verdict reports an unexpected pass until this entry is restored to a plain pass.
+    # compares the working snapshot's identities against the sealed composition in pgc_release
     expect: ["PUBLISHED IDENTITY FAILED — \\d+ of \\d+ identities published in v5"]
     red_by_design: >-
       the v6 baseline is built outside the lifecycle and changes what v5 published, by ruling; it
@@ -289,14 +270,13 @@ steps:
     expect: ["23/23 criteria hold"]
   - id: catalog_cr02
     section: execution
-    # cr_05_catalog: the catalog holds every rule it applies and checks what it records
+    # the catalog holds every rule it applies and checks what it records
     expect: ["27/27 criteria hold"]
   - id: blockchain_identity
     section: execution
     expect: ["26/26 criteria hold\\s+\\(3 not exercised\\)"]
   - id: blockchain_wallet
     section: execution
-    # 9/9 → 12/12: cr_07_own_values adds three criteria, each holding.
     expect: ["12/12 criteria hold\\s+\\(1 not exercised\\)"]
   - id: clm_model_response
     section: execution
@@ -307,7 +287,7 @@ steps:
     expect: ["15/15 criteria hold  \\(1 not exercised\\)"]
   - id: blockchain_routing_closure
     section: execution
-    # cr_06_routing_closure: a failed record ends identity's and wallet's acts as rejected
+    # a failed record ends identity's and wallet's acts as rejected
     expect: ["6/6 criteria hold\\s+\\(2 not exercised\\)"]
   - id: transformation_routing_closure
     section: execution
@@ -315,7 +295,7 @@ steps:
     expect: ["4/4 criteria hold\\s+\\(1 not exercised\\)"]
   - id: ai_governance_reclaim_closure
     section: execution
-    # cr_02_reclaim_and_parameters: a reclaim the registry refuses ends as still active, license kept
+    # a reclaim the registry refuses ends as still active, license kept
     expect: ["4/4 criteria hold\\s+\\(0 not exercised\\)"]
   - id: transport_cli
     section: execution

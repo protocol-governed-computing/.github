@@ -68,7 +68,12 @@ Each item states what done means. Items under **A** are decisions. Order: B6 →
   TI/TE and both transport contracts), and the Status label in `rule_ownership.md`. Kept: the
   `status: active` machine-block fields, which are governed, and the frozen transport standard.
 - **B5. Expectations and RUNBOOK.** Comments in `expectations.yaml` and RUNBOOK sections that
-  narrate count changes ("34 → 35", "swap:") are reduced to what each step checks.
+  narrate count changes ("34 → 35", "swap:") are reduced to what each step checks. **Done.**
+  Every `expectations.yaml` comment states what its step checks, with no count deltas or work
+  labels. The RUNBOOK's Expected table states no counts, since `expectations.yaml` holds them and
+  the table's copies had drifted. Its former-failure notes state the rule they taught. Left for B7:
+  the RUNBOOK's dossier paths, the construction sequence, and the "simple path" costs, which assume
+  a domain has no design.
 - **B6. Pure history.** Delete what no test reads: `process/notes/` and the genesis dossier's
   delivery note, and the references to them. `rulings.md` stays as present-tense doctrine: its rules
   are in force, and the one spent ruling is dropped. This comes first in B.
