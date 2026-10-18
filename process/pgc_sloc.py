@@ -5,6 +5,10 @@ Behaviour is the YAML Machine block of every governed artifact: a `.md` whose bl
 excluded — split into runtime code, tests (`testbed/`, `tests/`, `test_*.py`) and tooling
 (`scripts/`, `tools/`). Dossier markdown is counted apart, as design record.
 
+A schema in a registry (`registry/schema/*.json`) is declared behaviour too: the platform's say what
+each artifact kind may hold, and transformation's hold each phase's rules. Its non-blank lines are counted as `json_schema`, and count as
+behaviour beside the Machine blocks.
+
 Compiled snapshots, caches, virtualenvs, build output and fixture dossiers are excluded. Plain
 `.yaml` files are listed separately; the only one today is the generated surface map.
 
@@ -24,7 +28,7 @@ W = Path(__file__).resolve().parents[2]
 SKIP = {".git", ".venv", "__pycache__", "snapshot", "build", "data", "traces", "node_modules",
         ".idea", "compiled", "fixture_dossiers"}
 MACHINE = re.compile(r"```yaml\n(.*?)```", re.S)
-COLUMNS = ["artifacts", "yaml_artifact", "yaml_file", "py_impl", "py_test", "py_tools", "dossier_md"]
+COLUMNS = ["artifacts", "yaml_artifact", "json_schema", "yaml_file", "py_impl", "py_test", "py_tools", "dossier_md"]
 
 PLATFORM = ["software_governance", "conformance_workloads", "protocol_compiler", "snapshot_assembler",
             "protocol_runtime", "protocol_transport", "snapshot_inspector", "transformation_compilers"]
@@ -79,6 +83,9 @@ def measure(root: Path) -> dict[str, int]:
             rel = path.relative_to(root)
             if name.endswith(".py"):
                 out[python_kind(rel)] += py_sloc(path)
+            elif name.endswith(".json") and rel.parent.name == "schema" and "registry" in rel.parts:
+                out["json_schema"] += sum(1 for line in path.read_text(errors="ignore").splitlines()
+                                          if line.strip())
             elif name.endswith((".yaml", ".yml")):
                 out["yaml_file"] += yaml_sloc(path.read_text(errors="ignore"))
             elif name.endswith(".md"):
@@ -110,7 +117,7 @@ def main() -> int:
     layers["business domains"] = [by_repo[f"bd/{d}"] for d in business]
     print(f"\n{'layer':<22}{'behaviour':>12}{'implementation':>16}   ratio")
     for name, parts in layers.items():
-        yaml = sum(p["yaml_artifact"] for p in parts)
+        yaml = sum(p["yaml_artifact"] + p["json_schema"] for p in parts)
         py = sum(p["py_impl"] for p in parts)
         ratio = f"{yaml / py:.1f} : 1" if yaml >= py and py else f"1 : {py / yaml:.1f}" if yaml else "—"
         print(f"{name:<22}{yaml:>12,}{py:>16,}   {ratio}")

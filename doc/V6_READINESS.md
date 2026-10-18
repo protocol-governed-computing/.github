@@ -98,8 +98,15 @@ Each item states what done means. Items under **A** are decisions. Order: B6 →
 - **C7. Genesis G-4. Done.** Genesis P7 states the three refusals as the module's scope: approving a
   gate, approving a mandate and confirming a pin are acts of people, and none is open work. Genesis
   is re-pinned and admissible P0–P8.
-- **C8. The flaky first `--all`.** Reproduce it or close it with evidence.
-- **C9. `pgc_sloc.py`.** It counts `registry/schema/*.json`.
+- **C8. The flaky first `--all`. Closed on evidence.** Its three failures each read the platform
+  surface just after it compiled and found it incomplete; root cause unknown, never reproduced. The
+  regression guards it: the platform surface is fingerprinted after its compile and re-checked after
+  every later compile, and a failed build's output is kept in `$TMPDIR/pgc_failed_build.*`. Since
+  then about fifteen `--all` runs, including three consecutive clean rebuilds, gave one snapshot
+  identity and identical verdicts on all 366 steps. Neither trap has fired, and no failed build was
+  kept. A recurrence is caught and named by the traps, so it reopens with its evidence.
+- **C9. `pgc_sloc.py`. Done.** Registry schemas are counted as declared behaviour in a
+  `json_schema` column: 16,669 lines, 4,532 in the platform and 12,137 in transformation.
 - **C10. Every transform proven. Done.** Every domain's conformance line reports 0 unproven. The
   book catalog's four vectors are the ones its designs already stated. Two findings carry forward:
   - blockchain's designs state no vector for `CT_PURE_DERIVE_WALLET_ADDRESS_V0`, so
