@@ -342,7 +342,7 @@ def main() -> int:
         py = sys.executable
 
         r = run([py, "-m", "compiler.cli", "compile", "--structure",
-                 "STRUCTURE_BUILD_PLATFORM_CONFIG_V2"], env)
+                 "STRUCTURE_BUILD_PLATFORM_CONFIG_V0"], env)
         check("platform_compiles_without_workloads", "0 failed" in r.stdout,
               "the profile requires no workload, so its repository should not be needed")
 

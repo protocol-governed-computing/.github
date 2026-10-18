@@ -1,7 +1,7 @@
 """Every trace the regression produced conforms to the schema the constitution names.
 
-`CONSTITUTION_TRACE_EXECUTION_V1` §3 says every line of a trace MUST conform to
-`SCHEMA_TRACE_EVENT_V2`. A schema nothing compares a trace against drifts from the runtime until
+`CONSTITUTION_TRACE_EXECUTION_V0` §3 says every line of a trace MUST conform to
+`SCHEMA_TRACE_EVENT_V0`. A schema nothing compares a trace against drifts from the runtime until
 they share no field. This reads every trace
 under the data root and validates every line, so the next divergence is a failed step rather than
 a discovery.
@@ -19,7 +19,7 @@ from pathlib import Path
 from jsonschema import Draft202012Validator
 
 WORKSPACE = Path(__file__).resolve().parents[2]
-SCHEMA = WORKSPACE / "software_governance" / "registry" / "schema" / "SCHEMA_TRACE_EVENT_V2.json"
+SCHEMA = WORKSPACE / "software_governance" / "registry" / "schema" / "SCHEMA_TRACE_EVENT_V0.json"
 
 
 def main() -> int:
@@ -51,7 +51,7 @@ def main() -> int:
               f"{len(traces)} trace(s)")
         return 1
     print(f"TRACE SCHEMA CONFORMANCE PASSED — {len(traces)} trace(s), {lines} line(s), every line conforms "
-          f"to SCHEMA_TRACE_EVENT_V2")
+          f"to SCHEMA_TRACE_EVENT_V0")
     return 0
 
 

@@ -46,6 +46,10 @@ Each item states what done means. Items under **A** are decisions. Order: B6 →
   - Every artifact is `_V0`, none carries `supersedes`, and the ledger is empty.
   - Hard-coded identities in compiler and runtime code are reviewed, not blindly replaced.
   - `standards` applies the same map, declared in `revisions.md`.
+  - Stage 3 done: 16 predecessors are deleted and 65 identities renamed to `_V0`, with their
+    handler and transform modules. No artifact carries `supersedes` and `retired_identities.yaml` is
+    empty. Prose that narrated one version against another states the rule instead. Open: the
+    `standards` map (stage 4).
 - **B2. Legacy references. Done.** Zero matches for `pgs_`, `RI-0` and `bachipeachy/pgs` outside
   what must name them: the two guards that refuse a legacy package (`pgc_env_check.py`,
   `verify_release.py`), the frozen `TRANSPORT_STANDARD_V0.md`, the sealed `pgc_release`, and
@@ -82,7 +86,7 @@ Each item states what done means. Items under **A** are decisions. Order: B6 →
   - Stage 1 done: `python -m transformation.record` writes each designed root's P7 and P8 from its
     registry into `<root>/design/`, and `write_baseline_designs.py --check` keeps them current.
     `construction_acceptance` renders one design per root and reproduces 279 of 280 artifacts; the
-    one difference is a predecessor the reset deletes.
+    one difference was a predecessor the reset deletes. After the reset it reproduces all 270.
   - The design language gained a store's `Structure`, and a structure with no store and no layer
     renders as a shape. The renderer writes typed property and policy values, every step's
     `outputs`, and a transform's module under the namespace its build manifest declares. Actors are
@@ -120,7 +124,7 @@ Each item states what done means. Items under **A** are decisions. Order: B6 →
   `required: false`, and the response omits an optional field the result does not carry. P7's
   `transport_bindings` states it in a `Required` column, so construction writes it. `grounds` on
   `TE_ACCEPT_ACTOR_V0` is optional, and the step holds 26/26.
-- **C2. `construction_acceptance`.** Book library's two `_V1` artifacts carry `version: v0`.
+- **C2. `construction_acceptance`. Done.** Book library's two `_V1` artifacts carry `version: v0`.
   The reset in A1 resolves it, and B7 resolves blockchain's undesigned vector (C10); done when
   the step is green.
 - **C3. `si snapshot validate` advisories. Done.**

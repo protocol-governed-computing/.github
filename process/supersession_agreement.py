@@ -6,7 +6,7 @@ from it. The realization states it twice: `supersedes` on the successor and `sup
 predecessor. Two independent assertions of one relation can disagree, and until this check nothing
 compared them — which is realization-map finding 39.
 
-They already disagreed. `transformation::STRUCTURE_FIGURE_OF_MERIT_POLICY_V1` declared its
+They already disagreed. `transformation::STRUCTURE_FIGURE_OF_MERIT_POLICY_V0` declared its
 predecessor and the predecessor said nothing, because that supersession was authored by hand while
 every other one was written by construction standing an artifact down. One relation, two producers,
 and no comparison.

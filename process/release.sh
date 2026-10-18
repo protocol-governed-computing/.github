@@ -117,7 +117,7 @@ PUBLICATIONS="$WORKSPACE/.github/publications.md"
 
 # What the build gate builds and claims. Named rather than defaulted, because neither tool has a
 # default and neither should: no profile is privileged (6a §11) and no platform is minimal (6a §8).
-GATE_STRUCTURE="STRUCTURE_BUILD_PLATFORM_CONFIG_V2"
+GATE_STRUCTURE="STRUCTURE_BUILD_PLATFORM_CONFIG_V0"
 GATE_PROFILE="GOVERNANCE_SURFACE_PROFILE_V0"
 
 # The composition — every repo that compiles, assembles, is assembled into a snapshot, reads one,

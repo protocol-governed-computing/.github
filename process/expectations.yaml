@@ -24,11 +24,11 @@ steps:
   - id: supersession_agreement
     section: checks
     # every `supersedes` relation: both sides present and agreeing, or the predecessor deleted by
-    # record in the retirement ledger
-    expect: ["SUPERSESSION AGREEMENT PASSED — 47 relation\\(s\\), both sides agree on 16, 31 predecessor\\(s\\) deleted by record"]
+    # record in the retirement ledger. The identity reset leaves none.
+    expect: ["SUPERSESSION AGREEMENT PASSED — 0 relation\\(s\\), both sides agree on 0, 0 predecessor\\(s\\) deleted by record"]
   - id: human_block_fidelity
     section: checks
-    expect: ["HUMAN BLOCK FIDELITY PASSED — 559 artifacts"]
+    expect: ["HUMAN BLOCK FIDELITY PASSED — 543 artifacts"]
   - id: evidence_determinism
     section: checks
     expect: ["EVIDENCE DETERMINISM PASSED"]
@@ -59,7 +59,7 @@ steps:
     expect: ["META PASSED"]
   - id: closure_test
     section: checks
-    expect: ["CLOSURE PASSED — 9 phase\\(s\\) close over lifecycle::CONSTITUTION_CHANGE_MGMT_V1"]
+    expect: ["CLOSURE PASSED — 9 phase\\(s\\) close over lifecycle::CONSTITUTION_CHANGE_MGMT_V0"]
   - id: effectivity_test
     section: checks
     expect: ["EFFECTIVITY PASSED — 9 rule sets at their recorded revision"]
@@ -68,7 +68,7 @@ steps:
     expect: ["RENDER VECTORS PASSED — 27 vectors"]
   - id: construction_mapping_test
     section: checks
-    expect: ["CONSTRUCTION MAPPING PASSED — 191 fields over 12 kinds"]
+    expect: ["CONSTRUCTION MAPPING PASSED — 185 fields over 12 kinds"]
   - id: interface_structures_test
     section: checks
     expect: ["INTERFACE STRUCTURES PASSED — 4 checks, 5 structures"]
@@ -83,12 +83,7 @@ steps:
     expect: ["PROJECTION PASSED"]
   - id: construction_acceptance
     section: checks
-    exit: 1
-    expect: ["279/280 artifacts reproduced across 6 domain\\(s\\)\\s+\\(1 field difference\\(s\\)\\)",
-             "DIFF  CC_VERIFY_TERMINATION_V0\\s+1 field"]
-    red_by_design: >-
-      collatz's CC_VERIFY_TERMINATION_V0 is a stood-down predecessor whose `evaluation` block no design
-      language states; the identity reset deletes it
+    expect: ["270/270 artifacts reproduced across 6 domain\\(s\\)\\s+\\(0 field difference\\(s\\)\\)"]
   - id: molecule_design_test
     section: checks
     expect: ["5/5 passed"]
@@ -211,7 +206,7 @@ steps:
     expect: ["Ran 4 tests", "(?m)^OK$"]
   - id: test_examine
     section: checks
-    # the examiner reads SCHEMA_TRACE_EVENT_V1, and every trace the run wrote
+    # the examiner reads SCHEMA_TRACE_EVENT_V0, refuses any other format, and reads every trace the run wrote
     expect: ["Ran 5 tests", "(?m)^OK$"]
   - id: test_trace_path
     section: checks

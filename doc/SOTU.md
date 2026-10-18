@@ -12,7 +12,7 @@ The demo runs on v6 only. v6 is a forward-only baseline. The demo adds no code: 
     - On first run it downloads the `v6` tag archives into `~/pgc-demo/v6/`.
     - `PGC_DEMO_WORKSPACE` points it at the workspace working trees and working snapshot instead.
     - Commands: `collatz [N | set-limit N | reset | tamper]`, `inspect [show FQDN | code MODULE]`, `where`.
-  - `README_DEMO.md` — install is now `pipx install --include-deps protocol-governed-computing` plus `curl` of the script. Demo 2 uses the v6 facts: verify runs `CC_VERIFY_TERMINATION_V2`, 56 lines of code, about 490 lines of declarations.
+  - `README_DEMO.md` — install is now `pipx install --include-deps protocol-governed-computing` plus `curl` of the script. Demo 2 uses the v6 facts: verify runs `CC_VERIFY_TERMINATION_V0`, 56 lines of code, about 490 lines of declarations.
   - `README_DEV.md` — the HTTP and command-line examples use `pgc_transport`. The passage saying transport is unpublished is gone.
   - `pyproject.toml`, `pgc/cli.py` — add `pgc-transport==5.0.0` to the family.
 - **`protocol_transport`** (uncommitted):
@@ -66,7 +66,7 @@ PASSING.
   - Name `pgc-transport` in `process/notes/release-18.md`, which doesn't exist yet.
   - Run Zenodo `--verify`.
 - **`workflow_diagram.js`** has two copies, `conformance_workloads/workloads/collatz/client/web/collatz/js/` and `snapshot_inspector/client/web/workflow/js/`. Change both together.
-- **`README_DEMO.md` says verify reuses a platform transform.** That is true on dev/18 (`CT_PURE_REQUIRE_TRUE_V0`), but only while v6 keeps `CC_VERIFY_TERMINATION_V2`.
+- **`README_DEMO.md` says verify reuses a platform transform.** That is true on dev/18 (`CT_PURE_REQUIRE_TRUE_V0`), but only while v6 keeps `CC_VERIFY_TERMINATION_V0`.
 - **Carried from before:**
   - the TE output contract cannot declare `grounds` optional, so blockchain_identity is at 25/26;
   - 16 republished copies have drifted (advisory only);

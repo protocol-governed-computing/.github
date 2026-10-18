@@ -70,14 +70,14 @@ on an artifact, so the surface declares what is available and a build declares w
 
 | Build configuration | Placement | Output root |
 |---|---|---|
-| `STRUCTURE_BUILD_PLATFORM_CONFIG_V2` | `LOCAL_SINGLE_NODE` | `software_governance/snapshot` |
-| `STRUCTURE_BUILD_PLATFORM_MULTIWORKER_CONFIG_V2` | `LOCAL_MULTI_WORKER` | `software_governance/snapshot_mw` |
-| `STRUCTURE_BUILD_PLATFORM_FEDERATED_CONFIG_V2` | `FEDERATED_NODE` | `software_governance/snapshot_fed` |
+| `STRUCTURE_BUILD_PLATFORM_CONFIG_V0` | `LOCAL_SINGLE_NODE` | `software_governance/snapshot` |
+| `STRUCTURE_BUILD_PLATFORM_MULTIWORKER_CONFIG_V0` | `LOCAL_MULTI_WORKER` | `software_governance/snapshot_mw` |
+| `STRUCTURE_BUILD_PLATFORM_FEDERATED_CONFIG_V0` | `FEDERATED_NODE` | `software_governance/snapshot_fed` |
 
 A default run builds the first. The others are built by naming them:
 
 ```bash
-protocol_compiler/compile.sh STRUCTURE_BUILD_PLATFORM_MULTIWORKER_CONFIG_V2
+protocol_compiler/compile.sh STRUCTURE_BUILD_PLATFORM_MULTIWORKER_CONFIG_V0
 ```
 
 **Each configuration declares its own root** in `output_configuration.root`, and the table's last
@@ -157,7 +157,7 @@ clause they enforce.
 cd ~/protocol-governed-computing
 export PGC_SNAPSHOT_PROFILE=GOVERNANCE_SURFACE_PROFILE_V0
 
-~/protocol-governed-computing/protocol_compiler/compile.sh STRUCTURE_BUILD_PLATFORM_CONFIG_V2
+~/protocol-governed-computing/protocol_compiler/compile.sh STRUCTURE_BUILD_PLATFORM_CONFIG_V0
 
 ~/protocol-governed-computing/protocol_compiler/compile_domain.sh ~/protocol-governed-computing/conformance_workloads/workloads/collatz
 
@@ -222,7 +222,7 @@ done
 Two different identities means something the composition carries changed without the source changing.
 An attestation records when it was signed; if the identity were taken over that, it would be a function
 of *when* the composition was built, and a genuine alteration would be indistinguishable from a no-op
-recompile. `cryptographic_trust::CONSTITUTION_CRYPTOGRAPHIC_TRUST_V1` declares which of an attestation's
+recompile. `cryptographic_trust::CONSTITUTION_CRYPTOGRAPHIC_TRUST_V0` declares which of an attestation's
 fields constitute the composition and which merely accompany it, and the assembler reads that division
 in both the enumerator and the verifier. Evidence paths are recorded relative to the declared output
 root, so the build folder does not enter the identity either.
@@ -321,7 +321,7 @@ included; this table explains what each step proves and states no counts. The st
 | `supersession_agreement.py` | `SUPERSESSION AGREEMENT PASSED — N relation(s), both sides agree on M, K predecessor(s) deleted by record` — the relation is stated twice, on the successor and on the predecessor, and this compares them. A successor may name an absent predecessor only when `retired_identities.yaml` records its deletion. **It does not close SU-3**, which asks for it once with the other side derived; what it closes is a disagreement nothing would report. `superseded_by` is written as a list by construction and may be written as one identity by hand: both spellings are one declaration and the closure handler normalizes them |
 | `published_identity_check.py` | `PUBLISHED IDENTITY FAILED — n of N identities published in v5`, exit 1, red by design while the v6 baseline is built: it compares the working composition with the last sealed release, and the baseline changes what v5 published, by ruling. From the cut it compares against v6, passes, and its entry in `expectations.yaml` returns to a plain pass |
 | `human_block_fidelity.py` | `HUMAN BLOCK FIDELITY PASSED` — the prose beside a machine block declares nothing. A `RESTATED` line means delete the prose copy, never edit the machine block; a `SECTION` line means the section is named as if it states a rule. The policy is `vocabulary::VOCAB_HUMAN_BLOCK_CONSTRAINTS_V0`, read from the sealed composition — add a forbidden name there, never here. Reasoning: Field Manual, *The human block* |
-| `evidence_determinism.py` | **Give `PGC_SNAPSHOT_ROOT` an absolute path or leave it unset** — this check shells out to `run.sh`, which resolves a relative one against its own directory and fails in a way that reads like a determinism defect. `EVIDENCE DETERMINISM PASSED` — one workflow run twice; determinative content identical, observational content differs. A `DETERMINATIVE CONTENT DIFFERS` line means something non-deterministic is classified determinative; a `vacuous` line means nothing observational varies, so the split is untested. Policy: `vocabulary::VOCAB_EVIDENCE_CONTENT_CLASSIFICATION_V1` |
+| `evidence_determinism.py` | **Give `PGC_SNAPSHOT_ROOT` an absolute path or leave it unset** — this check shells out to `run.sh`, which resolves a relative one against its own directory and fails in a way that reads like a determinism defect. `EVIDENCE DETERMINISM PASSED` — one workflow run twice; determinative content identical, observational content differs. A `DETERMINATIVE CONTENT DIFFERS` line means something non-deterministic is classified determinative; a `vacuous` line means nothing observational varies, so the split is untested. Policy: `vocabulary::VOCAB_EVIDENCE_CONTENT_CLASSIFICATION_V0` |
 | `admission_contract_fidelity.py` | `ADMISSION CONTRACT FIDELITY PASSED` — every IN gate's declared contract matches what its workflow binds. `OVER-DECLARED` means the gate requires a field nothing consumes, so a correct payload is refused; `UNDER-DECLARED` means the gate admits a payload the workflow cannot resolve. |
 | `emit_rule_sets.py --check` | Every phase `OK` — the sealed rule set matches the declared one |
 | `build_payloads.py --check` | `OK` — every phase payload matches the corpus document it is cut from. A `DRIFTED` line is a hand-edited payload; fix the source document and regenerate |
@@ -347,7 +347,7 @@ included; this table explains what each step proves and states no counts. The st
 | `test_indexes.py` | Assembler index construction, including that a republished identity resolves to its authoring copy and that resolution does not track domain-name order |
 | `test_transform_conformance_evidence.py` | Every build's conformance result, the platform's included, is carried, names each transform the build supplies with none refused, names as carried exactly what its attestation records, and is a manifest constituent; the platform proves every transform it has a vector for; `conformance/` holds only `composition.json` |
 | `test_transform_conformance.py`, `test_vector_build.py` | The compiler refuses a malformed vector before conformance runs, and a wrong expectation fails the build at conformance |
-| `test_reference_semantics.py` | Every place that finds a reference reads it from `artifact::VOCAB_DECLARATION_REPRESENTATION_V1`, and a full name in an undeclared part is refused (E105) |
+| `test_reference_semantics.py` | Every place that finds a reference reads it from `artifact::VOCAB_DECLARATION_REPRESENTATION_V0`, and a full name in an undeclared part is refused (E105) |
 | `test_routing_closure.py`, `test_routing_lookup.py` | A workflow routes every outcome its contracts can end with, and a step answers every outcome its capability declares; routing is a lookup of `continue` or `exit`, a contract declares no `evaluation` block, and a stood-down contract is checked by neither |
 | `test_platform_vectors.py` | The platform materializes its vectors and writes their cases; each defect in a platform vector stops the platform build on its own rule; a build records what it carried in, and the platform carries nothing |
 | `test_transform_conformance_runner.py` | `OK` — a molecule is proven from recorded results without running its non-deterministic step; a missing or unused record refuses; what a build supplies is read from its attestation, never a name; a failed case for a carried transform refuses the build |
@@ -360,7 +360,7 @@ included; this table explains what each step proves and states no counts. The st
 | `test_warm_boot.py` | The identity covers the claimed profile's content: a profile changed after sealing, and a manifest carrying no `profile_sha256`, are refused at boot. `boot()` delegates acceptance to `assembler.core.verify_snapshot`, which recomputes every constituent from its bytes and evaluates all four clauses of `3b` §7; `boot` raises `RuntimeError` on any of them. Recomputing over the manifest's *recorded* hashes would catch a tampered manifest but not a tampered constituent. `test_manifest_states_one_identity` asserts the manifest's two statements of its own identity agree. **These tests skip when no assembled snapshot is present** — a bare workspace reports them skipped, not passed |
 | `test_federation.py`, `test_capability_concurrency.py`, `test_molecule_execution.py` | `OK` — federated roles; capabilities under concurrent writers; molecules run, recorded and replayed |
 | `test_node_keyed_routing.py`, `test_trace_path.py` | `OK` — routing, endings and announcements by node, and the trace naming each place; the path drawn over a workflow's graph is the one the trace records |
-| `test_examine.py` | `OK` — `runtime examine` reads `SCHEMA_TRACE_EVENT_V2`, refuses any other format (a v5 trace, written to V1, included), tells a completed run (refusals included) from a structural failure, and reads every trace under `data/` |
+| `test_examine.py` | `OK` — `runtime examine` reads `SCHEMA_TRACE_EVENT_V0`, refuses any other format (a v5 trace, written to V1, included), tells a completed run (refusals included) from a structural failure, and reads every trace under `data/` |
 | `test_step_outcome.py` | A step outcome its contract declares no continuation for refuses, writes an ERROR and runs nothing after it (`3a` EX-18); every step record carries its outcome and the continuation it selected, an admission's being `route` (`3e` EV-19). A fault refuses the run with an ERROR and is never routed: a transform that will not load, an atom that breaks, a side effect that raises or states no outcome (`3a` §4.1, `3c` §7). An atom's own refusal still routes as VIOLATION. Needs an assembled snapshot |
 | `test_no_default.py`, `test_unknown_continuation.py` | No resolver supplies a default (`3c` RT-6): a transform path that reaches nothing refuses, a result maps only on SUCCESS and must carry each field it maps, an absent source is left out and never set to null; execution refuses a routing answer other than `continue` or `exit` |
 | `pgc_env_check.py` | `PGC ENVIRONMENT CHECK PASSED` — no legacy dependency reachable |
@@ -374,11 +374,11 @@ included; this table explains what each step proves and states no counts. The st
 | `execution_validation.py` (wallet) | Every criterion holds — the one not exercised is a write through a consulted binding, which no act is authored to attempt |
 | `execution_validation.py` (model_response) | Every criterion holds — CLM CR-1: a model answers only in service, only on what it may read, only in words the rules permit; refusals recorded and announced; a replay agrees on every determinative event |
 | `blockchain/testbed/routing_closure/execution_validation.py` | Every criterion holds — a failed record ends every identity and wallet act at `EXIT_REJECTED`, at the step that failed |
-| `ai_governance/testbed/routing_closure/execution_validation.py` | Every criterion holds — a reclaim the registry refuses ends at `EXIT_ACTIVE` with the license still assigned and no revocation announced, through `CC_RECLAIM_UNUSED_LICENSE_V1` |
+| `ai_governance/testbed/routing_closure/execution_validation.py` | Every criterion holds — a reclaim the registry refuses ends at `EXIT_ACTIVE` with the license still assigned and no revocation announced, through `CC_RECLAIM_UNUSED_LICENSE_V0` |
 | `transformation_compilers/testbed/routing_closure/execution_validation.py` | Every criterion holds — a phase whose observation reports NOT_FOUND ends at `EXIT_REJECTED` and judges nothing; every way the observing capability answers is answered by every observing step and routed by every phase, read from the contract each node runs (`code`); an outcome the capability gains is answered at the next emission |
 | `transport_cli_check.sh` | `TRANSPORT CLI PASSED — 8/8 cases` — `pgc_transport call`, run from the repository root as `run_http.sh` provisions it: 27 admitted with exit 0 and a named trace, -5 and text refused with exit 1, an unknown operation exit 5, an `si.` operation through the same command, and exit 2 for an invocation that never reaches the boundary |
 | `demo_script_check.sh` | `DEMO SCRIPT PASSED — 12/12 cases` — `pgc_install/demo/pgc-demo.sh` in workspace mode through every terminal step `README_DEMO.md` walks: play, refusals, `set-limit` admitting 1,000,000, a second build of one limit reproducing its identity, `tamper` refused at acceptance, `reset`, `inspect show` and `inspect code`. It takes about ten seconds; the web pages are not served |
-| `trace_schema_conformance.py` | `TRACE SCHEMA CONFORMANCE PASSED` — every line of every trace the execution block wrote conforms to `SCHEMA_TRACE_EVENT_V2` |
+| `trace_schema_conformance.py` | `TRACE SCHEMA CONFORMANCE PASSED` — every line of every trace the execution block wrote conforms to `SCHEMA_TRACE_EVENT_V0` |
 
 ### Choosing a store operation
 
@@ -847,7 +847,7 @@ account for.
 - **A capability the substrate does not offer** is a platform change, not a domain one. Declare the
   CS in `software_governance/capability_side_effects/registry/`, implement it under
   `implementation/<CODE>/runtime.py` with `execute(*, op, payload)`, and add it to
-  `allowed_capability_side_effects` in `INVARIANT_CS_SURFACE_CLOSED_V1` — the platform surface is
+  `allowed_capability_side_effects` in `INVARIANT_CS_SURFACE_CLOSED_V0` — the platform surface is
   closed and the compiler refuses an undeclared capability. `core.category` must be one of
   `storage · external · ephemeral · execution_gateway · inspection`.
 - **A capability the workflow reaches must be bound for it** in the domain's `RB_`. A capability
@@ -870,9 +870,9 @@ W = "/Users/bp/protocol-governed-computing"
 sys.path[:0] = [f"{W}/software_governance", f"{W}/business_domains"]
 from runtime import api
 P = pathlib.Path(f"{W}/business_domains/blockchain/testbed/identity/test_payloads")
-WF = {"04": "blockchain::WF_ACCEPT_ACTOR_V2", "08": "blockchain::WF_REJECT_ACTOR_V2"}
+WF = {"04": "blockchain::WF_ACCEPT_ACTOR_V0", "08": "blockchain::WF_REJECT_ACTOR_V0"}
 for f in sorted(P.glob("*.json")):
-    r = api.run_workflow(wf_fqdn=WF.get(f.name[:2], "blockchain::WF_REGISTER_ACTOR_V2"),
+    r = api.run_workflow(wf_fqdn=WF.get(f.name[:2], "blockchain::WF_REGISTER_ACTOR_V0"),
                          payload=json.loads(f.read_text()),
                          snapshot_root=f"{W}/snapshot", data_root=f"{W}/data/blockchain")
     print(f"{f.name:<36} {r.status}")
@@ -911,7 +911,7 @@ rm -rf $W/snapshot $W/data \
        $W/business_domains/*/snapshot $W/conformance_workloads/workloads/*/snapshot
 
 # 2. Platform first — a domain resolves its references against the compiled governance surface.
-$W/protocol_compiler/compile.sh STRUCTURE_BUILD_PLATFORM_CONFIG_V2
+$W/protocol_compiler/compile.sh STRUCTURE_BUILD_PLATFORM_CONFIG_V0
 
 # 3. Every domain in the composition. Omitting one assembles it from stale output that no longer exists.
 for d in $W/transformation_compilers $W/snapshot_inspector $W/conformance_workloads/workloads/collatz \
@@ -950,9 +950,9 @@ W = "/Users/bp/protocol-governed-computing"
 sys.path[:0] = [f"{W}/software_governance", f"{W}/business_domains", f"{W}/conformance_workloads"]
 from runtime import api
 P = pathlib.Path(f"{W}/business_domains/blockchain/testbed/identity/test_payloads")
-WF = {"04": "blockchain::WF_ACCEPT_ACTOR_V2", "08": "blockchain::WF_REJECT_ACTOR_V2"}
+WF = {"04": "blockchain::WF_ACCEPT_ACTOR_V0", "08": "blockchain::WF_REJECT_ACTOR_V0"}
 for f in sorted(P.glob("*.json")):
-    wf = WF.get(f.name[:2], "blockchain::WF_REGISTER_ACTOR_V2")
+    wf = WF.get(f.name[:2], "blockchain::WF_REGISTER_ACTOR_V0")
     r = api.run_workflow(wf_fqdn=wf, payload=json.loads(f.read_text()),
                          snapshot_root=f"{W}/snapshot", data_root=f"{W}/data/blockchain")
     print(f"{f.name:<36} {r.status}")

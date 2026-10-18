@@ -85,7 +85,7 @@ if [[ "$MODE" == "--build" || "$MODE" == "--all" ]]; then
     echo "  Recover it before doing anything else:  git -C pgc_release restore snapshot/" >&2
     rebuild_failed
   fi
-  "$W/protocol_compiler/compile.sh" STRUCTURE_BUILD_PLATFORM_CONFIG_V2 || rebuild_failed
+  "$W/protocol_compiler/compile.sh" STRUCTURE_BUILD_PLATFORM_CONFIG_V0 || rebuild_failed
   # Every domain compiles against this surface, so nothing after this point may change it. Its
   # fingerprint is taken once and re-read after each later compile; a step that alters it is named.
   surface() { (cd "$W/software_governance/snapshot" && find . -type f -print0 | sort -z |
@@ -101,9 +101,9 @@ if [[ "$MODE" == "--build" || "$MODE" == "--all" ]]; then
   # are rebuilt — and the assembler then refuses to compose them with freshly compiled domains, which
   # surfaced as a red test_federation after a change that touched no federation code.
   # Each configuration declares its own root (output_configuration.root), so none is passed here.
-  "$W/protocol_compiler/compile.sh" STRUCTURE_BUILD_PLATFORM_FEDERATED_CONFIG_V2 || rebuild_failed
+  "$W/protocol_compiler/compile.sh" STRUCTURE_BUILD_PLATFORM_FEDERATED_CONFIG_V0 || rebuild_failed
   surface_unchanged "the federated platform compile"
-  "$W/protocol_compiler/compile.sh" STRUCTURE_BUILD_PLATFORM_MULTIWORKER_CONFIG_V2 || rebuild_failed
+  "$W/protocol_compiler/compile.sh" STRUCTURE_BUILD_PLATFORM_MULTIWORKER_CONFIG_V0 || rebuild_failed
   surface_unchanged "the multiworker platform compile"
   for d in conformance_workloads/workloads/collatz transformation_compilers snapshot_inspector \
            business_domains/ai_governance business_domains/book_library_mgmt \
