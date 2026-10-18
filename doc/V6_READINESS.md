@@ -95,7 +95,9 @@ Each item states what done means. Items under **A** are decisions. Order: B6 →
   by the measure. Genesis states all fourteen. The measure found one real defect:
   `WF_SUBMIT_USER_PROMPT_V0` ran as model staff, and the seed says requesters submit prompts. It now
   runs as `AC_REQUESTER_V0`, and CLM's design states every workflow's actor.
-- **C7. Genesis G-4.** P7 states the three refusals as out of scope (A4).
+- **C7. Genesis G-4. Done.** Genesis P7 states the three refusals as the module's scope: approving a
+  gate, approving a mandate and confirming a pin are acts of people, and none is open work. Genesis
+  is re-pinned and admissible P0–P8.
 - **C8. The flaky first `--all`.** Reproduce it or close it with evidence.
 - **C9. `pgc_sloc.py`.** It counts `registry/schema/*.json`.
 - **C10. Every transform proven. Done.** Every domain's conformance line reports 0 unproven. The
