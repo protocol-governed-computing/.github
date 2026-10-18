@@ -54,7 +54,13 @@ Each item states what done means. Items under **A** are decisions. Order: B6 →
   path registry, layout artifact, maintenance scripts, legacy runtime suite and web page are deleted.
 - **B3. History in prose.** Comments, docs and artifact text describe what is, not what was:
   "previously", "no longer", "before this", "formerly", "used to", "was once". 513 matches today;
-  each one is rewritten or removed.
+  each one is rewritten or removed. **Done.** 362 of the 513 are in dossiers, the corpora, fixtures
+  and payloads cut from them, and go with B7. Of the 151 left, about 45 narrated history and are rewritten.
+  The rest state present meaning ("a retired copy is no longer held", "used to verify", "before
+  this step") or are exempt: the frozen transport standard, `publications.md` (a release record),
+  and the external-validation runs (evidence). Left for later items: `construction_acceptance.py`'s
+  sequencing comments go with B7, and the RUNBOOK's former-failure notes with B5. Every repo's
+  NOTICE now opens "PGC — Protocol-Governed Computing", except the sealed `pgc_release`.
 - **B4. Process markers in artifacts.** Zero `**Status:**` lines and zero "cut-#" or "Phase N"
   delivery notes in artifact text. 8 and 6 today. Example: `TI_COLLATZ_COMPUTE_V0`'s "cut-#1
   hand-authored. Promoted… in Phase 3".

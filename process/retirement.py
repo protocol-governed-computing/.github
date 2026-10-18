@@ -1,4 +1,4 @@
-"""Retention and retirement — read once, by every check that used to assume retention.
+"""Retention and retirement — read once, by every check that must not assume retention.
 
 `retention.yaml` declares when a replaced version is retained (`4e` SU-7). `retired_identities.yaml`
 records each deletion (`4e` SU-12): the identity, who decided, the determination that no retention

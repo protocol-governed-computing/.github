@@ -29,11 +29,10 @@
 # leave a repo declaring the release it was just cut out of.
 #
 # The PUBLISHED version is a different number and is NOT derived from anything. Each pyproject
-# carries a hand-edited literal, and nothing computed it from `VERSION` or from `PUBLIC_VERSION`.
-# This comment previously claimed pyproject derived from `VERSION`; it never did, and the gap is how
-# `3.0.0` came to name two different byte sets — the wheels on PyPI, and anything built from a later
-# cycle that had not been bumped. The preflight below now asserts the mapping instead of asserting
-# it in prose.
+# carries a hand-edited literal, and nothing computes it from `VERSION` or from `PUBLIC_VERSION`.
+# An unbumped literal lets one version name two different byte sets — the wheels on PyPI, and
+# anything built from a later cycle. The preflight below asserts the mapping rather than leaving it
+# to prose.
 #
 # THE COMPOSITION IS A SECOND PHASE. `pgc_release` publishes the sealed snapshot and names the
 # nine component version DOIs as `hasPart`. Those DOIs do not exist until Zenodo has minted
@@ -83,16 +82,13 @@ WORKSPACE="$HOME/protocol-governed-computing"
 
 # The release ordinal is DERIVED, never declared here. `VERSION` is the single declaration of which
 # composition a repo belongs to, and this script already refuses any repo whose VERSION disagrees —
-# so a second copy of that number kept here was a second declaration of the same fact, maintained by
-# hand, with nothing to catch it going stale. It did: release 11 was cut and these constants were
-# not bumped, so the next preflight expected every repo to be on dev/11 and reported eighty failures
-# describing a release that had already shipped.
+# so a second copy of that number kept here would be a second declaration of the same fact,
+# maintained by hand, with nothing to catch it going stale.
 #
 # Deriving it removes the step that can be missed. `.github/VERSION` is the reference copy because
-# `.github` is one of the released repos and carries the notes; the other nine are still compared
-# against it, so lockstep is checked exactly as before — what is no longer checkable is whether the
-# reference itself is wrong, and there was never anything to check it against. The branch and tag
-# preconditions catch a VERSION bumped without a cycle behind it.
+# `.github` is one of the released repos and carries the notes; the other nine are compared against
+# it, so lockstep is checked. Whether the reference itself is wrong has nothing to check it against.
+# The branch and tag preconditions catch a VERSION bumped without a cycle behind it.
 RELEASE="$(cat "$WORKSPACE/.github/VERSION" 2>/dev/null || true)"
 case "$RELEASE" in
   ''|*[!0-9]*) echo "cannot derive the release ordinal: $WORKSPACE/.github/VERSION is '${RELEASE:-<missing>}', expected a positive integer" >&2; exit 2 ;;
@@ -190,9 +186,8 @@ REPOS="software_governance conformance_workloads business_domains protocol_compi
 protocol_runtime snapshot_assembler protocol_transport snapshot_inspector \
 transformation_compilers .github"
 
-# One notes file per cycle, kept whether or not the cycle is published. It was formerly the squash
-# commit message, and is now simply the record of what a composition was — which is what it always
-# actually was. A cycle that is cut and never published still has a notes file, and that file is
+# One notes file per cycle, kept whether or not the cycle is published: the record of what a
+# composition was. A cycle that is cut and never published still has a notes file, and that file is
 # how anyone later reconstructs what happened between two published identities.
 NOTES="$WORKSPACE/.github/process/notes/release-$RELEASE.md"
 MSG="$([ -f "$NOTES" ] && cat "$NOTES" || true)"
@@ -425,10 +420,8 @@ done
 # ---------------------------------------------------------------------------
 # 3. Open the next cycle — FROM dev/$RELEASE, not from main
 #
-#    This is the one place the rewrite changes meaning rather than mechanism. It used to branch
-#    from main, which held the squash and therefore the content. main is now an orphan with no
-#    ancestry, so branching from it would restart development on a single commit and sever every
-#    cycle from the one before it.
+#    main is an orphan with no ancestry, so branching from it would restart development on a
+#    single commit and sever every cycle from the one before it.
 #
 #    -D is required rather than -d: history-$RELEASE already pins the tip, so nothing is lost, but
 #    git has no merge relation to reason about.

@@ -130,7 +130,7 @@ def main() -> int:
         if fqdn not in authored:
             # An artifact the compiler synthesized — a derived ASSERT has no authored block, by
             # construction. Counted rather than ignored: a jump in this number means something
-            # started being generated that used to be written.
+            # authored is now generated.
             derived += 1
             continue
         seen.add(fqdn)

@@ -38,9 +38,9 @@ if [[ "$MODE" == "--build" || "$MODE" == "--all" ]]; then
   # and reproducible by nothing. Its only copy is git. The exclusion is asserted below rather than
   # trusted, because a deletion here is silent and the loss is discovered much later.
   #
-  # The previous build output is moved aside, not deleted, and comes back if the rebuild fails. A
-  # failed build used to leave no snapshot at all, and every later check then failed for that
-  # reason instead of its own. It is deleted only once the new build has been assembled.
+  # The previous build output is moved aside, not deleted, and comes back if the rebuild fails, so
+  # a failed build never leaves the later checks without a snapshot to fail on for their own
+  # reasons. It is deleted only once the new build has been assembled.
   BACKUP="$(mktemp -d "$REAL_TMP/pgc_rebuild.XXXXXX")" || exit 1
   build_output() {
     find "$W" -type d \( -name snapshot -o -name snapshot_fed -o -name snapshot_mw \) \
@@ -118,8 +118,7 @@ fi
 # Every check and execution step runs through `step`, which keeps its output and exit code. The
 # verdict then compares the run against `expectations.yaml` — the RUNBOOK's "## Expected" table as
 # data. A step that fails, prints other than what is expected, is missing, or passes where it is red
-# by design fails the run. Before this, a failing test script left the run at exit 0, and the
-# expected-results table was a rule set in prose that nothing evaluated.
+# by design fails the run, so the expected-results table is a rule set that is evaluated, not prose.
 RUN="${PGC_REGRESSION_OUT:-$W/traces/regression}"
 rm -rf "$RUN" && mkdir -p "$RUN"
 step() {

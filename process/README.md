@@ -74,9 +74,8 @@ A thing does **not** belong here if:
 A check earns its place by failing when something is wrong and by being run. Two rules, both learned
 the hard way in this workspace:
 
-**Wire it into `regression.sh` in the same change.** Five test files once sat here and in the
-component repositories unrun; two of them had been failing for months and nobody knew, because
-nothing invoked them. An unrun check is worse than no check — it reads as coverage.
+**Wire it into `regression.sh` in the same change.** A test nothing invokes can fail for months
+unnoticed. An unrun check is worse than no check — it reads as coverage.
 
 **State its expected output in `RUNBOOK.md`.** Including when the expected output is a failure. Two
 things are red by design, and a run that is entirely green means something stopped reporting.
