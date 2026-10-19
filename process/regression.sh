@@ -195,7 +195,7 @@ if [[ "$MODE" == "--all" ]]; then
   # went unreported. Advisory failures exit 0 by design — `--strict` is what turns them red.
   step si_snapshot_validate si --snapshot "$W/snapshot" snapshot validate --strict
 
-  # What v5 published still means what it meant (`4e` SU-11), against the sealed composition.
+  # What the sealed composition published still means what it meant (`4e` SU-11).
   step published_identity python "$W/.github/process/published_identity_check.py"
   step single_instance python "$W/.github/process/single_instance_check.py" \
     --namespace transformation --namespace artifact --namespace lifecycle

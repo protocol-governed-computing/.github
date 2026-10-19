@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
-"""Published identity — what v5 published still means what it meant.
+"""Published identity — what the sealed composition published still means what it meant.
 
 `4e` SU-11: a change of meaning is a new identity. A sealed release is the one record a change can be
-measured against, so the check compares every identity in the sealed v5 composition
-(`pgc_release/snapshot`) with the same identity in the working composition (`snapshot/`). It compares
+measured against, so the check compares every identity in the sealed composition
+(`pgc_release/snapshot`, the identity its `MANIFEST.md` names) with the same identity in the working composition (`snapshot/`). It compares
 them by the platform's declaration of what carries meaning
 (`artifact::VOCAB_DECLARATION_REPRESENTATION_V0`, read through `transformation.build.sameness`).
 
 A reference moved to the declared successor of an artifact superseded by exactly one successor is
 not a change of meaning.
 
-An identity added since v5 is not published, so it is not compared. An identity v5 published and the
-working composition no longer holds is a finding unless `retired_identities.yaml` records its
-deletion (`4e` SU-12). A recorded identity is retired for good, published or not:
+An identity added since that publication is not published, so it is not compared. An identity it
+published and the working composition no longer holds is a finding unless `retired_identities.yaml`
+records its deletion (`4e` SU-12). A recorded identity is retired for good, published or not:
 - one present in the working composition is a finding, because a deleted name is never used again;
 - one a live artifact names is a finding, unless the artifact is its successor. A node's name and a
   routing target are places, not references.
@@ -23,6 +23,7 @@ nothing published is missing, 1 otherwise.
 from __future__ import annotations
 
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -33,6 +34,9 @@ import retirement
 WORKSPACE = Path(__file__).resolve().parents[2]
 PUBLISHED = WORKSPACE / "pgc_release" / "snapshot"
 WORKING = WORKSPACE / "snapshot"
+# The public identity the sealed composition was published as, from the manifest that names it.
+SEALED = re.search(r"^\*\*Public identity:\*\* (v\d+)$",
+                   (WORKSPACE / "pgc_release" / "MANIFEST.md").read_text(encoding="utf-8"), re.M).group(1)
 
 
 def frontmatters(root: Path) -> dict[str, dict]:
@@ -83,7 +87,7 @@ def main() -> int:
     findings: list[str] = []
     for fqdn in sorted(set(published) - set(working)):
         if fqdn not in retired:
-            findings.append(f"{fqdn}\n   published in v5, no longer in the composition, "
+            findings.append(f"{fqdn}\n   published in {SEALED}, no longer in the composition, "
                             f"and no deletion is recorded")
     for fqdn in sorted(set(retired) & set(working)):
         findings.append(f"{fqdn}\n   recorded as deleted and still in the composition")
@@ -96,11 +100,11 @@ def main() -> int:
         if differences:
             shown = "\n   ".join(differences[:6])
             more = f"\n   … and {len(differences) - 6} more" if len(differences) > 6 else ""
-            findings.append(f"{fqdn}\n   changed meaning since v5:\n   {shown}{more}")
+            findings.append(f"{fqdn}\n   changed meaning since {SEALED}:\n   {shown}{more}")
 
     if not findings:
         deleted = len(set(published) & set(retired))
-        print(f"PUBLISHED IDENTITY PASSED — {len(published)} identities published in v5, "
+        print(f"PUBLISHED IDENTITY PASSED — {len(published)} identities published in {SEALED}, "
               f"none changed meaning, {deleted} deleted by record; {len(retired)} identities "
               f"retired, none reused or named")
         return 0
@@ -108,7 +112,7 @@ def main() -> int:
     for finding in findings:
         print(f"\n{finding}")
     print(f"\nPUBLISHED IDENTITY FAILED — {len(findings)} of {len(published)} identities "
-          f"published in v5")
+          f"published in {SEALED}")
     return 1
 
 

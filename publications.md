@@ -20,7 +20,7 @@ no public identity.
 
 **The number counts publications and asserts nothing else.** It is not a semantic version and
 carries no major, minor or patch. A publication that changes everything and one that changes almost
-nothing both advance it by one, and the release note for the cycle says which it was.
+nothing both advance it by one, and the publication's entry below says which it was.
 
 ---
 
@@ -192,3 +192,35 @@ what it determines and what it admits, not only in how it is packaged.
 more conformance than `v4`, supersedes no specification revision, and stands in no declared relation
 to the standard's own revision identity. The published version `5.0.0` names this publication and is
 not a semantic-versioning claim about compatibility.
+
+## `v6` — the baseline
+
+**Supersedes `v5`.** The same governance surface and the same eight domains, now 556 protocol
+artifacts under `GOVERNANCE_SURFACE_PROFILE_V0`. The sealed composition is snapshot
+`13e3c5bb502e2548389f5787caa9438247ee34f9d510ce6a8a3ed980fdf974d1`.
+
+**Published at composition ordinal 18.** `v5` was published at ordinal 17.
+
+**Why it was issued.** `v6` is a baseline: every later change is measured against it.
+
+*Every identity starts again.* Every artifact is `_V0`, no artifact declares `supersedes`, and the
+retirement ledger is empty. The baseline was built outside the lifecycle, by ruling, so what `v5`
+published under an identity is not compared with what `v6` holds under the same one.
+
+*Supersession is declared once, on the successor.* No schema admits `superseded_by`. The compiler
+derives which artifacts are superseded from every `supersedes`, so the predecessor names nothing about
+its own retirement.
+
+*Each domain's design of record is generated from its registry.* Construction reproduces every
+designed artifact from it. The change dossiers that produced the domains are held at the `v5` tag.
+
+*Distributions are versioned on their own.* Each starts at `6.0.0` and moves only when its repository
+changes. `pgc_release/composition.json` records which version of each the composition holds, and
+`pgc_install` pins exactly those. `pgc-transport` is published for the first time.
+
+**Why `v5` could not be reused.** `5.0.0` is published and immutable. The material also differs in
+what it determines, and many identities it names are renamed or gone.
+
+**What it does not assert.** The identity counts publications and nothing else. `v6` does not claim
+more conformance than `v5`, supersedes no specification revision, and stands in no declared relation
+to the standard's own revision identity.
