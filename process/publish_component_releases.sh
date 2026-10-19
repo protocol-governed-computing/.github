@@ -25,16 +25,15 @@ PUBLIC="$(cat "$WORKSPACE/.github/PUBLIC_VERSION" 2>/dev/null || true)"
 COMPONENTS="$(cd "$WORKSPACE/.github/process" && python3 -c 'from compose_release import COMPONENTS; print(" ".join(COMPONENTS))')" \
   || { echo "cannot read COMPONENTS from compose_release.py" >&2; exit 2; }
 if [ "${1:-}" = "--verify" ]; then
-  # Read the way the composition reads them — compose_release's paged query and title match.
+  # Read the way the composition reads them — compose_release's paged query and concept-DOI match.
   cd "$WORKSPACE/.github/process" && python3 - "$PUBLIC" <<'PY'
 import sys
-from compose_release import COMPONENTS, ORCID, zenodo_records
+from compose_release import COMPONENTS, ORCID, component_record, zenodo_records
 public = sys.argv[1]
 records = zenodo_records(ORCID)
 missing = 0
 for repo in COMPONENTS:
-    hit = next((h for h in records if f"({repo})" in (h["metadata"].get("title") or "")
-                and h["metadata"].get("version") == public), None)
+    hit = component_record(repo, public, records)
     print(f"  {'OK     ' if hit else 'MISSING'}  {repo:<24} {hit['doi'] + '  ' + hit['created'] if hit else ''}")
     missing += hit is None
 print(f"\n  {len(COMPONENTS) - missing}/{len(COMPONENTS)} components have a record at {public}")

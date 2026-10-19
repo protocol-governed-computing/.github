@@ -23,6 +23,9 @@ The component DOIs are DISCOVERED, not declared. A declared list is a second cop
 already holds, maintained by hand, with nothing to catch it going stale — the same failure the
 release ordinal had before it was derived. Discovery fails hard when a component's record is
 missing, which is the honest outcome: the composition is not assemblable until every part is.
+
+What is declared is each component's concept DOI: the identity Zenodo gave the repository once,
+which every version shares and no rename or retitling changes. A version is found under it.
 """
 
 import json
@@ -49,6 +52,21 @@ COMPONENTS = [
     "snapshot_inspector",
     "transformation_compilers",
 ]
+
+# Each component's Zenodo concept DOI. Records are matched on it, not on the title: the title comes
+# from the repository's `.zenodo.json` at the tag and cannot be edited after the mint, so a title
+# that lags a rename would hide a record that exists.
+COMPONENT_CONCEPTS = {
+    "software_governance": "10.5281/zenodo.22183276",
+    "conformance_workloads": "10.5281/zenodo.22183278",
+    "business_domains": "10.5281/zenodo.22183280",
+    "protocol_compiler": "10.5281/zenodo.22183282",
+    "protocol_runtime": "10.5281/zenodo.22183284",
+    "snapshot_assembler": "10.5281/zenodo.22183286",
+    "protocol_transport": "10.5281/zenodo.22183290",
+    "snapshot_inspector": "10.5281/zenodo.22183292",
+    "transformation_compilers": "10.5281/zenodo.22183295",
+}
 
 
 def die(msg):
@@ -85,23 +103,24 @@ def zenodo_records(orcid):
     die(f"Zenodo returned more than {ZENODO_PAGE * ZENODO_MAX_PAGES} records; raise the page cap")
 
 
+def component_record(repo, public, records):
+    """The record of this component at this public identity, or None."""
+    return next(
+        (
+            h
+            for h in records
+            if h.get("conceptdoi") == COMPONENT_CONCEPTS[repo]
+            and h.get("metadata", {}).get("version") == public
+        ),
+        None,
+    )
+
+
 def component_dois(public, records):
-    """
-    Match on the repo name in parentheses in the record title, at this public identity.
-    The component deposits are titled e.g. `... Protocol Compiler (protocol_compiler)`, so the
-    repo name is carried in the metadata rather than inferred from ordering.
-    """
+    """Every component's version DOI at this public identity, found under its concept DOI."""
     found, missing = {}, []
     for repo in COMPONENTS:
-        hit = next(
-            (
-                h
-                for h in records
-                if f"({repo})" in (h.get("metadata", {}).get("title") or "")
-                and h.get("metadata", {}).get("version") == public
-            ),
-            None,
-        )
+        hit = component_record(repo, public, records)
         if hit is None:
             missing.append(repo)
         else:
