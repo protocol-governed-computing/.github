@@ -209,14 +209,17 @@ That one is red by ruling while the baseline is built, and it returns to a plain
   `design/`, and a change is authored in `cr_dossiers/`.
 - **E5.** Each repository is clean on `dev/18`, and `pgc_install` `dev/18` is backed up.
 
-## F. Cut
+## F. Cut — Done
 
-- **F1.** `regression.sh --all` is green with no `red_by_design`, and a second run is identical.
-  `published_identity` passes against the sealed v6, and its expectation is restored to a plain pass.
-- **F2.** Two clean rebuilds, and a rebuild in a second folder, give one snapshot identity.
-- **F3.** `release.sh` cuts v6. Every distribution is built and uploaded, `pgc-transport` for the
-  first time. `pgc_release` v6 is sealed and tagged, and its DOI is minted.
-- **F4.** Zenodo `--verify` passes.
+- **F1.** `regression.sh --all` passes 81/81 with no `red_by_design`, and a second run is identical.
+  `published_identity` passes against the sealed v6: 540 identities, none changed meaning.
+- **F2.** Two clean rebuilds, and a rebuild in a second folder, give one snapshot identity,
+  `13e3c5bb502e2548389f5787caa9438247ee34f9d510ce6a8a3ed980fdf974d1`. A rebuild on `dev/19`
+  differs from it only in the toolchain ordinal and timestamps.
+- **F3.** `release.sh` cut v6. All nine distributions and `protocol-governed-computing` are on PyPI
+  at `6.0.0`, `pgc-transport` for the first time. `pgc_release` v6 is sealed and tagged, and its
+  DOI is `10.5281/zenodo.23485442`.
+- **F4.** Zenodo `--verify` passes 9/9. Components are matched by concept DOI, not by title.
 
 ## G. Final test, then lock
 

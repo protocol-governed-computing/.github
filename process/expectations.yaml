@@ -238,12 +238,8 @@ steps:
     expect: ["SINGLE INSTANCE PASSED — \\d+ artifacts in transformation, artifact, lifecycle, each in one version"]
   - id: published_identity
     section: checks
-    exit: 1
     # compares the working snapshot's identities against the sealed composition in pgc_release
-    expect: ["PUBLISHED IDENTITY FAILED — \\d+ of \\d+ identities published in v5"]
-    red_by_design: >-
-      the v6 baseline is built outside the lifecycle and changes what v5 published, by ruling; it
-      compares against v6 from the cut
+    expect: ["PUBLISHED IDENTITY PASSED — \\d+ identities published in v6, none changed meaning"]
   - id: si_snapshot_validate
     section: checks
     # --strict: an advisory finding fails the step, so every check, advisory or not, holds at zero.
