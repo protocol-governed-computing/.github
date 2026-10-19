@@ -1,0 +1,317 @@
+# What a regression run is expected to report — RUNBOOK.md "## Expected", as data.
+#
+# `regression_verdict.py` compares every step `regression.sh` runs against this file. The RUNBOOK
+# explains each row; this file is what is checked. When a result changes on purpose, change it here
+# in the same commit, with the reason. That keeps each result a decision rather than drift.
+#
+# Each step has:
+#   id            — the name `regression.sh` gives the step
+#   section       — checks (run by --all) | execution (run by every mode)
+#   exit          — the exit code expected (default 0)
+#   expect        — regular expressions that must each appear in the step's output. Counts are exact.
+#   red_by_design — set on a step expected to fail, saying why. If it passes, the run fails as an
+#                   UNEXPECTED PASS: a known failure that stops failing is a change nobody decided.
+
+steps:
+
+  # ── checks ───────────────────────────────────────────────────────────────────────────────────
+  - id: governance_closure
+    section: checks
+    expect: ["GOVERNANCE CLOSURE PASSED"]
+  - id: governance_chain_closure
+    section: checks
+    expect: ["GOVERNANCE CHAIN PASSED"]
+  - id: supersession_agreement
+    section: checks
+    # every `supersedes` relation names a predecessor present, or one deleted by record in the
+    # retirement ledger. The identity reset leaves none.
+    expect: ["SUPERSESSION AGREEMENT PASSED — 0 relation\\(s\\), 0 predecessor\\(s\\) present, 0 deleted by record"]
+  - id: human_block_fidelity
+    section: checks
+    expect: ["HUMAN BLOCK FIDELITY PASSED — 543 artifacts"]
+  - id: evidence_determinism
+    section: checks
+    expect: ["EVIDENCE DETERMINISM PASSED"]
+  - id: admission_contract_fidelity
+    section: checks
+    # every admission gate in force declares each input its act binds; a superseded intent is no gate
+    expect: ["ADMISSION CONTRACT FIDELITY PASSED — 37 gate\\(s\\), no under-declared input"]
+  - id: emit_rule_sets
+    section: checks
+    # the P7 and P8 rule sets emitted from the design language: a type rule per structured and
+    # citation column, the gated constraints, and the `document` header's derived rules
+    expect: ["p7\\s+283 rules", "p8\\s+39 rules"]
+  - id: build_payloads
+    section: checks
+    expect: ["OK\\s+83 payload\\(s\\) agree"]
+  - id: baseline_designs
+    section: checks
+    # every designed root's design of record is the one its registry generates
+    expect: ["BASELINE DESIGNS CURRENT — 0 stale"]
+  - id: author_transport_contracts
+    section: checks
+    expect: ["OK\\s+38 contract\\(s\\) for 19 operations agree"]
+  - id: frontmatter_fidelity
+    section: checks
+    expect: ["FRONTMATTER FIDELITY PASSED"]
+  - id: meta_test
+    section: checks
+    expect: ["META PASSED"]
+  - id: closure_test
+    section: checks
+    expect: ["CLOSURE PASSED — 9 phase\\(s\\) close over lifecycle::CONSTITUTION_CHANGE_MGMT_V0"]
+  - id: effectivity_test
+    section: checks
+    expect: ["EFFECTIVITY PASSED — 9 rule sets at their recorded revision"]
+  - id: render_vectors_test
+    section: checks
+    expect: ["RENDER VECTORS PASSED — 27 vectors"]
+  - id: construction_mapping_test
+    section: checks
+    expect: ["CONSTRUCTION MAPPING PASSED — 185 fields over 12 kinds"]
+  - id: interface_structures_test
+    section: checks
+    expect: ["INTERFACE STRUCTURES PASSED — 4 checks, 5 structures"]
+  - id: differential
+    section: checks
+    expect: ["DIFFERENTIAL PASSED — 83 document\\(s\\) across 9 phase\\(s\\)"]
+  - id: e2e_phases_test
+    section: checks
+    expect: ["E2E PASSED — 83 case\\(s\\)"]
+  - id: projection_test
+    section: checks
+    expect: ["PROJECTION PASSED"]
+  - id: construction_acceptance
+    section: checks
+    expect: ["270/270 artifacts reproduced across 6 domain\\(s\\)\\s+\\(0 field difference\\(s\\)\\)"]
+  - id: molecule_design_test
+    section: checks
+    expect: ["5/5 passed"]
+  - id: vector_design_test
+    section: checks
+    # a manifest is generated for an amendment, names every subdomain the domain holds, and an
+    # emitted amendment keeps the descriptions it replaces
+    expect: ["8/8 passed"]
+  - id: keyed_node_design_test
+    section: checks
+    # a route to a place the composition already has resolves; a contract redeclared whole requires
+    # only what it declares
+    expect: ["6/6 passed"]
+  - id: refusal_moment_design_test
+    section: checks
+    expect: ["4/4 passed"]
+  - id: semantic_change_design_test
+    section: checks
+    # a change of meaning is a new identity; a replacement accounts for its reach
+    expect: ["17/17 passed"]
+  - id: entrance_gate_design_test
+    section: checks
+    # an entrance supplies what its gate requires
+    expect: ["4/4 passed"]
+  - id: binding_literal_design_test
+    section: checks
+    # a literal means one thing to every rule that judges a binding; a generated value is stated
+    # only where its owner names a generator; construction renders a quoted or decimal literal as
+    # its value
+    expect: ["8/8 passed"]
+  - id: implementation_closure
+    section: checks
+    # every transform module is named by an artifact, and every named module is on disk
+    expect: ["IMPLEMENTATION CLOSURE PASSED — 37 transform\\(s\\)"]
+  - id: test_inspector
+    section: checks
+    # si.behavior_logic.list names each workflow's nodes by key; si.execution.explain is covered
+    expect: ["PASSED: 152/152"]
+  - id: domain_authoring
+    section: checks
+    expect: ["PASSED: 8/8"]
+  - id: test_indexes
+    section: checks
+    expect: ["PASSED: 13/13"]
+  - id: test_transform_conformance_evidence
+    section: checks
+    expect: ["PASSED: 36/36"]
+  - id: test_compiler_atoms
+    section: checks
+    expect: ["PASSED: 9/9"]
+  - id: test_molecule_composition
+    section: checks
+    # an atom a contract runs directly is sealed with its declared purity
+    expect: ["9/9 passed"]
+  - id: test_transform_conformance
+    section: checks
+    expect: ["10/10 passed"]
+  - id: test_vector_build
+    section: checks
+    expect: ["4/4 passed"]
+  - id: test_reference_semantics
+    section: checks
+    expect: ["18/18 passed"]
+  - id: test_routing_closure
+    section: checks
+    # a workflow routes every outcome its contracts can end with (GC-15), a step answers every outcome its capability declares (CP-13)
+    expect: ["12/12 passed"]
+  - id: test_routing_lookup
+    section: checks
+    # routing is a lookup with two answers; a contract declares no condition; a stood-down contract is not checked
+    expect: ["6/6 passed"]
+  - id: test_input_typed
+    section: checks
+    # a transform is given only values of the types it declares (INVARIANT_CT_INPUT_TYPED_V0)
+    expect: ["7/7 passed"]
+  - id: test_platform_vectors
+    section: checks
+    expect: ["3/3 passed"]
+  - id: test_keyed_chain_and_molecule_surface
+    section: checks
+    expect: ["4/4 passed"]
+  - id: test_dispatch_routing_fidelity
+    section: checks
+    expect: ["5/5 passed"]
+  - id: test_force_and_output_root
+    section: checks
+    # nothing superseded is in force; a build writes only where it declares
+    expect: ["9/9 passed"]
+  - id: test_governance_provenance
+    section: checks
+    # The script mutates governance to make its point; a run that died mid-mutation leaves it edited.
+    expect: ["PASS\\s+DETERMINISM", "PASS\\s+ISOLATION", "PASS\\s+SENSITIVITY", "PASS\\s+ENFORCEMENT",
+             "provenance restored: yes"]
+  # unittest suites: `^OK$` and not `OK (skipped=…)` — a suite that skipped everything is not a pass.
+  - id: test_reference_collatz
+    section: checks
+    # a sequence that does not end at 1 ends the run violated
+    expect: ["Ran 6 tests", "(?m)^OK$"]
+  - id: test_warm_boot
+    section: checks
+    # a profile changed after sealing, and a manifest not covering its profile, are refused
+    expect: ["Ran 8 tests", "(?m)^OK$"]
+  - id: test_resident_boot
+    section: checks
+    # a process verifies a snapshot once; a rewritten manifest is verified afresh, one that fails
+    # verification is refused, and a run writes its evidence and no picture
+    expect: ["Ran 4 tests", "(?m)^OK$"]
+  - id: test_federation
+    section: checks
+    expect: ["Ran 11 tests", "(?m)^OK$"]
+  - id: test_capability_concurrency
+    section: checks
+    expect: ["Ran 3 tests", "(?m)^OK$"]
+  - id: test_molecule_execution
+    section: checks
+    expect: ["Ran 11 tests", "(?m)^OK$"]
+  - id: test_node_keyed_routing
+    section: checks
+    # the trace names each place the run passed through
+    expect: ["Ran 4 tests", "(?m)^OK$"]
+  - id: test_examine
+    section: checks
+    # the examiner reads SCHEMA_TRACE_EVENT_V0, refuses any other format, and reads every trace the run wrote
+    expect: ["Ran 5 tests", "(?m)^OK$"]
+  - id: test_trace_path
+    section: checks
+    expect: ["Ran 7 tests", "(?m)^OK$"]
+  - id: test_transform_conformance_runner
+    section: checks
+    # a completed result carries exactly the outputs its transform declares
+    expect: ["Ran 15 tests", "(?m)^OK$"]
+  - id: test_no_default
+    section: checks
+    # a binding that reaches nothing is never given a value: a transform's path refuses,
+    # a result maps only on SUCCESS and must carry what it maps, an absent source is left out
+    expect: ["12/12 passed"]
+  - id: test_step_outcome
+    section: checks
+    # an unlisted step outcome refuses (EX-18); each step records its outcome and continuation (EV-19);
+    # a fault refuses rather than routing as VIOLATION, and an atom's own refusal still routes
+    expect: ["8/8 passed"]
+  - id: test_unknown_continuation
+    section: checks
+    # execution refuses a routing answer other than continue or exit
+    expect: ["3/3 passed"]
+  - id: test_no_smart_execution
+    section: checks
+    # no runtime module converts a value by its declared type; a planted conversion is found
+    expect: ["3/3 passed"]
+  - id: single_instance
+    section: checks
+    expect: ["SINGLE INSTANCE PASSED — \\d+ artifacts in transformation, artifact, lifecycle, each in one version"]
+  - id: published_identity
+    section: checks
+    exit: 1
+    # compares the working snapshot's identities against the sealed composition in pgc_release
+    expect: ["PUBLISHED IDENTITY FAILED — \\d+ of \\d+ identities published in v5"]
+    red_by_design: >-
+      the v6 baseline is built outside the lifecycle and changes what v5 published, by ruling; it
+      compares against v6 from the cut
+  - id: si_snapshot_validate
+    section: checks
+    # --strict: an advisory finding fails the step, so every check, advisory or not, holds at zero.
+    expect: ["valid\\s+True", "failed_checks: —",
+             "check\\s+republished_copies_agree\\s+examined\\s+\\d+\\s+violation_count\\s+0\\b",
+             "check\\s+bound_paths_declared_as_stores\\s+examined\\s+\\d+\\s+violation_count\\s+0\\b"]
+  - id: pgc_env_check
+    section: checks
+    expect: ["PGC ENVIRONMENT CHECK PASSED"]
+  - id: test_regression_verdict
+    section: checks
+    expect: ["8/8 passed"]
+
+  # ── execution ────────────────────────────────────────────────────────────────────────────────
+  - id: collatz
+    section: execution
+    expect: ["Status:\\s+SUCCESS", "all_terminate: true"]
+  - id: govern_agent_action
+    section: execution
+    expect: ["Status:\\s+SUCCESS"]
+  - id: provision_licensing
+    section: execution
+    expect: ["Status:\\s+SUCCESS"]
+  - id: catalog_registration
+    section: execution
+    expect: ["23/23 criteria hold"]
+  - id: catalog_works
+    section: execution
+    # the catalog holds every rule it applies and checks what it records
+    expect: ["27/27 criteria hold"]
+  - id: blockchain_identity
+    section: execution
+    expect: ["26/26 criteria hold\\s+\\(3 not exercised\\)"]
+  - id: blockchain_wallet
+    section: execution
+    expect: ["12/12 criteria hold\\s+\\(1 not exercised\\)"]
+  - id: clm_model_response
+    section: execution
+    expect: ["27/27 criteria hold"]
+  - id: clm_hosted_model
+    section: execution
+    # Qwen3 8B's words are not determined, so the regression leaves it out; --qwen exercises it.
+    expect: ["15/15 criteria hold  \\(1 not exercised\\)"]
+  - id: blockchain_routing_closure
+    section: execution
+    # a failed record ends identity's and wallet's acts as rejected
+    expect: ["6/6 criteria hold\\s+\\(2 not exercised\\)"]
+  - id: transformation_routing_closure
+    section: execution
+    # an observation that finds nothing ends a phase as rejected; answers and routing generated
+    expect: ["4/4 criteria hold\\s+\\(1 not exercised\\)"]
+  - id: ai_governance_reclaim_closure
+    section: execution
+    # a reclaim the registry refuses ends as still active, license kept
+    expect: ["4/4 criteria hold\\s+\\(0 not exercised\\)"]
+  - id: transport_cli
+    section: execution
+    # pgc_transport call: the Result Class → exit status projection (0, 1, 5, and 2 for a malformed
+    # invocation) and the response, for execution and for inspection through one command.
+    expect: ["TRANSPORT CLI PASSED — 8/8 cases"]
+  - id: demo_script
+    section: execution
+    # pgc_install/demo/pgc-demo.sh in workspace mode: play, the refusals, set-limit and its
+    # reproduced identity, tamper refused at acceptance, reset. The web pages are not served.
+    expect: ["DEMO SCRIPT PASSED — 12/12 cases"]
+  - id: trace_schema_conformance
+    section: execution
+    expect: ["TRACE SCHEMA CONFORMANCE PASSED — \\d+ trace\\(s\\)"]
+  - id: temp_hygiene
+    section: execution
+    expect: ["TEMP HYGIENE PASSED — no step left anything in its TMPDIR"]
