@@ -40,6 +40,10 @@ v6 is published. Every later change is measured against it.
   5. `publish_component_releases.sh`, then `--verify`
   6. `release.sh --publish-composition`
   7. `pgc_install`: build, upload, then orphan `main`
+- **The standard.** Each `.zenodo.json` "references" the version DOI of the standard revision the
+  composition implements; standard `v1` is `10.5281/zenodo.23486349`. Move it when the standard
+  moves. READMEs, `pyproject.toml` and `pgc status` link the concept DOI `22150615`, which always
+  resolves to the latest revision.
 - **Zenodo matching.** Component records are matched by concept DOI (`COMPONENT_CONCEPTS` in
   `compose_release.py`), not by title. The v6 transformation record is titled `(transformation)`,
   and Zenodo will not let it be edited.
