@@ -2,7 +2,7 @@
 
 Only the current handoff is kept here. Earlier handoffs are in git history: `git log -p -- doc/SOTU.md`.
 
-## SOTU Handoff — 2026-10-19 · v6 is the baseline; dev/19 is open
+## SOTU Handoff — 2026-10-19 · v6 is the baseline, standard v1 is published, dev/19 is open
 
 ### Where things stand
 v6 is published. Every later change is measured against it.
@@ -14,7 +14,14 @@ v6 is published. Every later change is measured against it.
 - **PyPI:**
   - The nine components are at `6.0.0`.
   - `protocol-governed-computing` is at `6.0.1`. It pins those nine, and `pgc status` names composition v6.
+- **Standard `v1`:** DOI `10.5281/zenodo.23486349` (concept `22150615`). It declares eight new
+  obligations against `v0` (`standards/revisions.md`). The v6 reset reads as a genesis (`1b` §11),
+  so it needed no spec change. Implementation repos link the concept DOI and cite `v1` in
+  `.zenodo.json`.
+- **Field manual:** `omnibachi-site/content/papers/foundations/pgc_field_manual_v1.md` describes the
+  v6 composition. You edited it in place, so the Zenodo v1 deposit differs from the site.
 - **Git:**
+  - Every repo is clean and pushed. `dev/19` and `main` exist locally and on the remote.
   - Every repo's `main` is one orphan commit, tagged `v6`. `pgc_install`'s `main` is `6.0.1`, and its `v6` tag stays on `6.0.0`.
   - Unsquashed history is in the local `history-18` tags.
   - Work happens on `dev/19`, where `VERSION` is 19.
@@ -49,6 +56,9 @@ v6 is published. Every later change is measured against it.
   and Zenodo will not let it be edited.
 
 ### Open work
+- **Realization map:** `standards/doc/realization_map.md` is still measured against `72404ce4…`
+  under `v0`. Re-survey it against the sealed v6 and standard `v1`. Record v6 as a genesis there,
+  and give each new `v1` obligation its status.
 - **CLM parked changes:** `business_domains/causal_language_model/doc/cr_sequence.md`, each run
   as a change dossier on its baseline design.
 - **`README_DEV` "Known rough edges":**
