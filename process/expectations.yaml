@@ -28,7 +28,7 @@ steps:
     expect: ["SUPERSESSION AGREEMENT PASSED — 0 relation\\(s\\), 0 predecessor\\(s\\) present, 0 deleted by record"]
   - id: human_block_fidelity
     section: checks
-    expect: ["HUMAN BLOCK FIDELITY PASSED — 543 artifacts"]
+    expect: ["HUMAN BLOCK FIDELITY PASSED — 548 artifacts"]
   - id: evidence_determinism
     section: checks
     expect: ["EVIDENCE DETERMINISM PASSED"]
@@ -50,7 +50,7 @@ steps:
     expect: ["BASELINE DESIGNS CURRENT — 0 stale"]
   - id: author_transport_contracts
     section: checks
-    expect: ["OK\\s+38 contract\\(s\\) for 19 operations agree"]
+    expect: ["OK\\s+40 contract\\(s\\) for 20 operations agree"]
   - id: frontmatter_fidelity
     section: checks
     expect: ["FRONTMATTER FIDELITY PASSED"]
@@ -121,7 +121,7 @@ steps:
   - id: test_inspector
     section: checks
     # si.behavior_logic.list names each workflow's nodes by key; si.execution.explain is covered
-    expect: ["PASSED: 152/152"]
+    expect: ["PASSED: 167/167"]
   - id: domain_authoring
     section: checks
     expect: ["PASSED: 8/8"]
@@ -159,6 +159,11 @@ steps:
     section: checks
     # a transform is given only values of the types it declares (INVARIANT_CT_INPUT_TYPED_V0)
     expect: ["7/7 passed"]
+  - id: test_governance_ontology
+    section: checks
+    # the sealed Governance Ontology and the compiler's built-in table state one ontology
+    # (INVARIANT_GOVERNANCE_ONTOLOGY_AGREES_V0)
+    expect: ["6/6 passed"]
   - id: test_platform_vectors
     section: checks
     expect: ["3/3 passed"]
