@@ -2,10 +2,12 @@
 
 Only the current handoff is kept here. Earlier handoffs are in git history: `git log -p -- doc/SOTU.md`.
 
-## SOTU Handoff — 2026-10-21 · kind map and sealed ontology on dev/19; redundancy study shelved
+## SOTU Handoff — 2026-10-21 · kind map, sealed ontology and VOCAB_PROTOCOL_KINDS_V1 on dev/19
 
 ### This session
-Three pieces of work. Every repo is committed, pushed and clean on `dev/19`.
+Five pieces of work. Every repo is committed and pushed on `dev/19` **except the V1 change in
+`software_governance` and `protocol_compiler`, and the completeness fix in `transformation_compilers`.** `.github` already records V0 as retired, so commit
+those two first (see "Next Session Should Start With").
 
 **1. The kind map: `si.kind.map`** (`snapshot_inspector` `7060f45`)
 - The composition read one level up: every artifact kind, its category, provenance and runtime
@@ -34,12 +36,25 @@ Three pieces of work. Every repo is committed, pushed and clean on `dev/19`.
   classification to compile the vocabulary.
 - `si.kind.map` reads the ontology and reports `ontology_declared: false` where a snapshot seals none.
 
-**3. `VOCAB_PROTOCOL_KINDS_V1` adds `TEST_DATA`**
+**3. `VOCAB_PROTOCOL_KINDS_V1` adds `TEST_DATA`** (`.github` `49eb1b2`; uncommitted in `software_governance`, `protocol_compiler`)
 - V0 listed sixteen artifact kinds and omitted `TEST_DATA`. V1 supersedes it. V0 is deleted and
   recorded in `retired_identities.yaml`, the ledger's first entry.
 - The compiler's vocabulary handler names V1 as the reserving vocabulary for `node_types`.
 
-**4. Design-redundancy study, shelved** (`.github` `2018890`, `doc/FINDINGS_DESIGN_REDUNDANCY.md`)
+**4. Construction completeness gaps closed** (`transformation_compilers`, `.github`; uncommitted at handoff)
+- Both gaps were measurement defects, not design gaps. The designs stated the values; the measure
+  counted an empty value as undetermined.
+  - ai_governance had 3 facts: literal `''` and `{}` on workflow node inputs.
+  - transformation had 6: `gate: null` on phases with no human gate, which its STRUCTURE states
+    on purpose.
+- `render.py` now applies the existing rule, "an empty value a design wrote is determined", to
+  workflow node literals and to STRUCTURE properties. It already applied it to contract steps.
+- All six designs measure 100%, and every rendered artifact is byte-identical to before.
+- **The gate.** `write_baseline_designs.py --check` now also requires each design of record to
+  determine its whole registry. This held as a v6 baseline condition, but nothing measured it.
+  Without the fix it reports `INCOMPLETE — 4/6` and exits 1.
+
+**5. Design-redundancy study, shelved** (`.github` `2018890`, `doc/FINDINGS_DESIGN_REDUNDANCY.md`)
 - **The question.** Could a smaller human vocabulary, with the machine artifacts fully generated,
   halve what a person authors?
 - **The answer is no.** Measured in P7 register cells, what a person writes, 13–20% is
@@ -135,13 +150,6 @@ v6 is published. Every later change is measured against it.
   - §4 The artifact ontology: the ontology is now sealed as `artifact::VOCAB_GOVERNANCE_ONTOLOGY_V0`.
     `artifact::INVARIANT_GOVERNANCE_ONTOLOGY_AGREES_V0` refuses a platform build in which it and the
     compiler's built-in table differ.
-- **Construction completeness gaps, found this session.** Both predate it, and the regression does
-  not catch them.
-  - `ai_governance` is 99.75% (1218/1221). Three node inputs in `WF_PROVISION_AI_LICENSING_V0` are
-    not determined by its design: `CC_APPEND_AUDIT_EVENT_SUCCESS.inputs.reason_code` and `.data`,
-    and `CC_APPEND_AUDIT_EVENT_DENIED.inputs.data`.
-  - `transformation` is 99.53% (1282/1288): six `core.phases[].gate` facts.
-  - Reproduce with `python -m transformation construction check <root>/design --root <root>`.
 - **Unenforced admission in collatz.** `IN_COLLATZ_INPUT_VALIDATED_V0` keeps its rules as prose in
   `extensions.admission_rules`, which construction drops. The enforced bound is in
   `TI_COLLATZ_COMPUTE_V0` (`number`, 1–999999). TI and TE are outside the design language
@@ -162,12 +170,24 @@ v6 is published. Every later change is measured against it.
 - **Python:** the published packages ran on Python 3.15 under pipx, but the workspace builds and tests on 3.12.
 
 ### Next Session Should Start With
-Read this, then run `regression.sh --all` on `dev/19` (expect 82/82). Next, decide whether the two
-construction completeness gaps are defects to close or limits to record. They are the only measured
-defects open, and a design below 100% means construction cannot rebuild that registry from it.
+1. **Commit the V1 change.** `dev/19` is inconsistent on the remote until this lands:
 
-Not yet acted on, from the kind-map mock:
-- References held under keys that `VOCAB_DECLARATION_REPRESENTATION_V0` does not declare as
-  references: `target_cs` (CC→CS), `event_type` / `event_code` (→EV), `governs` (SURFACE→CS).
-- Sameness compares them as plain values.
-- They belong in `si.snapshot.validate`, not in the map.
+   ```bash
+   cd ~/protocol-governed-computing/software_governance
+   git add -A registry/vocabulary surface_map/governance_surface_map.yaml
+   git commit -m "VOCAB_PROTOCOL_KINDS_V1: add TEST_DATA to artifact_kinds; supersede V0"
+   git push origin dev/19
+   cd ../protocol_compiler
+   git add compiler/governance_engine/assertions/handlers/assert_vocabulary_symbols_well_formed_v0.py
+   git commit -m "Read node types from VOCAB_PROTOCOL_KINDS_V1"
+   git push origin dev/19
+   ```
+2. Run `regression.sh --all` on `dev/19` and expect 82/82. It passed 82/82 on 2026-10-21 with the V1
+   change in the working tree.
+3. **References held under undeclared keys.** The kind-map mock surfaced these:
+   - `target_cs` (CC→CS), `event_type` / `event_code` (→EV), `governs` (SURFACE→CS)
+   - `VOCAB_DECLARATION_REPRESENTATION_V0` does not declare them as references, so sameness
+     compares them as plain values.
+   - The check belongs in `si.snapshot.validate`.
+   - Declaring them changes a published v6 identity, so it is another supersession and counts
+     toward the genesis-or-evolution decision.

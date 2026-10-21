@@ -47,7 +47,8 @@ steps:
   - id: baseline_designs
     section: checks
     # every designed root's design of record is the one its registry generates
-    expect: ["BASELINE DESIGNS CURRENT — 0 stale"]
+    # and each determines its whole registry, measured as construction measures it
+    expect: ["BASELINE DESIGNS CURRENT — 0 stale", "BASELINE DESIGNS COMPLETE — 6/6 determine their registry"]
   - id: author_transport_contracts
     section: checks
     expect: ["OK\\s+40 contract\\(s\\) for 20 operations agree"]
