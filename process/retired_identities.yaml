@@ -6,4 +6,11 @@
 # Each entry records the deleted identity, the person who decided, the determination that no
 # retention condition held, and the change that deleted it. When `retention.yaml` lists conditions,
 # an entry also names each of them under `conditions_not_holding`.
-retired: []
+retired:
+- identity: vocabulary::VOCAB_PROTOCOL_KINDS_V0
+  superseded_by: vocabulary::VOCAB_PROTOCOL_KINDS_V1
+  decided_by: Bhash Ganti
+  determination: Development is open; retention.yaml declares no stable baseline and no retention
+    conditions, so none holds.
+  change: VOCAB_PROTOCOL_KINDS_V1 adds TEST_DATA to artifact_kinds. V0 listed sixteen kinds while the
+    composition carried TEST_DATA artifacts and the Governance Ontology classified the kind.

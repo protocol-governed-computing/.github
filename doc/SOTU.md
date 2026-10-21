@@ -34,7 +34,12 @@ Three pieces of work. Every repo is committed, pushed and clean on `dev/19`.
   classification to compile the vocabulary.
 - `si.kind.map` reads the ontology and reports `ontology_declared: false` where a snapshot seals none.
 
-**3. Design-redundancy study, shelved** (`.github` `2018890`, `doc/FINDINGS_DESIGN_REDUNDANCY.md`)
+**3. `VOCAB_PROTOCOL_KINDS_V1` adds `TEST_DATA`**
+- V0 listed sixteen artifact kinds and omitted `TEST_DATA`. V1 supersedes it. V0 is deleted and
+  recorded in `retired_identities.yaml`, the ledger's first entry.
+- The compiler's vocabulary handler names V1 as the reserving vocabulary for `node_types`.
+
+**4. Design-redundancy study, shelved** (`.github` `2018890`, `doc/FINDINGS_DESIGN_REDUNDANCY.md`)
 - **The question.** Could a smaller human vocabulary, with the machine artifacts fully generated,
   halve what a person authors?
 - **The answer is no.** Measured in P7 register cells, what a person writes, 13–20% is
@@ -75,7 +80,7 @@ v6 is published. Every later change is measured against it.
   - Unsquashed history is in the local `history-18` tags.
   - Work happens on `dev/19`, where `VERSION` is 19.
 - **Verified:**
-  - `regression.sh --all` passes 82/82 on `dev/19` (2026-10-21, after every commit above). The 82nd
+  - `regression.sh --all` passes 82/82 on `dev/19` (2026-10-21, after the V1 supersession). The 82nd
     step is `test_governance_ontology` (6/6). `test_inspector` is 167/167, and
     `human_block_fidelity` counts 548 artifacts. The working snapshot holds 545.
   - Rebuilds give one identity.
@@ -105,6 +110,17 @@ v6 is published. Every later change is measured against it.
 - **Zenodo matching.** Component records are matched by concept DOI (`COMPONENT_CONCEPTS` in
   `compose_release.py`), not by title. The v6 transformation record is titled `(transformation)`,
   and Zenodo will not let it be edited.
+- **Decide before the cut: genesis or evolution.** dev/19 carries one supersession so far,
+  `VOCAB_PROTOCOL_KINDS_V1` over V0, which is deleted and recorded in `retired_identities.yaml`.
+  - **Evolution** (the default): cut as is. Superseded names stay `_V1`, and the ledger keeps its
+    record.
+  - **Genesis**, as the v6 reset was (`1b` §11): one sweep at the cut.
+    - Reset every superseded identity to `_V0` and drop its `supersedes`.
+    - Empty the retirement ledger.
+    - Replace the v6 baseline ruling in `rulings.md` with one for this cut.
+    - Make `published_identity_check.py` treat a declared genesis as having no predecessor to
+      compare against, and update its line in `expectations.yaml`.
+  - Choose genesis only if several supersessions have built up by then. For one, it is churn.
 
 ### Open work
 - **Field manual, at the next cut.** The kind map (`si.kind.map`) is on dev/19, not in v6, so the
@@ -119,9 +135,6 @@ v6 is published. Every later change is measured against it.
   - §4 The artifact ontology: the ontology is now sealed as `artifact::VOCAB_GOVERNANCE_ONTOLOGY_V0`.
     `artifact::INVARIANT_GOVERNANCE_ONTOLOGY_AGREES_V0` refuses a platform build in which it and the
     compiler's built-in table differ.
-- **`VOCAB_PROTOCOL_KINDS_V0` omits `TEST_DATA`.** Its `artifact_kinds` group lists 16 kinds, but the
-  composition carries 39 `TEST_DATA` artifacts and the ontology classifies the kind. It is published
-  in v6, so the fix needs a new version or a ruling.
 - **Construction completeness gaps, found this session.** Both predate it, and the regression does
   not catch them.
   - `ai_governance` is 99.75% (1218/1221). Three node inputs in `WF_PROVISION_AI_LICENSING_V0` are
@@ -151,8 +164,7 @@ v6 is published. Every later change is measured against it.
 ### Next Session Should Start With
 Read this, then run `regression.sh --all` on `dev/19` (expect 82/82). Next, decide whether the two
 construction completeness gaps are defects to close or limits to record. They are the only measured
-defects open, and a design below 100% means construction cannot rebuild that registry from it. The
-`VOCAB_PROTOCOL_KINDS_V0` omission is a published-identity question; decide it with them.
+defects open, and a design below 100% means construction cannot rebuild that registry from it.
 
 Not yet acted on, from the kind-map mock:
 - References held under keys that `VOCAB_DECLARATION_REPRESENTATION_V0` does not declare as
