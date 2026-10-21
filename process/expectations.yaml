@@ -69,7 +69,7 @@ steps:
     expect: ["RENDER VECTORS PASSED — 27 vectors"]
   - id: construction_mapping_test
     section: checks
-    expect: ["CONSTRUCTION MAPPING PASSED — 185 fields over 12 kinds"]
+    expect: ["CONSTRUCTION MAPPING PASSED — 186 fields over 12 kinds"]
   - id: interface_structures_test
     section: checks
     expect: ["INTERFACE STRUCTURES PASSED — 4 checks, 5 structures"]
@@ -147,7 +147,7 @@ steps:
     expect: ["4/4 passed"]
   - id: test_reference_semantics
     section: checks
-    expect: ["18/18 passed"]
+    expect: ["20/20 passed"]
   - id: test_routing_closure
     section: checks
     # a workflow routes every outcome its contracts can end with (GC-15), a step answers every outcome its capability declares (CP-13)
