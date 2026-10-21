@@ -2,12 +2,36 @@
 
 Only the current handoff is kept here. Earlier handoffs are in git history: `git log -p -- doc/SOTU.md`.
 
-## SOTU Handoff — 2026-10-21 · kind map, sealed ontology, genesis declared, names carried as data closed on dev/19
+## SOTU Handoff — 2026-10-21 · kind map, sealed ontology, genesis declared, names carried as data closed, every kind schema-governed on dev/19
 
 ### This session
-Seven pieces of work. Items 1–6 are committed on `dev/19`. **Item 7 is uncommitted in
-`software_governance`, `protocol_compiler`, `business_domains`, `transformation_compilers` and
-`.github`** (see "Next Session Should Start With").
+Eight pieces of work. Items 1–7 are committed and pushed on `dev/19`. **Item 8 is uncommitted in
+`software_governance`** (see "Next Session Should Start With").
+
+**8. Every artifact kind is schema-governed** (uncommitted)
+- `STRUCTURE_SCHEMA_DISPATCH_V0` recorded four kinds as `description_pending`. Each build now
+  validates them, and the `description_pending` block is gone.
+  - `SCHEMA_ACTOR_V0`, corrected: all 14 actors failed it. It pinned the wrong constitution,
+    required a `role` no actor has, and forbade `attributes`, `type` and `description`.
+  - `SCHEMA_INTENT_V0`, corrected: all 37 intents failed it. It pinned a short-code constitution
+    and rejected `integer`.
+  - `SCHEMA_TRANSPORT_INGRESS_V0` and `SCHEMA_TRANSPORT_EGRESS_V0`, new, written from Transport
+    Standard V0 §6–7 and the 48 TI/TE artifacts:
+    - Each has a closed surface.
+    - A TI's `handler.kind` is `WF_INVOCATION` (needs `workflow`) or `SNAPSHOT_READ`/`SNAPSHOT_QUERY`
+      (needs `operation` and `implementation`).
+    - A TE's Result Classes are the six that `CONSTITUTION_TRANSPORT_EGRESS_V0` governs.
+    - A TE's `op` values and its `evidence_policy` are the ones the transport resolver implements.
+- All 99 artifacts of the four kinds pass. Proven negative: a TI with `handler.kind: WF_TELEPORT`
+  and an actor declaring `permissions` each fail with `ASSERT_SCHEMA_CONFORMANCE_V0`.
+- `domain_authoring` caught that an actor attribute may carry a literal `value`. The schema allows
+  it.
+- No transport behaviour changed: the schemas describe the existing declarations.
+- **Found, not fixed:**
+  - `CONSTITUTION_ACTOR_IDENTITY_V0` says `core.type` comes from "the governed actor type
+    vocabulary", but no such vocabulary exists.
+  - Actor types are inconsistent: `ENDUSER` 5, `system` 4, `human` 3, `agent` 1, `person` 1.
+  - The schema accepts any non-empty type until a vocabulary is decided.
 
 **7. The last names carried as data, closed** (uncommitted)
 - **Bare codes are refused under name parts.** `VOCAB_DECLARATION_REPRESENTATION_V0` adds a group,
@@ -133,13 +157,13 @@ v6 is published. dev/19 is declared a genesis, so nothing is measured against it
 - **Field manual:** `omnibachi-site/content/papers/foundations/pgc_field_manual_v1.md` describes the
   v6 composition. You edited it in place, so the Zenodo v1 deposit differs from the site.
 - **Git:**
-  - Items 1–6 are committed and pushed. Item 7 is uncommitted in five repos. `dev/19` and `main`
+  - Items 1–7 are committed and pushed. Item 8 is uncommitted in `software_governance`. `dev/19` and `main`
     exist locally and on the remote.
   - Every repo's `main` is one orphan commit, tagged `v6`. `pgc_install`'s `main` is `6.0.1`, and its `v6` tag stays on `6.0.0`.
   - Unsquashed history is in the local `history-18` tags.
   - Work happens on `dev/19`, where `VERSION` is 19.
 - **Verified:**
-  - `regression.sh --all` passes 82/82 on `dev/19` (2026-10-21, with item 7 in the working tree), on
+  - `regression.sh --all` passes 82/82 on `dev/19` (2026-10-21, with item 8 in the working tree), on
     a clean rebuild after the negative tests. The 82nd step is `test_governance_ontology` (6/6).
     `test_reference_semantics` is 20/20, and `construction_mapping_test` states 186 fields. `test_inspector` is 167/167, and
     `human_block_fidelity` counts 548 artifacts. The working snapshot holds 545.
@@ -206,19 +230,17 @@ v6 is published. dev/19 is declared a genesis, so nothing is measured against it
 - **Python:** the published packages ran on Python 3.15 under pipx, but the workspace builds and tests on 3.12.
 
 ### Next Session Should Start With
-1. **Commit item 7 in all five repos, then push:**
+1. **Commit item 8, then push:**
 
    ```bash
-   cd ~/protocol-governed-computing
-   git -C software_governance commit -am "Refuse bare codes under name parts; vocabularies may name artifacts; full names in bootstrap_exception"
-   git -C protocol_compiler commit -am "named_in_full parts refuse bare codes; vocabulary rule 6: named artifacts exist"
-   git -C business_domains commit -am "Regenerate designs of record for the Names Kind column"
-   git -C transformation_compilers commit -am "P7 vocabulary register carries Names Kind; storage_type names capability side effects"
-   git -C .github commit -am "Expectations and SOTU: names carried as data closed"
-   for r in software_governance protocol_compiler business_domains transformation_compilers .github; do git -C $r push origin dev/19; done
+   cd ~/protocol-governed-computing/software_governance
+   git add -A registry/schema registry/structure surface_map
+   git commit -m "Govern ACTOR, INTENT, TI and TE by schema: correct two, write two, dispatch all"
+   git push origin dev/19
+   cd ../.github
+   git commit -am "SOTU: every artifact kind schema-governed"
+   git push origin dev/19
    ```
-2. Run `regression.sh --all` on `dev/19` and expect 82/82: `test_reference_semantics` 20/20,
-   `construction_mapping_test` 186 fields.
-3. A scan of the rebuilt snapshot finds no names carried as data beyond those item 7 covers.
-   Its only leftovers are the three `only_when_value` constants, which were left on purpose. Pick
-   the next task from "Open work".
+2. Run `regression.sh --all` on `dev/19` and expect 82/82.
+3. **Decide the actor type vocabulary** (item 8). Choose the set, normalize the 14 actors, then
+   close `core.type` in `SCHEMA_ACTOR_V0` against it.
