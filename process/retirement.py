@@ -1,6 +1,7 @@
 """Retention and retirement — read once, by every check that must not assume retention.
 
-`retention.yaml` declares when a replaced version is retained (`4e` SU-7). `retired_identities.yaml`
+`retention.yaml` declares when a replaced version is retained (`4e` SU-7). `genesis.yaml` declares
+whether the working composition is a genesis, which has no predecessor (`1b` §11). `retired_identities.yaml`
 records each deletion (`4e` SU-12): the identity, who decided, the determination that no retention
 condition held, and the change that deleted it. A deleted artifact that was superseded also records
 its successor, `superseded_by`: the relation is no longer stated on any live artifact once both ends
@@ -20,6 +21,7 @@ import yaml
 PROCESS = Path(__file__).resolve().parent
 RETENTION = PROCESS / "retention.yaml"
 LEDGER = PROCESS / "retired_identities.yaml"
+GENESIS = PROCESS / "genesis.yaml"
 
 FIELDS = ("identity", "decided_by", "determination", "change")
 
@@ -32,6 +34,14 @@ def retention() -> dict:
     if not isinstance(declared["conditions"], list):
         raise SystemExit(f"{RETENTION.name}: 'conditions' must be a list")
     return declared
+
+
+def genesis() -> bool:
+    """Whether the working composition is declared a genesis, with no predecessor (`1b` §11)."""
+    declared = yaml.safe_load(GENESIS.read_text(encoding="utf-8")) or {}
+    if not isinstance(declared.get("genesis"), bool):
+        raise SystemExit(f"{GENESIS.name}: 'genesis' must be true or false")
+    return declared["genesis"]
 
 
 def retired() -> dict[str, dict]:

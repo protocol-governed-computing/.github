@@ -25,7 +25,7 @@ steps:
     section: checks
     # every `supersedes` relation names a predecessor present, or one deleted by record in the
     # retirement ledger. The identity reset leaves none.
-    expect: ["SUPERSESSION AGREEMENT PASSED — 1 relation\\(s\\), 0 predecessor\\(s\\) present, 1 deleted by record"]
+    expect: ["SUPERSESSION AGREEMENT PASSED — 0 relation\\(s\\), 0 predecessor\\(s\\) present, 0 deleted by record"]
   - id: human_block_fidelity
     section: checks
     expect: ["HUMAN BLOCK FIDELITY PASSED — 548 artifacts"]
@@ -244,8 +244,8 @@ steps:
     expect: ["SINGLE INSTANCE PASSED — \\d+ artifacts in transformation, artifact, lifecycle, each in one version"]
   - id: published_identity
     section: checks
-    # compares the working snapshot's identities against the sealed composition in pgc_release
-    expect: ["PUBLISHED IDENTITY PASSED — \\d+ identities published in v6, none changed meaning"]
+    # a declared genesis (genesis.yaml) compares nothing with the sealed composition in pgc_release
+    expect: ["PUBLISHED IDENTITY PASSED — genesis declared: nothing compared with v6"]
   - id: si_snapshot_validate
     section: checks
     # --strict: an advisory finding fails the step, so every check, advisory or not, holds at zero.

@@ -12,22 +12,28 @@ there, but the ruling stands here.
 
 ## Transformation
 
-### v6 is built as a baseline, outside the lifecycle, once
+### The cut after v6 is a genesis, built as a baseline
 
-**Rule.** The v6 baseline is built directly, not through change requests. Its defects are fixed in
-the artifacts and code that carry them, every identity is reset to `_V0`, and each domain's design
-of record is generated from the result. After v6 is cut, every change goes through the lifecycle,
-judged by the transformation module, and no later change may claim this ruling.
+**Rule.** The composition on dev/19 is cut as a genesis (`1b` §11), as v6 was, and is declared one
+in `genesis.yaml`. It is built directly, not through change requests. Its defects are fixed in the
+artifacts and code that carry them, every identity is reset to `_V0`, the retirement ledger starts
+empty, and each domain's design of record is generated from the result. Nothing in it is compared
+with v6 for change of meaning. Once it is sealed, `genesis.yaml` is set to `false`, every change
+goes through the lifecycle, judged by the transformation module, and no later change may claim
+this ruling.
+
+This ruling replaces the one under which v6 was built. That ruling was spent at the v6 cut.
 
 **Conditions:**
 - The regression stays green at every step, and nothing red by design remains at the cut.
 - Each domain's baseline design determines its whole registry: `construction_acceptance` rebuilds
   every artifact from it.
-- The person cutting v6 approves the baseline before it is cut.
+- The person cutting the composition approves the baseline before it is cut.
 
-**Why.** A change request records an approval against a composition. Every composition before v6 is
-discarded at the reset, so a dossier written now would describe identities that are about to stop
-existing, and it would be deleted with them. The baseline design is the record v6 starts from.
+**Why.** v6 was never deployed, and development is open (`retention.yaml`). A supersession now
+would keep a `_V1` name and a ledger entry for a change no user of v6 can see. A dossier would
+record an approval against identities the reset is about to replace. The baseline design is the
+record the cut starts from.
 
 ### A dossier is admitted on what it says, not on how it was written
 

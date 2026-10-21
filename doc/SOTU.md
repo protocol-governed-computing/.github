@@ -2,12 +2,34 @@
 
 Only the current handoff is kept here. Earlier handoffs are in git history: `git log -p -- doc/SOTU.md`.
 
-## SOTU Handoff — 2026-10-21 · kind map, sealed ontology and VOCAB_PROTOCOL_KINDS_V1 on dev/19
+## SOTU Handoff — 2026-10-21 · kind map, sealed ontology, names as references, genesis declared on dev/19
 
 ### This session
-Five pieces of work. Every repo is committed and pushed on `dev/19` **except the V1 change in
-`software_governance` and `protocol_compiler`, and the completeness fix in `transformation_compilers`.** `.github` already records V0 as retired, so commit
-those two first (see "Next Session Should Start With").
+Six pieces of work. Items 1, 2, 4 and 5 are committed and pushed on `dev/19`. **Item 6 is uncommitted
+in `software_governance`, `protocol_compiler`, `business_domains` and `.github`**, and it rewrites
+item 3. Commit it as one change (see "Next Session Should Start With").
+
+**6. Names carried as data are references; the cut is a genesis** (uncommitted; plan in `doc/PLAN_TYPED_REFERENCES_GENESIS.md`)
+- `VOCAB_DECLARATION_REPRESENTATION_V0` adds four parts to its `reference` group: `target_cs`,
+  `event_code`, `event_type`, `governs`. Only a value written as a full name is a reference, so a
+  constitution's `core.governs` kind tokens and `$.inputs.*` paths stay values. None joins
+  `full_name_required`, because that check refuses any value without `::`.
+- 21 values rewritten as full names: 8 `target_cs` in claim CCs, 4 `event_type` in ai_governance
+  WFs, 2 `event_code` in ai_governance record CCs, 7 `governs` in platform surface contracts.
+- `SURFACE_CONTRACT_STORAGE_READ_V0` and `_WRITE_V0` named a non-existent `CS_NAME_REGISTRY_V0`;
+  the name is removed. Putting it back as a full name now fails the platform compile:
+  `E104_INVALID_FQDN: Dangling reference … → capability_side_effects::CS_NAME_REGISTRY_V0`.
+- The runtime is unchanged: it passes a literal through as written, now a full name.
+- Designs of record regenerated. In ai_governance's P8, the two record CCs move after the events
+  they now reference.
+- **Genesis declared** (`1b` §11), as v6 was:
+  - `VOCAB_PROTOCOL_KINDS_V1` is back to `_V0`, with no `supersedes`. The compiler and the invariant
+    prose name V0.
+  - `retired_identities.yaml` is empty.
+  - `process/genesis.yaml` declares `genesis: true`, read by `retirement.genesis()`.
+    `published_identity_check.py` then compares nothing with v6; the ledger rules still hold.
+  - `rulings.md`: "The cut after v6 is a genesis, built as a baseline" replaces the spent v6 ruling.
+    Set `genesis: false` once the cut is sealed.
 
 **1. The kind map: `si.kind.map`** (`snapshot_inspector` `7060f45`)
 - The composition read one level up: every artifact kind, its category, provenance and runtime
@@ -36,10 +58,9 @@ those two first (see "Next Session Should Start With").
   classification to compile the vocabulary.
 - `si.kind.map` reads the ontology and reports `ontology_declared: false` where a snapshot seals none.
 
-**3. `VOCAB_PROTOCOL_KINDS_V1` adds `TEST_DATA`** (`.github` `49eb1b2`; uncommitted in `software_governance`, `protocol_compiler`)
-- V0 listed sixteen artifact kinds and omitted `TEST_DATA`. V1 supersedes it. V0 is deleted and
-  recorded in `retired_identities.yaml`, the ledger's first entry.
-- The compiler's vocabulary handler names V1 as the reserving vocabulary for `node_types`.
+**3. `VOCAB_PROTOCOL_KINDS_V0` lists `TEST_DATA`**
+- V0 listed sixteen artifact kinds and omitted `TEST_DATA`. It was first fixed as a V1
+  supersession; the genesis (item 6) folded it back into V0 in place.
 
 **4. Construction completeness gaps closed** (`transformation_compilers`, `.github`; uncommitted at handoff)
 - Both gaps were measurement defects, not design gaps. The designs stated the values; the measure
@@ -74,7 +95,7 @@ those two first (see "Next Session Should Start With").
   An in-place dev-phase simplification would need a ruling that replaces the v6 one.
 
 ### Where things stand
-v6 is published. Every later change is measured against it.
+v6 is published. dev/19 is declared a genesis, so nothing is measured against it until the cut.
 
 - **Composition `v6`:** DOI `10.5281/zenodo.23485442`. Sealed snapshot
   `13e3c5bb502e2548389f5787caa9438247ee34f9d510ce6a8a3ed980fdf974d1`: 8 domains, 556 artifacts,
@@ -95,7 +116,7 @@ v6 is published. Every later change is measured against it.
   - Unsquashed history is in the local `history-18` tags.
   - Work happens on `dev/19`, where `VERSION` is 19.
 - **Verified:**
-  - `regression.sh --all` passes 82/82 on `dev/19` (2026-10-21, after the V1 supersession). The 82nd
+  - `regression.sh --all` passes 82/82 on `dev/19` (2026-10-21, with item 6 in the working tree). The 82nd
     step is `test_governance_ontology` (6/6). `test_inspector` is 167/167, and
     `human_block_fidelity` counts 548 artifacts. The working snapshot holds 545.
   - Rebuilds give one identity.
@@ -125,17 +146,8 @@ v6 is published. Every later change is measured against it.
 - **Zenodo matching.** Component records are matched by concept DOI (`COMPONENT_CONCEPTS` in
   `compose_release.py`), not by title. The v6 transformation record is titled `(transformation)`,
   and Zenodo will not let it be edited.
-- **Decide before the cut: genesis or evolution.** dev/19 carries one supersession so far,
-  `VOCAB_PROTOCOL_KINDS_V1` over V0, which is deleted and recorded in `retired_identities.yaml`.
-  - **Evolution** (the default): cut as is. Superseded names stay `_V1`, and the ledger keeps its
-    record.
-  - **Genesis**, as the v6 reset was (`1b` §11): one sweep at the cut.
-    - Reset every superseded identity to `_V0` and drop its `supersedes`.
-    - Empty the retirement ledger.
-    - Replace the v6 baseline ruling in `rulings.md` with one for this cut.
-    - Make `published_identity_check.py` treat a declared genesis as having no predecessor to
-      compare against, and update its line in `expectations.yaml`.
-  - Choose genesis only if several supersessions have built up by then. For one, it is churn.
+- **At the cut, after sealing:** set `genesis: false` in `process/genesis.yaml` and move the
+  `published_identity` expectation back to a comparison with the new identity.
 
 ### Open work
 - **Field manual, at the next cut.** The kind map (`si.kind.map`) is on dev/19, not in v6, so the
@@ -170,24 +182,21 @@ v6 is published. Every later change is measured against it.
 - **Python:** the published packages ran on Python 3.15 under pipx, but the workspace builds and tests on 3.12.
 
 ### Next Session Should Start With
-1. **Commit the V1 change.** `dev/19` is inconsistent on the remote until this lands:
+1. **Commit item 6, all four repos, then push.** Each repo alone leaves `dev/19` inconsistent:
 
    ```bash
    cd ~/protocol-governed-computing/software_governance
-   git add -A registry/vocabulary surface_map/governance_surface_map.yaml
-   git commit -m "VOCAB_PROTOCOL_KINDS_V1: add TEST_DATA to artifact_kinds; supersede V0"
-   git push origin dev/19
+   git add -A registry surface_map
+   git commit -m "Names carried as data are references; genesis resets VOCAB_PROTOCOL_KINDS to V0"
    cd ../protocol_compiler
    git add compiler/governance_engine/assertions/handlers/assert_vocabulary_symbols_well_formed_v0.py
-   git commit -m "Read node types from VOCAB_PROTOCOL_KINDS_V1"
-   git push origin dev/19
+   git commit -m "Read node types from VOCAB_PROTOCOL_KINDS_V0"
+   cd ../business_domains
+   git add -A
+   git commit -m "Write artifact names carried as data as full names; regenerate designs of record"
+   cd ../.github
+   git add -A
+   git commit -m "Declare dev/19 a genesis; empty the ledger; SOTU: names as references"
+   for r in software_governance protocol_compiler business_domains .github; do git -C ~/protocol-governed-computing/$r push origin dev/19; done
    ```
-2. Run `regression.sh --all` on `dev/19` and expect 82/82. It passed 82/82 on 2026-10-21 with the V1
-   change in the working tree.
-3. **References held under undeclared keys.** The kind-map mock surfaced these:
-   - `target_cs` (CC→CS), `event_type` / `event_code` (→EV), `governs` (SURFACE→CS)
-   - `VOCAB_DECLARATION_REPRESENTATION_V0` does not declare them as references, so sameness
-     compares them as plain values.
-   - The check belongs in `si.snapshot.validate`.
-   - Declaring them changes a published v6 identity, so it is another supersession and counts
-     toward the genesis-or-evolution decision.
+2. Run `regression.sh --all` on `dev/19` and expect 82/82.

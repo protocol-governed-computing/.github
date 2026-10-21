@@ -17,6 +17,9 @@ records its deletion (`4e` SU-12). A recorded identity is retired for good, publ
 - one a live artifact names is a finding, unless the artifact is its successor. A node's name and a
   routing target are places, not references.
 
+A composition declared a genesis (`genesis.yaml`, `1b` §11) has no predecessor, so nothing is
+compared with the sealed composition. The ledger's rules still hold.
+
 The sealed composition is read, never written. Exit 0 when nothing published changed meaning and
 nothing published is missing, 1 otherwise.
 """
@@ -85,6 +88,8 @@ def main() -> int:
     successor = successors(working, retired)
 
     findings: list[str] = []
+    if retirement.genesis():
+        published = {}
     for fqdn in sorted(set(published) - set(working)):
         if fqdn not in retired:
             findings.append(f"{fqdn}\n   published in {SEALED}, no longer in the composition, "
@@ -102,6 +107,10 @@ def main() -> int:
             more = f"\n   … and {len(differences) - 6} more" if len(differences) > 6 else ""
             findings.append(f"{fqdn}\n   changed meaning since {SEALED}:\n   {shown}{more}")
 
+    if not findings and retirement.genesis():
+        print(f"PUBLISHED IDENTITY PASSED — genesis declared: nothing compared with {SEALED}; "
+              f"{len(retired)} identities retired, none reused or named")
+        return 0
     if not findings:
         deleted = len(set(published) & set(retired))
         print(f"PUBLISHED IDENTITY PASSED — {len(published)} identities published in {SEALED}, "
