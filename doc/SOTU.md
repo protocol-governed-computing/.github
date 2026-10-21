@@ -2,7 +2,30 @@
 
 Only the current handoff is kept here. Earlier handoffs are in git history: `git log -p -- doc/SOTU.md`.
 
-## SOTU Handoff — 2026-10-19 · v6 is the baseline, standard v1 is published, dev/19 is open
+## SOTU Handoff — 2026-10-21 · design-redundancy study shelved; dev/19 unchanged
+
+### This session
+A study of whether construction can derive what a design restates. It was measured, then
+shelved. The only change is `doc/FINDINGS_DESIGN_REDUNDANCY.md`, committed on `.github` `dev/19`
+(`2018890`). No other repository changed.
+
+- **The question.** Could a smaller human vocabulary, with the machine artifacts fully generated,
+  halve what a person authors?
+- **The answer is no.** Measured in P7 register cells, what a person writes, 13–20% is
+  redundant. Measured in rendered artifact facts, the figure was 35–40%. That figure overstated
+  it, because the renderer already turns one register cell into several artifact facts.
+- **Why it was shelved:**
+  - The largest source is CC interface rows that bind platform capabilities. Deriving them needs
+    construction to read the sealed composition while rendering.
+  - Every option changes identities published in v6: `REGISTER_SCHEMA_P7_V0`, the rule set in
+    `WF_P7_DESIGN_INTENT_ADMISSIBILITY_V0`, and the constitutions.
+- **Method.** Count authoring effort in P7 register cells, never in artifact facts.
+- **Rules that match by name do not hold.** They failed on every real domain.
+- **What reopens it.** The finding names one question: may render read platform specs, as the phase
+  checks already do through `si.capability.surface`?
+- **Doctrine tension, recorded, not acted on.** `rulings.md` says no change after v6 may claim the
+  v6 baseline ruling. `THE_SHAPE_OF_A_CHANGE_V0.md` §5 says a constitution clause needs a dossier.
+  An in-place dev-phase simplification would need a ruling that replaces the v6 one.
 
 ### Where things stand
 v6 is published. Every later change is measured against it.
@@ -26,7 +49,7 @@ v6 is published. Every later change is measured against it.
   - Unsquashed history is in the local `history-18` tags.
   - Work happens on `dev/19`, where `VERSION` is 19.
 - **Verified:**
-  - `regression.sh --all` passes 81/81, twice, with no `red_by_design`.
+  - `regression.sh --all` passes 81/81 on `dev/19` (re-run 2026-10-21, twice this session).
   - Rebuilds give one identity.
   - A clean `pipx` install runs the demo end to end, in the terminal and in the browser.
   - `README_DEV`'s tour and from-source path both work.
@@ -56,6 +79,17 @@ v6 is published. Every later change is measured against it.
   and Zenodo will not let it be edited.
 
 ### Open work
+- **Construction completeness gaps, found this session.** Both predate it, and the regression does
+  not catch them.
+  - `ai_governance` is 99.75% (1218/1221). Three node inputs in `WF_PROVISION_AI_LICENSING_V0` are
+    not determined by its design: `CC_APPEND_AUDIT_EVENT_SUCCESS.inputs.reason_code` and `.data`,
+    and `CC_APPEND_AUDIT_EVENT_DENIED.inputs.data`.
+  - `transformation` is 99.53% (1282/1288): six `core.phases[].gate` facts.
+  - Reproduce with `python -m transformation construction check <root>/design --root <root>`.
+- **Unenforced admission in collatz.** `IN_COLLATZ_INPUT_VALIDATED_V0` keeps its rules as prose in
+  `extensions.admission_rules`, which construction drops. The enforced bound is in
+  `TI_COLLATZ_COMPUTE_V0` (`number`, 1–999999). TI and TE are outside the design language
+  (`transport_bindings: []`).
 - **Realization map:** `standards/doc/realization_map.md` is still measured against `72404ce4…`
   under `v0`. Re-survey it against the sealed v6 and standard `v1`. Record v6 as a genesis there,
   and give each new `v1` obligation its status.
@@ -72,4 +106,6 @@ v6 is published. Every later change is measured against it.
 - **Python:** the published packages ran on Python 3.15 under pipx, but the workspace builds and tests on 3.12.
 
 ### Next Session Should Start With
-Read this, run `regression.sh --all` on `dev/19`, and pick the first change from the open work.
+Read this, then run `regression.sh --all` on `dev/19`. Next, decide whether the two construction
+completeness gaps are defects to close or limits to record. They are the only measured defects open,
+and a design below 100% means construction cannot rebuild that registry from it.
