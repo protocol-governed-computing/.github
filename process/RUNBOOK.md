@@ -123,9 +123,8 @@ execute a JSON path, and the result reads like a test failure rather than the sh
 That has cost two clean runs.
 
 **It is not a substitute for reading `## Expected`.** The script reports what each step printed; it
-does not judge. Two things are red by design — `admission_contract_fidelity` at 11 findings, and the
-advisory half of `si snapshot validate` — so a run that is *entirely* green means something stopped
-reporting.
+does not judge. One thing is red by design, the advisory half of `si snapshot validate`, so a run
+in which it reports nothing means something stopped reporting.
 
 **Prerequisite for a rebuild.** `--build` and `--all` assume the workspace venv has every package
 editable-installed under its current distribution name. After a rename or a fresh clone:
@@ -240,7 +239,6 @@ python ~/protocol-governed-computing/.github/process/governance_chain_closure.py
 python ~/protocol-governed-computing/.github/process/supersession_agreement.py
 python ~/protocol-governed-computing/.github/process/human_block_fidelity.py
 python ~/protocol-governed-computing/.github/process/evidence_determinism.py
-python ~/protocol-governed-computing/.github/process/admission_contract_fidelity.py
 python ~/protocol-governed-computing/transformation_compilers/scripts/emit_rule_sets.py --check
 python ~/protocol-governed-computing/transformation_compilers/scripts/testbed/build_payloads.py --check
 PYTHONPATH=~/protocol-governed-computing/snapshot_inspector \
@@ -322,7 +320,7 @@ included; this table explains what each step proves and states no counts. The st
 | `published_identity_check.py` | `PUBLISHED IDENTITY FAILED — n of N identities published in v5`, exit 1, red by design while the v6 baseline is built: it compares the working composition with the last sealed release, and the baseline changes what v5 published, by ruling. From the cut it compares against v6, passes, and its entry in `expectations.yaml` returns to a plain pass |
 | `human_block_fidelity.py` | `HUMAN BLOCK FIDELITY PASSED` — the prose beside a machine block declares nothing. A `RESTATED` line means delete the prose copy, never edit the machine block; a `SECTION` line means the section is named as if it states a rule. The policy is `vocabulary::VOCAB_HUMAN_BLOCK_CONSTRAINTS_V0`, read from the sealed composition — add a forbidden name there, never here. Reasoning: Field Manual, *The human block* |
 | `evidence_determinism.py` | **Give `PGC_SNAPSHOT_ROOT` an absolute path or leave it unset** — this check shells out to `run.sh`, which resolves a relative one against its own directory and fails in a way that reads like a determinism defect. `EVIDENCE DETERMINISM PASSED` — one workflow run twice; determinative content identical, observational content differs. A `DETERMINATIVE CONTENT DIFFERS` line means something non-deterministic is classified determinative; a `vacuous` line means nothing observational varies, so the split is untested. Policy: `vocabulary::VOCAB_EVIDENCE_CONTENT_CLASSIFICATION_V0` |
-| `admission_contract_fidelity.py` | `ADMISSION CONTRACT FIDELITY PASSED` — every IN gate's declared contract matches what its workflow binds. `OVER-DECLARED` means the gate requires a field nothing consumes, so a correct payload is refused; `UNDER-DECLARED` means the gate admits a payload the workflow cannot resolve. |
+| `test_admission_covers_bindings.py` | `4/4 passed` — a workflow binds only payload fields its IN gate declares. The rule is the compiler's (`INVARIANT_ADMISSION_COVERS_BINDINGS_V0`), so every build enforces it, not only this workspace's regression. |
 | `emit_rule_sets.py --check` | Every phase `OK` — the sealed rule set matches the declared one |
 | `build_payloads.py --check` | `OK` — every phase payload matches the corpus document it is cut from. A `DRIFTED` line is a hand-edited payload; fix the source document and regenerate |
 | `author_transport_contracts.py --check` | `OK` — every `si.` boundary contract matches the declaration that generates it. A `DRIFTED` line is a hand-edited artifact; fix the declaration, never the artifact |
@@ -747,19 +745,21 @@ request away from the answer reporting it. `/snapshot` mounts the sealed composi
 
 ### Serving the compiled workflow beside the form
 
-Because `/snapshot` is mounted, a screen can show the DAG the runtime actually traverses, live from
-the sealed composition:
+Because `/snapshot` is mounted, a screen can draw the graph the runtime actually traverses, live
+from the sealed composition. It mounts the inspector's workflow diagram as `/diagram` and draws the
+workflow's compiled `graph.json` with it:
 
 ```html
-<img src="/snapshot/behavior_logic/<domain>/<WF_CODE>/<WF_CODE>.projection.png"
-     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+<svg class="workflow" data-graph="/snapshot/behavior_logic/<domain>/<WF_CODE>/<WF_CODE>.graph.json"
+     data-entrance="<TI_CODE>"></svg>
+<script src="/diagram/workflow_diagram.js"></script>
 ```
 
-Live means never stale — rebuild the snapshot and the picture changes with it; clean it and the
-image fails soft rather than showing something that was true once. Both identity screens carry one,
-as does collatz. Note what the pairing demonstrates on the verify screen: `blockchain.accept_actor`
-and `blockchain.reject_actor` render the **same** graph, because two public names reach one workflow
-and each boundary declaration holds its own constants.
+The screen's script fetches each `data-graph` and calls `WorkflowDiagram.draw(svg, graph, {entrance})`.
+Live means never stale: rebuild the snapshot and the drawing changes with it. Both identity screens
+draw their workflows this way, and so does collatz, which also marks the routes a run took. The
+snapshot carries no picture of a workflow. A rendered image would make the sealed snapshot depend on
+the renderer of the machine that built it.
 
 ### What a client may not do
 

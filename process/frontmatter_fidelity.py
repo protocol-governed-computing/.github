@@ -27,18 +27,23 @@ Reads the assembled snapshot, so it runs after a build rather than before it. It
 `implementation_closure` reads artifacts as authored and runs before one; the two ask different
 questions at different moments on purpose.
 
+The authored side is read by the compiler's own rule for a machine block
+(`compiler.atoms.machine_block`). The transformation compilers state that rule again, because they may
+not import the compiler, so this also refuses a run in which the two statements differ.
+
 Usage:  python .github/process/frontmatter_fidelity.py
 Exit:   0 if every authored value survived, 1 otherwise.
 """
 from __future__ import annotations
 
 import json
-import re
 import sys
 from pathlib import Path
 from typing import Any
 
 import yaml
+from compiler.atoms.machine_block import MACHINE_BLOCK
+from transformation.machine_block import MACHINE_BLOCK as TRANSFORMATION_MACHINE_BLOCK
 
 WORKSPACE = Path(__file__).resolve().parents[2]
 SNAPSHOT = WORKSPACE / "snapshot" / "canonical"
@@ -52,9 +57,6 @@ SOURCE_ROOTS = (
     "snapshot_inspector",
     "transformation_compilers",
 )
-
-MACHINE_BLOCK = re.compile(r"```yaml\n(.*?)\n```", re.S)
-
 
 def authored_blocks() -> dict[str, tuple[Path, dict]]:
     """Every authored Machine Block in the composition, keyed by the identity it declares."""
@@ -108,6 +110,11 @@ def lost(authored: Any, compiled: Any, path: str = "") -> list[str]:
 
 
 def main() -> int:
+    if (MACHINE_BLOCK.pattern, MACHINE_BLOCK.flags) != (TRANSFORMATION_MACHINE_BLOCK.pattern,
+                                                        TRANSFORMATION_MACHINE_BLOCK.flags):
+        print("FRONTMATTER FIDELITY FAILED — the compiler and the transformation compilers read a "
+              "machine block by different rules")
+        return 1
     if not SNAPSHOT.is_dir():
         print(f"no assembled snapshot at {SNAPSHOT} — build before checking fidelity", file=sys.stderr)
         return 1

@@ -19,15 +19,14 @@ from __future__ import annotations
 
 import io
 import os
-import re
 import tokenize
 from collections import defaultdict
 from pathlib import Path
+from transformation.machine_block import MACHINE_BLOCK
 
 W = Path(__file__).resolve().parents[2]
 SKIP = {".git", ".venv", "__pycache__", "snapshot", "build", "data", "traces", "node_modules",
         ".idea", "compiled", "fixtures"}
-MACHINE = re.compile(r"```yaml\n(.*?)```", re.S)
 COLUMNS = ["artifacts", "yaml_artifact", "json_schema", "yaml_file", "py_impl", "py_test", "py_tools", "design_md"]
 
 PLATFORM = ["software_governance", "conformance_workloads", "protocol_compiler", "snapshot_assembler",
@@ -94,7 +93,7 @@ def measure(root: Path) -> dict[str, int]:
                     out["design_md"] += sum(1 for line in text.splitlines() if line.strip())
                 elif "artifact_kind:" in text:
                     out["artifacts"] += 1
-                    out["yaml_artifact"] += sum(yaml_sloc(m) for m in MACHINE.findall(text))
+                    out["yaml_artifact"] += sum(yaml_sloc(m) for m in MACHINE_BLOCK.findall(text))
     return out
 
 

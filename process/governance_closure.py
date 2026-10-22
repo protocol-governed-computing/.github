@@ -36,11 +36,11 @@ Exit:   0 if both relations close, 1 otherwise.
 """
 from __future__ import annotations
 
-import re
 import sys
 from pathlib import Path
 
 import yaml
+from compiler.atoms.machine_block import MACHINE_BLOCK, machine_yaml
 
 WORKSPACE = Path(__file__).resolve().parents[2]
 PLATFORM = WORKSPACE / "software_governance"
@@ -63,16 +63,13 @@ MODULE_MAP = {
 def yaml_block(text: str) -> dict:
     import yaml
 
-    match = re.search(r"```yaml\n(.*?)\n```", text, re.S)
-    if not match:
+    block = machine_yaml(text)
+    if block is None:
         return {}
     try:
-        return yaml.safe_load(match.group(1)) or {}
+        return yaml.safe_load(block) or {}
     except yaml.YAMLError:
         return {}
-
-
-MACHINE = re.compile(r"^## Machine\s*\n+```yaml\s*\n(?P<y>.*?)\n```", re.M | re.S)
 
 
 def machine_block(path: Path) -> dict | None:
@@ -85,11 +82,11 @@ def machine_block(path: Path) -> dict | None:
     constitution to the invariant set. Prose declares nothing (MB-1) — the extractor must read
     only what is inside the fence, as the compiler does.
     """
-    m = MACHINE.search(path.read_text(encoding="utf-8"))
+    m = MACHINE_BLOCK.search(path.read_text(encoding="utf-8"))
     if not m:
         return None
     try:
-        return yaml.safe_load(m.group("y"))
+        return yaml.safe_load(m.group("machine_yaml"))
     except yaml.YAMLError:
         return None
 

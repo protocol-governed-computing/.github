@@ -28,7 +28,6 @@ wrong. All are called by `regression.sh --all`, and each is runnable alone.
 | `human_block_fidelity.py` | prose beside a machine block declares nothing |
 | `frontmatter_fidelity.py` | every authored machine-block value survived compilation |
 | `evidence_determinism.py` | determinative evidence content is identical across runs; observational content differs |
-| `admission_contract_fidelity.py` | an IN gate's declared contract matches what its workflow binds |
 | `implementation_closure.py` | every capability transform names a module and every named module exists |
 | `domain_authoring.py` | the domain-authoring path `pgc_install/README.md` documents, executed |
 | `pgc_env_check.py` | the active interpreter is the workspace venv and no legacy package is reachable |

@@ -7,9 +7,9 @@
 #   regression.sh --all      clean rebuild, then every check, then execution
 #
 # Expected results are data: `expectations.yaml`, compared by `regression_verdict.py` after the
-# run, and the script exits with the verdict. RUNBOOK.md "## Expected" explains each row. Two things
-# are red by design: admission_contract_fidelity (11 findings, all deliberate), and the advisory
-# half of `si snapshot validate`, which reports known divergences without failing. Each step's output
+# run, and the script exits with the verdict. RUNBOOK.md "## Expected" explains each row. One thing
+# is red by design: the advisory half of `si snapshot validate`, which reports known divergences
+# without failing. Each step's output
 # and exit code are kept in `traces/regression/` (or $PGC_REGRESSION_OUT).
 set -u
 cd ~/protocol-governed-computing || exit 1
@@ -132,7 +132,7 @@ if [[ "$MODE" == "--all" ]]; then
   echo "checks" >> "$RUN/sections"
   echo; echo "=== CHECKS ==="
   for c in governance_closure governance_chain_closure supersession_agreement \
-           human_block_fidelity evidence_determinism admission_contract_fidelity; do
+           human_block_fidelity evidence_determinism; do
     step "$c" python "$W/.github/process/$c.py"
   done
   step emit_rule_sets python "$W/transformation_compilers/scripts/emit_rule_sets.py" --snapshot "$W/snapshot" --check
@@ -168,6 +168,7 @@ if [[ "$MODE" == "--all" ]]; then
            "$W/protocol_compiler/scripts/testbed/test_routing_lookup.py" \
            "$W/protocol_compiler/scripts/testbed/test_input_typed.py" \
            "$W/protocol_compiler/scripts/testbed/test_governance_ontology.py" \
+           "$W/protocol_compiler/scripts/testbed/test_admission_covers_bindings.py" \
            "$W/protocol_compiler/scripts/testbed/test_platform_vectors.py" \
            "$W/protocol_compiler/scripts/testbed/test_keyed_chain_and_molecule_surface.py" \
            "$W/protocol_compiler/scripts/testbed/test_dispatch_routing_fidelity.py" \

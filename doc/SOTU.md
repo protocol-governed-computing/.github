@@ -2,11 +2,54 @@
 
 Only the current handoff is kept here. Earlier handoffs are in git history: `git log -p -- doc/SOTU.md`.
 
-## SOTU Handoff — 2026-10-21 · kind map, sealed ontology, genesis declared, names carried as data closed, every kind schema-governed, actor types canonical, kind map by domain on dev/19
+## SOTU Handoff — 2026-10-21 · kind map, sealed ontology, genesis declared, names carried as data closed, every kind schema-governed, actor types canonical, kind map by domain, codebase refactor on dev/19
 
 ### This session
-Ten pieces of work, all committed and pushed on `dev/19`. Every repo is clean and level with its
-remote. No gap found this session remains open.
+Eleven pieces of work. Items 1–10 are committed and pushed on `dev/19`. **Item 11 is uncommitted in
+seven repos** (see "Next Session Should Start With").
+
+**11. Codebase refactor: four findings from a full survey** (uncommitted)
+1. **The snapshot no longer carries pictures.** The compiler drew 53 PNGs into the sealed snapshot
+   on a best-effort basis (8.3 MB of 25 MB). The manifest hashed each one as a constituent, so
+   `snapshot_id` depended on whether graphviz was installed, and on its version.
+   - The compiler now emits `graph.json` only, through `compiler/projections/workflow_graph.py`.
+     A graph that cannot be written now fails the build instead of producing a warning.
+   - `compiler/visualization/views/` and `wf_graph_generator.py` are deleted. The snapshot is 16 MB.
+   - The inspector no longer reports `projection_path`. Its surface links to `/workflow/?wf=` instead.
+   - The blockchain screens draw their workflows as SVG from `graph.json`, as collatz does. They
+     mount the inspector's diagram at `/diagram`.
+   - The runtime's per-run trace PNG (`trace_viz`) is unchanged, because it is never sealed.
+2. **A governed admission rule replaces a workspace-only check.**
+   - `transport::INVARIANT_ADMISSION_COVERS_BINDINGS_V0`, a fourth rule of
+     `CONSTITUTION_ADMISSION_V0`, with handler `assert_admission_covers_bindings_v0`. A workflow
+     binds only payload fields its IN gate declares.
+   - It applies to WF, so it reaches every domain build. Proven: an undeclared
+     `$.payload.nickname` in ai_governance fails the compile.
+   - The script's hard-coded `BOUNDARY_SUPPLIED` exemption matched nothing at source level, so the
+     rule has no exemption. `admission_contract_fidelity.py` is deleted, and
+     `test_admission_covers_bindings` (4/4) replaces it.
+   - `governance_chain_closure` stays a process check. It is cross-build by design: domain builds
+     never import constitutions or invariants as subjects. No domain authors an invariant today.
+     Moving it would mean changing the import filter or forbidding domain-authored invariants,
+     which is a doctrine decision.
+3. **One rule for a machine block.** There were 17 parsers using 8 regex variants. Measured over 580
+   files, the first-fence readers took the wrong YAML:
+   - in `STRUCTURE_ARTIFACT_IDENTITY_V0`, the prose example that comes before its machine block;
+   - in 6 artifacts whose YAML embeds backticks, a truncated block.
+
+   The S1 rule now lives in `compiler.atoms.machine_block` and `transformation.machine_block`.
+   `frontmatter_fidelity` checks that the two agree. The compiler (4 readers), transformation (9) and
+   `.github` (4) all use it. The assembler's profile reader and `human_block_fidelity` stay, because
+   each has a different job.
+4. **S7 writes through one helper.** `_write_json` serializes, creates the directory and replaces
+   the file atomically, and it returns the compile error. S7 went from 1,154 to 949 lines and has no
+   `except Exception` left.
+- **Also removed:** `structure/loading`, `structure/discovery` and `structure/exceptions`, about
+  1,200 lines of RI-0 legacy that nothing imported. Its vocabulary loader expected a `vocab_id` key
+  no vocabulary has.
+- **Size:** `protocol_compiler` is about 3,000 lines shorter. Expectations now count
+  `human_block_fidelity` at 550, `semantic_change_design_test` at 18/18 (the new test is that YAML in
+  prose is not the machine block), and `test_admission_covers_bindings` at 4/4.
 
 **10. The kind map filters by composed domain** (`snapshot_inspector` `a7b87e5`)
 - `si.kind.map` takes an optional `domain`, which is a domain the manifest composes, such as
@@ -179,16 +222,16 @@ v6 is published. dev/19 is declared a genesis, so nothing is measured against it
 - **Field manual:** `omnibachi-site/content/papers/foundations/pgc_field_manual_v1.md` describes the
   v6 composition. You edited it in place, so the Zenodo v1 deposit differs from the site.
 - **Git:**
-  - Every repo is clean and pushed. Items 1–10 are on `dev/19`. `dev/19` and `main`
+  - Items 1–10 are committed and pushed. Item 11 is uncommitted in seven repos. `dev/19` and `main`
     exist locally and on the remote.
   - Every repo's `main` is one orphan commit, tagged `v6`. `pgc_install`'s `main` is `6.0.1`, and its `v6` tag stays on `6.0.0`.
   - Unsquashed history is in the local `history-18` tags.
   - Work happens on `dev/19`, where `VERSION` is 19.
 - **Verified:**
-  - `regression.sh --all` passes 82/82 on `dev/19` (2026-10-21, on the committed tree), on
+  - `regression.sh --all` passes 82/82 on `dev/19` (2026-10-21, with item 11 in the working tree), on
     a clean rebuild after the negative tests. The 82nd step is `test_governance_ontology` (6/6).
     `test_reference_semantics` is 20/20, and `construction_mapping_test` states 186 fields. `test_inspector` is 173/173, and
-    `human_block_fidelity` counts 549 artifacts. The working snapshot holds 545.
+    `human_block_fidelity` counts 550 artifacts. The working snapshot holds 545.
   - Rebuilds give one identity.
   - A clean `pipx` install runs the demo end to end, in the terminal and in the browser.
   - `README_DEV`'s tour and from-source path both work.
@@ -252,17 +295,23 @@ v6 is published. dev/19 is declared a genesis, so nothing is measured against it
 - **Python:** the published packages ran on Python 3.15 under pipx, but the workspace builds and tests on 3.12.
 
 ### Next Session Should Start With
-1. Run `regression.sh --all` on `dev/19` and expect 82/82. It passed on this tree, so this only
-   confirms that nothing in the environment moved.
-2. Pick the next task from "Open work". The candidates, roughly by readiness:
-   - **Realization map:** re-survey against sealed v6 and standard `v1`, and record v6 and this cut
-     as geneses.
-   - **CLM parked changes:** `causal_language_model/doc/cr_sequence.md`, each run as a change
-     dossier on its baseline design.
-   - **TI/TE in the design language:** they are schema-governed now, but still outside P7
-     (`transport_bindings: []`). This is the largest item.
-3. At the cut, do the parked steps:
-   - the field manual (§4, §10, Appendices A and D);
-   - `genesis: false`;
-   - point the `published_identity` expectation at the new release;
-   - move the demo's `REF`.
+1. **Commit item 11 in seven repos, then push:**
+
+   ```bash
+   cd ~/protocol-governed-computing
+   git -C protocol_compiler add -A
+   git -C protocol_compiler commit -m "Emit workflow graphs, not pictures; one machine-block rule; S7 writes through one helper; admission rule governed; remove dead structure loading"
+   git -C software_governance add -A registry surface_map
+   git -C software_governance commit -m "INVARIANT_ADMISSION_COVERS_BINDINGS_V0: a workflow binds only what its gate declares"
+   git -C snapshot_inspector commit -am "Behaviour logic carries no picture; the surface links to the workflow page"
+   git -C business_domains commit -am "Blockchain screens draw their workflows from graph.json"
+   git -C conformance_workloads commit -am "Collatz: drop the link to the compiler's projection PNG"
+   git -C transformation_compilers add -A
+   git -C transformation_compilers commit -m "One machine-block rule for every transformation reader"
+   git -C .github add -A
+   git -C .github commit -m "Admission rule moves to the compiler; process scripts read machine blocks by the compiler's rule; SOTU"
+   for r in protocol_compiler software_governance snapshot_inspector business_domains conformance_workloads transformation_compilers .github; do git -C $r push origin dev/19; done
+   ```
+2. Run `regression.sh --all` on `dev/19` and expect 82/82.
+3. Pick the next task from "Open work". The `governance_chain_closure` doctrine question (item 11.2)
+   is a new candidate.

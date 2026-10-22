@@ -47,7 +47,6 @@ Exit:   0 if both relations close, 1 otherwise.
 """
 from __future__ import annotations
 
-import re
 import sys
 from pathlib import Path
 
@@ -57,6 +56,7 @@ import yaml
 # must fail with it: a chain check that guesses at the admission rule proves nothing about the
 # builds that actually run.
 from compiler.stages.s1_extract import _DOMAIN_INSTANTIATED
+from compiler.atoms.machine_block import machine_yaml
 
 WORKSPACE = Path(__file__).resolve().parents[2]
 PLATFORM = WORKSPACE / "software_governance"
@@ -71,15 +71,12 @@ CHAIN = {
 # Kinds whose authorship puts an artifact inside the enforcement machinery rather than under it.
 CHAIN_KINDS = ("INVARIANT", "CONSTITUTION")
 
-MACHINE_BLOCK = re.compile(r"```yaml\n(.*?)\n```", re.S)
-
-
 def machine(path: Path) -> dict:
     """The artifact's machine block, or an empty dict if it has none."""
-    found = MACHINE_BLOCK.search(path.read_text(encoding="utf-8"))
-    if not found:
+    found = machine_yaml(path.read_text(encoding="utf-8"))
+    if found is None:
         return {}
-    block = yaml.safe_load(found.group(1))
+    block = yaml.safe_load(found)
     return block if isinstance(block, dict) else {}
 
 
