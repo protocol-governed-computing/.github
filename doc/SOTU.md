@@ -5,10 +5,10 @@ Only the current handoff is kept here. Earlier handoffs are in git history: `git
 ## SOTU Handoff — 2026-10-21 · kind map, sealed ontology, genesis declared, names carried as data closed, every kind schema-governed, actor types canonical, kind map by domain on dev/19
 
 ### This session
-Ten pieces of work. Items 1–9 are committed and pushed on `dev/19`. **Item 10 is uncommitted in
-`snapshot_inspector` and `.github`** (see "Next Session Should Start With").
+Ten pieces of work, all committed and pushed on `dev/19`. Every repo is clean and level with its
+remote. No gap found this session remains open.
 
-**10. The kind map filters by composed domain** (uncommitted)
+**10. The kind map filters by composed domain** (`snapshot_inspector` `a7b87e5`)
 - `si.kind.map` takes an optional `domain`, which is a domain the manifest composes, such as
   `platform`, `workload` or `blockchain`, not a namespace. The default is the whole snapshot.
 - An artifact is in a domain when the index gives it an address there, so a domain's map includes
@@ -55,7 +55,7 @@ Ten pieces of work. Items 1–9 are committed and pushed on `dev/19`. **Item 10 
 - No transport behaviour changed: the schemas describe the existing declarations.
 - Actor types were inconsistent. Item 9 made them canonical.
 
-**7. The last names carried as data, closed** (uncommitted)
+**7. The last names carried as data, closed** (`software_governance` `064c123`, `protocol_compiler` `86f306e`, `transformation_compilers` `6e186d9`)
 - **Bare codes are refused under name parts.** `VOCAB_DECLARATION_REPRESENTATION_V0` adds a group,
   `named_in_full`: `bootstrap_exception`, `event_code`, `event_type`, `governs`, `target_cs`.
   `Representation.short_codes` refuses a value under one of these parts that is written as an
@@ -77,7 +77,7 @@ Ten pieces of work. Items 1–9 are committed and pushed on `dev/19`. **Item 10 
   of the Storage Type column, whose values the vocabulary closes, so a stale const makes its rule
   inert rather than wrong.
 
-**6. Names carried as data are references; the cut is a genesis** (uncommitted; plan in `doc/PLAN_TYPED_REFERENCES_GENESIS.md`)
+**6. Names carried as data are references; the cut is a genesis** (`software_governance` `9996aa0`; plan in `doc/PLAN_TYPED_REFERENCES_GENESIS.md`)
 - `VOCAB_DECLARATION_REPRESENTATION_V0` adds four parts to its `reference` group: `target_cs`,
   `event_code`, `event_type`, `governs`. Only a value written as a full name is a reference, so a
   constitution's `core.governs` kind tokens and `$.inputs.*` paths stay values. None joins
@@ -130,7 +130,7 @@ Ten pieces of work. Items 1–9 are committed and pushed on `dev/19`. **Item 10 
 - V0 listed sixteen artifact kinds and omitted `TEST_DATA`. It was first fixed as a V1
   supersession; the genesis (item 6) folded it back into V0 in place.
 
-**4. Construction completeness gaps closed** (`transformation_compilers`, `.github`; uncommitted at handoff)
+**4. Construction completeness gaps closed** (`transformation_compilers` `600b7c5`)
 - Both gaps were measurement defects, not design gaps. The designs stated the values; the measure
   counted an empty value as undetermined.
   - ai_governance had 3 facts: literal `''` and `{}` on workflow node inputs.
@@ -179,13 +179,13 @@ v6 is published. dev/19 is declared a genesis, so nothing is measured against it
 - **Field manual:** `omnibachi-site/content/papers/foundations/pgc_field_manual_v1.md` describes the
   v6 composition. You edited it in place, so the Zenodo v1 deposit differs from the site.
 - **Git:**
-  - Items 1–9 are committed and pushed. Item 10 is uncommitted in two repos. `dev/19` and `main`
+  - Every repo is clean and pushed. Items 1–10 are on `dev/19`. `dev/19` and `main`
     exist locally and on the remote.
   - Every repo's `main` is one orphan commit, tagged `v6`. `pgc_install`'s `main` is `6.0.1`, and its `v6` tag stays on `6.0.0`.
   - Unsquashed history is in the local `history-18` tags.
   - Work happens on `dev/19`, where `VERSION` is 19.
 - **Verified:**
-  - `regression.sh --all` passes 82/82 on `dev/19` (2026-10-21, with item 10 in the working tree), on
+  - `regression.sh --all` passes 82/82 on `dev/19` (2026-10-21, on the committed tree), on
     a clean rebuild after the negative tests. The 82nd step is `test_governance_ontology` (6/6).
     `test_reference_semantics` is 20/20, and `construction_mapping_test` states 186 fields. `test_inspector` is 173/173, and
     `human_block_fidelity` counts 549 artifacts. The working snapshot holds 545.
@@ -252,14 +252,17 @@ v6 is published. dev/19 is declared a genesis, so nothing is measured against it
 - **Python:** the published packages ran on Python 3.15 under pipx, but the workspace builds and tests on 3.12.
 
 ### Next Session Should Start With
-1. **Commit item 10, then push:**
-
-   ```bash
-   cd ~/protocol-governed-computing
-   git -C snapshot_inspector commit -am "si.kind.map: filter by composed domain; page selector and offline export of every domain"
-   git -C .github commit -am "RUNBOOK, expectations and SOTU: kind map by domain"
-   for r in snapshot_inspector .github; do git -C $r push origin dev/19; done
-   ```
-2. Run `regression.sh --all` on `dev/19` and expect 82/82.
-3. Pick the next task from "Open work". The field manual's kind-map entry should mention the
-   domain selector at the cut.
+1. Run `regression.sh --all` on `dev/19` and expect 82/82. It passed on this tree, so this only
+   confirms that nothing in the environment moved.
+2. Pick the next task from "Open work". The candidates, roughly by readiness:
+   - **Realization map:** re-survey against sealed v6 and standard `v1`, and record v6 and this cut
+     as geneses.
+   - **CLM parked changes:** `causal_language_model/doc/cr_sequence.md`, each run as a change
+     dossier on its baseline design.
+   - **TI/TE in the design language:** they are schema-governed now, but still outside P7
+     (`transport_bindings: []`). This is the largest item.
+3. At the cut, do the parked steps:
+   - the field manual (§4, §10, Appendices A and D);
+   - `genesis: false`;
+   - point the `published_identity` expectation at the new release;
+   - move the demo's `REF`.
