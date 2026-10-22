@@ -635,11 +635,13 @@ files, and it lives with the domain it serves.
 # collatz — one operation, one route per operation
 ~/protocol-governed-computing/conformance_workloads/workloads/collatz/client/serve.sh
 
-# snapshot inspection — twenty operations sharing one route
+# snapshot inspection — twenty-one operations sharing one route
 ~/protocol-governed-computing/snapshot_inspector/client/serve.sh
 #   -> http://127.0.0.1:8001/kinds/     the kind map: every kind, and how kinds refer to kinds
 #   -> http://127.0.0.1:8001/kinds/?domain=blockchain   the same, for one composed domain
 #   -> http://127.0.0.1:8001/workflow/  one workflow drawn from its compiled graph
+#   -> http://127.0.0.1:8001/workflow/?trace=<ref>  a run's path marked on its workflow
+#      (serve with PGC_DATA_ROOT set to the data root the run wrote under)
 ```
 
 The kind map is also a file you can open without a server, for any snapshot that declares
@@ -650,6 +652,7 @@ cd ~/protocol-governed-computing/snapshot_inspector
 PYTHONPATH=. python scripts/export_kind_map.py --snapshot ../snapshot --out ~/kind_map.html
 si --snapshot ../snapshot kind map                       # the same answer as JSON
 si --snapshot ../snapshot kind map --domain blockchain   # one composed domain
+si --snapshot ../snapshot compile trace --artifact blockchain::WF_REGISTER_ACTOR_V0   # how a build produced it
 ```
 
 The page's Domain selector narrows the map to one composed domain: the artifacts addressed in it,

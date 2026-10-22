@@ -151,8 +151,8 @@ whether the unit was admitted. That is open design work, and it needs federated 
 
 **Rule.** `runtime.api` keeps a booted snapshot resident per process, keyed by the manifest file and
 by what acceptance was judged against (trust anchor, profile root). A rewritten manifest is verified
-afresh, and `boot()` itself is never cached. A run writes its `.jsonl` evidence only; a picture of
-its path is drawn on request (`run --behavior-logic`, `behavior-logic <trace>`).
+afresh, and `boot()` itself is never cached. A run writes its `.jsonl` evidence only. The runtime draws nothing: the inspector's
+workflow page draws a run's path on request (`/workflow/?trace=`).
 
 **Why.** Warm boot means load once and verify once: the booted package is frozen, and nothing reads
 the snapshot after it. A picture is a view of the evidence, not evidence, and drawing one on every

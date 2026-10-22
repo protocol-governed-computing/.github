@@ -28,7 +28,7 @@ steps:
     expect: ["SUPERSESSION AGREEMENT PASSED — 0 relation\\(s\\), 0 predecessor\\(s\\) present, 0 deleted by record"]
   - id: human_block_fidelity
     section: checks
-    expect: ["HUMAN BLOCK FIDELITY PASSED — 550 artifacts"]
+    expect: ["HUMAN BLOCK FIDELITY PASSED — 552 artifacts"]
   - id: evidence_determinism
     section: checks
     expect: ["EVIDENCE DETERMINISM PASSED"]
@@ -47,7 +47,7 @@ steps:
     expect: ["BASELINE DESIGNS CURRENT — 0 stale", "BASELINE DESIGNS COMPLETE — 6/6 determine their registry"]
   - id: author_transport_contracts
     section: checks
-    expect: ["OK\\s+40 contract\\(s\\) for 20 operations agree"]
+    expect: ["OK\\s+42 contract\\(s\\) for 21 operations agree"]
   - id: frontmatter_fidelity
     section: checks
     expect: ["FRONTMATTER FIDELITY PASSED"]
@@ -118,7 +118,7 @@ steps:
   - id: test_inspector
     section: checks
     # si.behavior_logic.list names each workflow's nodes by key; si.execution.explain is covered
-    expect: ["PASSED: 173/173"]
+    expect: ["PASSED: 178/178"]
   - id: domain_authoring
     section: checks
     expect: ["PASSED: 8/8"]
@@ -215,9 +215,6 @@ steps:
     section: checks
     # the examiner reads SCHEMA_TRACE_EVENT_V0, refuses any other format, and reads every trace the run wrote
     expect: ["Ran 5 tests", "(?m)^OK$"]
-  - id: test_trace_path
-    section: checks
-    expect: ["Ran 7 tests", "(?m)^OK$"]
   - id: test_transform_conformance_runner
     section: checks
     # a completed result carries exactly the outputs its transform declares

@@ -10,7 +10,7 @@ It writes only to a temporary directory and installs nothing. Failure means the 
 
 Four things it pins, each of which was wrong when the guide was first written:
 
-  * a domain must declare all five projection paths — omitting them survives GOVERN and CONSTRUCT
+  * a domain must declare all four projection paths — omitting them survives GOVERN and CONSTRUCT
     and fails at S7, which reads as a compiler fault rather than a missing declaration;
   * `structure_scope` names the composed domain — set it generically and the snapshot composes a
     domain by that name, assembles, and conforms, wrongly named, with nothing to catch it;
@@ -117,9 +117,6 @@ output_configuration:
   trust_attestation_path:
     layer: GOVERNANCE
     subpath: compiled/trust
-  visualization_projection_path:
-    layer: GOVERNANCE
-    subpath: compiled/visualization
   layer_outputs:
     GREETING:
       layer: GREETING

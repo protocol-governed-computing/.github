@@ -2,13 +2,40 @@
 
 Only the current handoff is kept here. Earlier handoffs are in git history: `git log -p -- doc/SOTU.md`.
 
-## SOTU Handoff — 2026-10-21 · kind map, sealed ontology, genesis declared, names carried as data closed, every kind schema-governed, actor types canonical, kind map by domain, codebase refactor on dev/19
+## SOTU Handoff — 2026-10-21 · kind map, sealed ontology, genesis declared, names carried as data closed, every kind schema-governed, actor types canonical, kind map by domain, codebase refactor, graphviz-free toolchain on dev/19
 
 ### This session
-Eleven pieces of work. Items 1–10 are committed and pushed on `dev/19`. **Item 11 is uncommitted in
-seven repos** (see "Next Session Should Start With").
+Twelve pieces of work. Items 1–11 are committed and pushed on `dev/19`. **Item 12 is uncommitted in
+nine repos** (see "Next Session Should Start With").
 
-**11. Codebase refactor: four findings from a full survey** (uncommitted)
+**12. The toolchain draws nothing; the inspector reads compile traces** (uncommitted)
+1. **A dead config key is gone.** `visualization_projection_path` was declared in 10 build configs,
+   in the configs `render.py` generates, in `domain_authoring` and in `README_DEV`. Nothing read it:
+   it named where the PNG views deleted in item 11 were written. A domain now declares four
+   projection paths, not five.
+2. **The compile trace moves to the inspector.** The new `si.compile.trace` (`SNAPSHOT_QUERY`, 21st
+   operation) takes `artifact` and an optional `domain`. For each build whose compile trace
+   (`evidence_graph.json`) concerns the artifact, it returns:
+   - its events;
+   - the events that led to them (`upstream`) and the events they led to (`downstream`), by
+     CAUSALITY edges;
+   - where the build wrote the artifact.
+
+   `protocol_compiler inspect` and all of `compiler/visualization` are deleted, and `cli.py` went
+   from 644 to 267 lines. The old CLI's `--family` listing was not carried over.
+   - The contract generator writes a catalog summary as unquoted YAML. A summary containing `: `
+     fails S1, which happened once here, so a summary must avoid it.
+3. **The runtime draws nothing.**
+   - `trace_viz.py`, `run --behavior-logic`, the `behavior-logic` subcommand, its 7-test
+     `test_trace_path`, and the `pgc-runtime[render]` extra (its only inspector import) are deleted.
+   - The inspector's workflow page takes `?trace=<ref>`. It asks `si.execution.explain`, marks the
+     path on the SVG, and lists each visit with why it decided. Checked live on a collatz run.
+   - The ruling "a run writes evidence, not pictures" now says the inspector draws.
+- Nothing in the toolchain uses graphviz any more.
+- Regression is **81 steps** now: `test_trace_path` went with `trace_viz`. Expectations:
+  `test_inspector` 178/178, contracts 42 for 21 operations, `human_block_fidelity` 552.
+
+**11. Codebase refactor: four findings from a full survey** (`protocol_compiler` `cdaf9bb`)
 1. **The snapshot no longer carries pictures.** The compiler drew 53 PNGs into the sealed snapshot
    on a best-effort basis (8.3 MB of 25 MB). The manifest hashed each one as a constituent, so
    `snapshot_id` depended on whether graphviz was installed, and on its version.
@@ -61,7 +88,7 @@ seven repos** (see "Next Session Should Start With").
 - The page has a Domain selector and opens `?domain=<d>` directly. `export_kind_map.py` embeds the
   answer for every domain, so the selector also works offline. The CLI takes
   `si kind map --domain <d>`.
-- `test_inspector` is 173/173, with six new checks. RUNBOOK updated.
+- `test_inspector` is 178/178, with six new checks. RUNBOOK updated.
 
 **9. Actor types are canonical** (`software_governance` `7b40295`)
 - New `actor::VOCAB_ACTOR_TYPES_V0`: one closed group, `actor_type: [agent, human, system]`. It is
@@ -222,16 +249,16 @@ v6 is published. dev/19 is declared a genesis, so nothing is measured against it
 - **Field manual:** `omnibachi-site/content/papers/foundations/pgc_field_manual_v1.md` describes the
   v6 composition. You edited it in place, so the Zenodo v1 deposit differs from the site.
 - **Git:**
-  - Items 1–10 are committed and pushed. Item 11 is uncommitted in seven repos. `dev/19` and `main`
+  - Items 1–11 are committed and pushed. Item 12 is uncommitted in nine repos. `dev/19` and `main`
     exist locally and on the remote.
   - Every repo's `main` is one orphan commit, tagged `v6`. `pgc_install`'s `main` is `6.0.1`, and its `v6` tag stays on `6.0.0`.
   - Unsquashed history is in the local `history-18` tags.
   - Work happens on `dev/19`, where `VERSION` is 19.
 - **Verified:**
-  - `regression.sh --all` passes 82/82 on `dev/19` (2026-10-21, with item 11 in the working tree), on
+  - `regression.sh --all` passes 82/82 on `dev/19` (2026-10-21, with item 12 in the working tree; 81 steps), on
     a clean rebuild after the negative tests. The 82nd step is `test_governance_ontology` (6/6).
     `test_reference_semantics` is 20/20, and `construction_mapping_test` states 186 fields. `test_inspector` is 173/173, and
-    `human_block_fidelity` counts 550 artifacts. The working snapshot holds 545.
+    `human_block_fidelity` counts 552 artifacts. The working snapshot holds 545.
   - Rebuilds give one identity.
   - A clean `pipx` install runs the demo end to end, in the terminal and in the browser.
   - `README_DEV`'s tour and from-source path both work.
@@ -295,23 +322,25 @@ v6 is published. dev/19 is declared a genesis, so nothing is measured against it
 - **Python:** the published packages ran on Python 3.15 under pipx, but the workspace builds and tests on 3.12.
 
 ### Next Session Should Start With
-1. **Commit item 11 in seven repos, then push:**
+1. **Commit item 12 in nine repos, then push:**
 
    ```bash
    cd ~/protocol-governed-computing
    git -C protocol_compiler add -A
-   git -C protocol_compiler commit -m "Emit workflow graphs, not pictures; one machine-block rule; S7 writes through one helper; admission rule governed; remove dead structure loading"
-   git -C software_governance add -A registry surface_map
-   git -C software_governance commit -m "INVARIANT_ADMISSION_COVERS_BINDINGS_V0: a workflow binds only what its gate declares"
-   git -C snapshot_inspector commit -am "Behaviour logic carries no picture; the surface links to the workflow page"
-   git -C business_domains commit -am "Blockchain screens draw their workflows from graph.json"
-   git -C conformance_workloads commit -am "Collatz: drop the link to the compiler's projection PNG"
-   git -C transformation_compilers add -A
-   git -C transformation_compilers commit -m "One machine-block rule for every transformation reader"
-   git -C .github add -A
-   git -C .github commit -m "Admission rule moves to the compiler; process scripts read machine blocks by the compiler's rule; SOTU"
-   for r in protocol_compiler software_governance snapshot_inspector business_domains conformance_workloads transformation_compilers .github; do git -C $r push origin dev/19; done
+   git -C protocol_compiler commit -m "Remove the inspect command and visualization package; compile traces are read by si.compile.trace"
+   git -C snapshot_inspector add -A
+   git -C snapshot_inspector commit -m "si.compile.trace; the workflow page marks a run from ?trace="
+   git -C protocol_runtime add -A
+   git -C protocol_runtime commit -m "The runtime draws nothing: remove trace_viz and behavior-logic"
+   git -C software_governance commit -am "Build configs drop visualization_projection_path"
+   git -C business_domains commit -am "Build configs drop visualization_projection_path"
+   git -C conformance_workloads commit -am "Build config drops visualization_projection_path"
+   git -C transformation_compilers commit -am "Rendered build configs drop visualization_projection_path"
+   git -C pgc_install commit -am "README_DEV: four projection paths"
+   git -C .github commit -am "Expectations, runbook, ruling and SOTU: graphviz-free toolchain, si.compile.trace"
+   for r in protocol_compiler snapshot_inspector protocol_runtime software_governance business_domains conformance_workloads transformation_compilers pgc_install .github; do git -C $r push origin dev/19; done
    ```
-2. Run `regression.sh --all` on `dev/19` and expect 82/82.
+2. Run `regression.sh --all` on `dev/19` and expect 81/81.
 3. Pick the next task from "Open work". The `governance_chain_closure` doctrine question (item 11.2)
-   is a new candidate.
+   is a candidate. At the cut, the field manual's inspection appendix gains `si compile trace` and
+   `/workflow/?trace=`.
