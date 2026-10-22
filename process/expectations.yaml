@@ -122,7 +122,7 @@ steps:
   - id: test_inspector
     section: checks
     # si.behavior_logic.list names each workflow's nodes by key; si.execution.explain is covered
-    expect: ["PASSED: 167/167"]
+    expect: ["PASSED: 173/173"]
   - id: domain_authoring
     section: checks
     expect: ["PASSED: 8/8"]

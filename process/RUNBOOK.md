@@ -341,7 +341,7 @@ included; this table explains what each step proves and states no counts. The st
 | `keyed_node_design_test.py`, `refusal_moment_design_test.py` | A node is a key and the contract it runs a column, and a route to a place the composition already has resolves; a refusing ending announces only a declared refusal moment |
 | `semantic_change_design_test.py` | Construction compares every amendment with the composition by the platform's declaration and refuses a change of meaning under an old identity; an amendment built without `--snapshot` is refused; a design re-points a reference with `REPOINT`; a replacement whose live referrer the design does not account for is refused; P7 refuses a `withdrawn_facts` row |
 | `implementation_closure.py` | `IMPLEMENTATION CLOSURE PASSED` — every transform module named by an artifact, every named module present |
-| `test_inspector.py` | `PASSED` — every `si.*` operation against fixture snapshots, including `si.kind.map` counting pairs rather than edges and its exported page carrying no server reference |
+| `test_inspector.py` | `PASSED` — every `si.*` operation against fixture snapshots, including `si.kind.map` counting pairs rather than edges, narrowing to one composed domain, and its exported page carrying no server reference |
 | `si snapshot validate --strict` | Reads **the snapshot just assembled**, which `test_inspector.py` does not — that runs against fixtures. Every check holds at zero, advisory ones included: `--strict` fails the step on any finding. `republished_copies_agree` holds because a domain that runs a platform capability carries a copy recording exactly what the platform records; `bound_paths_declared_as_stores` holds because every path a runtime binding writes is a store its storage structure declares |
 | `domain_authoring.py` | Authors the smallest domain from scratch in a temporary directory, compiles it against the platform, composes, boots and executes it. This is the path `pgc_install/README.md` documents for a domain developer, run rather than described. A failure means the README is wrong, not the platform. It pins four things that were each wrong when that guide was first written: all five projection paths are required and their absence fails at S7 rather than early; `structure_scope` names the composed domain, so a generic value assembles and conforms under the wrong name; a domain composes without violating the claimed profile; and an unimportable domain returns `VIOLATION` with null outputs rather than raising |
 | `test_indexes.py` | Assembler index construction, including that a republished identity resolves to its authoring copy and that resolution does not track domain-name order |
@@ -640,6 +640,7 @@ files, and it lives with the domain it serves.
 # snapshot inspection — twenty operations sharing one route
 ~/protocol-governed-computing/snapshot_inspector/client/serve.sh
 #   -> http://127.0.0.1:8001/kinds/     the kind map: every kind, and how kinds refer to kinds
+#   -> http://127.0.0.1:8001/kinds/?domain=blockchain   the same, for one composed domain
 #   -> http://127.0.0.1:8001/workflow/  one workflow drawn from its compiled graph
 ```
 
@@ -649,8 +650,13 @@ The kind map is also a file you can open without a server, for any snapshot that
 ```bash
 cd ~/protocol-governed-computing/snapshot_inspector
 PYTHONPATH=. python scripts/export_kind_map.py --snapshot ../snapshot --out ~/kind_map.html
-si --snapshot ../snapshot kind map      # the same answer as JSON
+si --snapshot ../snapshot kind map                       # the same answer as JSON
+si --snapshot ../snapshot kind map --domain blockchain   # one composed domain
 ```
+
+The page's Domain selector narrows the map to one composed domain: the artifacts addressed in it,
+including the platform capabilities it reaches, and the links between them. The whole snapshot is
+the default. The exported file embeds every domain's answer, so the selector works offline too.
 
 A number on a kind-map arrow counts distinct artifact pairs, not edges. One workflow names a
 contract as a node, a routing target and a full name, and that is one link.
