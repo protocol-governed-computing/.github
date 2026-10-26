@@ -2,235 +2,143 @@
 
 Only the current handoff is kept here. Earlier handoffs are in git history: `git log -p -- doc/SOTU.md`.
 
-## SOTU Handoff — 2026-10-21 · kind map, sealed ontology, genesis declared, names carried as data closed, every kind schema-governed, actor types canonical, kind map by domain, codebase refactor, graphviz-free toolchain on dev/19
+## SOTU Handoff — 2026-10-26 · behavior outside the snapshot analysed, platform and domains; decision accounting designed
 
 ### This session
-Twelve pieces of work, all committed and pushed on `dev/19`. Every repo is clean and level with its
-remote.
+No code changed in any repository. The session produced three documents in `.github/doc/`. All
+three are new and uncommitted. The 2026-10-24 handoff below is also uncommitted, so it is kept here
+rather than left to git history.
 
-**12. The toolchain draws nothing; the inspector reads compile traces** (`protocol_compiler` `c135a50`, `snapshot_inspector` `5d1b24f`, `protocol_runtime` `7a99fe4`)
-1. **A dead config key is gone.** `visualization_projection_path` was declared in 10 build configs,
-   in the configs `render.py` generates, in `domain_authoring` and in `README_DEV`. Nothing read it:
-   it named where the PNG views deleted in item 11 were written. A domain now declares four
-   projection paths, not five.
-2. **The compile trace moves to the inspector.** The new `si.compile.trace` (`SNAPSHOT_QUERY`, 21st
-   operation) takes `artifact` and an optional `domain`. For each build whose compile trace
-   (`evidence_graph.json`) concerns the artifact, it returns:
-   - its events;
-   - the events that led to them (`upstream`) and the events they led to (`downstream`), by
-     CAUSALITY edges;
-   - where the build wrote the artifact.
+**1. Platform: behavior outside the snapshot** (`doc/BEHAVIOR_OUTSIDE_SNAPSHOT.md`)
+- This report covers `protocol_runtime`, `protocol_transport`, and the side effects in
+  `software_governance`.
+- It finds 12 oversights (A1–A12), where code holds a fact the snapshot could carry. The main ones:
+  - A workflow ends with the last contract's status. The sealed EXIT carries no outcome, and
+    `cli.py:196` hard-codes `("SUCCESS","ALREADY_EXISTS")`.
+  - `dispatcher.py:274–282` merges undeclared inputs into the surface.
+  - Two admission validators disagree: `scheduler._admit` and the transport `_validate_input`.
+  - `length_minus_one` is a Collatz-only operator inside the domain-neutral resolver.
+  - In `CS_MUTABLE_JSON_V0`, an absent `filter` updates every record.
+- It finds 6 bounded necessities (B1–B6): the environment, kernel semantics, the class name that
+  signals a refusal, capability realization, the bootstrap, and authority. On authority, the actor
+  is sealed but not enforced, because the canonical request carries no principal.
 
-   `protocol_compiler inspect` and all of `compiler/visualization` are deleted, and `cli.py` went
-   from 644 to 267 lines. The old CLI's `--family` listing was not carried over.
-   - The contract generator writes a catalog summary as unquoted YAML. A summary containing `: `
-     fails S1, which happened once here, so a summary must avoid it.
-3. **The runtime draws nothing.**
-   - `trace_viz.py`, `run --behavior-logic`, the `behavior-logic` subcommand, its 7-test
-     `test_trace_path`, and the `pgc-runtime[render]` extra (its only inspector import) are deleted.
-   - The inspector's workflow page takes `?trace=<ref>`. It asks `si.execution.explain`, marks the
-     path on the SVG, and lists each visit with why it decided. Checked live on a collatz run.
-   - The ruling "a run writes evidence, not pictures" now says the inspector draws.
-- Nothing in the toolchain uses graphviz any more.
-- Regression is **81 steps** now: `test_trace_path` went with `trace_viz`. Expectations:
-  `test_inspector` 178/178, contracts 42 for 21 operations, `human_block_fidelity` 552.
+**2. Business domains: behavior outside the snapshot** (`doc/DOMAIN_BEHAVIOR_OUTSIDE_SNAPSHOT.md`)
+- **Policy from the caller:** ai_governance takes `cap` and `threshold_days` from the payload, so
+  the caller sets the rule that judges it.
+- **Facts from the caller:** `assigned_count`, `training_completed`, `last_active_date` and
+  `evaluation_date` all come from the payload.
+- **Evidence from the caller:** the reclaim audit records `days_inactive` from the payload. It does
+  not record the transform's result.
+- **False declarations:** 8 atoms declare `refusal: never`, and all 8 raise.
+- **Smaller findings:**
+  - `MAX_KEY_LENGTH = 256` is copied from the CS config into three atoms.
+  - A literal kinds list duplicates `VOCAB_KIND_OF_INFORMATION_V0`.
+  - Identity normalization is undeclared.
+  - The hosted-record outcomes are hard-coded in `CT_PURE_READ_HOSTED_STATE_V0`.
+- **Not ours to move:** Keccak, the choose algorithm, time-in-service as governed data (its
+  authority is not enforced), and the host's prompt rendering.
 
-**11. Codebase refactor: four findings from a full survey** (`protocol_compiler` `cdaf9bb`)
-1. **The snapshot no longer carries pictures.** The compiler drew 53 PNGs into the sealed snapshot
-   on a best-effort basis (8.3 MB of 25 MB). The manifest hashed each one as a constituent, so
-   `snapshot_id` depended on whether graphviz was installed, and on its version.
-   - The compiler now emits `graph.json` only, through `compiler/projections/workflow_graph.py`.
-     A graph that cannot be written now fails the build instead of producing a warning.
-   - `compiler/visualization/views/` and `wf_graph_generator.py` are deleted. The snapshot is 16 MB.
-   - The inspector no longer reports `projection_path`. Its surface links to `/workflow/?wf=` instead.
-   - The blockchain screens draw their workflows as SVG from `graph.json`, as collatz does. They
-     mount the inspector's diagram at `/diagram`.
-   - The runtime's per-run trace PNG (`trace_viz`) is unchanged, because it is never sealed.
-2. **A governed admission rule replaces a workspace-only check.**
-   - `transport::INVARIANT_ADMISSION_COVERS_BINDINGS_V0`, a fourth rule of
-     `CONSTITUTION_ADMISSION_V0`, with handler `assert_admission_covers_bindings_v0`. A workflow
-     binds only payload fields its IN gate declares.
-   - It applies to WF, so it reaches every domain build. Proven: an undeclared
-     `$.payload.nickname` in ai_governance fails the compile.
-   - The script's hard-coded `BOUNDARY_SUPPLIED` exemption matched nothing at source level, so the
-     rule has no exemption. `admission_contract_fidelity.py` is deleted, and
-     `test_admission_covers_bindings` (4/4) replaces it.
-   - `governance_chain_closure` stays a process check. It is cross-build by design: domain builds
-     never import constitutions or invariants as subjects. No domain authors an invariant today.
-     Moving it would mean changing the import filter or forbidding domain-authored invariants,
-     which is a doctrine decision.
-3. **One rule for a machine block.** There were 17 parsers using 8 regex variants. Measured over 580
-   files, the first-fence readers took the wrong YAML:
-   - in `STRUCTURE_ARTIFACT_IDENTITY_V0`, the prose example that comes before its machine block;
-   - in 6 artifacts whose YAML embeds backticks, a truncated block.
+**3. Decision accounting design** (`doc/DECISION_ACCOUNTING_DESIGN.md`)
+- The first draft was a provenance map with one leak-specific invariant. It was revised after an
+  expert critique, which asked for three separate obligations and for completeness as the central
+  requirement.
+- **Three obligations:**
+  - provenance;
+  - authority conformance;
+  - evidence integrity.
+- **Four ways a dependency is established:** `static`, `declared`, `observed`, `unknown`. None of
+  them is called "verified".
+- **New declarations:**
+  - an input `role` (`policy`, `fact` or `subject`);
+  - sealed constants for each atom, checked by a syntax-tree scan;
+  - an admissibility table of role × source, with overrides the map shows;
+  - `records:` on evidence fields.
+- **Outputs:**
+  - a sealed Decision Authority Map, `si.decision.map`;
+  - three `FAIL_IMMEDIATELY` invariants under `decision_accounting::CONSTITUTION_DECISION_ACCOUNTING_V0`;
+  - a mutation suite with 9 classes, 3 of them expected to pass undetected as the stated limits.
+- **Claim boundary (§11):** the invariants are enforced within a stated scope. They are not a
+  guarantee that hidden logic is eliminated.
+- **Correction to the expert:** completeness at the composition boundary already holds by
+  construction. The unknowns are inside atoms and side effects, plus atom purity, which is declared
+  but not checked.
 
-   The S1 rule now lives in `compiler.atoms.machine_block` and `transformation.machine_block`.
-   `frontmatter_fidelity` checks that the two agree. The compiler (4 readers), transformation (9) and
-   `.github` (4) all use it. The assembler's profile reader and `human_block_fidelity` stay, because
-   each has a different job.
-4. **S7 writes through one helper.** `_write_json` serializes, creates the directory and replaces
-   the file atomically, and it returns the compile error. S7 went from 1,154 to 949 lines and has no
-   `except Exception` left.
-- **Also removed:** `structure/loading`, `structure/discovery` and `structure/exceptions`, about
-  1,200 lines of RI-0 legacy that nothing imported. Its vocabulary loader expected a `vocab_id` key
-  no vocabulary has.
-- **Size:** `protocol_compiler` is about 3,000 lines shorter. Expectations now count
-  `human_block_fidelity` at 550, `semantic_change_design_test` at 18/18 (the new test is that YAML in
-  prose is not the machine block), and `test_admission_covers_bindings` at 4/4.
+**4. Other**
+- The two reports disappeared from `doc/` mid-session. The cause is not known; I neither moved nor
+  deleted them. They were regenerated from the session text.
+- I recommended against a general-purpose PGC agent. The suggestion is one read-only closure
+  auditor agent, with procedures kept as skills. It was not built.
 
-**10. The kind map filters by composed domain** (`snapshot_inspector` `a7b87e5`)
-- `si.kind.map` takes an optional `domain`, which is a domain the manifest composes, such as
-  `platform`, `workload` or `blockchain`, not a namespace. The default is the whole snapshot.
-- An artifact is in a domain when the index gives it an address there, so a domain's map includes
-  the platform capabilities it reaches. An edge counts only when both its ends are in the domain.
-- An unknown domain answers NOT_FOUND with `known_domains`. The answer adds `filter` and
-  `domains`. `TI_`/`TE_SI_KIND_MAP_V0` are regenerated.
-- The page has a Domain selector and opens `?domain=<d>` directly. `export_kind_map.py` embeds the
-  answer for every domain, so the selector also works offline. The CLI takes
-  `si kind map --domain <d>`.
-- `test_inspector` is 178/178, with six new checks. RUNBOOK updated.
+### Build & test status
+- `regression.sh` (execution block) ran on 2026-10-26: **PASSED, 16/16 steps as expected**.
+- The `--all` mode (rebuild plus every check) was not run. No code changed.
 
-**9. Actor types are canonical** (`software_governance` `7b40295`)
-- New `actor::VOCAB_ACTOR_TYPES_V0`: one closed group, `actor_type: [agent, human, system]`. It is
-  the "governed actor type vocabulary" that `AC_TYPE_REQUIRED` names, and it did not exist before.
-- Rule 1 of `ASSERT_AC_DECLARATION_WELL_FORMED_V0` now requires `core.type` to be one of these.
-  A build that has actors but cannot see the vocabulary is refused. Proven: `type: ENDUSER` on
-  the blockchain participant fails the compile.
-- Six actors normalized:
-  - `ENDUSER` → `human`: the blockchain participant, library staff, model staff and requester.
-  - `ENDUSER` → `system`: the model host.
-  - `person` → `human`: the ai_governance employee.
-  - The `agent`, `system` and `human` actors were already canonical.
-- No code reads `core.type`, so no behaviour changed. Designs and the surface map were
-  regenerated. `human_block_fidelity` now counts 549.
+### Open issues
+- Nothing is committed. Commit the three docs with the commands given in session, then
+  `doc/SOTU.md` separately.
+- The design is parked on dev/19. None of its declarations exist yet: `role`, `constants`,
+  `admits`, `records:`, and the three invariants.
+- The domain fixes are unscheduled. The ai_governance leaks are the top priority: `cap`,
+  `threshold_days` and the audit's `days_inactive`.
 
-**8. Every artifact kind is schema-governed** (`software_governance` `0f4b9d9`)
-- `STRUCTURE_SCHEMA_DISPATCH_V0` recorded four kinds as `description_pending`. Each build now
-  validates them, and the `description_pending` block is gone.
-  - `SCHEMA_ACTOR_V0`, corrected: all 14 actors failed it. It pinned the wrong constitution,
-    required a `role` no actor has, and forbade `attributes`, `type` and `description`.
-  - `SCHEMA_INTENT_V0`, corrected: all 37 intents failed it. It pinned a short-code constitution
-    and rejected `integer`.
-  - `SCHEMA_TRANSPORT_INGRESS_V0` and `SCHEMA_TRANSPORT_EGRESS_V0`, new, written from Transport
-    Standard V0 §6–7 and the 48 TI/TE artifacts:
-    - Each has a closed surface.
-    - A TI's `handler.kind` is `WF_INVOCATION` (needs `workflow`) or `SNAPSHOT_READ`/`SNAPSHOT_QUERY`
-      (needs `operation` and `implementation`).
-    - A TE's Result Classes are the six that `CONSTITUTION_TRANSPORT_EGRESS_V0` governs.
-    - A TE's `op` values and its `evidence_policy` are the ones the transport resolver implements.
-- All 99 artifacts of the four kinds pass. Proven negative: a TI with `handler.kind: WF_TELEPORT`
-  and an actor declaring `permissions` each fail with `ASSERT_SCHEMA_CONFORMANCE_V0`.
-- `domain_authoring` caught that an actor attribute may carry a literal `value`. The schema allows
-  it.
-- No transport behaviour changed: the schemas describe the existing declarations.
-- Actor types were inconsistent. Item 9 made them canonical.
+### Architectural concerns
+- **Where the rules live:** the design proposes a new `decision_accounting` concern. The alternative
+  is to put the rules under `CONSTITUTION_EXECUTION_TOPOLOGY_V0`.
+- **Atom purity:** the import rule in `business_domains/CLAUDE.md` is doctrine, and no check
+  enforces it. `implementation_closure.py` checks only that each module exists.
+- **Authority:** `governed_store` admissibility rests on actor binding, which the runtime does not
+  enforce. B5 needs a principal on the Canonical Transport Request before the rule means anything.
+- **The paper:** the expert's RQ1–3 suggestion bears on the inversion paper v2. Do not promote
+  decision accounting to the paper's main claim until the mutation suite has results.
 
-**7. The last names carried as data, closed** (`software_governance` `064c123`, `protocol_compiler` `86f306e`, `transformation_compilers` `6e186d9`)
-- **Bare codes are refused under name parts.** `VOCAB_DECLARATION_REPRESENTATION_V0` adds a group,
-  `named_in_full`: `bootstrap_exception`, `event_code`, `event_type`, `governs`, `target_cs`.
-  `Representation.short_codes` refuses a value under one of these parts that is written as an
-  artifact's code (`…_V<n>`, no `::`). A kind token or a `$.` path is still a value.
-  Proven: a bare `target_cs` in blockchain fails with `ASSERT_FQDN_ONLY_REFERENCES_V0`.
-- **`STRUCTURE_ARTIFACT_IDENTITY_V0.bootstrap_exception`** now holds full names, as a reference
-  part. It named `STRUCTURE_BUILD_DOMAINS_CONFIG_V0`, which doesn't exist; the entry and the prose
-  naming it are gone.
-- **A vocabulary may name artifacts.** `SCHEMA_VOCABULARY_V0` allows `names_kind` on a group.
-  Rule 6 of `ASSERT_VOCABULARY_SYMBOLS_WELL_FORMED_V0` refuses an entry that is not the code of an
-  artifact of that kind the build can see. `VOCAB_DESIGN_REGISTER_TERMS_V0.storage_type` declares
-  `names_kind: CAPABILITY_SIDE_EFFECT`. Proven: adding `CS_GONE_V0` fails the transformation compile.
-- The P7 rule params that list CS codes are generated from that vocabulary, and `emit_rule_sets
-  --check` gates them, so they needed nothing.
-- **The design language carries it.** `REGISTER_SCHEMA_P7_V0.vocabulary_extensions` gains an
-  optional `names_kind` column ("Names Kind"). It is in the P7 template, the recorder
-  (`record/design.py`), the renderer and `CONSTRUCTION_MAPPING.md`.
-- Residual: three `only_when_value` consts in `REGISTER_SCHEMA_P7_V0` name CS codes. They gate rows
-  of the Storage Type column, whose values the vocabulary closes, so a stale const makes its rule
-  inert rather than wrong.
+### Next session should start with
+Decide whether decision accounting goes ahead on dev/19, and under which concern. If it does,
+implement `INVARIANT_DECISION_SOURCE_ADMISSIBLE_V0` first, against the ai_governance `cap` and
+`threshold_days` bindings, as the first mutation-suite case.
 
-**6. Names carried as data are references; the cut is a genesis** (`software_governance` `9996aa0`; plan in `doc/PLAN_TYPED_REFERENCES_GENESIS.md`)
-- `VOCAB_DECLARATION_REPRESENTATION_V0` adds four parts to its `reference` group: `target_cs`,
-  `event_code`, `event_type`, `governs`. Only a value written as a full name is a reference, so a
-  constitution's `core.governs` kind tokens and `$.inputs.*` paths stay values. None joins
-  `full_name_required`, because that check refuses any value without `::`.
-- 21 values rewritten as full names: 8 `target_cs` in claim CCs, 4 `event_type` in ai_governance
-  WFs, 2 `event_code` in ai_governance record CCs, 7 `governs` in platform surface contracts.
-- `SURFACE_CONTRACT_STORAGE_READ_V0` and `_WRITE_V0` named a non-existent `CS_NAME_REGISTRY_V0`;
-  the name is removed. Putting it back as a full name now fails the platform compile:
-  `E104_INVALID_FQDN: Dangling reference … → capability_side_effects::CS_NAME_REGISTRY_V0`.
-- The runtime is unchanged: it passes a literal through as written, now a full name.
-- Designs of record regenerated. In ai_governance's P8, the two record CCs move after the events
-  they now reference.
-- **Genesis declared** (`1b` §11), as v6 was:
-  - `VOCAB_PROTOCOL_KINDS_V1` is back to `_V0`, with no `supersedes`. The compiler and the invariant
-    prose name V0.
-  - `retired_identities.yaml` is empty.
-  - `process/genesis.yaml` declares `genesis: true`, read by `retirement.genesis()`.
-    `published_identity_check.py` then compares nothing with v6; the ledger rules still hold.
-  - `rulings.md`: "The cut after v6 is a genesis, built as a baseline" replaces the spent v6 ruling.
-    Set `genesis: false` once the cut is sealed.
+---
 
-**1. The kind map: `si.kind.map`** (`snapshot_inspector` `7060f45`)
-- The composition read one level up: every artifact kind, its category, provenance and runtime
-  disposition, its field shares, its schema status, and how kinds refer to kinds.
-- Edges come from the inspector's `SemanticGraph`, aggregated by kind. A number counts distinct
-  artifact pairs, not edges.
-- New pieces:
-  - `TI_SI_KIND_MAP_V0` / `TE_SI_KIND_MAP_V0`, generated by `author_transport_contracts.py`
-  - `inspector/queries/kind_map.py`
-  - the browser page `client/web/kinds/`, linked from the surface's index
-  - the offline export, `scripts/export_kind_map.py --snapshot <dir> --out <file>`
-- The inspector now offers 20 operations: 15 reads and 5 queries.
-- A snapshot sealed before this change, such as v6, refuses the export with one line.
+## SOTU Handoff — 2026-10-24 · Architecture Inversion paper rebuilt as a standalone problem-first draft; field manual aligned with dev/19
 
-**2. The Governance Ontology is sealed** (`software_governance` `2a8b006`, `protocol_compiler` `e821fda`)
-- `artifact::VOCAB_GOVERNANCE_ONTOLOGY_V0` states each kind's semantic category, its provenance, and
-  each category's runtime disposition, in the terms of standard `2b`.
-- `artifact::INVARIANT_GOVERNANCE_ONTOLOGY_AGREES_V0` is declared by the new
-  `artifact::CONSTITUTION_GOVERNANCE_ONTOLOGY_V0`. Its handler, `assert_governance_ontology_agrees_v0`,
-  refuses a platform build in which the vocabulary and the compiler's built-in table
-  (`artifact_kinds._DESCRIPTORS`) differ.
-- This was proven on the real build: listing EVENT as participatory gave `E701 …
-  ASSERT_GOVERNANCE_ONTOLOGY_AGREES_V0 — 2 violation(s)`.
-- These are new identities only. Nothing published in v6 changed, and `published_identity` passes.
-- The built-in table stays as the compiler's bootstrap, because the compiler needs the
-  classification to compile the vocabulary.
-- `si.kind.map` reads the ontology and reports `ontology_declared: false` where a snapshot seals none.
+### This session
+No code changed in any repository. The work was on papers and on documentation outside the workspace. The previous handoff (dev/19 items 1–12) is in git history.
 
-**3. `VOCAB_PROTOCOL_KINDS_V0` lists `TEST_DATA`**
-- V0 listed sixteen artifact kinds and omitted `TEST_DATA`. It was first fixed as a V1
-  supersession; the genesis (item 6) folded it back into V0 in place.
+**1. Field manual aligned with dev/19** (`omnibachi-site` `a0ccf3a`)
+- `content/papers/foundations/pgc_field_manual_v1.md` was edited in place at your direction, so it now describes the dev/19 line, not v6. Where v6 differs, the text says so.
+- It covers:
+  - the sealed ontology and its agreement invariant;
+  - 17 kinds, every one schema-governed;
+  - the closed set of actor types;
+  - names carried as data are references;
+  - the genesis;
+  - `INVARIANT_ADMISSION_COVERS_BINDINGS_V0`;
+  - no pictures in the snapshot, only `graph.json`;
+  - `si kind map --domain`, `si compile trace`, and the `?trace=` page;
+  - 21 operations, 15 reads and 6 queries;
+  - `author_transport_contracts.py` for adding an inspection operation.
+- The Zenodo v1 deposit now differs further from the site.
 
-**4. Construction completeness gaps closed** (`transformation_compilers` `600b7c5`)
-- Both gaps were measurement defects, not design gaps. The designs stated the values; the measure
-  counted an empty value as undetermined.
-  - ai_governance had 3 facts: literal `''` and `{}` on workflow node inputs.
-  - transformation had 6: `gate: null` on phases with no human gate, which its STRUCTURE states
-    on purpose.
-- `render.py` now applies the existing rule, "an empty value a design wrote is determined", to
-  workflow node literals and to STRUCTURE properties. It already applied it to contract steps.
-- All six designs measure 100%, and every rendered artifact is byte-identical to before.
-- **The gate.** `write_baseline_designs.py --check` now also requires each design of record to
-  determine its whole registry. This held as a v6 baseline condition, but nothing measured it.
-  Without the fix it reports `INCOMPLETE — 4/6` and exits 1.
+**2. Architecture Inversion paper, v2 — the plan and two drafts**
+- **Decisions:**
+  - v2 is a new version of the preprint DOI `10.5281/zenodo.22736531`, not of the foundations paper.
+  - The paper stands alone: no PGS/PGC naming history, and no citations to earlier papers in the series.
+  - The paper shows 17 kinds. The registry's 21 entries include 4 compiler-bookkeeping entries.
+  - The cost problem became the **complexity** problem.
+- **First draft, kept but unmodified:** `omnibachi-site/parkinglot/pgc_architectural_inversion_v2.md`, with its outline beside it. `parkinglot/` is gitignored.
+- **Working draft:** `omnibachi-site/doc/pgc_architectural_inversion_draft.md` (`34de0a5`), developed one section at a time. It now holds:
+  - §1 the two problems. Problem 1 distinguishes *lifecycle-activity authorization* from *behavioral authorization*. It cites Hou et al. 2024 [1] and MacCormack & Sturtevant 2016 [2].
+  - §2 the inversion defined. §2.1 uses the same terms as §1.1.
+  - §3 the existing controls. Table 1 shows what each class of control authorizes, its scope, and what it does not establish by itself. Its references [3]–[16] were verified by web search. §3.3 gives criteria C1–C6. §3.4 states how PGC is to be compared, and that authorization is not correctness.
+  - §4 the five properties. §4.1 states the C1 limit: a rule computed inside a capability is governed only by its contract and test vectors. Table 2 maps properties to criteria and is labelled as design claims.
+  - §5 the baseline A1–A6, the derivation rule, Result 1 (execution preserves authority), and Result 2 (workers stay independent of authority). Result 2 is framed as the design answer to Problem 1.
+- **Reviewer patches applied:** two rounds of expert comments. The main ones:
+  - no "current practice" generalization;
+  - possible failures are not presented as established ones;
+  - the paper makes no superiority claim; that belongs to the parked comparative-evaluation paper.
+- **Memory:** `inversion-paper-v2.md`.
 
-**5. Design-redundancy study, shelved** (`.github` `2018890`, `doc/FINDINGS_DESIGN_REDUNDANCY.md`)
-- **The question.** Could a smaller human vocabulary, with the machine artifacts fully generated,
-  halve what a person authors?
-- **The answer is no.** Measured in P7 register cells, what a person writes, 13–20% is
-  redundant. Measured in rendered artifact facts, the figure was 35–40%. That figure overstated
-  it, because the renderer already turns one register cell into several artifact facts.
-- **Why it was shelved:**
-  - The largest source is CC interface rows that bind platform capabilities. Deriving them needs
-    construction to read the sealed composition while rendering.
-  - Every option changes identities published in v6: `REGISTER_SCHEMA_P7_V0`, the rule set in
-    `WF_P7_DESIGN_INTENT_ADMISSIBILITY_V0`, and the constitutions.
-- **Method.** Count authoring effort in P7 register cells, never in artifact facts.
-- **Rules that match by name do not hold.** They failed on every real domain.
-- **What reopens it.** The finding names one question: may render read platform specs, as the phase
-  checks already do through `si.capability.surface`?
-- **Doctrine tension, recorded, not acted on.** `rulings.md` says no change after v6 may claim the
-  v6 baseline ruling. `THE_SHAPE_OF_A_CHANGE_V0.md` §5 says a constitution clause needs a dossier.
-  An in-place dev-phase simplification would need a ruling that replaces the v6 one.
+**3. SOTU housekeeping:** the "field manual at the next cut" item is closed.
 
 ### Where things stand
 v6 is published. dev/19 is declared a genesis, so nothing is measured against it until the cut.
@@ -246,8 +154,10 @@ v6 is published. dev/19 is declared a genesis, so nothing is measured against it
   obligations against `v0` (`standards/revisions.md`). The v6 reset reads as a genesis (`1b` §11),
   so it needed no spec change. Implementation repos link the concept DOI and cite `v1` in
   `.zenodo.json`.
-- **Field manual:** `omnibachi-site/content/papers/foundations/pgc_field_manual_v1.md` describes the
-  v6 composition. You edited it in place, so the Zenodo v1 deposit differs from the site.
+- **Field manual:** `omnibachi-site/content/papers/foundations/pgc_field_manual_v1.md` now describes
+  dev/19, edited in place (2026-10-22): sealed ontology, 17 schema-governed kinds, actor types, names
+  as references, genesis, admission-covers-bindings, no pictures in the snapshot, kind map, compile
+  trace, 21 operations. It notes where `v6` differs. The Zenodo v1 deposit differs from the site.
 - **Git:**
   - Every repo is clean and pushed. Items 1–12 are on `dev/19`. `dev/19` and `main`
     exist locally and on the remote.
@@ -255,8 +165,7 @@ v6 is published. dev/19 is declared a genesis, so nothing is measured against it
   - Unsquashed history is in the local `history-18` tags.
   - Work happens on `dev/19`, where `VERSION` is 19.
 - **Verified:**
-  - `regression.sh --all` passes 82/82 on `dev/19` (2026-10-21, on the committed tree; 81 steps), on
-    a clean rebuild after the negative tests. The 82nd step is `test_governance_ontology` (6/6).
+  - `regression.sh --all` passes 81/81 on `dev/19` (2026-10-24, committed tree, 3m50s), with the demo script at 12/12 and trace-schema conformance over 167 traces.
     `test_reference_semantics` is 20/20, and `construction_mapping_test` states 186 fields. `test_inspector` is 173/173, and
     `human_block_fidelity` counts 552 artifacts. The working snapshot holds 545.
   - Rebuilds give one identity.
@@ -290,18 +199,6 @@ v6 is published. dev/19 is declared a genesis, so nothing is measured against it
   `published_identity` expectation back to a comparison with the new identity.
 
 ### Open work
-- **Field manual, at the next cut.** The kind map (`si.kind.map`) is on dev/19, not in v6, so the
-  manual (`omnibachi-site/.../pgc_field_manual_v1.md`) stays as it is until a new identity is
-  cut. Then:
-  - §10 Inspection: add the kind map to the `SNAPSHOT_QUERY` examples.
-  - Appendix A "Inspect": add `si kind map [--domain <d>]` and `scripts/export_kind_map.py`. "Nineteen
-    operations: fifteen reads and four queries" becomes twenty: fifteen reads and five queries.
-  - Appendix D "Add an inspection operation", step 1: the boundary contracts are generated by
-    `snapshot_inspector/scripts/author_transport_contracts.py` from one declaration, not
-    hand-authored. That is already true of v6.
-  - §4 The artifact ontology: the ontology is now sealed as `artifact::VOCAB_GOVERNANCE_ONTOLOGY_V0`.
-    `artifact::INVARIANT_GOVERNANCE_ONTOLOGY_AGREES_V0` refuses a platform build in which it and the
-    compiler's built-in table differ.
 - **Unenforced admission in collatz.** `IN_COLLATZ_INPUT_VALIDATED_V0` keeps its rules as prose in
   `extensions.admission_rules`, which construction drops. The enforced bound is in
   `TI_COLLATZ_COMPUTE_V0` (`number`, 1–999999). TI and TE are outside the design language
@@ -321,18 +218,28 @@ v6 is published. dev/19 is declared a genesis, so nothing is measured against it
 - **The demo** fetches `REF=v6`. Move it to the next identity at that cut.
 - **Python:** the published packages ran on Python 3.15 under pipx, but the workspace builds and tests on 3.12.
 
+- **Architecture Inversion draft** (`omnibachi-site/doc/pgc_architectural_inversion_draft.md`):
+  - §6 the fifteen inversions, in four groups. Adapt them from the parkinglot v2.
+  - Problem 2: the Governance Dividend, framed as complexity.
+  - PGC scored against C1–C6. Each cell needs evidence that is derived, specified and exercised. Expected C cells: C1 (rules inside capabilities), C2 (impure transforms, external systems), C5 (bounded neighborhoods), and the violations the realization map records.
+  - §2.2 repeats §3.4. Trim it.
+  - Missing citations for declarative deployment and capability security in §4; take them from the v2 reference list.
+  - Check before deposit: the IEEE DOI for [7]; the author lists for [4], [9] and [10]; Cedar's article number; the pages of [6]; and [1], [2].
+  - Forward references to Appendix A and to sections not yet written.
+
 ### Next Session Should Start With
 1. Run `regression.sh --all` on `dev/19` and expect 81/81. It passed on this tree, so this only
    confirms that nothing in the environment moved.
 2. Pick the next task from "Open work". The candidates, roughly by readiness:
-   - **`governance_chain_closure` doctrine** (item 11.2): forbid domain-authored invariants, or let
+   - **Architecture Inversion draft:** §6 (the fifteen inversions), then the PGC scoring against C1–C6.
+   - **`governance_chain_closure` doctrine** (2026-10-21 handoff, item 11.2): forbid domain-authored invariants, or let
      domain builds import the chain kinds, so the check can become a governed invariant.
    - **Realization map:** re-survey against sealed v6 and standard `v1`, and record v6 and this cut
      as geneses.
    - **CLM parked changes:** `causal_language_model/doc/cr_sequence.md`, each run as a change dossier.
    - **TI/TE in the design language:** they are schema-governed, but still outside P7.
 3. At the cut, do the parked steps:
-   - the field manual (§4, §10, Appendices A and D, plus `si compile trace` and `/workflow/?trace=`);
+   - the field manual: drop its "where `v6` differs" notes, and name the new identity;
    - `genesis: false`;
    - point the `published_identity` expectation at the new release;
    - move the demo's `REF`.
