@@ -2,97 +2,98 @@
 
 Only the current handoff is kept here. Earlier handoffs are in git history: `git log -p -- doc/SOTU.md`.
 
-## SOTU Handoff — 2026-10-27 · Decision authoring prototyped: book_library_mgmt derived from a 115-line ledger; blockchain next
+## SOTU Handoff — 2026-10-28 · Decision authoring: blockchain derived whole from a 120-line ledger; book unchanged
 
 ### This session
-Work is on `dev/19` and committed by the user: `transformation_compilers` `e915d7b`, `.github` `6f671a8` and `84165e7`. Nothing is pending.
+Work is on `dev/19`. The changes are staged in `transformation_compilers`, not committed. The
+2026-10-27 handoff, which this replaces, is in git history.
 
-**1. Decision authoring, the idea.** A person answers typed questions in a *ledger*. Each answer
-names its authority (`decided_by`) and the P0 statement it settles. A generator, the proposed
-**Decision Compiler**, derives P1 to P7 from the ledger plus *doctrine*. The unchanged Design and
-Construction Compilers, the compiler, the assembler and the runtime take it from there.
+**1. Phase split** (`doc/ANALYSIS_LEDGER_VS_PHASES.md`). The ledger does not force answers up
+front: the questions come in rounds and open questions are allowed. But a typed catalog cannot ask
+a reframing question. So P1–P3 stay a dialog for conceptual changes, and P4–P7 are generated.
 
-**2. The prototype: `transformation_compilers/decision_authoring_prototype/`**
-- `engine/`: `generate_domain.py` (9 patterns, doctrine in code), `splice.py`, `compare.py`,
-  `p7_slice.py`, `census.py`, and `run_pipeline.sh <domain> <scratch>`. The script derives, splices
-  into a scratch dossier, runs the construction check, emits, compiles, side-assembles, and runs
-  every testbed of the domain.
-- `doc/`: `PLAN_DECISION_LEDGER_AUTHORING.md`, `LEDGER_FORMAT_V0.md`,
-  `ANALYSIS_LEDGER_VS_PHASES.md`, `ARCHITECTURE_IMPACT.md` (the third compiler against the repo's 13
-  rules) and `DOSSIER_COMPARISON.md` (the real cr_01 to cr_05 against decision dossiers).
-- `domains/book_library_mgmt/`: `ledger.yaml`, the brief, the two blind-author ledgers, the
-  owner's answers, findings for steps 1 to 5, `probes/`, and `history/` (the copy-family step).
-  `domains/blockchain/` is empty.
-- It sits outside packaging, because `pyproject` includes only `transformation*`, and outside
-  `release.sh`.
+**2. Blockchain, steps 1–5** (`domains/blockchain/`)
+- **Census** (`FINDINGS_DECISION_LEDGER_CENSUS.md`): 32 decisions underlie 2,424 P7 values, with
+  0 unaccounted. `census.py` now takes a per-domain profile; book's census is unchanged.
+- **History:** four of seven deleted change requests (cr_03, cr_05, cr_06, cr_07) only repaired
+  hand-written HOW. The seeds were recovered from commit `5d405b8^`.
+- **Owner answers** (`LEDGER_OWNER_ANSWERS_BLOCKCHAIN.yaml`): 19 in all.
+  - 5 settle disagreements between the seeds and P7.
+  - 4 come from the seeds where the brief omitted them.
+  - 10 settle decisions today's design made without recording them. The trust model stays
+    deferred: whoever the request names as authority is recorded unchecked.
+- **Brief and blind author** (`LEDGER_BRIEF_BLOCKCHAIN.md`, `FINDINGS_LEDGER_BRIEF_RUN.md`): the
+  author addressed all 32 decisions and needed 12 new question types. 9 of those joined the
+  catalog; 3 were doctrine.
+- **Checks** (`checks/execution_validation_owner_answers.py`): 9 criteria written before any
+  design. Today's design holds 2 of 9. `run_pipeline.sh` now runs `domains/<d>/checks/` too.
 
-**3. Results for `book_library_mgmt`**
-- **Census:** 34 human decisions underlie 4,033 P7 values.
-- **Blind LLM authors:** from a one-sentence brief, 17 of the 34 decisions matched. From a brief
-  rewritten from the testbed criteria, 27 matched, with no invented rules.
-- **The owner answered 9 open questions and 4 follow-ups.** P0's update rule replaces P7's: title,
-  author and year may change, refused only on a duplicate. The edition moves to its new work. The
-  old identity is freed, and its copies follow.
-- **The derived whole domain:** construction 100% (2076/2076, 60 artifacts); 23/23 and 27/27
-  criteria hold; every derived row is traced (ledger, doctrine, carried or unrealized).
-- **Defects found in today's design and confirmed by probes:** five. They are parked under Open
-  work.
-- **Doctrine learned from failures:**
-  - a workflow answers with its last component, so reads are trailed first;
-  - a workflow reports its last component's status, so a refusal must be a VIOLATION component;
-  - no refusal after a refusable claim;
-  - every component declares an output.
-- **History:** three of the domain's five past changes (cr_03 to cr_05, 11,220 lines) repaired
-  hand-written-HOW defects that derivation cannot produce.
+**3. Generator** (`engine/`, plan in `doc/PLAN_GENERATOR_SECOND_DOMAIN.md`)
+- `doctrine.yaml`: 9 named rules. A citation of a rule the file does not state is refused.
+- Ledger `parts`; a participant actor (`authorization: none`); four patterns: `register` with a
+  repeat, `decide`, `list`, and `create_held`.
+- **Carried surface:** store names and paths, request shapes, trail record keys, and entrances are
+  copied from the baseline.
+- Reach, offering and vocabulary rendering.
+- `splice.py` handles the new registers and adds P8 `new_intents` entries for new requests.
+- Plan step 7, a clock on every trail moment, was dropped: the trail store already stamps the
+  envelope with its time.
 
 ### Build & test status
-- `regression.sh --all` (2026-10-27, committed tree): **PASSED, 81/81 steps as expected**, 3m38s.
-- `engine/run_pipeline.sh book_library_mgmt <scratch>`: **PASSING**. Construction 100%
-  (2076/2076); compile 1/1; composition conformance passed; round-trip OK; `catalog` 23/23 and
-  `catalog_works` 27/27. The regenerated `generated.json` matches the committed one.
+- `regression.sh --all` (2026-10-28): **PASSED, 81/81 steps as expected.** Nothing outside the
+  prototype changed.
+- `run_pipeline.sh blockchain <scratch>`: **PARTIAL.**
+  - Construction 100% (1332/1332, 46 artifacts); compile 1/1; composition conformance passed.
+  - Suites: `identity` 26/26, `routing_closure` 6/6, `wallet` 12/12.
+  - Owner-answer checks **8/9**. FAIL: "listing a state no actor is in answers with an empty
+    list", which is unrealized (see below).
+- `run_pipeline.sh book_library_mgmt <scratch>`: **PASSING.**
+  - Construction 100% (2076/2076); `catalog` 23/23, `catalog_works` 27/27.
+  - `generated.json` is byte-identical to the 2026-10-27 output.
+- Blockchain `generated.json` is deterministic: two runs compare equal.
 
 ### Open issues
-- **Unrealized:**
-  - An empty search returns empty (owner's answer). No transform supports both presence
-    criteria and an empty answer.
-  - A retitle that creates a work announces no "work registered". Conditional emission cannot be
-    stated.
-- **Versioning:** changed components keep `_V0`, because `sameness` is not wired in. Examples:
-  `CC_UPDATE_BIBLIOGRAPHIC_INFORMATION_V0`, `CC_SEARCH_CATALOG_V0` and the four transitions.
-- **The prototype breaks repo rules:**
-  - doctrine is Python, not sealed data;
-  - it reads P7 files instead of using `inspector.api`;
-  - it manipulates `sys.path`.
-
-  See `doc/ARCHITECTURE_IMPACT.md` §2.
-- **Hand normalization:** the closed-shape `ledger.yaml` was transcribed by hand. There is no
-  strict ledger schema yet.
-- **Catalog-specific patterns:** `generate_domain.py` hard-codes `validate`,
-  `register_with_first_child` and `details`, and names like `CC_ASSEMBLE_BOOK_DETAILS_V0`.
+- **Unrealized**
+  - An empty list or search answers empty, in both book and blockchain. The platform's
+    `CT_PURE_FILTER_RECORDS_V0` refuses an empty result; one platform transform would fix both.
+  - Defaults for a request that leaves a field out: preferences default to BACHI and English only
+    at the entrance. No transform applies a default.
+  - Book: a retitle that creates a work announces no "work registered". Conditional emission
+    cannot be stated.
+- **Defects in today's designs, parked**
+  - Book: the five defects from 2026-10-27, in git history.
+  - Blockchain: two holders supplying one key share an address. The vocabulary has 8 wallet
+    classifications where the seeds name 4. No listing exists. A repeat registration records none of its
+    details, and announces itself as a first one.
+- **Versioning:** changed components keep `_V0`, because `sameness` is not wired in. Blockchain
+  replaces 15 components and requests with new names.
+- **Repo rules the prototype breaks:**
+  - it reads P7 files, not `inspector.api`;
+  - it uses `sys.path` in `splice.py` and the checks;
+  - the ledger is normalized by hand, with no strict schema.
+- **Fitted patterns:** `generate_domain.py` still hard-codes book names in `validate`,
+  `write_record`, `details` and `update`. The blockchain patterns are fitted to two domains.
 
 ### Architectural concerns
-- **The generator is a new design authority.** Construction exists to stop an ungoverned one. Its
-  doctrine and patterns must be sealed, versioned and conformance-tested.
-- **A doctrine change is platform-wide.** It re-derives every domain's design of record, and it
-  needs its own dossier.
-- **P1 to P6:** project them from the ledger and keep the 992 phase rules as a safety net. The
-  alternative is to replace them with ledger rules, which rewrites the standard.
-- **The ledger must cite P0.** Without the citation, it can contradict the seed, as the update rule
-  showed.
-- **The question catalog lacks:** records written before a change, transport exposure (TI/TE), and
-  cross-subdomain placement.
+- **The carried-surface rule** needs a home in the standard. Data on disk and callers fix names;
+  a ledger change to them is a migration. Today the matching is heuristic: an exact name, the
+  words of what a registry holds, or the part's single trail.
+- **The generator is a design authority.** Doctrine is now data, but it is neither sealed nor
+  versioned.
+- **Phase split:** P1–P3 remain dialog for discovery changes. Each catalog miss becomes a new
+  question type, which is a PGC-owned change.
+- **The question catalog** is now 23 types plus a `default`. Records written before a change is
+  still missing.
 
 ### Next session should start with
-Run the step 1 census of `blockchain` with `engine/census.py` against
-`business_domains/blockchain/design/p7_design_intent_blockchain_baseline.md`. Then write its brief
-from `testbed/{identity,wallet}` criteria and run a blind author. Expect blockchain to force:
-TI/TE questions, cross-subdomain placement (a wallet depends on an identity), UPDATE and WRITE
-patterns, and generalizing the catalog-specific patterns. Re-run `run_pipeline.sh
-book_library_mgmt` after every engine change.
+Commit the staged prototype work:
+`cd transformation_compilers && git commit -m "Decision authoring: blockchain derived whole from its ledger"`.
+Then decide the next direction. One option is the platform empty-answer filter, which closes the
+last owner-answer check and book's empty search. The other is a third domain, ai_governance, to
+test the generator beyond two fitted domains.
 
-Carried from 2026-10-26, unchanged: decision accounting (`doc/DECISION_ACCOUNTING_DESIGN.md`) is
-parked on dev/19. The ai_governance leaks (`cap`, `threshold_days`, `days_inactive`) are the top
-domain fix.
+Carried, unchanged: decision accounting (`doc/DECISION_ACCOUNTING_DESIGN.md`) is parked on
+dev/19. The ai_governance leaks (`cap`, `threshold_days`, `days_inactive`) are the top domain fix.
 
 ---
 
