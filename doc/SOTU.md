@@ -2,100 +2,97 @@
 
 Only the current handoff is kept here. Earlier handoffs are in git history: `git log -p -- doc/SOTU.md`.
 
-## SOTU Handoff — 2026-10-26 · behavior outside the snapshot analysed, platform and domains; decision accounting designed
+## SOTU Handoff — 2026-10-27 · Decision authoring prototyped: book_library_mgmt derived from a 115-line ledger; blockchain next
 
 ### This session
-No code changed in any repository. The session produced three documents in `.github/doc/`. All
-three are new and uncommitted. The 2026-10-24 handoff below is also uncommitted, so it is kept here
-rather than left to git history.
+Work is on `dev/19` and committed by the user: `transformation_compilers` `e915d7b`, `.github` `6f671a8` and `84165e7`. Nothing is pending.
 
-**1. Platform: behavior outside the snapshot** (`doc/BEHAVIOR_OUTSIDE_SNAPSHOT.md`)
-- This report covers `protocol_runtime`, `protocol_transport`, and the side effects in
-  `software_governance`.
-- It finds 12 oversights (A1–A12), where code holds a fact the snapshot could carry. The main ones:
-  - A workflow ends with the last contract's status. The sealed EXIT carries no outcome, and
-    `cli.py:196` hard-codes `("SUCCESS","ALREADY_EXISTS")`.
-  - `dispatcher.py:274–282` merges undeclared inputs into the surface.
-  - Two admission validators disagree: `scheduler._admit` and the transport `_validate_input`.
-  - `length_minus_one` is a Collatz-only operator inside the domain-neutral resolver.
-  - In `CS_MUTABLE_JSON_V0`, an absent `filter` updates every record.
-- It finds 6 bounded necessities (B1–B6): the environment, kernel semantics, the class name that
-  signals a refusal, capability realization, the bootstrap, and authority. On authority, the actor
-  is sealed but not enforced, because the canonical request carries no principal.
+**1. Decision authoring, the idea.** A person answers typed questions in a *ledger*. Each answer
+names its authority (`decided_by`) and the P0 statement it settles. A generator, the proposed
+**Decision Compiler**, derives P1 to P7 from the ledger plus *doctrine*. The unchanged Design and
+Construction Compilers, the compiler, the assembler and the runtime take it from there.
 
-**2. Business domains: behavior outside the snapshot** (`doc/DOMAIN_BEHAVIOR_OUTSIDE_SNAPSHOT.md`)
-- **Policy from the caller:** ai_governance takes `cap` and `threshold_days` from the payload, so
-  the caller sets the rule that judges it.
-- **Facts from the caller:** `assigned_count`, `training_completed`, `last_active_date` and
-  `evaluation_date` all come from the payload.
-- **Evidence from the caller:** the reclaim audit records `days_inactive` from the payload. It does
-  not record the transform's result.
-- **False declarations:** 8 atoms declare `refusal: never`, and all 8 raise.
-- **Smaller findings:**
-  - `MAX_KEY_LENGTH = 256` is copied from the CS config into three atoms.
-  - A literal kinds list duplicates `VOCAB_KIND_OF_INFORMATION_V0`.
-  - Identity normalization is undeclared.
-  - The hosted-record outcomes are hard-coded in `CT_PURE_READ_HOSTED_STATE_V0`.
-- **Not ours to move:** Keccak, the choose algorithm, time-in-service as governed data (its
-  authority is not enforced), and the host's prompt rendering.
+**2. The prototype: `transformation_compilers/decision_authoring_prototype/`**
+- `engine/`: `generate_domain.py` (9 patterns, doctrine in code), `splice.py`, `compare.py`,
+  `p7_slice.py`, `census.py`, and `run_pipeline.sh <domain> <scratch>`. The script derives, splices
+  into a scratch dossier, runs the construction check, emits, compiles, side-assembles, and runs
+  every testbed of the domain.
+- `doc/`: `PLAN_DECISION_LEDGER_AUTHORING.md`, `LEDGER_FORMAT_V0.md`,
+  `ANALYSIS_LEDGER_VS_PHASES.md`, `ARCHITECTURE_IMPACT.md` (the third compiler against the repo's 13
+  rules) and `DOSSIER_COMPARISON.md` (the real cr_01 to cr_05 against decision dossiers).
+- `domains/book_library_mgmt/`: `ledger.yaml`, the brief, the two blind-author ledgers, the
+  owner's answers, findings for steps 1 to 5, `probes/`, and `history/` (the copy-family step).
+  `domains/blockchain/` is empty.
+- It sits outside packaging, because `pyproject` includes only `transformation*`, and outside
+  `release.sh`.
 
-**3. Decision accounting design** (`doc/DECISION_ACCOUNTING_DESIGN.md`)
-- The first draft was a provenance map with one leak-specific invariant. It was revised after an
-  expert critique, which asked for three separate obligations and for completeness as the central
-  requirement.
-- **Three obligations:**
-  - provenance;
-  - authority conformance;
-  - evidence integrity.
-- **Four ways a dependency is established:** `static`, `declared`, `observed`, `unknown`. None of
-  them is called "verified".
-- **New declarations:**
-  - an input `role` (`policy`, `fact` or `subject`);
-  - sealed constants for each atom, checked by a syntax-tree scan;
-  - an admissibility table of role × source, with overrides the map shows;
-  - `records:` on evidence fields.
-- **Outputs:**
-  - a sealed Decision Authority Map, `si.decision.map`;
-  - three `FAIL_IMMEDIATELY` invariants under `decision_accounting::CONSTITUTION_DECISION_ACCOUNTING_V0`;
-  - a mutation suite with 9 classes, 3 of them expected to pass undetected as the stated limits.
-- **Claim boundary (§11):** the invariants are enforced within a stated scope. They are not a
-  guarantee that hidden logic is eliminated.
-- **Correction to the expert:** completeness at the composition boundary already holds by
-  construction. The unknowns are inside atoms and side effects, plus atom purity, which is declared
-  but not checked.
-
-**4. Other**
-- The two reports disappeared from `doc/` mid-session. The cause is not known; I neither moved nor
-  deleted them. They were regenerated from the session text.
-- I recommended against a general-purpose PGC agent. The suggestion is one read-only closure
-  auditor agent, with procedures kept as skills. It was not built.
+**3. Results for `book_library_mgmt`**
+- **Census:** 34 human decisions underlie 4,033 P7 values.
+- **Blind LLM authors:** from a one-sentence brief, 17 of the 34 decisions matched. From a brief
+  rewritten from the testbed criteria, 27 matched, with no invented rules.
+- **The owner answered 9 open questions and 4 follow-ups.** P0's update rule replaces P7's: title,
+  author and year may change, refused only on a duplicate. The edition moves to its new work. The
+  old identity is freed, and its copies follow.
+- **The derived whole domain:** construction 100% (2076/2076, 60 artifacts); 23/23 and 27/27
+  criteria hold; every derived row is traced (ledger, doctrine, carried or unrealized).
+- **Defects found in today's design and confirmed by probes:** five. They are parked under Open
+  work.
+- **Doctrine learned from failures:**
+  - a workflow answers with its last component, so reads are trailed first;
+  - a workflow reports its last component's status, so a refusal must be a VIOLATION component;
+  - no refusal after a refusable claim;
+  - every component declares an output.
+- **History:** three of the domain's five past changes (cr_03 to cr_05, 11,220 lines) repaired
+  hand-written-HOW defects that derivation cannot produce.
 
 ### Build & test status
-- `regression.sh` (execution block) ran on 2026-10-26: **PASSED, 16/16 steps as expected**.
-- The `--all` mode (rebuild plus every check) was not run. No code changed.
+- `regression.sh --all` (2026-10-27, committed tree): **PASSED, 81/81 steps as expected**, 3m38s.
+- `engine/run_pipeline.sh book_library_mgmt <scratch>`: **PASSING**. Construction 100%
+  (2076/2076); compile 1/1; composition conformance passed; round-trip OK; `catalog` 23/23 and
+  `catalog_works` 27/27. The regenerated `generated.json` matches the committed one.
 
 ### Open issues
-- Nothing is committed. Commit the three docs with the commands given in session, then
-  `doc/SOTU.md` separately.
-- The design is parked on dev/19. None of its declarations exist yet: `role`, `constants`,
-  `admits`, `records:`, and the three invariants.
-- The domain fixes are unscheduled. The ai_governance leaks are the top priority: `cap`,
-  `threshold_days` and the audit's `days_inactive`.
+- **Unrealized:**
+  - An empty search returns empty (owner's answer). No transform supports both presence
+    criteria and an empty answer.
+  - A retitle that creates a work announces no "work registered". Conditional emission cannot be
+    stated.
+- **Versioning:** changed components keep `_V0`, because `sameness` is not wired in. Examples:
+  `CC_UPDATE_BIBLIOGRAPHIC_INFORMATION_V0`, `CC_SEARCH_CATALOG_V0` and the four transitions.
+- **The prototype breaks repo rules:**
+  - doctrine is Python, not sealed data;
+  - it reads P7 files instead of using `inspector.api`;
+  - it manipulates `sys.path`.
+
+  See `doc/ARCHITECTURE_IMPACT.md` §2.
+- **Hand normalization:** the closed-shape `ledger.yaml` was transcribed by hand. There is no
+  strict ledger schema yet.
+- **Catalog-specific patterns:** `generate_domain.py` hard-codes `validate`,
+  `register_with_first_child` and `details`, and names like `CC_ASSEMBLE_BOOK_DETAILS_V0`.
 
 ### Architectural concerns
-- **Where the rules live:** the design proposes a new `decision_accounting` concern. The alternative
-  is to put the rules under `CONSTITUTION_EXECUTION_TOPOLOGY_V0`.
-- **Atom purity:** the import rule in `business_domains/CLAUDE.md` is doctrine, and no check
-  enforces it. `implementation_closure.py` checks only that each module exists.
-- **Authority:** `governed_store` admissibility rests on actor binding, which the runtime does not
-  enforce. B5 needs a principal on the Canonical Transport Request before the rule means anything.
-- **The paper:** the expert's RQ1–3 suggestion bears on the inversion paper v2. Do not promote
-  decision accounting to the paper's main claim until the mutation suite has results.
+- **The generator is a new design authority.** Construction exists to stop an ungoverned one. Its
+  doctrine and patterns must be sealed, versioned and conformance-tested.
+- **A doctrine change is platform-wide.** It re-derives every domain's design of record, and it
+  needs its own dossier.
+- **P1 to P6:** project them from the ledger and keep the 992 phase rules as a safety net. The
+  alternative is to replace them with ledger rules, which rewrites the standard.
+- **The ledger must cite P0.** Without the citation, it can contradict the seed, as the update rule
+  showed.
+- **The question catalog lacks:** records written before a change, transport exposure (TI/TE), and
+  cross-subdomain placement.
 
 ### Next session should start with
-Decide whether decision accounting goes ahead on dev/19, and under which concern. If it does,
-implement `INVARIANT_DECISION_SOURCE_ADMISSIBLE_V0` first, against the ai_governance `cap` and
-`threshold_days` bindings, as the first mutation-suite case.
+Run the step 1 census of `blockchain` with `engine/census.py` against
+`business_domains/blockchain/design/p7_design_intent_blockchain_baseline.md`. Then write its brief
+from `testbed/{identity,wallet}` criteria and run a blind author. Expect blockchain to force:
+TI/TE questions, cross-subdomain placement (a wallet depends on an identity), UPDATE and WRITE
+patterns, and generalizing the catalog-specific patterns. Re-run `run_pipeline.sh
+book_library_mgmt` after every engine change.
+
+Carried from 2026-10-26, unchanged: decision accounting (`doc/DECISION_ACCOUNTING_DESIGN.md`) is
+parked on dev/19. The ai_governance leaks (`cap`, `threshold_days`, `days_inactive`) are the top
+domain fix.
 
 ---
 
