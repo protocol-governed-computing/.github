@@ -209,16 +209,18 @@ v6 is published. dev/19 is declared a genesis, so nothing is measured against it
   it cannot fail. Fix as `cr_01`: a fixed `{state: REGISTERED}` filter step, `CC_`/`WF_SEARCH_CATALOG_V1`,
   and testbed payloads without `state`. Fold in a second gap: no match returns VIOLATION rather than
   an empty result. Same class as the collatz item. Source:
-  `transformation_compilers/decision_authoring_prototype/FINDINGS_DECISION_LEDGER_CENSUS.md`.
-  Two more, confirmed by a probe (`transformation_compilers/decision_authoring_prototype/FINDINGS_STEP4_COPY_FAMILY.md`):
+  `transformation_compilers/decision_authoring_prototype/domains/book_library_mgmt/FINDINGS_DECISION_LEDGER_CENSUS.md`.
+  Two more, confirmed by a probe (`transformation_compilers/decision_authoring_prototype/domains/book_library_mgmt/FINDINGS_STEP4_COPY_FAMILY.md`):
   - A copy registration refused for an unknown book still claims its barcode, so the barcode is
     lost for good. The claim runs before the book check.
   - Retiring an already-retired copy succeeds and is trailed twice. No state precondition. The
     same holds for books.
   - A book refused for a duplicate barcode loses its identity for good: the book identity is
-    claimed before the barcode. Confirmed by `transformation_compilers/decision_authoring_prototype/probes/probe_catalog.py`.
+    claimed before the barcode. Confirmed by `transformation_compilers/decision_authoring_prototype/domains/book_library_mgmt/probes/probe_catalog.py`.
+  - Updates refuse any change to title, author or year. cr_01 P0 §3 allows it, refused only on a
+    duplicate; the narrowing entered at P7 and no rule caught it. The owner kept P0's rule.
   A ledger-derived design that fixes all of them passes construction and both validations:
-  `transformation_compilers/decision_authoring_prototype/FINDINGS_STEP5_WHOLE_DOMAIN.md`.
+  `transformation_compilers/decision_authoring_prototype/domains/book_library_mgmt/FINDINGS_STEP5_WHOLE_DOMAIN.md`.
 - **Realization map:** `standards/doc/realization_map.md` is still measured against `72404ce4…`
   under `v0`. Re-survey it against the sealed v6 and standard `v1`. Record v6 as a genesis there,
   and give each new `v1` obligation its status.
