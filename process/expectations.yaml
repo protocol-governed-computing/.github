@@ -28,7 +28,7 @@ steps:
     expect: ["SUPERSESSION AGREEMENT PASSED — 0 relation\\(s\\), 0 predecessor\\(s\\) present, 0 deleted by record"]
   - id: human_block_fidelity
     section: checks
-    expect: ["HUMAN BLOCK FIDELITY PASSED — 552 artifacts"]
+    expect: ["HUMAN BLOCK FIDELITY PASSED — 554 artifacts"]
   - id: evidence_determinism
     section: checks
     expect: ["EVIDENCE DETERMINISM PASSED"]
@@ -36,7 +36,7 @@ steps:
     section: checks
     # the P7 and P8 rule sets emitted from the design language: a type rule per structured and
     # citation column, the gated constraints, and the `document` header's derived rules
-    expect: ["p7\\s+283 rules", "p8\\s+39 rules"]
+    expect: ["p7\\s+284 rules", "p8\\s+39 rules"]
   - id: build_payloads
     section: checks
     expect: ["OK\\s+83 payload\\(s\\) agree"]
@@ -99,8 +99,8 @@ steps:
     expect: ["4/4 passed"]
   - id: semantic_change_design_test
     section: checks
-    # a change of meaning is a new identity; a replacement accounts for its reach
-    expect: ["18/18 passed"]
+    # a change of meaning is a new identity; a replacement or a retirement accounts for its reach
+    expect: ["24/24 passed"]
   - id: entrance_gate_design_test
     section: checks
     # an entrance supplies what its gate requires
@@ -138,19 +138,15 @@ steps:
              "23/23 criteria hold", "27/27 criteria hold"]
   - id: decision_blockchain
     section: checks
-    # the owner-answer suite's ninth criterion needs a filter that answers empty: a parked platform gap
     expect: ["kept 13, superseded 9, new 22, replaced 0, retired 16", "Construction Completeness  100.0%",
-             "26/26 criteria hold", "6/6 criteria hold", "12/12 criteria hold", "8/9 criteria hold"]
+             "26/26 criteria hold", "6/6 criteria hold", "12/12 criteria hold", "9/9 criteria hold"]
   - id: decision_ai_governance
     section: checks
-    exit: 1
-    red_by_design: >
-      construction refuses the design: two recording components and a binding the ledger no longer
-      derives still name artifacts it replaces. The ledger names the operations an operation takes
-      the place of, but no answer can name a component, and the design language states no
-      retirement without a successor
-    expect: ["kept 4, superseded 14, new 40, replaced 5, retired 18", "REFUSED — this design cannot be built",
-             "CC_RECORD_GOVERNED_ACTION_V0 in this design"]
+    # the domain's own routing-closure suite dispatches acts the owner's answers replaced, and fails
+    # by design; the owner-answer suite's four failures follow from the registry's missing COUNT
+    expect: ["kept 4, superseded 14, new 36, replaced 3, retired 20", "Construction Completeness  100.0%",
+             "RETIRED — this design retires 20 artifact", "Build Summary: 1 succeeded",
+             "17/21 criteria hold"]
   - id: test_indexes
     section: checks
     expect: ["PASSED: 13/13"]

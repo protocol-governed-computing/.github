@@ -64,7 +64,7 @@ has no `tc decision`, so the regression's `decision_*` steps fail there.
   - **book:** kept 23, superseded 18, new 16, retired 10. Construction is at 100% and emit is
     accepted by construction's meaning check. The suites pass 23/23 and 27/27.
   - **blockchain:** kept 13, superseded 9, new 22, retired 16. Construction is at 100%. The suites
-    pass 26/26, 6/6 and 12/12; the owner checks pass 8/9 (empty list, a parked platform gap).
+    pass 26/26, 6/6 and 12/12; the owner checks pass 9/9.
   - **ai_governance:** construction is at 100%, but construction refuses the identities (see
     open issues).
 - `tc decision meta`: PASSED. 3 of 9 doctrine rules cite an invariant.
@@ -83,7 +83,6 @@ has no `tc decision`, so the regression's `decision_*` steps fail there.
 - **Doctrine citations (readiness 2.4, partial):** order, storage, interface, reuse, own_values and
   rules_held realize no platform invariant. They are stated with the standard text (3.3–3.6).
 - **Platform gaps, parked:**
-  - `CT_PURE_FILTER_RECORDS_V0` refuses an empty answer (plan in git history);
   - the registry declares no COUNT, so the license cap is unrealized.
 - **The composer:**
   - `change_identity` is still fitted;
@@ -119,8 +118,19 @@ git commit -m "decision compiler: register tc decision, jsonschema dependency, s
 **Priorities (the user, 2026-10-28):** after the normalization, fix platform defects and
 decision-related gaps first. Keep business-domain parking-lot items on hold unless the new compiler
 needs one to be assimilated fully and tested. In order:
-1. Platform: the design language's retirement without a successor (unblocks ai_governance, 2.5).
-   Then `CT_PURE_SELECT_RECORDS_V0` (empty answer) and a declared registry COUNT (license cap).
+1. Platform: ~~retirement without a successor~~ **done**. The inventory action RETIRE is in
+   `VOCAB_DESIGN_REGISTER_TERMS_V0`, and P7 adds the rule `RETIRED_ARTIFACT_NOT_AUTHORABLE`
+   (revision 5, 284 rules).
+   - Construction measures `<retired because>` and accounts the references to and from a retired
+     artifact; its test data goes with it. It never deletes; delivery deletes and records.
+   - ai_governance now builds: kept 4, superseded 14, new 36, replaced 3, retired 20. The owner
+     checks hold 17/21. `regression.sh --all` passes 87/87.
+   - ~~empty answer~~ **done**: `capability_transforms::CT_PURE_SELECT_RECORDS_V0` uses the
+     filter's criteria and answers `[]`, with 6 vectors including empty and malformed. It is in
+     `INVARIANT_CT_SURFACE_CLOSED_V0`, and the filter is kept. The composer uses it for every
+     `nothing_found: empty` and for child selection. Blockchain's owner checks pass 9/9; book's own
+     select is untouched (parking lot).
+   - Next: a declared registry COUNT (license cap).
 2. Decision gaps: carry RB names, carry entrance names, record `request_identity`, generalize
    `change_identity`, add `open`/cases to the closed ledger, and doctrine invariants (2.4).
 3. On hold: the parked defects in book, blockchain and ai_governance's today-designs, and the
