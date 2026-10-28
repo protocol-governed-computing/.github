@@ -56,6 +56,18 @@ a reframing question. So P1–P3 stay a dialog for conceptual changes, and P4–
 - **Unrealized**
   - An empty list or search answers empty, in both book and blockchain. The platform's
     `CT_PURE_FILTER_RECORDS_V0` refuses an empty result; one platform transform would fix both.
+    **Parked on dev/19, with a plan:**
+    - The new transform is `capability_transforms::CT_PURE_SELECT_RECORDS_V0`. It uses the same
+      criteria as the filter (exact value or `"present"`) and answers `[]` when nothing matches.
+    - It needs its implementation and `TEST_DATA` (exact, presence, multiple criteria, empty,
+      malformed input refused).
+    - Add it to the closed list in `INVARIANT_CT_SURFACE_CLOSED_V0`. In place is allowed, because
+      `genesis: true`.
+    - The prototype generator then uses it for blockchain's listing and book's search.
+    - Keep the filter: causal_language_model's `CC_RETRIEVE_USER_PROMPT_RECORD_V0` relies on
+      its refusal.
+    - Book's own `book_library_mgmt::CT_PURE_SELECT_RECORDS_V0` could later be retired in favour
+      of the platform one, as a separate book change.
   - Defaults for a request that leaves a field out: preferences default to BACHI and English only
     at the entrance. No transform applies a default.
   - Book: a retitle that creates a work announces no "work registered". Conditional emission
@@ -88,9 +100,8 @@ a reframing question. So P1–P3 stay a dialog for conceptual changes, and P4–
 ### Next session should start with
 Commit the staged prototype work:
 `cd transformation_compilers && git commit -m "Decision authoring: blockchain derived whole from its ledger"`.
-Then decide the next direction. One option is the platform empty-answer filter, which closes the
-last owner-answer check and book's empty search. The other is a third domain, ai_governance, to
-test the generator beyond two fitted domains.
+Then decide the next direction. The platform empty-answer filter is parked (see Open issues). The
+other option is a third domain, ai_governance, to test the generator beyond two fitted domains.
 
 Carried, unchanged: decision accounting (`doc/DECISION_ACCOUNTING_DESIGN.md`) is parked on
 dev/19. The ai_governance leaks (`cap`, `threshold_days`, `days_inactive`) are the top domain fix.
