@@ -2,11 +2,12 @@
 
 Only the current handoff is kept here. Earlier handoffs are in git history: `git log -p -- doc/SOTU.md`.
 
-## SOTU Handoff — 2026-10-28 · Decision authoring: blockchain derived whole from a 120-line ledger; book unchanged
+## SOTU Handoff — 2026-10-28 · Decision authoring: blockchain derived whole; ai_governance held-out test closed — whole-operation patterns do not generalize
 
 ### This session
-Work is on `dev/19`. The changes are staged in `transformation_compilers`, not committed. The
-2026-10-27 handoff, which this replaces, is in git history.
+Work is on `dev/19` and committed by the user: `transformation_compilers` `23c35da` and `.github`
+`c8dfdfe`. Only this handoff edit is pending. The 2026-10-27 handoff, which this replaces, is in
+git history.
 
 **1. Phase split** (`doc/ANALYSIS_LEDGER_VS_PHASES.md`). The ledger does not force answers up
 front: the questions come in rounds and open questions are allowed. But a typed catalog cannot ask
@@ -39,6 +40,21 @@ a reframing question. So P1–P3 stay a dialog for conceptual changes, and P4–
 - Plan step 7, a clock on every trail moment, was dropped: the trail store already stamps the
   envelope with its time.
 
+**4. ai_governance, the held-out test, closed without deriving** (`domains/ai_governance/`,
+verdict in `FINDINGS_HELD_OUT_TEST.md`)
+- **No business statement exists** for the domain's behavior. cr_01 added test cases and cr_02 was
+  a repair; the behavior came from RI-0, which holds none either. So the owner became the
+  authority: 14 answers in `LEDGER_OWNER_ANSWERS_AI_GOVERNANCE.yaml` (the business holds its own
+  facts and rules). None of them is realized.
+- **Census:** 20 decisions underlie 2,707 P7 values.
+- **Brief, checks and blind author:** a brief and 21 checks were written before any design; today's
+  design holds 4. The blind ledger has 72 answers (17 open) and 31 cases, and needed 5 new
+  question types. It cited doctrine and answered none of it.
+- **Verdict:** deriving the domain would need about 6 new whole-operation patterns, so the
+  patterns do not generalize. The format, the doctrine and the carried surface do hold.
+- **Next design step:** a vocabulary of building blocks (claim, resolve, require, derive, record,
+  set, look up, decide on a condition), tested by re-expressing book and blockchain in it.
+
 ### Build & test status
 - `regression.sh --all` (2026-10-28): **PASSED, 81/81 steps as expected.** Nothing outside the
   prototype changed.
@@ -51,6 +67,9 @@ a reframing question. So P1–P3 stay a dialog for conceptual changes, and P4–
   - Construction 100% (2076/2076); `catalog` 23/23, `catalog_works` 27/27.
   - `generated.json` is byte-identical to the 2026-10-27 output.
 - Blockchain `generated.json` is deterministic: two runs compare equal.
+- All of the above were re-run at handoff time (2026-10-28) with the same results.
+- ai_governance checks against today's design: 4/21. Expected, because they encode the owner's
+  unrealized answers.
 
 ### Open issues
 - **Unrealized**
@@ -86,6 +105,16 @@ a reframing question. So P1–P3 stay a dialog for conceptual changes, and P4–
 - **Fitted patterns:** `generate_domain.py` still hard-codes book names in `validate`,
   `write_record`, `details` and `update`. The blockchain patterns are fitted to two domains.
 
+- **ai_governance** (`domains/ai_governance/FINDINGS_HELD_OUT_TEST.md`)
+  - The platform cannot count: the registry implements `count` but declares no COUNT operation.
+    This is parked beside the empty-answer filter.
+  - cr_02's "still active" reclaim conflicts with the `failed_record_ends` rule; the owner should
+    rule.
+  - Tier names disagree: licenses are standard or enterprise, but the premium tool's rule requires
+    `tier: premium`.
+  - Licensing trusts the request (the known `cap` / `threshold_days` / `days_inactive` leak).
+  - Agent governance reads a store that no act writes.
+
 ### Architectural concerns
 - **The carried-surface rule** needs a home in the standard. Data on disk and callers fix names;
   a ledger change to them is a migration. Today the matching is heuristic: an exact name, the
@@ -95,13 +124,16 @@ a reframing question. So P1–P3 stay a dialog for conceptual changes, and P4–
 - **Phase split:** P1–P3 remain dialog for discovery changes. Each catalog miss becomes a new
   question type, which is a PGC-owned change.
 - **The question catalog** is now 23 types plus a `default`. Records written before a change is
-  still missing.
+  still missing. ai_governance adds 5 more candidates: `on_refusal`, `refusal_order`, `grants`,
+  `value_rules` and `outcome_condition`.
+- **Do not incorporate the whole-operation patterns into dev/19.** Sealing them freezes two
+  domains' fit, and makes every new domain a governed platform change.
 
 ### Next session should start with
-Commit the staged prototype work:
-`cd transformation_compilers && git commit -m "Decision authoring: blockchain derived whole from its ledger"`.
-Then decide the next direction. The platform empty-answer filter is parked (see Open issues). The
-other option is a third domain, ai_governance, to test the generator beyond two fitted domains.
+Write `doc/BUILDING_BLOCKS.md` in the prototype. It holds the building-block vocabulary, with each
+book and blockchain operation re-expressed as a composition of those blocks. The incorporation test
+is whether the two domains need no block beyond the vocabulary. Only then is ai_governance the
+held-out test again.
 
 Carried, unchanged: decision accounting (`doc/DECISION_ACCOUNTING_DESIGN.md`) is parked on
 dev/19. The ai_governance leaks (`cap`, `threshold_days`, `days_inactive`) are the top domain fix.
