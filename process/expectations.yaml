@@ -122,6 +122,35 @@ steps:
   - id: domain_authoring
     section: checks
     expect: ["PASSED: 8/8"]
+  - id: decision_ledgers
+    section: checks
+    expect: ["book_library_mgmt: admitted", "blockchain: admitted", "ai_governance: admitted"]
+  - id: decision_meta
+    section: checks
+    # six doctrine rules realize no platform invariant yet; they are stated with the standard text
+    expect: ["doctrine: 3/9 rules cite an invariant", "DECISION META PASSED"]
+  - id: decision_selftest
+    section: checks
+    expect: ["16/16 answers outside their shapes refused"]
+  - id: decision_book_library_mgmt
+    section: checks
+    expect: ["kept 23, superseded 18, new 16, replaced 0, retired 10", "Construction Completeness  100.0%",
+             "23/23 criteria hold", "27/27 criteria hold"]
+  - id: decision_blockchain
+    section: checks
+    # the owner-answer suite's ninth criterion needs a filter that answers empty: a parked platform gap
+    expect: ["kept 13, superseded 9, new 22, replaced 0, retired 16", "Construction Completeness  100.0%",
+             "26/26 criteria hold", "6/6 criteria hold", "12/12 criteria hold", "8/9 criteria hold"]
+  - id: decision_ai_governance
+    section: checks
+    exit: 1
+    red_by_design: >
+      construction refuses the design: two recording components and a binding the ledger no longer
+      derives still name artifacts it replaces. The ledger names the operations an operation takes
+      the place of, but no answer can name a component, and the design language states no
+      retirement without a successor
+    expect: ["kept 4, superseded 14, new 40, replaced 5, retired 18", "REFUSED — this design cannot be built",
+             "CC_RECORD_GOVERNED_ACTION_V0 in this design"]
   - id: test_indexes
     section: checks
     expect: ["PASSED: 13/13"]
