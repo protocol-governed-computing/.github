@@ -203,6 +203,22 @@ v6 is published. dev/19 is declared a genesis, so nothing is measured against it
   `extensions.admission_rules`, which construction drops. The enforced bound is in
   `TI_COLLATZ_COMPUTE_V0` (`number`, 1–999999). TI and TE are outside the design language
   (`transport_bindings: []`).
+- **Unenforced search rule in book_library_mgmt.** `WF_SEARCH_CATALOG_V0` says it excludes retired
+  books. Only the summary says so: `CC_SEARCH_CATALOG_V0` binds the caller's `search_criteria`
+  straight into the filter. Execution validation check 14 supplies `state: REGISTERED` itself, so
+  it cannot fail. Fix as `cr_01`: a fixed `{state: REGISTERED}` filter step, `CC_`/`WF_SEARCH_CATALOG_V1`,
+  and testbed payloads without `state`. Fold in a second gap: no match returns VIOLATION rather than
+  an empty result. Same class as the collatz item. Source:
+  `transformation_compilers/decision_authoring_prototype/FINDINGS_DECISION_LEDGER_CENSUS.md`.
+  Two more, confirmed by a probe (`transformation_compilers/decision_authoring_prototype/FINDINGS_STEP4_COPY_FAMILY.md`):
+  - A copy registration refused for an unknown book still claims its barcode, so the barcode is
+    lost for good. The claim runs before the book check.
+  - Retiring an already-retired copy succeeds and is trailed twice. No state precondition. The
+    same holds for books.
+  - A book refused for a duplicate barcode loses its identity for good: the book identity is
+    claimed before the barcode. Confirmed by `transformation_compilers/decision_authoring_prototype/probes/probe_catalog.py`.
+  A ledger-derived design that fixes all of them passes construction and both validations:
+  `transformation_compilers/decision_authoring_prototype/FINDINGS_STEP5_WHOLE_DOMAIN.md`.
 - **Realization map:** `standards/doc/realization_map.md` is still measured against `72404ce4…`
   under `v0`. Re-survey it against the sealed v6 and standard `v1`. Record v6 as a genesis there,
   and give each new `v1` obligation its status.
