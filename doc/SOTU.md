@@ -2,64 +2,75 @@
 
 Only the current handoff is kept here. Earlier handoffs are in git history: `git log -p -- doc/SOTU.md`.
 
-## SOTU Handoff — 2026-10-28 · Decision compiler: block composer, closed ledger, moved into `transformation/decision`; readiness 1, 2 and 4 done but for two gaps
+## SOTU Handoff — 2026-10-28 · Decision compiler: block composer, closed ledger, moved into `transformation/design/derive`; readiness 1, 2 and 4 done but for two gaps
 
 ### Changes made
 Work is on `dev/19`. The user committed `transformation_compilers` `7b8a334`, `8512527` and
 `2a400d2`, and `.github` `9d2674b`. **`2a400d2` is incomplete:** it holds the new
-`transformation/decision/` and `scripts/decision_build.sh` only. Uncommitted:
-`transformation/cli.py` (registers `tc decision`), `pyproject.toml` (`jsonschema`),
-`scripts/decision_suite.py`, and the prototype's moved and edited files. A clean checkout of HEAD
-has no `tc decision`, so the regression's `decision_*` steps fail there.
+`transformation/design/derive/` and `scripts/derive_build.sh` only. Uncommitted:
+`transformation/cli.py` (registers `tc phase derive`), `pyproject.toml` (`jsonschema`),
+`scripts/derive_suite.py`, and the prototype's moved and edited files. A clean checkout of HEAD
+has no `tc phase derive`, so the regression's `derive_*` steps fail there.
 
 **`transformation_compilers`**
-- `transformation/decision/base.py` — the composer's shared base (was `engine/generate_domain.py`):
+- `transformation/design/derive/base.py` — the composer's shared base (was `engine/generate_domain.py`):
   several actors, a node key that `runs` another CC, `_ends` emits, and only invoked transforms
   carried. Reads a design with `machine_block`.
-- `transformation/decision/compose.py` — the block composer (was `engine/compose.py`). It adds
+- `transformation/design/derive/compose.py` — the block composer (was `engine/compose.py`). It adds
   named `checks` with denial nodes for `on_refusal`, a fixed identity, `sets`/`holds`, a
   `when`/`otherwise` condition, `releases`, ids from several fields, trails scoped to the part, and
   `replaces`. `derive()` refuses an unsealed rule set or a refused ledger.
-- `transformation/decision/ledger.py` — the shape check, references and self-test (was
+- `transformation/design/derive/ledger.py` — the shape check, references and self-test (was
   `engine/check_ledger.py`).
-- `transformation/decision/splice.py` — the splice, `OWNER` and identity rows (EXTEND, REPLACE,
+- `transformation/design/derive/splice.py` — the splice, `OWNER` and identity rows (EXTEND, REPLACE,
   `supersedes`).
-- `transformation/decision/identity.py` (new) — decides each artifact's identity by `sameness`
+- `transformation/design/derive/identity.py` (new) — decides each artifact's identity by `sameness`
   against the pinned composition. It gives a changed artifact the next unused version, and
   renumbers the derived rows.
-- `transformation/decision/seal.py` (new) — `$id`, `x-revisions` and digests for the doctrine, the
+- `transformation/design/derive/seal.py` (new) — `$id`, `x-revisions` and digests for the doctrine, the
   schema and the catalog; `judged_by`; the doctrine closure.
-- `transformation/decision/cli.py` (new) — `tc decision check|meta|selftest|derive|identities|splice|revise`.
-- `transformation/decision/doctrine.yaml` (rev 2) — each rule cites `realizes`, or `none` with a reason.
-- `transformation/decision/catalog.yaml` (rev 2) — 31 questions.
-- `transformation/decision/ledger_schema.yaml` (rev 2) — the closed ledger shape, with an
+- `transformation/design/derive/cli.py` (new) — `tc phase derive check|meta|selftest|derive|identities|splice|revise`.
+- `transformation/design/derive/doctrine.yaml` (rev 2) — each rule cites `realizes`, or `none` with a reason.
+- `transformation/design/derive/catalog.yaml` (rev 2) — 31 questions.
+- `transformation/design/derive/ledger_schema.yaml` (rev 2) — the closed ledger shape, with an
   `x-question` per answer.
 - `transformation/cli.py` — `main.add_command(decision)`.
 - `pyproject.toml` — the `jsonschema` dependency.
-- `scripts/decision_build.sh` (was `engine/run_pipeline.sh`) — runs derive → identities → splice
+- `scripts/derive_build.sh` (was `engine/run_pipeline.sh`) — runs derive → identities → splice
   → construction check → emit `--snapshot` → retirement record → compile → assemble → suites.
-- `scripts/decision_suite.py` (new) — runs a domain suite, dispatching each workflow's declared
+- `scripts/derive_suite.py` (new) — runs a domain suite, dispatching each workflow's declared
   successor.
 - `decision_authoring_prototype/engine/{census,compare,p7_slice}.py` — analysis only; they import
   from `transformation.decision`.
 - `decision_authoring_prototype/domains/ai_governance/ledger.yaml` — the whole domain in closed
   shape, with `replaces` answers.
 - `decision_authoring_prototype/domains/ai_governance/FINDINGS_COMPOSER_RUN.md` (new) — derives
-  with no new block. The run passed 17/21, and 21/21 with the cap count stood in.
+  with no new block. It now passes 21/21 (see the platform item below).
 - `decision_authoring_prototype/domains/*/generated.json` — rederived, with `_judged_by` and `_identity`.
 - `decision_authoring_prototype/doc/ASSIMILATION_READINESS.md`, `BUILDING_BLOCKS.md` and
   `LEDGER_FORMAT_V0.md` — the readiness status, the "as built" section, and the catalog for the
   third domain plus the closed ledger.
 
 **`.github`** (committed `9d2674b`)
-- `process/regression.sh` — steps `decision_ledgers`, `decision_meta`, `decision_selftest` and
-  `decision_<domain>`.
-- `process/expectations.yaml` — rows for those steps. `decision_ai_governance` is red by design.
+- `process/regression.sh` — steps `derive_ledgers`, `derive_meta`, `derive_selftest` and
+  `derive_<domain>`.
+- `process/expectations.yaml` — rows for those steps. `derive_ai_governance` is red by design.
 - `process/RUNBOOK.md` — two rows in "Expected".
+
+**Layout (2026-10-28, after the platform items):** the prototype folder is gone.
+- `transformation_compilers/testbed/ledgers/<domain>/ledger.yaml` and `checks/` are the compiler's
+  test inputs; `scripts/derive_build.sh` writes `generated.json` into its scratch directory.
+- `transformation_compilers/doc/` holds `LEDGER_FORMAT_V0.md`, `BUILDING_BLOCKS.md` and
+  `ASSIMILATION_READINESS.md`.
+- Findings, briefs, owner answers, census profiles, plans, analysis and the census/compare tools
+  are in git history at `3859bec`, under `decision_authoring_prototype/`. Paths below that name
+  `decision_authoring_prototype/` refer to that history.
+- The COUNT correction is not in that history. It is recorded in `ASSIMILATION_READINESS.md` (5.1),
+  `BUILDING_BLOCKS.md` and this handoff.
 
 ### Build & test status
 - `regression.sh --all` (2026-10-28, working tree): **PASSED, 87/87 steps as expected.**
-  `decision_ai_governance` is RED BY DESIGN, as declared.
+  `derive_ai_governance` is RED BY DESIGN, as declared.
 - **Decision builds** (in that run):
   - **book:** kept 23, superseded 18, new 16, retired 10. Construction is at 100% and emit is
     accepted by construction's meaning check. The suites pass 23/23 and 27/27.
@@ -67,8 +78,8 @@ has no `tc decision`, so the regression's `decision_*` steps fail there.
     pass 26/26, 6/6 and 12/12; the owner checks pass 9/9.
   - **ai_governance:** construction is at 100%, but construction refuses the identities (see
     open issues).
-- `tc decision meta`: PASSED. 3 of 9 doctrine rules cite an invariant.
-- `tc decision selftest`: 16/16 answers outside their shapes are refused.
+- `tc phase derive meta`: PASSED. 3 of 9 doctrine rules cite an invariant.
+- `tc phase derive selftest`: 16/16 answers outside their shapes are refused.
 
 ### Open issues
 - **Commit gap:** see "Changes made". The user still has to commit the remaining
@@ -83,7 +94,6 @@ has no `tc decision`, so the regression's `decision_*` steps fail there.
 - **Doctrine citations (readiness 2.4, partial):** order, storage, interface, reuse, own_values and
   rules_held realize no platform invariant. They are stated with the standard text (3.3–3.6).
 - **Platform gaps, parked:**
-  - the registry declares no COUNT, so the license cap is unrealized.
 - **The composer:**
   - `change_identity` is still fitted;
   - the RB name is not carried, which is why `RB_LICENSE_BINDINGS_V0` is retired;
@@ -97,7 +107,7 @@ has no `tc decision`, so the regression's `decision_*` steps fail there.
 ### Architectural concerns
 - **Identity by meaning versions most workflows.** A derived design changes how operations are
   composed, so book supersedes 18 and blockchain 9. Callers that dispatch by workflow identity
-  must follow `supersedes`. Today only the test harness does (`decision_suite.py`).
+  must follow `supersedes`. Today only the test harness does (`derive_suite.py`).
 - **The sealed documents live in the package**, not in a compiled artifact. Phase rule sets are
   sealed into their workflows; the doctrine is not.
 - **`tc` now imports `transformation.decision` at start-up**, which pulls in `inspector` and
@@ -108,11 +118,11 @@ has no `tc decision`, so the regression's `decision_*` steps fail there.
   domains only as numbered change requests (5.2).
 
 ### Next session should start with
-Commit the rest of `transformation_compilers`, then confirm `tc decision --help` works from the
+Commit the rest of `transformation_compilers`, then confirm `tc phase derive --help` works from the
 committed tree:
 ```
 cd transformation_compilers
-git add transformation/cli.py pyproject.toml scripts/decision_suite.py decision_authoring_prototype
+git add transformation/cli.py pyproject.toml scripts/derive_suite.py decision_authoring_prototype
 git commit -m "decision compiler: register tc decision, jsonschema dependency, suite harness, prototype moved"
 ```
 **Priorities (the user, 2026-10-28):** after the normalization, fix platform defects and
@@ -124,13 +134,39 @@ needs one to be assimilated fully and tested. In order:
    - Construction measures `<retired because>` and accounts the references to and from a retired
      artifact; its test data goes with it. It never deletes; delivery deletes and records.
    - ai_governance now builds: kept 4, superseded 14, new 36, replaced 3, retired 20. The owner
-     checks hold 17/21. `regression.sh --all` passes 87/87.
+     checks hold 17/21 (21/21 after the count, below). `regression.sh --all` passes 87/87.
    - ~~empty answer~~ **done**: `capability_transforms::CT_PURE_SELECT_RECORDS_V0` uses the
      filter's criteria and answers `[]`, with 6 vectors including empty and malformed. It is in
      `INVARIANT_CT_SURFACE_CLOSED_V0`, and the filter is kept. The composer uses it for every
      `nothing_found: empty` and for child selection. Blockchain's owner checks pass 9/9; book's own
      select is untouched (parking lot).
-   - Next: a declared registry COUNT (license cap).
+   - ~~registry COUNT~~ **done, and a correction:** `CS_REGISTRY_V0` has declared COUNT since
+     v1.0.0; the earlier finding was wrong. The composer now composes a `count` check: registry
+     COUNT, then a rule against the cap read earlier. It is sound only where every operation
+     leaving the counted state releases the identity, which the composer checks. ai_governance's
+     owner checks pass 21/21.
+   - Platform items are done.
+2. **Decision gaps, done**, with the route renamed:
+   - **Rename.** It is the Design Compiler's derive route, not a third compiler: same outcome (a
+     design), and the same failure class. Package `transformation/design/derive/`, CLI
+     `tc phase derive check|meta|selftest|design|identities|splice|revise`, ledgers
+     `testbed/ledgers/`, build `scripts/derive_build.sh`, regression steps `derive_*`. The sealed
+     `$id`s are `transformation.design.derive.*` (doctrine rev 3, schema rev 3, catalog rev 4).
+   - **Carried names.** A part's RB and an operation's entrance (IN) keep the names the composition
+     gives them.
+   - **Derived values recorded.** A non-unique derived value (`request_identity`) is written with the
+     record; a unique one stays held by its registry.
+   - **`change_identity` generalized.** `on_identity_change` selects the parent claim, the children
+     moved and the release; book's output is byte-identical.
+   - **Open questions and cases** are in the closed ledger. An open question holds its operation
+     back from derivation, and the self-test is now 20/20.
+   - **Doctrine invariants.** There are six new `lifecycle::` invariants, under
+     `CONSTITUTION_CHANGE_MGMT_V0` with `applies_to: derived_design`. All 9 doctrine rules now cite
+     one, and `meta.closure` counts the doctrine as a realising rule set.
+   - Results: book 23/23 and 27/27; blockchain 26/26, 6/6, 12/12 and 9/9; ai_governance 21/21.
+     Construction is at 100% for all three. `regression.sh --all` passes 87/87.
+   - Next: readiness section 3 (governance and standard text) and 5.2 (delivering owner-decided
+     behavior as numbered change requests).
 2. Decision gaps: carry RB names, carry entrance names, record `request_identity`, generalize
    `change_identity`, add `open`/cases to the closed ledger, and doctrine invariants (2.4).
 3. On hold: the parked defects in book, blockchain and ai_governance's today-designs, and the

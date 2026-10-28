@@ -157,13 +157,13 @@ if [[ "$MODE" == "--all" ]]; then
 
   # The decision compiler: each ledger admitted, answers outside their shapes refused, and each
   # derived domain built in scratch through construction, compile, assembly and its suites.
-  L="$W/transformation_compilers/decision_authoring_prototype/domains"
-  step decision_ledgers tc decision check "$L/book_library_mgmt/ledger.yaml" "$L/blockchain/ledger.yaml" \
+  L="$W/transformation_compilers/testbed/ledgers"
+  step derive_ledgers tc phase derive check "$L/book_library_mgmt/ledger.yaml" "$L/blockchain/ledger.yaml" \
     "$L/ai_governance/ledger.yaml"
-  step decision_meta tc decision meta --snapshot "$W/snapshot"
-  step decision_selftest tc decision selftest "$L/book_library_mgmt/ledger.yaml" "$L/ai_governance/ledger.yaml"
+  step derive_meta tc phase derive meta --snapshot "$W/snapshot"
+  step derive_selftest tc phase derive selftest "$L/book_library_mgmt/ledger.yaml" "$L/ai_governance/ledger.yaml"
   for d in book_library_mgmt blockchain ai_governance; do
-    step "decision_$d" bash -c 'out="$(mktemp -d)"; bash "$1/transformation_compilers/scripts/decision_build.sh" "$2" "$out"
+    step "derive_$d" bash -c 'out="$(mktemp -d)"; bash "$1/transformation_compilers/scripts/derive_build.sh" "$2" "$out"
       rc=$?; rm -rf "$out"; exit $rc' _ "$W" "$d"
   done
 
