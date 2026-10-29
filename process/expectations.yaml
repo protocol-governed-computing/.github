@@ -125,9 +125,14 @@ steps:
   - id: derive_ledgers
     section: checks
     expect: ["book_library_mgmt: admitted", "blockchain: admitted", "ai_governance: admitted"]
+  - id: route_seal_test
+    section: checks
+    # the route is sealed whole; a changed or added building block refuses every derivation
+    expect: ["5/5 passed"]
   - id: derive_meta
     section: checks
-    expect: ["doctrine: 9/9 rules cite an invariant", "DERIVE META PASSED"]
+    # the route as it stands is the one a dossier sealed (readiness 3.6)
+    expect: ["doctrine: 9/9 rules cite an invariant", "route: sealed by dossiers/derive_route_sealed", "DERIVE META PASSED"]
   - id: derive_selftest
     section: checks
     expect: ["23/23 answers outside their shapes refused"]
@@ -141,6 +146,18 @@ steps:
     # delivered as cr_08 to cr_11: the ledger re-derives the design of record unchanged
     expect: ["phase documents: 7/7 admissible", "kept 44, superseded 0, new 0, replaced 0, retired 0", "Construction Completeness  100.0%",
              "26/26 criteria hold", "6/6 criteria hold", "12/12 criteria hold", "9/9 criteria hold"]
+  - id: criteria_before_book_library_mgmt
+    section: checks
+    # cr_06 to cr_09's criteria, before cr_06: every one fails; each holds after (catalog_owner_decisions)
+    expect: ["0/8 criteria hold"]
+  - id: criteria_before_blockchain
+    section: checks
+    # cr_08 to cr_11's criteria, before cr_08: the two that hold are behavior the owner kept
+    expect: ["2/9 criteria hold"]
+  - id: criteria_before_ai_governance
+    section: checks
+    # cr_04's criteria, before cr_04: the four that hold are agent-governance denials the owner kept
+    expect: ["4/21 criteria hold"]
   - id: derive_ai_governance
     section: checks
     # delivered as cr_04: the ledger re-derives the design of record unchanged

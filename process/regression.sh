@@ -144,7 +144,7 @@ if [[ "$MODE" == "--all" ]]; then
   for t in meta_test closure_test effectivity_test render_vectors_test construction_mapping_test interface_structures_test differential e2e_phases_test projection_test construction_acceptance \
            molecule_design_test vector_design_test keyed_node_design_test \
            refusal_moment_design_test semantic_change_design_test \
-           entrance_gate_design_test binding_literal_design_test; do
+           entrance_gate_design_test binding_literal_design_test route_seal_test; do
     step "$t" python "$W/transformation_compilers/scripts/testbed/$t.py"
   done
   step implementation_closure python "$W/.github/process/implementation_closure.py"
@@ -163,6 +163,14 @@ if [[ "$MODE" == "--all" ]]; then
     "$L/ai_governance/ledger.yaml"
   step derive_meta tc phase derive meta --snapshot "$W/snapshot"
   step derive_selftest tc phase derive selftest "$L/book_library_mgmt/ledger.yaml" "$L/ai_governance/ledger.yaml"
+  # Each delivered domain's owner-decision criteria, against the domain before the derive route
+  # designed it (business_domains 36bc62a): a criterion the delivery made true fails there.
+  CB="$W/transformation_compilers/scripts/criteria_before.sh"
+  step criteria_before_book_library_mgmt bash "$CB" book_library_mgmt 36bc62a \
+    testbed/catalog/execution_validation_owner_decisions.py
+  step criteria_before_blockchain bash "$CB" blockchain 36bc62a testbed/identity/execution_validation_owner_decisions.py
+  step criteria_before_ai_governance bash "$CB" ai_governance 36bc62a \
+    testbed/owner_decisions/execution_validation_owner_decisions.py
   for d in book_library_mgmt blockchain ai_governance; do
     step "derive_$d" bash -c 'out="$(mktemp -d)"; bash "$1/transformation_compilers/scripts/derive_build.sh" "$2" "$out"
       rc=$?; rm -rf "$out"; exit $rc' _ "$W" "$d"

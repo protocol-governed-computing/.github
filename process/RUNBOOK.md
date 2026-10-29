@@ -346,6 +346,8 @@ included; this table explains what each step proves and states no counts. The st
 | `si snapshot validate --strict` | Reads **the snapshot just assembled**, which `test_inspector.py` does not — that runs against fixtures. Every check holds at zero, advisory ones included: `--strict` fails the step on any finding. `republished_copies_agree` holds because a domain that runs a platform capability carries a copy recording exactly what the platform records; `bound_paths_declared_as_stores` holds because every path a runtime binding writes is a store its storage structure declares |
 | `domain_authoring.py` | Authors the smallest domain from scratch in a temporary directory, compiles it against the platform, composes, boots and executes it. This is the path `pgc_install/README.md` documents for a domain developer, run rather than described. A failure means the README is wrong, not the platform. It pins four things that were each wrong when that guide was first written: all five projection paths are required and their absence fails at S7 rather than early; `structure_scope` names the composed domain, so a generic value assembles and conforms under the wrong name; a domain composes without violating the claimed profile; and an unimportable domain returns `VIOLATION` with null outputs rather than raising |
 | `tc phase derive check`, `tc phase derive meta`, `tc phase derive selftest` | The Design Compiler's derive route admits each domain's ledger; its doctrine, ledger schema and catalog are each their last sealed revision, and every doctrine rule cites an invariant the composition holds or says why none states it; and each answer the self-test puts outside its shape is refused |
+| `route_seal_test.py` | `5/5 passed` — the route as it stands is one a dossier sealed; a changed or added building block refuses every derivation, and a seal whose dossier has no `change.md` is refused |
+| `criteria_before.sh <domain> 36bc62a <suite>` | Each delivered domain's owner-decision criteria against the domain before the derive route designed it: book `0/8`, blockchain `2/9`, ai_governance `4/21`. Each criterion that holds there is behavior the owner kept |
 | `derive_build.sh <domain>` | One ledger derived; its identities decided by meaning against the working snapshot; its phase documents P0 to P6 projected and judged by the sealed rules, `phase documents: 7/7 admissible (p0 to p6)`; and the design built in scratch: construction at 100%, emit compared by construction, compile, assembly, and the domain's suites run against the successors the design declares. What the ledger no longer derives is retired (`RETIRE`): construction accounts its references and never deletes it, and the build deletes it and writes the retirement record, as delivery would. The suites dispatch a workflow by the name they were written against; the build follows the successors this design, its lineage and the retirement ledger declare |
 | `test_indexes.py` | Assembler index construction, including that a republished identity resolves to its authoring copy and that resolution does not track domain-name order |
 | `test_transform_conformance_evidence.py` | Every build's conformance result, the platform's included, is carried, names each transform the build supplies with none refused, names as carried exactly what its attestation records, and is a manifest constituent; the platform proves every transform it has a vector for; `conformance/` holds only `composition.json` |
@@ -632,14 +634,33 @@ something, and the earlier suites prove it broke nothing.
 A change whose decision is a ledger is delivered by one script, which runs every step above:
 
 ```bash
-D=$W/business_domains/<domain>/cr_dossiers/cr_NN_<subject>   # holds ledger.yaml
+D=$W/business_domains/<domain>/cr_dossiers/cr_NN_<subject>   # holds ledger.yaml and criteria.yaml
 bash $W/transformation_compilers/scripts/derive_deliver.sh <domain> $D
 ```
 
-It pins `baseline.json`, writes P0 to P8, stops unless P0 to P6 are admissible and construction is
+`criteria.yaml` names the suites, under the domain, that hold the change's acceptance criteria:
+`suites: [testbed/<part>/execution_validation_<subject>.py]`. Write them first, from P0.
+
+It pins `baseline.json`. It runs the criteria against that composition and stops unless one fails
+(`criteria_before.txt`). It writes P0 to P8, stops unless P0 to P6 are admissible and construction is
 complete, emits, deletes what the design superseded or retired with a record in
 `retired_identities.yaml`, repoints the testbed and client, compiles, assembles and regenerates the
-design of record. Write `delivery.md` beside it, then run the regression. See DESIGN_LANGUAGE §9.7.
+design of record. Last, it requires every criterion to hold (`criteria_after.txt`). Write
+`delivery.md` beside it, then run the regression. See DESIGN_LANGUAGE §9.7.
+
+### A change to the derive route
+
+A change to a module of `transformation/design/derive/`, or to its doctrine, ledger schema or
+catalog, runs as its own dossier. Until a seal records it, every derivation is refused:
+
+```bash
+mkdir $W/transformation_compilers/dossiers/<subject>            # write change.md: what and why
+tc phase derive revise <document> --change "…"                  # only if a sealed document changed
+tc phase derive seal $W/transformation_compilers/dossiers/<subject> --snapshot $W/snapshot --change "…"
+```
+
+The seal re-derives every ledger and records each outcome. A design of record that changes is
+delivered as a change request. See DESIGN_LANGUAGE §9.5.
 
 ## Serving a domain over HTTP
 
