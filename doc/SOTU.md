@@ -2,99 +2,89 @@
 
 Only the current handoff is kept here. Earlier handoffs are in git history: `git log -p -- doc/SOTU.md`.
 
-## SOTU Handoff — 2026-10-29 · Derive route: the route is sealed whole (3.6), and each change's criteria come before its design (4.4)
+## SOTU Handoff — 2026-10-29 · The ledger states where a refused release ends; ai_governance cr_05 delivers cr_02's ending
 
 ### Changes made
-Work is on `dev/19`. The last commits are `transformation_compilers` `23f0c0d`, `business_domains`
-`52fe293`, `protocol_runtime` `8e06ec5` and `.github` `6ed9359`. Everything below is uncommitted.
-Only `transformation_compilers` and `.github` changed.
+Work is on `dev/19`. The last commits are `transformation_compilers` `3255262`, `business_domains`
+`52fe293`, `protocol_runtime` `8e06ec5` and `.github` `92234cd`. Everything below is uncommitted.
 
-**`transformation_compilers`**
-- `transformation/design/derive/seal.py`: seals the route whole.
-  - `route_now()` takes the digest of every module of the package and every sealed document.
-  - `route_unsealed()` and `route_in_force()` refuse a derivation under a route no seal records.
-    `judged_by` names the seal beside the three documents.
-  - `unsealed_dossiers()` refuses a seal whose dossier has no `change.md`.
-  - `record_seal()` appends to `route_seals.yaml` and refuses a route a seal already records.
-- `transformation/design/derive/route_seals.yaml` (new): the first seal, by
-  `dossiers/derive_route_sealed`. It covers 13 files, and all three ledgers re-derive unchanged:
-  book 57, blockchain 44, ai_governance 59.
-- `transformation/design/derive/cli.py`:
-  - `tc phase derive seal <dossier> --snapshot … --change …` (new) re-derives every ledger and
-    records the seal;
-  - `derive meta` refuses an unsealed route and names the seal in force.
-- `dossiers/derive_route_sealed/change.md` (new): what the seal changes and covers. The route
-  changes made in readiness sections 1 to 5 predate the rule; git and the readiness document
-  record them.
-- `scripts/derive_deliver.sh`: the criteria gate.
-  - The change's `criteria.yaml` names its suites.
-  - Delivery runs them before it derives and refuses unless one fails (`criteria_before.txt`).
-  - After delivery it requires every criterion to hold (`criteria_after.txt`).
-- `scripts/criteria_run.py` (new): dispatches each act a suite names to the version of it the
-  composition holds. It can run the domain's transforms from an earlier revision.
-- `scripts/criteria_before.sh` (new): runs a domain's criteria against the domain at a git revision,
-  compiled and assembled in scratch.
-- `scripts/testbed/route_seal_test.py` (new): 5/5.
+**`transformation_compilers`**: two route changes, each sealed by its own dossier.
+- **`dossiers/release_refused_ends_otherwise`** adds a new ledger answer, `release_refused: otherwise`.
+  - `ledger_schema.yaml` (rev 7) admits it only on a change that `releases` an identity and has an
+    `otherwise` ending. `catalog.yaml` (rev 6) adds the question.
+  - `compose.py`: the release step's `VIOLATION` routes to the `otherwise` ending. `BACKEND_ERROR`
+    still ends rejected, per `failed_record_ends`.
+  - `ledger.py`: two new self-test cases, so the self-test is 25/25.
+- **`dossiers/replaces_spent_across_versions`** keeps a delivered `replaces` spent after its
+  successor is itself superseded.
+  - `compose.delivered()` follows each predecessor's chain of successors through the retirement
+    ledger and the design's lineage.
+  - `tc phase derive design --retired …` passes the retirement ledger. `derive_build.sh`,
+    `derive_deliver.sh` and `tc phase derive seal` all pass it.
+  - A `replaces` answer that names nothing held or replaced is still refused; I checked it with a
+    misspelled name.
+- `route_seals.yaml`: three seals; the last is `replaces_spent_across_versions`. Each re-derived all
+  three designs of record unchanged.
+- `testbed/ledgers/ai_governance/ledger.yaml`: holds cr_05's answer, and equals cr_05's ledger.
 - Docs:
-  - `doc/DESIGN_LANGUAGE.md` §9.5 (the route sealed whole) and §9.7 (the criteria come first);
-  - `doc/ASSIMILATION_READINESS.md`: 3.6 and 4.4 hold, and the order list is complete.
+  - `doc/LEDGER_FORMAT_V0.md`: the `release_refused` row;
+  - `doc/DESIGN_LANGUAGE.md` §9.7: the spent-`replaces` rule reads the chain.
+
+**`business_domains/ai_governance`**
+- `cr_dossiers/cr_05_refused_release_still_active`: the first delivery through the criteria gate.
+  - `criteria.yaml` names the routing-closure suite. 3/4 criteria held before the design and 4/4
+    after.
+  - The full dossier, P0–P8, plus `delivery.md`.
+- `WF_RECLAIM_LICENSE_V0` → `_V1`. The registry, the design of record and the testbed are repointed.
+- `testbed/routing_closure/execution_validation.py`: criterion 1 is cr_02's own decision again, that
+  the reclaim ends at `EXIT_STILL_ACTIVE`. It was written before the delivery.
+
+**`protocol_runtime`**
+- `testbed/pgc/test_step_outcome.py`: repointed to `WF_RECLAIM_LICENSE_V1`. 8/8.
 
 **`.github`**
-- `process/regression.sh`: the steps `route_seal_test`, `criteria_before_book_library_mgmt`,
-  `criteria_before_blockchain` and `criteria_before_ai_governance`.
+- `process/retired_identities.yaml`: `WF_RECLAIM_LICENSE_V0`.
 - `process/expectations.yaml`:
-  - route seal 5/5;
-  - `derive_meta` names the seal;
-  - criteria before the route designed each domain: book 0/8, blockchain 2/9, ai_governance 4/21.
-- `process/RUNBOOK.md`: `criteria.yaml` in "A change the derive route designs", a new section "A
-  change to the derive route", and two check rows.
+  - self-test 25/25;
+  - `derive_meta` names the last seal;
+  - the reclaim-closure comment.
+  - Supersession stays at 49 relations: `WF_RECLAIM_LICENSE_V1` names one predecessor, as `_V0`
+    did.
 - `doc/SOTU.md`: this file.
 
 ### Build & test status
 - `regression.sh --all` (2026-10-29, working tree): **PASSED, 97/97 steps as expected.**
-- Changing a building block by one byte refuses every derivation and fails `derive meta`. Restoring
-  it passes both.
-- Each delivered domain's owner-decision criteria against the domain before the derive route
-  (`business_domains` `36bc62a`):
-
-  | Domain | Before | After | What held before |
-  |---|---|---|---|
-  | book | 0/8 | 8/8 | nothing |
-  | blockchain | 2/9 | 9/9 | behavior the owner kept |
-  | ai_governance | 4/21 | 21/21 | the agent-governance denials, which the owner kept |
+- Re-deriving keeps every artifact: ai_governance 59, blockchain 44, book 57.
+- Phase documents are 7/7 admissible for all three.
+- ai_governance: owner decisions 21/21, routing closure 4/4.
 
 ### Open issues
-- **The delivery gate for criteria has not run on a delivery yet.** No change has been delivered
-  since it was added. cr_04 to cr_11 predate it, so their dossiers carry no `criteria.yaml`, and
-  delivered dossiers are not edited. `criteria_before.sh` shows the same property for them, after
-  the fact.
-- **Book's derived-design criteria were written while book was delivered,** not before its first
-  design. They fail 0/8 before and hold 8/8 after. Book's registration and works suites predate the
-  method, and they stay as regression suites.
-- **A route dossier is `change.md` and a seal,** not a P0–P8 dossier. Judging a route change by the
-  phases is not built.
-- **A refused release ends the reclaim at `EXIT_REJECTED`.** The earlier design ended it at
-  `EXIT_ACTIVE`. The behavior cr_02 decided holds.
 - **Delivering a domain can reach platform tests** that use its artifacts as fixtures.
+  `test_step_outcome.py` was repointed by hand again. Delivery repoints only the domain's testbed and
+  client.
+- **A route dossier is `change.md` and a seal,** not a P0–P8 dossier.
+- **Book's derived-design criteria were written while book was delivered.** They fail 0/8 before and
+  hold 8/8 after.
 - **The blockchain web client was repointed by text replacement.** It was not opened in a browser.
 - **The prose in the blockchain and ai_governance ledgers is not owner-confirmed.**
 
 ### Architectural concerns
-- The seal list ships in the package, so an installed copy can verify itself. The dossiers stay in
-  the repository, and `derive meta` checks them only there.
-- Scripts outside the package, such as `derive_deliver.sh` and `criteria_run.py`, are not sealed.
-  They deliver and test a design; they do not derive one.
+- **A design of record keeps one predecessor per artifact,** so lineage older than that lives only
+  in the retirement ledger. The derive route now reads that ledger. An installed copy without it
+  recognizes only the latest replacement.
+- **Scripts outside the package are not sealed,** such as `derive_deliver.sh` and
+  `criteria_run.py`.
 
 ### Next session should start with
 1. Commit (the user's step):
    ```
-   cd transformation_compilers && git add -A doc dossiers scripts transformation && git commit -m "derive route sealed whole (3.6); each change's criteria run before and after its design (4.4)"
-   cd ../.github && git add doc/SOTU.md process && git commit -m "regression: route seal, criteria before the derive route for three domains"
+   cd transformation_compilers && git add -A doc dossiers scripts testbed transformation && git commit -m "derive route: release_refused routes a refused release to otherwise; a delivered replaces stays spent across versions"
+   cd ../business_domains && git add -A ai_governance && git commit -m "ai_governance cr_05: a reclaim the registry refuses ends as still active"
+   cd ../protocol_runtime && git add testbed/pgc/test_step_outcome.py && git commit -m "step outcome test follows the reclaim to V1"
+   cd ../.github && git add doc/SOTU.md process && git commit -m "regression: cr_05 delivered, route sealed twice more"
    ```
-2. With the readiness document complete, choose the next platform defect or decision gap. Candidates:
-   - a ledger shape to route a refused release to `otherwise`;
-   - repointing outside a domain at delivery;
-   - judging a route change by the phases.
+2. Repoint callers outside a domain at delivery, or move platform fixtures off business domains.
+   This is the next platform defect.
 
 **Priorities (the user):** fix platform defects and decision gaps first. Keep business-domain
 parking-lot items on hold unless the new compiler needs one to be assimilated fully and tested.

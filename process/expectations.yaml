@@ -132,10 +132,10 @@ steps:
   - id: derive_meta
     section: checks
     # the route as it stands is the one a dossier sealed (readiness 3.6)
-    expect: ["doctrine: 9/9 rules cite an invariant", "route: sealed by dossiers/derive_route_sealed", "DERIVE META PASSED"]
+    expect: ["doctrine: 9/9 rules cite an invariant", "route: sealed by dossiers/replaces_spent_across_versions", "DERIVE META PASSED"]
   - id: derive_selftest
     section: checks
-    expect: ["23/23 answers outside their shapes refused"]
+    expect: ["25/25 answers outside their shapes refused"]
   - id: derive_book_library_mgmt
     section: checks
     # delivered as cr_06 to cr_09: the ledger re-derives the design of record unchanged
@@ -359,7 +359,7 @@ steps:
     expect: ["4/4 criteria hold\\s+\\(1 not exercised\\)"]
   - id: ai_governance_reclaim_closure
     section: execution
-    # a reclaim the registry refuses leaves the license assigned and active, and announces nothing
+    # a reclaim the registry refuses ends as still active (cr_02, delivered by cr_05), license kept, nothing announced
     expect: ["4/4 criteria hold\\s+\\(0 not exercised\\)"]
   - id: transport_cli
     section: execution

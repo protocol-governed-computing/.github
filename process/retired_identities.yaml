@@ -517,3 +517,9 @@ retired:
     retention condition is declared'
   change: ai_governance/cr_dossiers/cr_04_derived_design
   superseded_by: ai_governance::WF_PROVISION_LICENSE_V0
+- identity: ai_governance::WF_RECLAIM_LICENSE_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by WF_RECLAIM_LICENSE_V1: the change''s ledger derives it with a changed
+    meaning; no retention condition is declared'
+  change: ai_governance/cr_dossiers/cr_05_refused_release_still_active
+  superseded_by: ai_governance::WF_RECLAIM_LICENSE_V1
