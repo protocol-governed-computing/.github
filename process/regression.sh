@@ -144,7 +144,7 @@ if [[ "$MODE" == "--all" ]]; then
   for t in meta_test closure_test effectivity_test render_vectors_test construction_mapping_test interface_structures_test differential e2e_phases_test projection_test construction_acceptance \
            molecule_design_test vector_design_test keyed_node_design_test \
            refusal_moment_design_test semantic_change_design_test \
-           entrance_gate_design_test binding_literal_design_test route_seal_test; do
+           entrance_gate_design_test binding_literal_design_test route_seal_test repoint_callers_test; do
     step "$t" python "$W/transformation_compilers/scripts/testbed/$t.py"
   done
   step implementation_closure python "$W/.github/process/implementation_closure.py"

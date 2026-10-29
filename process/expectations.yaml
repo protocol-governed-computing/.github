@@ -129,6 +129,10 @@ steps:
     section: checks
     # the route is sealed whole; a changed or added building block refuses every derivation
     expect: ["5/5 passed"]
+  - id: repoint_callers_test
+    section: checks
+    # delivery repoints callers outside the domain, never history, and refuses a caller it cannot repoint
+    expect: ["6/6 passed"]
   - id: derive_meta
     section: checks
     # the route as it stands is the one a dossier sealed (readiness 3.6)
