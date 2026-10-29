@@ -37,8 +37,12 @@ MODULE = re.compile(r"^\s*module:\s*(\S+)\s*$", re.M)
 NOT_A_TRANSFORM = {"__init__", "ct_executor"}
 
 
+RUN_OUTPUT = {"data", "traces"}   # the workspace root's run output, never source
+
+
 def _skip(path: Path) -> bool:
-    return ".git" in path.parts or "snapshot" in path.parts or ".venv" in path.parts
+    return (".git" in path.parts or "snapshot" in path.parts or ".venv" in path.parts
+            or path.relative_to(WORKSPACE).parts[0] in RUN_OUTPUT)
 
 
 def declared_modules() -> dict[str, Path]:

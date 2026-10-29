@@ -367,7 +367,7 @@ included; this table explains what each step proves and states no counts. The st
 | `test_federation.py`, `test_capability_concurrency.py`, `test_molecule_execution.py` | `OK` — federated roles; capabilities under concurrent writers; molecules run, recorded and replayed |
 | `test_node_keyed_routing.py`, `test_trace_path.py` | `OK` — routing, endings and announcements by node, and the trace naming each place; the path drawn over a workflow's graph is the one the trace records |
 | `test_examine.py` | `OK` — `runtime examine` reads `SCHEMA_TRACE_EVENT_V0`, refuses any other format (a v5 trace, written to V1, included), tells a completed run (refusals included) from a structural failure, and reads every trace under `data/` |
-| `test_step_outcome.py` | A step outcome its contract declares no continuation for refuses, writes an ERROR and runs nothing after it (`3a` EX-18); every step record carries its outcome and the continuation it selected, an admission's being `route` (`3e` EV-19). A fault refuses the run with an ERROR and is never routed: a transform that will not load, an atom that breaks, a side effect that raises or states no outcome (`3a` §4.1, `3c` §7). An atom's own refusal still routes as VIOLATION. Needs an assembled snapshot |
+| `test_step_outcome.py` | A step outcome its contract declares no continuation for refuses, writes an ERROR and runs nothing after it (`3a` EX-18); every step record carries its outcome and the continuation it selected, an admission's being `route` (`3e` EV-19). A fault refuses the run with an ERROR and is never routed: a transform that will not load, an atom that breaks, a side effect that raises or states no outcome (`3a` §4.1, `3c` §7). An atom's own refusal still routes as VIOLATION. Runs the Collatz workload, so no business domain's delivery reaches it. Needs an assembled snapshot |
 | `test_no_default.py`, `test_unknown_continuation.py` | No resolver supplies a default (`3c` RT-6): a transform path that reaches nothing refuses, a result maps only on SUCCESS and must carry each field it maps, an absent source is left out and never set to null; execution refuses a routing answer other than `continue` or `exit` |
 | `pgc_env_check.py` | `PGC ENVIRONMENT CHECK PASSED` — no legacy dependency reachable |
 | `test_regression_verdict.py` | The verdict fails a run for every way it can differ from this table, including an unexpected pass and a suite that skipped everything |
@@ -1115,8 +1115,13 @@ against the live snapshot reports its own codes as already existing; that is the
 defect.
 
 `e2e_phases_test.py` reproduces the composition a catalog fixture is designed against with
-`design_baseline()`: every compiled root but `book_library_mgmt`, side-assembled. It rebuilds it
-whenever a source root has been recompiled since.
+`design_baseline()`, side-assembled from:
+- the platform, the Collatz workload, inspection and transformation, as compiled;
+- `ai_governance`, the neighbour the catalog cites, frozen at `business_domains` `36bc62a` and built
+  from git into `traces/design_baseline_sources/`.
+
+Nothing a domain delivers reaches the corpus. The baseline is rebuilt whenever a source root has
+been recompiled since.
 
 `tc phase check` is the right loop while authoring a document. Phases through P1 judge a document
 alone and need no snapshot; from P2 a phase grounds claims against the composition, so `--snapshot`

@@ -2,71 +2,88 @@
 
 Only the current handoff is kept here. Earlier handoffs are in git history: `git log -p -- doc/SOTU.md`.
 
-## SOTU Handoff — 2026-10-29 · Delivery repoints callers outside the domain, and refuses the ones it cannot
+## SOTU Handoff — 2026-10-29 · Platform tests no longer depend on a live business domain
 
 ### Changes made
-Work is on `dev/19`. The last commits are `transformation_compilers` `0df4017`, `business_domains`
-`8410d6a`, `protocol_runtime` `2d2b14f` and `.github` `3098c10`. Everything below is uncommitted.
-Only `transformation_compilers` and `.github` changed. No module of the derive route changed, so no
-route seal is needed.
+Work is on `dev/19`. The last commits are `transformation_compilers` `1e35c7d`, `protocol_runtime`
+`2d2b14f`, `protocol_compiler` `8be7322` and `.github` `22cd9e0`. Everything below is uncommitted.
+
+**`protocol_runtime`**
+- `testbed/pgc/test_step_outcome.py`: runs on the Collatz workload instead of ai_governance's
+  reclaim. 8/8.
+  - The cases are an admission, transform steps, and a `CS_MUTABLE_JSON_V0` write whose answer is
+    replaced for one run.
+  - A termination check that will not load, or that breaks, is a fault and is never routed as a
+    verdict.
+  - The platform's own `CT_PURE_REQUIRE_TRUE_V0` refuses a sequence that did not terminate, and the
+    run routes to `EXIT_CONJECTURE_VIOLATED`.
+
+**`protocol_compiler`**
+- `scripts/testbed/test_platform_vectors.py`: the domain compiled against the platform is the
+  Collatz workload. It carries `CT_PURE_REQUIRE_TRUE_V0` and `CS_MUTABLE_JSON_V0` from the surface.
+  3/3.
 
 **`transformation_compilers`**
-- `scripts/repoint_callers.py` (new). It handles callers outside a delivered domain: every source file
-  in a workspace repository that names the domain's artifacts.
-  - A caller is code, a script, a payload, a fixture under a `testbed/`, or the workspace process
-    (the runbook).
-  - `check` refuses when a caller names an artifact the change retires with no successor, or another
-    domain's declaration names a changed artifact.
-  - `apply` repoints every caller of a superseded or replaced artifact to its successor.
-  - History is never rewritten: documents, dossiers, designs of record, snapshots, the retirement
-    ledger and the route seals.
-  - A full name is matched anywhere. A short name is matched only in a file that names the domain.
-- `scripts/derive_deliver.sh`:
-  - `check` runs right after identities are decided, before anything is written;
-  - `apply` runs with the domain's own repointing.
-- `scripts/derive_build.sh`: reports what `check` finds, so a rehearsal shows it before delivery.
-- `scripts/testbed/repoint_callers_test.py` (new): 6/6 on a temporary workspace.
-- `doc/DESIGN_LANGUAGE.md` §9.7: callers outside the domain follow the change.
+- `scripts/testbed/semantic_change_design_test.py`: its fixtures are the workload's artifacts:
+  - `CC_STORE_RESULTS_V0` and `WF_COLLATZ_CONJECTURE_V0` for referrer accounting;
+  - `CT_PURE_COLLATZ_STEP_V0` and `CC_COMPUTE_SEQUENCES_V0` for the transform and its contract.
+
+  24/24.
+- **The phase corpus is frozen on its neighbour (your choice).** The corpus cites a neighbouring
+  domain's artifacts as business reuse candidates, and Collatz is `reuse_visibility: internal`.
+  - `scripts/testbed/e2e_phases_test.py`: `design_baseline()` builds ai_governance from
+    `business_domains` `36bc62a`, the revision CR-1 was designed against. The build comes from git
+    into `traces/design_baseline_sources/`, with its own transforms on the import path, and the
+    live domain is no longer a source root.
+  - `scripts/testbed/corpus_p2`, `corpus_p3`, `corpus_p7`, `fixtures/catalog` and
+    `testbed/phases/test_payloads`: restored to their content at `8fb030b`. That undoes cr_04's
+    repointing, so the corpus cites ai_governance's artifacts as they were, and its prose is true
+    again.
+  - Case 84 expects three unbound inputs again.
+  - `build_fixtures.py` and `build_payloads.py --check` reproduce the corpus with no diff.
+  - `differential`, `effectivity_test` and `projection_test` pass.
+
+- `scripts/testbed/construction_acceptance.py`: does not read the workspace root's run output
+  (`data/`, `traces/`). It reported the frozen copy's design of record as uncovered.
 
 **`.github`**
-- `process/regression.sh` and `expectations.yaml`: the step `repoint_callers_test` (6/6).
-- `process/RUNBOOK.md`: delivery repoints every caller outside the domain, plus the test's row.
+- `process/implementation_closure.py`: does not read the workspace root's run output. It reported
+  the frozen copy's two retired transforms as absent.
+- `process/RUNBOOK.md`: the design baseline's sources, and `test_step_outcome.py` on the workload.
 - `doc/SOTU.md`: this file.
 
 ### Build & test status
 - `regression.sh --all` (2026-10-29, working tree): **PASSED, 98/98 steps as expected.**
-- **Dry run on the real workspace:** with an imaginary supersession, `apply` finds exactly the callers
-  that cr_04 and cr_05 needed repointed by hand:
-  - `protocol_runtime`'s `test_step_outcome.py`;
-  - `semantic_change_design_test.py`;
-  - the regression script and the runbook;
-  - the phase-test payloads, and the corpus sources they are generated from.
+- No platform test or fixture now reads a live business domain. The corpus reads ai_governance
+  frozen at a revision, and the regression's own business steps run the domains by design.
 
 ### Open issues
-- **The repointing has not run on a real delivery yet.** The test and the dry run cover it.
-- **A retired artifact with outside callers needs a person.** Delivery refuses until each caller
-  stops naming it. cr_04's e2e fixtures were such a case: each needed a live counterpart chosen.
+- **The frozen neighbour is rebuilt on every regression run,** because `traces/` is cleared. The
+  rebuild is one compile.
+- **Caller repointing has not run on a real delivery.**
 - **A route dossier is `change.md` and a seal,** not a P0–P8 dossier.
 - **Book's derived-design criteria were written while book was delivered.**
 - **The blockchain web client was not opened in a browser** after its repointing.
 - **The prose in the blockchain and ai_governance ledgers is not owner-confirmed.**
 
 ### Architectural concerns
-- **Platform tests still use business domains' artifacts as fixtures.** Delivery now keeps them
-  current, but each delivery reaches into other repositories' files. Moving those fixtures to the
-  conformance workload would remove the reach.
-- **Short names are matched by heuristic.** A file that names the domain and uses another domain's
-  artifact of the same short name would be repointed wrongly. No such file exists today.
+- **The corpus is pinned by revision, not by a sealed snapshot.** `36bc62a` must stay reachable in
+  `business_domains`' history. A squash or a published cut that drops it from the history would break
+  the e2e baseline, so the pin must move to a revision that survives it.
+- **The workload now carries the runtime's and the design test's platform properties.** A change to
+  Collatz's workflow reaches them, as it should, since Collatz exists to prove the platform.
 
 ### Next session should start with
 1. Commit (the user's step):
    ```
-   cd transformation_compilers && git add -A doc scripts && git commit -m "delivery repoints callers outside the domain, and refuses a caller it cannot repoint"
-   cd ../.github && git add doc/SOTU.md process && git commit -m "regression: callers outside the domain"
+   cd transformation_compilers && git add -A scripts testbed && git commit -m "platform fixtures: design tests on the workload; the phase corpus frozen on its neighbour at 36bc62a"
+   cd ../protocol_runtime && git add testbed/pgc/test_step_outcome.py && git commit -m "step outcome test runs on the conformance workload"
+   cd ../protocol_compiler && git add scripts/testbed/test_platform_vectors.py && git commit -m "platform vectors test compiles the conformance workload"
+   cd ../.github && git add doc/SOTU.md process && git commit -m "platform tests independent of business domains; closure reads no run output"
    ```
 2. Choose the next platform defect or decision gap. Candidates:
    - judging a route change by the phases;
-   - moving platform fixtures to the conformance workload.
+   - running caller repointing on a real delivery.
 
 **Priorities (the user):** fix platform defects and decision gaps first. Keep business-domain
 parking-lot items on hold unless the new compiler needs one to be assimilated fully and tested.
