@@ -155,8 +155,9 @@ if [[ "$MODE" == "--all" ]]; then
   # rots the moment the build changes, and nothing notices.
   step domain_authoring python "$W/.github/process/domain_authoring.py"
 
-  # The decision compiler: each ledger admitted, answers outside their shapes refused, and each
-  # derived domain built in scratch through construction, compile, assembly and its suites.
+  # The derive route: each ledger admitted, answers outside their shapes refused, and each derived
+  # domain's phase documents judged, then built in scratch through construction, compile, assembly
+  # and its suites.
   L="$W/transformation_compilers/testbed/ledgers"
   step derive_ledgers tc phase derive check "$L/book_library_mgmt/ledger.yaml" "$L/blockchain/ledger.yaml" \
     "$L/ai_governance/ledger.yaml"
@@ -230,22 +231,25 @@ step collatz "$W/protocol_runtime/run.sh" run \
   --payload "$W/conformance_workloads/workloads/collatz/test_payloads/01_happy_path.json" \
   --data-root "$W/data/collatz"
 
-echo; echo "=== ai_governance: seed ==="
-mkdir -p "$W/data/ai_governance/ai_governance/ai_licensing"
-cp "$W/business_domains/ai_governance/testbed/agent_governance/seed_data/license_facts.json" \
-   "$W/data/ai_governance/ai_governance/ai_licensing/"
+echo; echo "=== ai_governance: license the seed users through ai_licensing's own acts ==="
+P="$W/business_domains/ai_governance/testbed/ai_licensing/test_payloads"
+step set_license_cap "$W/protocol_runtime/run.sh" run --wf ai_governance::WF_SET_LICENSE_CAP_V0 \
+  --payload "$P/01_set_license_cap.json" --data-root "$W/data/ai_governance"
+step register_employee "$W/protocol_runtime/run.sh" run --wf ai_governance::WF_REGISTER_EMPLOYEE_V0 \
+  --payload "$P/02_register_employee_std.json" --data-root "$W/data/ai_governance"
+step record_training_completed "$W/protocol_runtime/run.sh" run --wf ai_governance::WF_RECORD_TRAINING_COMPLETED_V0 \
+  --payload "$P/03_record_training_std.json" --data-root "$W/data/ai_governance"
+step provision_licensing "$W/protocol_runtime/run.sh" run --wf ai_governance::WF_PROVISION_LICENSE_V0 \
+  --payload "$P/04_provision_license_std.json" --data-root "$W/data/ai_governance"
 
 echo; echo "=== ai_governance: govern agent action ==="
 step govern_agent_action "$W/protocol_runtime/run.sh" run \
-  --wf ai_governance::WF_GOVERN_AGENT_ACTION_V0 \
+  --wf ai_governance::WF_GOVERN_AGENT_ACTION_V1 \
   --payload "$W/business_domains/ai_governance/testbed/agent_governance/test_payloads/01_valid_standard_action.json" \
   --data-root "$W/data/ai_governance"
 
-echo; echo "=== ai_governance: provision licensing ==="
-step provision_licensing "$W/protocol_runtime/run.sh" run \
-  --wf ai_governance::WF_PROVISION_AI_LICENSING_V0 \
-  --payload "$W/business_domains/ai_governance/testbed/ai_licensing/test_payloads/provision_ai_licensing_payload.json" \
-  --data-root "$W/data/ai_governance"
+echo; echo "=== ai_governance: the owner's decisions (cr_04) ==="
+step ai_governance_owner_decisions python "$W/business_domains/ai_governance/testbed/owner_decisions/execution_validation_owner_decisions.py"
 
 echo; echo "=== book_library_mgmt: catalog (CR-1) ==="
 step catalog_registration python "$W/business_domains/book_library_mgmt/testbed/catalog/execution_validation.py" \
@@ -254,6 +258,9 @@ step catalog_registration python "$W/business_domains/book_library_mgmt/testbed/
 echo; echo "=== book_library_mgmt: catalog (CR-2) ==="
 step catalog_works python "$W/business_domains/book_library_mgmt/testbed/catalog/execution_validation_works.py" \
   --data-root "$W/data/book_library_mgmt_works"
+
+echo; echo "=== book_library_mgmt: catalog (cr_06 to cr_09, the owner's decisions) ==="
+step catalog_owner_decisions python "$W/business_domains/book_library_mgmt/testbed/catalog/execution_validation_owner_decisions.py"
 
 echo; echo "=== blockchain: identity (must precede wallet) ==="
 step blockchain_identity python "$W/business_domains/blockchain/testbed/identity/execution_validation.py" \
@@ -276,6 +283,9 @@ step clm_hosted_model python "$W/business_domains/causal_language_model/testbed/
 echo; echo "=== trace schema ==="
 echo; echo "=== blockchain: routing closure (each case on its own scratch root) ==="
 step blockchain_routing_closure python "$W/business_domains/blockchain/testbed/routing_closure/execution_validation.py"
+
+echo; echo "=== blockchain: the owner's decisions (cr_08 to cr_11) ==="
+step blockchain_owner_decisions python "$W/business_domains/blockchain/testbed/identity/execution_validation_owner_decisions.py"
 
 echo; echo "=== transformation: routing closure (a phase whose observation finds nothing rejects) ==="
 step transformation_routing_closure python "$W/transformation_compilers/testbed/routing_closure/execution_validation.py"

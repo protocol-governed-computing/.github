@@ -25,10 +25,10 @@ steps:
     section: checks
     # every `supersedes` relation names a predecessor present, or one deleted by record in the
     # retirement ledger. The identity reset leaves none.
-    expect: ["SUPERSESSION AGREEMENT PASSED — 0 relation\\(s\\), 0 predecessor\\(s\\) present, 0 deleted by record"]
+    expect: ["SUPERSESSION AGREEMENT PASSED — 49 relation\\(s\\), 0 predecessor\\(s\\) present, 49 deleted by record"]
   - id: human_block_fidelity
     section: checks
-    expect: ["HUMAN BLOCK FIDELITY PASSED — 560 artifacts"]
+    expect: ["HUMAN BLOCK FIDELITY PASSED — 588 artifacts"]
   - id: evidence_determinism
     section: checks
     expect: ["EVIDENCE DETERMINISM PASSED"]
@@ -65,7 +65,7 @@ steps:
     expect: ["RENDER VECTORS PASSED — 27 vectors"]
   - id: construction_mapping_test
     section: checks
-    expect: ["CONSTRUCTION MAPPING PASSED — 186 fields over 12 kinds"]
+    expect: ["CONSTRUCTION MAPPING PASSED — 191 fields over 12 kinds"]
   - id: interface_structures_test
     section: checks
     expect: ["INTERFACE STRUCTURES PASSED — 4 checks, 5 structures"]
@@ -80,7 +80,7 @@ steps:
     expect: ["PROJECTION PASSED"]
   - id: construction_acceptance
     section: checks
-    expect: ["270/270 artifacts reproduced across 6 domain\\(s\\)\\s+\\(0 field difference\\(s\\)\\)"]
+    expect: ["298/298 artifacts reproduced across 6 domain\\(s\\)\\s+\\(0 field difference\\(s\\)\\)"]
   - id: molecule_design_test
     section: checks
     expect: ["5/5 passed"]
@@ -114,7 +114,7 @@ steps:
   - id: implementation_closure
     section: checks
     # every transform module is named by an artifact, and every named module is on disk
-    expect: ["IMPLEMENTATION CLOSURE PASSED — 37 transform\\(s\\)"]
+    expect: ["IMPLEMENTATION CLOSURE PASSED — 35 transform\\(s\\)"]
   - id: test_inspector
     section: checks
     # si.behavior_logic.list names each workflow's nodes by key; si.execution.explain is covered
@@ -130,22 +130,22 @@ steps:
     expect: ["doctrine: 9/9 rules cite an invariant", "DERIVE META PASSED"]
   - id: derive_selftest
     section: checks
-    expect: ["20/20 answers outside their shapes refused"]
+    expect: ["23/23 answers outside their shapes refused"]
   - id: derive_book_library_mgmt
     section: checks
-    expect: ["kept 23, superseded 18, new 16, replaced 0, retired 10", "Construction Completeness  100.0%",
-             "23/23 criteria hold", "27/27 criteria hold"]
+    # delivered as cr_06 to cr_09: the ledger re-derives the design of record unchanged
+    expect: ["phase documents: 7/7 admissible", "kept 57, superseded 0, new 0, replaced 0, retired 0", "Construction Completeness  100.0%",
+             "23/23 criteria hold", "8/8 criteria hold", "27/27 criteria hold"]
   - id: derive_blockchain
     section: checks
-    expect: ["kept 17, superseded 9, new 18, replaced 0, retired 12", "Construction Completeness  100.0%",
+    # delivered as cr_08 to cr_11: the ledger re-derives the design of record unchanged
+    expect: ["phase documents: 7/7 admissible", "kept 44, superseded 0, new 0, replaced 0, retired 0", "Construction Completeness  100.0%",
              "26/26 criteria hold", "6/6 criteria hold", "12/12 criteria hold", "9/9 criteria hold"]
   - id: derive_ai_governance
     section: checks
-    # the domain's own routing-closure suite dispatches acts the owner's answers replaced, and fails
-    # by design
-    expect: ["kept 4, superseded 16, new 36, replaced 3, retired 18", "Construction Completeness  100.0%",
-             "RETIRED — this design retires 18 artifact", "Build Summary: 1 succeeded",
-             "21/21 criteria hold"]
+    # delivered as cr_04: the ledger re-derives the design of record unchanged
+    expect: ["phase documents: 7/7 admissible", "kept 59, superseded 0, new 0, replaced 0, retired 0", "Construction Completeness  100.0%",
+             "Build Summary: 1 succeeded", "21/21 criteria hold", "4/4 criteria hold"]
   - id: test_indexes
     section: checks
     expect: ["PASSED: 13/13"]
@@ -285,12 +285,25 @@ steps:
   - id: collatz
     section: execution
     expect: ["Status:\\s+SUCCESS", "all_terminate: true"]
-  - id: govern_agent_action
+  - id: set_license_cap
+    section: execution
+    expect: ["Status:\\s+SUCCESS"]
+  - id: register_employee
+    section: execution
+    expect: ["Status:\\s+SUCCESS"]
+  - id: record_training_completed
     section: execution
     expect: ["Status:\\s+SUCCESS"]
   - id: provision_licensing
     section: execution
     expect: ["Status:\\s+SUCCESS"]
+  - id: govern_agent_action
+    section: execution
+    expect: ["Status:\\s+SUCCESS"]
+  - id: ai_governance_owner_decisions
+    section: execution
+    # cr_04: the business holds its own facts; every criterion of the owner's answers
+    expect: ["21/21 criteria hold\\s+\\(0 not exercised\\)"]
   - id: catalog_registration
     section: execution
     expect: ["23/23 criteria hold"]
@@ -298,6 +311,10 @@ steps:
     section: execution
     # the catalog holds every rule it applies and checks what it records
     expect: ["27/27 criteria hold"]
+  - id: catalog_owner_decisions
+    section: execution
+    # cr_06's three corrections and the owner's decisions delivered as cr_07 to cr_09
+    expect: ["8/8 criteria hold"]
   - id: blockchain_identity
     section: execution
     expect: ["26/26 criteria hold\\s+\\(3 not exercised\\)"]
@@ -315,13 +332,17 @@ steps:
     section: execution
     # a failed record ends identity's and wallet's acts as rejected
     expect: ["6/6 criteria hold\\s+\\(2 not exercised\\)"]
+  - id: blockchain_owner_decisions
+    section: execution
+    # cr_08's correction and the owner's decisions delivered as cr_09 to cr_11
+    expect: ["9/9 criteria hold"]
   - id: transformation_routing_closure
     section: execution
     # an observation that finds nothing ends a phase as rejected; answers and routing generated
     expect: ["4/4 criteria hold\\s+\\(1 not exercised\\)"]
   - id: ai_governance_reclaim_closure
     section: execution
-    # a reclaim the registry refuses ends as still active, license kept
+    # a reclaim the registry refuses leaves the license assigned and active, and announces nothing
     expect: ["4/4 criteria hold\\s+\\(0 not exercised\\)"]
   - id: transport_cli
     section: execution

@@ -269,12 +269,15 @@ rm -rf ~/protocol-governed-computing/data/collatz ~/protocol-governed-computing/
 
 ~/protocol-governed-computing/protocol_runtime/run.sh run --wf workload::WF_COLLATZ_CONJECTURE_V0 --payload ~/protocol-governed-computing/conformance_workloads/workloads/collatz/test_payloads/01_happy_path.json --data-root ~/protocol-governed-computing/data/collatz
 
-mkdir -p ~/protocol-governed-computing/data/ai_governance/ai_governance/ai_licensing
-cp ~/protocol-governed-computing/business_domains/ai_governance/testbed/agent_governance/seed_data/license_facts.json ~/protocol-governed-computing/data/ai_governance/ai_governance/ai_licensing/
+P=~/protocol-governed-computing/business_domains/ai_governance/testbed/ai_licensing/test_payloads
+for step in SET_LICENSE_CAP:01_set_license_cap REGISTER_EMPLOYEE:02_register_employee_std \
+            RECORD_TRAINING_COMPLETED:03_record_training_std PROVISION_LICENSE:04_provision_license_std; do
+  ~/protocol-governed-computing/protocol_runtime/run.sh run --wf "ai_governance::WF_${step%%:*}_V0" --payload "$P/${step#*:}.json" --data-root ~/protocol-governed-computing/data/ai_governance
+done
 
-~/protocol-governed-computing/protocol_runtime/run.sh run --wf ai_governance::WF_GOVERN_AGENT_ACTION_V0 --payload ~/protocol-governed-computing/business_domains/ai_governance/testbed/agent_governance/test_payloads/01_valid_standard_action.json --data-root ~/protocol-governed-computing/data/ai_governance
+~/protocol-governed-computing/protocol_runtime/run.sh run --wf ai_governance::WF_GOVERN_AGENT_ACTION_V1 --payload ~/protocol-governed-computing/business_domains/ai_governance/testbed/agent_governance/test_payloads/01_valid_standard_action.json --data-root ~/protocol-governed-computing/data/ai_governance
 
-~/protocol-governed-computing/protocol_runtime/run.sh run --wf ai_governance::WF_PROVISION_AI_LICENSING_V0 --payload ~/protocol-governed-computing/business_domains/ai_governance/testbed/ai_licensing/test_payloads/provision_ai_licensing_payload.json --data-root ~/protocol-governed-computing/data/ai_governance
+python ~/protocol-governed-computing/business_domains/ai_governance/testbed/owner_decisions/execution_validation_owner_decisions.py
 
 python ~/protocol-governed-computing/business_domains/book_library_mgmt/testbed/catalog/execution_validation.py --data-root ~/protocol-governed-computing/data/book_library_mgmt
 
@@ -343,7 +346,7 @@ included; this table explains what each step proves and states no counts. The st
 | `si snapshot validate --strict` | Reads **the snapshot just assembled**, which `test_inspector.py` does not — that runs against fixtures. Every check holds at zero, advisory ones included: `--strict` fails the step on any finding. `republished_copies_agree` holds because a domain that runs a platform capability carries a copy recording exactly what the platform records; `bound_paths_declared_as_stores` holds because every path a runtime binding writes is a store its storage structure declares |
 | `domain_authoring.py` | Authors the smallest domain from scratch in a temporary directory, compiles it against the platform, composes, boots and executes it. This is the path `pgc_install/README.md` documents for a domain developer, run rather than described. A failure means the README is wrong, not the platform. It pins four things that were each wrong when that guide was first written: all five projection paths are required and their absence fails at S7 rather than early; `structure_scope` names the composed domain, so a generic value assembles and conforms under the wrong name; a domain composes without violating the claimed profile; and an unimportable domain returns `VIOLATION` with null outputs rather than raising |
 | `tc phase derive check`, `tc phase derive meta`, `tc phase derive selftest` | The Design Compiler's derive route admits each domain's ledger; its doctrine, ledger schema and catalog are each their last sealed revision, and every doctrine rule cites an invariant the composition holds or says why none states it; and each answer the self-test puts outside its shape is refused |
-| `derive_build.sh <domain>` | One ledger derived, its identities decided by meaning against the working snapshot, and the design built in scratch: construction at 100%, emit compared by construction, compile, assembly, and the domain's suites run against the successors the design declares. What the ledger no longer derives is retired (`RETIRE`): construction accounts its references and never deletes it, and the build deletes it and writes the retirement record, as delivery would. ai_governance's own routing-closure suite dispatches acts the owner's answers replaced, and fails by design |
+| `derive_build.sh <domain>` | One ledger derived; its identities decided by meaning against the working snapshot; its phase documents P0 to P6 projected and judged by the sealed rules, `phase documents: 7/7 admissible (p0 to p6)`; and the design built in scratch: construction at 100%, emit compared by construction, compile, assembly, and the domain's suites run against the successors the design declares. What the ledger no longer derives is retired (`RETIRE`): construction accounts its references and never deletes it, and the build deletes it and writes the retirement record, as delivery would. The suites dispatch a workflow by the name they were written against; the build follows the successors this design, its lineage and the retirement ledger declare |
 | `test_indexes.py` | Assembler index construction, including that a republished identity resolves to its authoring copy and that resolution does not track domain-name order |
 | `test_transform_conformance_evidence.py` | Every build's conformance result, the platform's included, is carried, names each transform the build supplies with none refused, names as carried exactly what its attestation records, and is a manifest constituent; the platform proves every transform it has a vector for; `conformance/` holds only `composition.json` |
 | `test_transform_conformance.py`, `test_vector_build.py` | The compiler refuses a malformed vector before conformance runs, and a wrong expectation fails the build at conformance |
@@ -374,7 +377,8 @@ included; this table explains what each step proves and states no counts. The st
 | `execution_validation.py` (wallet) | Every criterion holds — the one not exercised is a write through a consulted binding, which no act is authored to attempt |
 | `execution_validation.py` (model_response) | Every criterion holds — CLM CR-1: a model answers only in service, only on what it may read, only in words the rules permit; refusals recorded and announced; a replay agrees on every determinative event |
 | `blockchain/testbed/routing_closure/execution_validation.py` | Every criterion holds — a failed record ends every identity and wallet act at `EXIT_REJECTED`, at the step that failed |
-| `ai_governance/testbed/routing_closure/execution_validation.py` | Every criterion holds — a reclaim the registry refuses ends at `EXIT_ACTIVE` with the license still assigned and no revocation announced, through `CC_RECLAIM_UNUSED_LICENSE_V0` |
+| `ai_governance/testbed/routing_closure/execution_validation.py` | 4/4 — a reclaim the registry refuses ends at `EXIT_REJECTED` with the license still assigned and active and no revocation announced; nothing after `CC_RELEASE_LICENSE_IDENTITY_V0` runs |
+| `ai_governance/testbed/owner_decisions/execution_validation_owner_decisions.py` | 21/21 — the business holds its own facts (cr_04): licensing's acts, the cap, training, usage, reclaim after 30 days, and agent governance reading licensing's license |
 | `transformation_compilers/testbed/routing_closure/execution_validation.py` | Every criterion holds — a phase whose observation reports NOT_FOUND ends at `EXIT_REJECTED` and judges nothing; every way the observing capability answers is answered by every observing step and routed by every phase, read from the contract each node runs (`code`); an outcome the capability gains is answered at the next emission |
 | `transport_cli_check.sh` | `TRANSPORT CLI PASSED — 8/8 cases` — `pgc_transport call`, run from the repository root as `run_http.sh` provisions it: 27 admitted with exit 0 and a named trace, -5 and text refused with exit 1, an unknown operation exit 5, an `si.` operation through the same command, and exit 2 for an invocation that never reaches the boundary |
 | `demo_script_check.sh` | `DEMO SCRIPT PASSED — 12/12 cases` — `pgc_install/demo/pgc-demo.sh` in workspace mode through every terminal step `README_DEMO.md` walks: play, refusals, `set-limit` admitting 1,000,000, a second build of one limit reproducing its identity, `tamper` refused at acceptance, `reset`, `inspect show` and `inspect code`. It takes about ten seconds; the web pages are not served |
@@ -622,6 +626,20 @@ ungoverned one.
 Each change carries its own execution validation in the domain's `testbed/`, one criterion per
 acceptance criterion, and every earlier one is run with it: a later change's suite proves it did
 something, and the earlier suites prove it broke nothing.
+
+### A change the derive route designs
+
+A change whose decision is a ledger is delivered by one script, which runs every step above:
+
+```bash
+D=$W/business_domains/<domain>/cr_dossiers/cr_NN_<subject>   # holds ledger.yaml
+bash $W/transformation_compilers/scripts/derive_deliver.sh <domain> $D
+```
+
+It pins `baseline.json`, writes P0 to P8, stops unless P0 to P6 are admissible and construction is
+complete, emits, deletes what the design superseded or retired with a record in
+`retired_identities.yaml`, repoints the testbed and client, compiles, assembles and regenerates the
+design of record. Write `delivery.md` beside it, then run the regression. See DESIGN_LANGUAGE §9.7.
 
 ## Serving a domain over HTTP
 

@@ -2,172 +2,138 @@
 
 Only the current handoff is kept here. Earlier handoffs are in git history: `git log -p -- doc/SOTU.md`.
 
-## SOTU Handoff — 2026-10-28 · Decision compiler: block composer, closed ledger, moved into `transformation/design/derive`; readiness 1, 2 and 4 done but for two gaps
+## SOTU Handoff — 2026-10-29 · Derive route: 5.2 holds — book (cr_06–cr_09), blockchain (cr_08–cr_11) and ai_governance (cr_04) delivered through the route
 
 ### Changes made
-Work is on `dev/19`. The user committed `transformation_compilers` `7b8a334`, `8512527` and
-`2a400d2`, and `.github` `9d2674b`. **`2a400d2` is incomplete:** it holds the new
-`transformation/design/derive/` and `scripts/derive_build.sh` only. Uncommitted:
-`transformation/cli.py` (registers `tc phase derive`), `pyproject.toml` (`jsonschema`),
-`scripts/derive_suite.py`, and the prototype's moved and edited files. A clean checkout of HEAD
-has no `tc phase derive`, so the regression's `derive_*` steps fail there.
+Work is on `dev/19`. The last commits are `transformation_compilers` `8fb030b`,
+`business_domains` `36bc62a`, `protocol_runtime` `7a99fe4`, `software_governance` `8801cc8`, `protocol_compiler` `8be7322` and `.github` `6380ada`. Everything
+below is uncommitted. The user had staged part of book's cr_06 in `business_domains`. Book's design
+files changed after that, so re-stage them.
 
 **`transformation_compilers`**
-- `transformation/design/derive/base.py` — the composer's shared base (was `engine/generate_domain.py`):
-  several actors, a node key that `runs` another CC, `_ends` emits, and only invoked transforms
-  carried. Reads a design with `machine_block`.
-- `transformation/design/derive/compose.py` — the block composer (was `engine/compose.py`). It adds
-  named `checks` with denial nodes for `on_refusal`, a fixed identity, `sets`/`holds`, a
-  `when`/`otherwise` condition, `releases`, ids from several fields, trails scoped to the part, and
-  `replaces`. `derive()` refuses an unsealed rule set or a refused ledger.
-- `transformation/design/derive/ledger.py` — the shape check, references and self-test (was
-  `engine/check_ledger.py`).
-- `transformation/design/derive/splice.py` — the splice, `OWNER` and identity rows (EXTEND, REPLACE,
-  `supersedes`).
-- `transformation/design/derive/identity.py` (new) — decides each artifact's identity by `sameness`
-  against the pinned composition. It gives a changed artifact the next unused version, and
-  renumbers the derived rows.
-- `transformation/design/derive/seal.py` (new) — `$id`, `x-revisions` and digests for the doctrine, the
-  schema and the catalog; `judged_by`; the doctrine closure.
-- `transformation/design/derive/cli.py` (new) — `tc phase derive check|meta|selftest|derive|identities|splice|revise`.
-- `transformation/design/derive/doctrine.yaml` (rev 2) — each rule cites `realizes`, or `none` with a reason.
-- `transformation/design/derive/catalog.yaml` (rev 2) — 31 questions.
-- `transformation/design/derive/ledger_schema.yaml` (rev 2) — the closed ledger shape, with an
-  `x-question` per answer.
-- `transformation/cli.py` — `main.add_command(decision)`.
-- `pyproject.toml` — the `jsonschema` dependency.
-- `scripts/derive_build.sh` (was `engine/run_pipeline.sh`) — runs derive → identities → splice
-  → construction check → emit `--snapshot` → retirement record → compile → assemble → suites.
-- `scripts/derive_suite.py` (new) — runs a domain suite, dispatching each workflow's declared
-  successor.
-- `decision_authoring_prototype/engine/{census,compare,p7_slice}.py` — analysis only; they import
-  from `transformation.decision`.
-- `decision_authoring_prototype/domains/ai_governance/ledger.yaml` — the whole domain in closed
-  shape, with `replaces` answers.
-- `decision_authoring_prototype/domains/ai_governance/FINDINGS_COMPOSER_RUN.md` (new) — derives
-  with no new block. It now passes 21/21 (see the platform item below).
-- `decision_authoring_prototype/domains/*/generated.json` — rederived, with `_judged_by` and `_identity`.
-- `decision_authoring_prototype/doc/ASSIMILATION_READINESS.md`, `BUILDING_BLOCKS.md` and
-  `LEDGER_FORMAT_V0.md` — the readiness status, the "as built" section, and the catalog for the
-  third domain plus the closed ledger.
+- `transformation/design/derive/project.py` and `discover.py` (new): project P0 to P6.
+  - `project.py` projects P0 from the ledger, P5 from P0 and P6 from P5.
+  - `discover.py` projects P2 to P4 from what the derivation observed.
+  - `storage()` matches a part's storage structure at any version.
+- `transformation/design/derive/cli.py`:
+  - `tc phase derive project … [--cr …]`;
+  - `identities` drops carried lineage from a successor.
+- `transformation/design/derive/compose.py`:
+  - **Live versions.** `live_versions`, `as_v0` and `live_names` work in V0 names, then map each
+    artifact back to its live version with its lineage. Lineage is now restored for V0-live
+    successors too.
+  - **A delivered `replaces` is spent.** `delivered()` reads the design of record's lineage. A
+    `replaces` answer whose first target the operation's workflow already supersedes is not
+    re-applied.
+  - **The trail is stable.** `trail_values()` counts a request field as carried when the act's own
+    chain binds it. A new act's trail is then the same before the act exists and after.
+- `transformation/design/derive/base.py`: `carried_trail` also reads a trail stream bound inside a
+  derived recorder.
+- `transformation/design/derive/identity.py`: a kept artifact that names a superseded one is
+  compared again, with the successors' names in place.
+- Sealed files:
+  - `ledger_schema.yaml` (rev 6) and `catalog.yaml` (rev 5): the answers `purpose`, `why` and
+    `out_of_scope`, and `on_repeat` with optional parts;
+  - `ledger.py`: the self-test is 23/23.
+- `testbed/ledgers/*/ledger.yaml`: the prose answers, each citing its source.
+- Scripts:
+  - `scripts/derive_build.sh`: the phase-documents step.
+  - `scripts/derive_deliver.sh` (new): delivers one change request.
+  - `scripts/derive_suite.py`: a suite's workflow names now follow this run's identities, the
+    design's lineage and the retirement ledger, to the last version.
+- Tests:
+  - `scripts/testbed/semantic_change_design_test.py`: fixtures repointed to ai_governance's live
+    artifacts.
+  - The phase corpus and the catalog fixtures (12 sources under `scripts/testbed/corpus_p2`, `_p3`,
+    `_p7` and `fixtures/catalog/cr_01_catalog`) cite ai_governance's live artifacts: each successor,
+    or the live counterpart of a retired contract. `testbed/phases/test_payloads/` are regenerated
+    from them (`build_payloads.py`). `e2e_phases_test.py`: case 84 expects two unbound inputs.
+- Docs:
+  - `DESIGN_LANGUAGE.md` §9.6 and §9.7, including the fixed-point rules and one-change domains;
+  - `CONSTRUCTION_MAPPING.md`: `supersedes` adds ACTOR. Input `default` and `format` for CC and IN
+    are dropped, because no design of record writes them now.
+  - `LEDGER_FORMAT_V0.md`: updated.
+  - `ASSIMILATION_READINESS.md`: 3.4 and 5.2 hold.
 
-**`.github`** (committed `9d2674b`)
-- `process/regression.sh` — steps `derive_ledgers`, `derive_meta`, `derive_selftest` and
-  `derive_<domain>`.
-- `process/expectations.yaml` — rows for those steps. `derive_ai_governance` is red by design.
-- `process/RUNBOOK.md` — two rows in "Expected".
+**`business_domains`**
+- book_library_mgmt:
+  - `cr_06` to `cr_09`;
+  - registry, design and testbed;
+  - `execution_validation_owner_decisions.py` (8 criteria).
+- blockchain:
+  - `cr_08` to `cr_11`;
+  - registry, design, testbed and `client/web/*.html`;
+  - `execution_validation_owner_decisions.py` (9 criteria).
+- ai_governance:
+  - `cr_dossiers/cr_04_derived_design`: the whole ledger in one change, with `delivery.md` naming
+    each difference.
+  - `registry/` and `design/` derived. Two orphaned transform modules are deleted
+    (`ct_pure_check_quota_available_v0`, `ct_pure_check_training_status_v0`).
+  - `testbed/owner_decisions/execution_validation_owner_decisions.py` (new, 21 criteria);
+  - `testbed/routing_closure/execution_validation.py`: rewritten for the derived reclaim, 4/4;
+  - `testbed/ai_licensing/test_payloads/`: nine payloads for licensing's acts;
+  - `testbed/agent_governance/README.md`: licenses the seed users through those acts.
+  - The earlier provisioning payload and `seed_data/license_facts.json` are deleted.
 
-**Layout (2026-10-28, after the platform items):** the prototype folder is gone.
-- `transformation_compilers/testbed/ledgers/<domain>/ledger.yaml` and `checks/` are the compiler's
-  test inputs; `scripts/derive_build.sh` writes `generated.json` into its scratch directory.
-- `transformation_compilers/doc/` holds `LEDGER_FORMAT_V0.md`, `BUILDING_BLOCKS.md` and
-  `ASSIMILATION_READINESS.md`.
-- Findings, briefs, owner answers, census profiles, plans, analysis and the census/compare tools
-  are in git history at `3859bec`, under `decision_authoring_prototype/`. Paths below that name
-  `decision_authoring_prototype/` refer to that history.
-- The COUNT correction is not in that history. It is recorded in `ASSIMILATION_READINESS.md` (5.1),
-  `BUILDING_BLOCKS.md` and this handoff.
+**`protocol_runtime`**
+- `testbed/pgc/test_step_outcome.py`: runs on the derived reclaim, with a license that licensing's
+  own acts provisioned. 8/8.
+
+**`.github`**
+- `process/retired_identities.yaml`: book's, blockchain's and ai_governance's deletions.
+- `process/regression.sh`:
+  - ai_governance licenses its seed user through four acts before governing an action;
+  - new steps `ai_governance_owner_decisions`, `catalog_owner_decisions` and
+    `blockchain_owner_decisions`.
+- `process/expectations.yaml`:
+  - supersession: 49 relations, 49 deleted;
+  - human block 588; mapping 191 fields; acceptance 298/298; implementation closure 35;
+  - derive fixed points: book 57, blockchain 44, ai_governance 59;
+  - the new execution steps.
+- `process/RUNBOOK.md`: the derive rows, the ai_governance commands and its suite rows.
+- `doc/SOTU.md`: this file.
 
 ### Build & test status
-- `regression.sh --all` (2026-10-28, working tree): **PASSED, 87/87 steps as expected.**
-  `derive_ai_governance` is RED BY DESIGN, as declared.
-- **Decision builds** (in that run):
-  - **book:** kept 23, superseded 18, new 16, retired 10. Construction is at 100% and emit is
-    accepted by construction's meaning check. The suites pass 23/23 and 27/27.
-  - **blockchain:** kept 13, superseded 9, new 22, retired 16. Construction is at 100%. The suites
-    pass 26/26, 6/6 and 12/12; the owner checks pass 9/9.
-  - **ai_governance:** construction is at 100%, but construction refuses the identities (see
-    open issues).
-- `tc phase derive meta`: PASSED. 3 of 9 doctrine rules cite an invariant.
-- `tc phase derive selftest`: 16/16 answers outside their shapes are refused.
+- `regression.sh --all` (2026-10-29, working tree): **PASSED, 93/93 steps as expected.**
+- Each domain's last ledger equals its test ledger. Re-deriving keeps every artifact: book 57,
+  blockchain 44, ai_governance 59.
+- Phase documents are 7/7 admissible for all three.
+- Owner decisions:
+  - book 8/8;
+  - blockchain 9/9;
+  - ai_governance 21/21, with routing closure 4/4.
 
 ### Open issues
-- **Commit gap:** see "Changes made". The user still has to commit the remaining
-  `transformation_compilers` files.
-- **ai_governance identities (readiness 2.5).** Construction refuses because three artifacts the
-  ledger no longer derives still name artifacts it replaces: `CC_RECORD_GOVERNED_ACTION_V0`,
-  `CC_RECORD_DENIED_ACTION_V0` and `RB_LICENSE_BINDINGS_V0`.
-  - `replaces` names operations only, and no answer can name a component.
-  - The design language's inventory has no retirement without a successor: REPLACE requires
-    `superseded by`.
-  - The fix is a design-language and construction change, made in its own dossier.
-- **Doctrine citations (readiness 2.4, partial):** order, storage, interface, reuse, own_values and
-  rules_held realize no platform invariant. They are stated with the standard text (3.3–3.6).
-- **Platform gaps, parked:**
-- **The composer:**
-  - `change_identity` is still fitted;
-  - the RB name is not carried, which is why `RB_LICENSE_BINDINGS_V0` is retired;
-  - ai_governance's entrance is renamed (`IN_AGENT_ACTION_REQUESTED_V0` → `IN_GOVERN_AGENT_ACTION_V0`);
-  - `request_identity` is formed and never recorded.
-- **The closed ledger** has no `open: true` and no cases.
-- **Readiness 4.4:** book's suites predate the method. That stays a stated limit.
-- **Defects in today's designs** (book, blockchain, ai_governance), parked as before, are in git
-  history.
+- **Delivering a domain reaches outside it.** cr_04 broke three platform tests that used
+  ai_governance's artifacts as fixtures: `protocol_runtime`'s `test_step_outcome`,
+  `semantic_change_design_test` and the e2e phase payloads. Delivery repoints only the domain's own
+  testbed and client. Fixtures outside the domain were repointed by hand.
+- **A refused release ends the reclaim at `EXIT_REJECTED`.** The earlier design ended it at
+  `EXIT_ACTIVE`. The behavior cr_02 decided holds: the license stays assigned and nothing is
+  announced. The ledger has no shape to route a refused release to `otherwise`.
+- **The blockchain web client was repointed by text replacement.** It was not opened in a browser.
+- **The prose in the blockchain and ai_governance ledgers was drafted from their briefs.** The
+  owner has not confirmed it.
+- **Book's cr_06 holds three corrections**, each named in its `delivery.md`.
+- **The construction mapping now tracks the corpus.** Fields no design of record writes, such as
+  input `default`, are not stated. A design that writes one must add its row back.
+- 3.6: the rule that a route change runs as its own dossier is enforced only by process.
+- 4.4: book's earlier suites predate the method.
 
 ### Architectural concerns
-- **Identity by meaning versions most workflows.** A derived design changes how operations are
-  composed, so book supersedes 18 and blockchain 9. Callers that dispatch by workflow identity
-  must follow `supersedes`. Today only the test harness does (`derive_suite.py`).
-- **The sealed documents live in the package**, not in a compiled artifact. Phase rule sets are
-  sealed into their workflows; the doctrine is not.
-- **`tc` now imports `transformation.decision` at start-up**, which pulls in `inspector` and
-  `jsonschema`. The decision compiler ships in `pgc-transformation`.
-- **The carried-surface rule** is still a prototype rule (readiness 3.5). Store matching is
-  heuristic, and RB names are not carried.
-- **The ledgers and checks stay in `decision_authoring_prototype/domains/`.** Behavior reaches the
-  domains only as numbered change requests (5.2).
+- Callers that dispatch by workflow identity must follow `supersedes`. Platform tests should not use
+  a business domain's artifacts as fixtures, or a domain's delivery must repoint them.
+- The sealed derive documents live in the package, not in a compiled artifact.
 
 ### Next session should start with
-Commit the rest of `transformation_compilers`, then confirm `tc phase derive --help` works from the
-committed tree:
-```
-cd transformation_compilers
-git add transformation/cli.py pyproject.toml scripts/derive_suite.py decision_authoring_prototype
-git commit -m "decision compiler: register tc decision, jsonschema dependency, suite harness, prototype moved"
-```
-**Priorities (the user, 2026-10-28):** after the normalization, fix platform defects and
-decision-related gaps first. Keep business-domain parking-lot items on hold unless the new compiler
-needs one to be assimilated fully and tested. In order:
-1. Platform: ~~retirement without a successor~~ **done**. The inventory action RETIRE is in
-   `VOCAB_DESIGN_REGISTER_TERMS_V0`, and P7 adds the rule `RETIRED_ARTIFACT_NOT_AUTHORABLE`
-   (revision 5, 284 rules).
-   - Construction measures `<retired because>` and accounts the references to and from a retired
-     artifact; its test data goes with it. It never deletes; delivery deletes and records.
-   - ai_governance now builds: kept 4, superseded 14, new 36, replaced 3, retired 20. The owner
-     checks hold 17/21 (21/21 after the count, below). `regression.sh --all` passes 87/87.
-   - ~~empty answer~~ **done**: `capability_transforms::CT_PURE_SELECT_RECORDS_V0` uses the
-     filter's criteria and answers `[]`, with 6 vectors including empty and malformed. It is in
-     `INVARIANT_CT_SURFACE_CLOSED_V0`, and the filter is kept. The composer uses it for every
-     `nothing_found: empty` and for child selection. Blockchain's owner checks pass 9/9; book's own
-     select is untouched (parking lot).
-   - ~~registry COUNT~~ **done, and a correction:** `CS_REGISTRY_V0` has declared COUNT since
-     v1.0.0; the earlier finding was wrong. The composer now composes a `count` check: registry
-     COUNT, then a rule against the cap read earlier. It is sound only where every operation
-     leaving the counted state releases the identity, which the composer checks. ai_governance's
-     owner checks pass 21/21.
-   - Platform items are done.
-2. **Decision gaps, done**, with the route renamed:
-   - **Rename.** It is the Design Compiler's derive route, not a third compiler: same outcome (a
-     design), and the same failure class. Package `transformation/design/derive/`, CLI
-     `tc phase derive check|meta|selftest|design|identities|splice|revise`, ledgers
-     `testbed/ledgers/`, build `scripts/derive_build.sh`, regression steps `derive_*`. The sealed
-     `$id`s are `transformation.design.derive.*` (doctrine rev 3, schema rev 3, catalog rev 4).
-   - **Carried names.** A part's RB and an operation's entrance (IN) keep the names the composition
-     gives them.
-   - **Derived values recorded.** A non-unique derived value (`request_identity`) is written with the
-     record; a unique one stays held by its registry.
-   - **`change_identity` generalized.** `on_identity_change` selects the parent claim, the children
-     moved and the release; book's output is byte-identical.
-   - **Open questions and cases** are in the closed ledger. An open question holds its operation
-     back from derivation, and the self-test is now 20/20.
-   - **Doctrine invariants.** There are six new `lifecycle::` invariants, under
-     `CONSTITUTION_CHANGE_MGMT_V0` with `applies_to: derived_design`. All 9 doctrine rules now cite
-     one, and `meta.closure` counts the doctrine as a realising rule set.
-   - Results: book 23/23 and 27/27; blockchain 26/26, 6/6, 12/12 and 9/9; ai_governance 21/21.
-     Construction is at 100% for all three. `regression.sh --all` passes 87/87.
-   - Next: readiness section 3 (governance and standard text) and 5.2 (delivering owner-decided
-     behavior as numbered change requests).
-2. Decision gaps: carry RB names, carry entrance names, record `request_identity`, generalize
-   `change_identity`, add `open`/cases to the closed ledger, and doctrine invariants (2.4).
-3. On hold: the parked defects in book, blockchain and ai_governance's today-designs, and the
-   owner rulings (tier names, reclaim "still active").
+1. Commit (the user's step):
+   ```
+   cd transformation_compilers && git add -A doc scripts testbed transformation && git commit -m "derive route: P0-P6 projected (3.4), delivery, fixed points across delivered replacements and new-act trails"
+   cd ../business_domains && git add -A book_library_mgmt blockchain ai_governance && git commit -m "book cr_06-cr_09, blockchain cr_08-cr_11 and ai_governance cr_04 delivered through the derive route"
+   cd ../protocol_runtime && git add testbed/pgc/test_step_outcome.py && git commit -m "step outcome test runs on the derived reclaim"
+   cd ../.github && git add doc/SOTU.md process && git commit -m "regression: owner decisions for three domains, derived domains at their fixed points"
+   ```
+2. The readiness document's remaining sections (3.6, 4.4), or the decision gaps the deliveries named.
+
+**Priorities (the user):** fix platform defects and decision gaps first. Keep business-domain
+parking-lot items on hold unless the new compiler needs one to be assimilated fully and tested.

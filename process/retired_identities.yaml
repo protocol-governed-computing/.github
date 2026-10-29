@@ -8,4 +8,512 @@
 # an entry also names each of them under `conditions_not_holding`.
 #
 # A genesis (`genesis.yaml`) starts the ledger empty: no identity before it is carried forward.
-retired: []
+retired:
+- identity: book_library_mgmt::CC_APPEND_CATALOG_OPERATION_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: the change's ledger no longer derives it; no retention condition is declared
+  change: book_library_mgmt/cr_dossiers/cr_06_catalog_derived
+- identity: book_library_mgmt::CC_ASSEMBLE_BOOK_DETAILS_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: the change's ledger no longer derives it; no retention condition is declared
+  change: book_library_mgmt/cr_dossiers/cr_06_catalog_derived
+- identity: book_library_mgmt::CC_CLAIM_BOOK_IDENTITY_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by CC_CLAIM_BOOK_IDENTITY_V1: the change''s ledger derives it with a changed
+    meaning; no retention condition is declared'
+  change: book_library_mgmt/cr_dossiers/cr_06_catalog_derived
+  superseded_by: book_library_mgmt::CC_CLAIM_BOOK_IDENTITY_V1
+- identity: book_library_mgmt::CC_CLAIM_COPY_BARCODE_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by CC_CLAIM_COPY_BARCODE_V1: the change''s ledger derives it with a changed
+    meaning; no retention condition is declared'
+  change: book_library_mgmt/cr_dossiers/cr_06_catalog_derived
+  superseded_by: book_library_mgmt::CC_CLAIM_COPY_BARCODE_V1
+- identity: book_library_mgmt::CC_CLAIM_WORK_IDENTITY_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by CC_CLAIM_WORK_IDENTITY_V1: the change''s ledger derives it with a changed
+    meaning; no retention condition is declared'
+  change: book_library_mgmt/cr_dossiers/cr_06_catalog_derived
+  superseded_by: book_library_mgmt::CC_CLAIM_WORK_IDENTITY_V1
+- identity: book_library_mgmt::CC_REGISTER_ADDITIONAL_EDITION_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: the change's ledger no longer derives it; no retention condition is declared
+  change: book_library_mgmt/cr_dossiers/cr_06_catalog_derived
+- identity: book_library_mgmt::CC_REGISTER_BOOK_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: the change's ledger no longer derives it; no retention condition is declared
+  change: book_library_mgmt/cr_dossiers/cr_06_catalog_derived
+- identity: book_library_mgmt::CC_REGISTER_PHYSICAL_COPY_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: the change's ledger no longer derives it; no retention condition is declared
+  change: book_library_mgmt/cr_dossiers/cr_06_catalog_derived
+- identity: book_library_mgmt::CC_REINSTATE_BOOK_RECORD_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: the change's ledger no longer derives it; no retention condition is declared
+  change: book_library_mgmt/cr_dossiers/cr_06_catalog_derived
+- identity: book_library_mgmt::CC_REINSTATE_PHYSICAL_COPY_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: the change's ledger no longer derives it; no retention condition is declared
+  change: book_library_mgmt/cr_dossiers/cr_06_catalog_derived
+- identity: book_library_mgmt::CC_RESOLVE_BOOK_IDENTITY_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by CC_RESOLVE_BOOK_IDENTITY_V1: the change''s ledger derives it with a changed
+    meaning; no retention condition is declared'
+  change: book_library_mgmt/cr_dossiers/cr_06_catalog_derived
+  superseded_by: book_library_mgmt::CC_RESOLVE_BOOK_IDENTITY_V1
+- identity: book_library_mgmt::CC_RESOLVE_WORK_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by CC_RESOLVE_WORK_V1: the change''s ledger derives it with a changed meaning;
+    no retention condition is declared'
+  change: book_library_mgmt/cr_dossiers/cr_06_catalog_derived
+  superseded_by: book_library_mgmt::CC_RESOLVE_WORK_V1
+- identity: book_library_mgmt::CC_RETIRE_BOOK_RECORD_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: the change's ledger no longer derives it; no retention condition is declared
+  change: book_library_mgmt/cr_dossiers/cr_06_catalog_derived
+- identity: book_library_mgmt::CC_RETIRE_PHYSICAL_COPY_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: the change's ledger no longer derives it; no retention condition is declared
+  change: book_library_mgmt/cr_dossiers/cr_06_catalog_derived
+- identity: book_library_mgmt::CC_SEARCH_CATALOG_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by CC_SEARCH_CATALOG_V1: the change''s ledger derives it with a changed meaning;
+    no retention condition is declared'
+  change: book_library_mgmt/cr_dossiers/cr_06_catalog_derived
+  superseded_by: book_library_mgmt::CC_SEARCH_CATALOG_V1
+- identity: book_library_mgmt::CC_UPDATE_BIBLIOGRAPHIC_INFORMATION_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by CC_UPDATE_BIBLIOGRAPHIC_INFORMATION_V1: the change''s ledger derives it
+    with a changed meaning; no retention condition is declared'
+  change: book_library_mgmt/cr_dossiers/cr_06_catalog_derived
+  superseded_by: book_library_mgmt::CC_UPDATE_BIBLIOGRAPHIC_INFORMATION_V1
+- identity: book_library_mgmt::CC_VALIDATE_BOOK_SUBMISSION_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: the change's ledger no longer derives it; no retention condition is declared
+  change: book_library_mgmt/cr_dossiers/cr_06_catalog_derived
+- identity: book_library_mgmt::EV_PHYSICAL_COPY_REGISTERED_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by EV_PHYSICAL_COPY_REGISTERED_V1: the change''s ledger derives it with a
+    changed meaning; no retention condition is declared'
+  change: book_library_mgmt/cr_dossiers/cr_06_catalog_derived
+  superseded_by: book_library_mgmt::EV_PHYSICAL_COPY_REGISTERED_V1
+- identity: book_library_mgmt::WF_REGISTER_ADDITIONAL_EDITION_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by WF_REGISTER_ADDITIONAL_EDITION_V1: the change''s ledger derives it with
+    a changed meaning; no retention condition is declared'
+  change: book_library_mgmt/cr_dossiers/cr_06_catalog_derived
+  superseded_by: book_library_mgmt::WF_REGISTER_ADDITIONAL_EDITION_V1
+- identity: book_library_mgmt::WF_REGISTER_BOOK_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by WF_REGISTER_BOOK_V1: the change''s ledger derives it with a changed meaning;
+    no retention condition is declared'
+  change: book_library_mgmt/cr_dossiers/cr_06_catalog_derived
+  superseded_by: book_library_mgmt::WF_REGISTER_BOOK_V1
+- identity: book_library_mgmt::WF_REGISTER_PHYSICAL_COPY_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by WF_REGISTER_PHYSICAL_COPY_V1: the change''s ledger derives it with a changed
+    meaning; no retention condition is declared'
+  change: book_library_mgmt/cr_dossiers/cr_06_catalog_derived
+  superseded_by: book_library_mgmt::WF_REGISTER_PHYSICAL_COPY_V1
+- identity: book_library_mgmt::WF_REINSTATE_BOOK_RECORD_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by WF_REINSTATE_BOOK_RECORD_V1: the change''s ledger derives it with a changed
+    meaning; no retention condition is declared'
+  change: book_library_mgmt/cr_dossiers/cr_06_catalog_derived
+  superseded_by: book_library_mgmt::WF_REINSTATE_BOOK_RECORD_V1
+- identity: book_library_mgmt::WF_REINSTATE_PHYSICAL_COPY_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by WF_REINSTATE_PHYSICAL_COPY_V1: the change''s ledger derives it with a
+    changed meaning; no retention condition is declared'
+  change: book_library_mgmt/cr_dossiers/cr_06_catalog_derived
+  superseded_by: book_library_mgmt::WF_REINSTATE_PHYSICAL_COPY_V1
+- identity: book_library_mgmt::WF_RETIRE_BOOK_RECORD_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by WF_RETIRE_BOOK_RECORD_V1: the change''s ledger derives it with a changed
+    meaning; no retention condition is declared'
+  change: book_library_mgmt/cr_dossiers/cr_06_catalog_derived
+  superseded_by: book_library_mgmt::WF_RETIRE_BOOK_RECORD_V1
+- identity: book_library_mgmt::WF_RETIRE_PHYSICAL_COPY_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by WF_RETIRE_PHYSICAL_COPY_V1: the change''s ledger derives it with a changed
+    meaning; no retention condition is declared'
+  change: book_library_mgmt/cr_dossiers/cr_06_catalog_derived
+  superseded_by: book_library_mgmt::WF_RETIRE_PHYSICAL_COPY_V1
+- identity: book_library_mgmt::WF_RETRIEVE_BOOK_DETAILS_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by WF_RETRIEVE_BOOK_DETAILS_V1: the change''s ledger derives it with a changed
+    meaning; no retention condition is declared'
+  change: book_library_mgmt/cr_dossiers/cr_06_catalog_derived
+  superseded_by: book_library_mgmt::WF_RETRIEVE_BOOK_DETAILS_V1
+- identity: book_library_mgmt::WF_SEARCH_CATALOG_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by WF_SEARCH_CATALOG_V1: the change''s ledger derives it with a changed meaning;
+    no retention condition is declared'
+  change: book_library_mgmt/cr_dossiers/cr_06_catalog_derived
+  superseded_by: book_library_mgmt::WF_SEARCH_CATALOG_V1
+- identity: book_library_mgmt::WF_UPDATE_BIBLIOGRAPHIC_INFORMATION_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by WF_UPDATE_BIBLIOGRAPHIC_INFORMATION_V1: the change''s ledger derives it
+    with a changed meaning; no retention condition is declared'
+  change: book_library_mgmt/cr_dossiers/cr_06_catalog_derived
+  superseded_by: book_library_mgmt::WF_UPDATE_BIBLIOGRAPHIC_INFORMATION_V1
+- identity: book_library_mgmt::CC_SEARCH_CATALOG_V1
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by CC_SEARCH_CATALOG_V2: the change''s ledger derives it with a changed meaning;
+    no retention condition is declared'
+  change: book_library_mgmt/cr_dossiers/cr_07_search_excludes_retired
+  superseded_by: book_library_mgmt::CC_SEARCH_CATALOG_V2
+- identity: book_library_mgmt::IN_SEARCH_CATALOG_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by IN_SEARCH_CATALOG_V1: the change''s ledger derives it with a changed meaning;
+    no retention condition is declared'
+  change: book_library_mgmt/cr_dossiers/cr_07_search_excludes_retired
+  superseded_by: book_library_mgmt::IN_SEARCH_CATALOG_V1
+- identity: book_library_mgmt::WF_SEARCH_CATALOG_V1
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by WF_SEARCH_CATALOG_V2: the change''s ledger derives it with a changed meaning;
+    no retention condition is declared'
+  change: book_library_mgmt/cr_dossiers/cr_07_search_excludes_retired
+  superseded_by: book_library_mgmt::WF_SEARCH_CATALOG_V2
+- identity: book_library_mgmt::CC_SEARCH_CATALOG_V2
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by CC_SEARCH_CATALOG_V3: the change''s ledger derives it with a changed meaning;
+    no retention condition is declared'
+  change: book_library_mgmt/cr_dossiers/cr_08_empty_search_answers_empty
+  superseded_by: book_library_mgmt::CC_SEARCH_CATALOG_V3
+- identity: book_library_mgmt::IN_SEARCH_CATALOG_V1
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by IN_SEARCH_CATALOG_V2: the change''s ledger derives it with a changed meaning;
+    no retention condition is declared'
+  change: book_library_mgmt/cr_dossiers/cr_08_empty_search_answers_empty
+  superseded_by: book_library_mgmt::IN_SEARCH_CATALOG_V2
+- identity: book_library_mgmt::WF_SEARCH_CATALOG_V2
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by WF_SEARCH_CATALOG_V3: the change''s ledger derives it with a changed meaning;
+    no retention condition is declared'
+  change: book_library_mgmt/cr_dossiers/cr_08_empty_search_answers_empty
+  superseded_by: book_library_mgmt::WF_SEARCH_CATALOG_V3
+- identity: book_library_mgmt::IN_REINSTATE_BOOK_RECORD_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by IN_REINSTATE_BOOK_RECORD_V1: the change''s ledger derives it with a changed
+    meaning; no retention condition is declared'
+  change: book_library_mgmt/cr_dossiers/cr_09_reinstatement_announces
+  superseded_by: book_library_mgmt::IN_REINSTATE_BOOK_RECORD_V1
+- identity: book_library_mgmt::IN_REINSTATE_PHYSICAL_COPY_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by IN_REINSTATE_PHYSICAL_COPY_V1: the change''s ledger derives it with a
+    changed meaning; no retention condition is declared'
+  change: book_library_mgmt/cr_dossiers/cr_09_reinstatement_announces
+  superseded_by: book_library_mgmt::IN_REINSTATE_PHYSICAL_COPY_V1
+- identity: book_library_mgmt::WF_REINSTATE_BOOK_RECORD_V1
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by WF_REINSTATE_BOOK_RECORD_V2: the change''s ledger derives it with a changed
+    meaning; no retention condition is declared'
+  change: book_library_mgmt/cr_dossiers/cr_09_reinstatement_announces
+  superseded_by: book_library_mgmt::WF_REINSTATE_BOOK_RECORD_V2
+- identity: book_library_mgmt::WF_REINSTATE_PHYSICAL_COPY_V1
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by WF_REINSTATE_PHYSICAL_COPY_V2: the change''s ledger derives it with a
+    changed meaning; no retention condition is declared'
+  change: book_library_mgmt/cr_dossiers/cr_09_reinstatement_announces
+  superseded_by: book_library_mgmt::WF_REINSTATE_PHYSICAL_COPY_V2
+- identity: blockchain::CC_APPEND_ACTOR_OCCURRENCE_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: the change's ledger no longer derives it; no retention condition is declared
+  change: blockchain/cr_dossiers/cr_08_derived_design
+- identity: blockchain::CC_APPEND_WALLET_OCCURRENCE_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: the change's ledger no longer derives it; no retention condition is declared
+  change: blockchain/cr_dossiers/cr_08_derived_design
+- identity: blockchain::CC_CLAIM_CONTACT_ADDRESS_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: the change's ledger no longer derives it; no retention condition is declared
+  change: blockchain/cr_dossiers/cr_08_derived_design
+- identity: blockchain::CC_CLAIM_WALLET_IDENTITY_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by CC_CLAIM_WALLET_IDENTITY_V1: the change''s ledger derives it with a changed
+    meaning; no retention condition is declared'
+  change: blockchain/cr_dossiers/cr_08_derived_design
+  superseded_by: blockchain::CC_CLAIM_WALLET_IDENTITY_V1
+- identity: blockchain::CC_CREATE_WALLET_RECORD_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: the change's ledger no longer derives it; no retention condition is declared
+  change: blockchain/cr_dossiers/cr_08_derived_design
+- identity: blockchain::CC_DETERMINE_WALLET_IDENTITY_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: the change's ledger no longer derives it; no retention condition is declared
+  change: blockchain/cr_dossiers/cr_08_derived_design
+- identity: blockchain::CC_ESTABLISH_WALLET_ADDRESS_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: the change's ledger no longer derives it; no retention condition is declared
+  change: blockchain/cr_dossiers/cr_08_derived_design
+- identity: blockchain::CC_RECORD_VERIFICATION_DECISION_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: the change's ledger no longer derives it; no retention condition is declared
+  change: blockchain/cr_dossiers/cr_08_derived_design
+- identity: blockchain::CC_REGISTER_ACTOR_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: the change's ledger no longer derives it; no retention condition is declared
+  change: blockchain/cr_dossiers/cr_08_derived_design
+- identity: blockchain::CC_REQUIRE_ACCEPTED_HOLDER_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: the change's ledger no longer derives it; no retention condition is declared
+  change: blockchain/cr_dossiers/cr_08_derived_design
+- identity: blockchain::CC_REQUIRE_REJECTION_GROUNDS_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: the change's ledger no longer derives it; no retention condition is declared
+  change: blockchain/cr_dossiers/cr_08_derived_design
+- identity: blockchain::CC_RESOLVE_ACTOR_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: the change's ledger no longer derives it; no retention condition is declared
+  change: blockchain/cr_dossiers/cr_08_derived_design
+- identity: blockchain::CC_VALIDATE_REGISTRATION_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: the change's ledger no longer derives it; no retention condition is declared
+  change: blockchain/cr_dossiers/cr_08_derived_design
+- identity: blockchain::EV_ACTOR_ACCEPTED_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by EV_ACTOR_ACCEPTED_V1: the change''s ledger derives it with a changed meaning;
+    no retention condition is declared'
+  change: blockchain/cr_dossiers/cr_08_derived_design
+  superseded_by: blockchain::EV_ACTOR_ACCEPTED_V1
+- identity: blockchain::RB_WALLET_BINDINGS_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by RB_WALLET_BINDINGS_V1: the change''s ledger derives it with a changed
+    meaning; no retention condition is declared'
+  change: blockchain/cr_dossiers/cr_08_derived_design
+  superseded_by: blockchain::RB_WALLET_BINDINGS_V1
+- identity: blockchain::STRUCTURE_WALLET_STORAGE_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by STRUCTURE_WALLET_STORAGE_V1: the change''s ledger derives it with a changed
+    meaning; no retention condition is declared'
+  change: blockchain/cr_dossiers/cr_08_derived_design
+  superseded_by: blockchain::STRUCTURE_WALLET_STORAGE_V1
+- identity: blockchain::VOCAB_WALLET_CLASSIFICATION_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by VOCAB_WALLET_CLASSIFICATION_V1: the change''s ledger derives it with a
+    changed meaning; no retention condition is declared'
+  change: blockchain/cr_dossiers/cr_08_derived_design
+  superseded_by: blockchain::VOCAB_WALLET_CLASSIFICATION_V1
+- identity: blockchain::WF_ACCEPT_ACTOR_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by WF_ACCEPT_ACTOR_V1: the change''s ledger derives it with a changed meaning;
+    no retention condition is declared'
+  change: blockchain/cr_dossiers/cr_08_derived_design
+  superseded_by: blockchain::WF_ACCEPT_ACTOR_V1
+- identity: blockchain::WF_CREATE_WALLET_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by WF_CREATE_WALLET_V1: the change''s ledger derives it with a changed meaning;
+    no retention condition is declared'
+  change: blockchain/cr_dossiers/cr_08_derived_design
+  superseded_by: blockchain::WF_CREATE_WALLET_V1
+- identity: blockchain::WF_REGISTER_ACTOR_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by WF_REGISTER_ACTOR_V1: the change''s ledger derives it with a changed meaning;
+    no retention condition is declared'
+  change: blockchain/cr_dossiers/cr_08_derived_design
+  superseded_by: blockchain::WF_REGISTER_ACTOR_V1
+- identity: blockchain::WF_REJECT_ACTOR_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by WF_REJECT_ACTOR_V1: the change''s ledger derives it with a changed meaning;
+    no retention condition is declared'
+  change: blockchain/cr_dossiers/cr_08_derived_design
+  superseded_by: blockchain::WF_REJECT_ACTOR_V1
+- identity: blockchain::WF_REGISTER_ACTOR_V1
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by WF_REGISTER_ACTOR_V2: the change''s ledger derives it with a changed meaning;
+    no retention condition is declared'
+  change: blockchain/cr_dossiers/cr_10_repeat_records_details
+  superseded_by: blockchain::WF_REGISTER_ACTOR_V2
+- identity: blockchain::WF_REGISTER_ACTOR_V2
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by WF_REGISTER_ACTOR_V3: the change''s ledger derives it with a changed meaning;
+    no retention condition is declared'
+  change: blockchain/cr_dossiers/cr_11_repeat_announces
+  superseded_by: blockchain::WF_REGISTER_ACTOR_V3
+- identity: ai_governance::AC_EMPLOYEE_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by AC_EMPLOYEE_V1: the change''s ledger derives it with a changed meaning;
+    no retention condition is declared'
+  change: ai_governance/cr_dossiers/cr_04_derived_design
+  superseded_by: ai_governance::AC_EMPLOYEE_V1
+- identity: ai_governance::AC_ENTERPRISE_RUNTIME_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: the change's ledger no longer derives it; no retention condition is declared
+  change: ai_governance/cr_dossiers/cr_04_derived_design
+- identity: ai_governance::AC_SYSTEM_GOVERNOR_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: the change's ledger no longer derives it; no retention condition is declared
+  change: ai_governance/cr_dossiers/cr_04_derived_design
+- identity: ai_governance::CC_APPEND_AUDIT_EVENT_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: the change's ledger no longer derives it; no retention condition is declared
+  change: ai_governance/cr_dossiers/cr_04_derived_design
+- identity: ai_governance::CC_BIND_LICENSE_TO_TOOL_SURFACE_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: the change's ledger no longer derives it; no retention condition is declared
+  change: ai_governance/cr_dossiers/cr_04_derived_design
+- identity: ai_governance::CC_CHECK_TOOL_DECLARED_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: the change's ledger no longer derives it; no retention condition is declared
+  change: ai_governance/cr_dossiers/cr_04_derived_design
+- identity: ai_governance::CC_NORMALIZE_AGENT_REQUEST_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: the change's ledger no longer derives it; no retention condition is declared
+  change: ai_governance/cr_dossiers/cr_04_derived_design
+- identity: ai_governance::CC_PROVISION_LICENSE_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: the change's ledger no longer derives it; no retention condition is declared
+  change: ai_governance/cr_dossiers/cr_04_derived_design
+- identity: ai_governance::CC_RECLAIM_UNUSED_LICENSE_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: the change's ledger no longer derives it; no retention condition is declared
+  change: ai_governance/cr_dossiers/cr_04_derived_design
+- identity: ai_governance::CC_RECORD_DENIED_ACTION_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: the change's ledger no longer derives it; no retention condition is declared
+  change: ai_governance/cr_dossiers/cr_04_derived_design
+- identity: ai_governance::CC_RECORD_GOVERNED_ACTION_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: the change's ledger no longer derives it; no retention condition is declared
+  change: ai_governance/cr_dossiers/cr_04_derived_design
+- identity: ai_governance::CC_RESOLVE_LICENSE_TIER_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: the change's ledger no longer derives it; no retention condition is declared
+  change: ai_governance/cr_dossiers/cr_04_derived_design
+- identity: ai_governance::CC_VALIDATE_ELIGIBILITY_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: the change's ledger no longer derives it; no retention condition is declared
+  change: ai_governance/cr_dossiers/cr_04_derived_design
+- identity: ai_governance::CC_VALIDATE_TOOL_PARAMETERS_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: the change's ledger no longer derives it; no retention condition is declared
+  change: ai_governance/cr_dossiers/cr_04_derived_design
+- identity: ai_governance::CT_PURE_CHECK_QUOTA_AVAILABLE_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: the change's ledger no longer derives it; no retention condition is declared
+  change: ai_governance/cr_dossiers/cr_04_derived_design
+- identity: ai_governance::CT_PURE_CHECK_TRAINING_STATUS_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: the change's ledger no longer derives it; no retention condition is declared
+  change: ai_governance/cr_dossiers/cr_04_derived_design
+- identity: ai_governance::EV_AGENT_ACTION_AUTHORIZED_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by EV_AGENT_ACTION_AUTHORIZED_V1: the change''s ledger derives it with a
+    changed meaning; no retention condition is declared'
+  change: ai_governance/cr_dossiers/cr_04_derived_design
+  superseded_by: ai_governance::EV_AGENT_ACTION_AUTHORIZED_V1
+- identity: ai_governance::EV_AGENT_ACTION_DENIED_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by EV_AGENT_ACTION_DENIED_V1: the change''s ledger derives it with a changed
+    meaning; no retention condition is declared'
+  change: ai_governance/cr_dossiers/cr_04_derived_design
+  superseded_by: ai_governance::EV_AGENT_ACTION_DENIED_V1
+- identity: ai_governance::EV_LICENSE_CAP_SET_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by EV_LICENSE_CAP_SET_V1: the change''s ledger derives it with a changed
+    meaning; no retention condition is declared'
+  change: ai_governance/cr_dossiers/cr_04_derived_design
+  superseded_by: ai_governance::EV_LICENSE_CAP_SET_V1
+- identity: ai_governance::EV_LICENSE_PROVISIONED_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by EV_LICENSE_PROVISIONED_V1: the change''s ledger derives it with a changed
+    meaning; no retention condition is declared'
+  change: ai_governance/cr_dossiers/cr_04_derived_design
+  superseded_by: ai_governance::EV_LICENSE_PROVISIONED_V1
+- identity: ai_governance::EV_LICENSE_REVOKED_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by EV_LICENSE_REVOKED_V1: the change''s ledger derives it with a changed
+    meaning; no retention condition is declared'
+  change: ai_governance/cr_dossiers/cr_04_derived_design
+  superseded_by: ai_governance::EV_LICENSE_REVOKED_V1
+- identity: ai_governance::EV_PROVISION_DENIED_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by EV_PROVISION_DENIED_V1: the change''s ledger derives it with a changed
+    meaning; no retention condition is declared'
+  change: ai_governance/cr_dossiers/cr_04_derived_design
+  superseded_by: ai_governance::EV_PROVISION_DENIED_V1
+- identity: ai_governance::EV_TRAINING_COMPLETED_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by EV_TRAINING_COMPLETED_V1: the change''s ledger derives it with a changed
+    meaning; no retention condition is declared'
+  change: ai_governance/cr_dossiers/cr_04_derived_design
+  superseded_by: ai_governance::EV_TRAINING_COMPLETED_V1
+- identity: ai_governance::EV_USAGE_RECORDED_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by EV_USAGE_RECORDED_V1: the change''s ledger derives it with a changed meaning;
+    no retention condition is declared'
+  change: ai_governance/cr_dossiers/cr_04_derived_design
+  superseded_by: ai_governance::EV_USAGE_RECORDED_V1
+- identity: ai_governance::IN_AGENT_ACTION_REQUESTED_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by IN_AGENT_ACTION_REQUESTED_V1: the change''s ledger derives it with a changed
+    meaning; no retention condition is declared'
+  change: ai_governance/cr_dossiers/cr_04_derived_design
+  superseded_by: ai_governance::IN_AGENT_ACTION_REQUESTED_V1
+- identity: ai_governance::IN_DENY_PROVISION_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: the change's ledger no longer derives it; no retention condition is declared
+  change: ai_governance/cr_dossiers/cr_04_derived_design
+- identity: ai_governance::IN_PROVISION_AI_LICENSE_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'replaced by IN_PROVISION_LICENSE_V0: the change''s ledger says it takes its place; no
+    retention condition is declared'
+  change: ai_governance/cr_dossiers/cr_04_derived_design
+  superseded_by: ai_governance::IN_PROVISION_LICENSE_V0
+- identity: ai_governance::IN_RECLAIM_LICENSE_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by IN_RECLAIM_LICENSE_V1: the change''s ledger derives it with a changed
+    meaning; no retention condition is declared'
+  change: ai_governance/cr_dossiers/cr_04_derived_design
+  superseded_by: ai_governance::IN_RECLAIM_LICENSE_V1
+- identity: ai_governance::RB_AGENT_GOVERNANCE_BINDINGS_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by RB_AGENT_GOVERNANCE_BINDINGS_V1: the change''s ledger derives it with
+    a changed meaning; no retention condition is declared'
+  change: ai_governance/cr_dossiers/cr_04_derived_design
+  superseded_by: ai_governance::RB_AGENT_GOVERNANCE_BINDINGS_V1
+- identity: ai_governance::RB_LICENSE_BINDINGS_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by RB_LICENSE_BINDINGS_V1: the change''s ledger derives it with a changed
+    meaning; no retention condition is declared'
+  change: ai_governance/cr_dossiers/cr_04_derived_design
+  superseded_by: ai_governance::RB_LICENSE_BINDINGS_V1
+- identity: ai_governance::STRUCTURE_AGENT_GOVERNANCE_STORAGE_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by STRUCTURE_AGENT_GOVERNANCE_STORAGE_V1: the change''s ledger derives it
+    with a changed meaning; no retention condition is declared'
+  change: ai_governance/cr_dossiers/cr_04_derived_design
+  superseded_by: ai_governance::STRUCTURE_AGENT_GOVERNANCE_STORAGE_V1
+- identity: ai_governance::STRUCTURE_AI_LICENSING_STORAGE_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by STRUCTURE_AI_LICENSING_STORAGE_V1: the change''s ledger derives it with
+    a changed meaning; no retention condition is declared'
+  change: ai_governance/cr_dossiers/cr_04_derived_design
+  superseded_by: ai_governance::STRUCTURE_AI_LICENSING_STORAGE_V1
+- identity: ai_governance::VOCAB_AI_LICENSING_STATES_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: the change's ledger no longer derives it; no retention condition is declared
+  change: ai_governance/cr_dossiers/cr_04_derived_design
+- identity: ai_governance::WF_AUTO_RECLAIM_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'replaced by WF_RECLAIM_LICENSE_V0: the change''s ledger says it takes its place; no
+    retention condition is declared'
+  change: ai_governance/cr_dossiers/cr_04_derived_design
+  superseded_by: ai_governance::WF_RECLAIM_LICENSE_V0
+- identity: ai_governance::WF_DENY_PROVISION_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: the change's ledger no longer derives it; no retention condition is declared
+  change: ai_governance/cr_dossiers/cr_04_derived_design
+- identity: ai_governance::WF_GOVERN_AGENT_ACTION_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'superseded by WF_GOVERN_AGENT_ACTION_V1: the change''s ledger derives it with a changed
+    meaning; no retention condition is declared'
+  change: ai_governance/cr_dossiers/cr_04_derived_design
+  superseded_by: ai_governance::WF_GOVERN_AGENT_ACTION_V1
+- identity: ai_governance::WF_PROVISION_AI_LICENSING_V0
+  decided_by: the domain owner, through the change's ledger
+  determination: 'replaced by WF_PROVISION_LICENSE_V0: the change''s ledger says it takes its place; no
+    retention condition is declared'
+  change: ai_governance/cr_dossiers/cr_04_derived_design
+  superseded_by: ai_governance::WF_PROVISION_LICENSE_V0
