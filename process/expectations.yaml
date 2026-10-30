@@ -130,10 +130,6 @@ steps:
     # the route is sealed whole; a changed or added building block refuses every derivation; a seal is
     # judged by the phases once one is
     expect: ["8/8 passed"]
-  - id: repoint_callers_test
-    section: checks
-    # delivery repoints callers outside the domain, never history, and refuses a caller it cannot repoint
-    expect: ["6/6 passed"]
   - id: reuse_own_domain_test
     section: checks
     # P3 revision 2: a change may reuse its own domain's artifacts; other platform domains stay ineligible

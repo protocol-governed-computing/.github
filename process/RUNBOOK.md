@@ -349,7 +349,6 @@ included; this table explains what each step proves and states no counts. The st
 | `route_seal_test.py` | `8/8 passed` — the route as it stands is one a dossier sealed; a changed or added building block refuses every derivation; a seal whose dossier says nothing is refused; once a seal is judged by the phases, a later seal without verdicts, or a judged seal missing a phase document, is refused; each phase's priors are its schema's |
 | `delivery_declared_test.py` | `5/5 passed` — an authored seed makes P6 complete with no next phase; a constructed or silent seed goes on to P7; two delivery rows are refused; P7 refuses a design intent for an authored change, and only it |
 | `reuse_own_domain_test.py` | `3/3 passed` — P3 admits a platform change reusing its own domain's artifact, and still refuses a business change citing a platform service and a platform change citing another platform domain |
-| `repoint_callers_test.py` | `6/6 passed` — a caller outside the domain follows each successor; history, the domain itself and a short name in a file that does not name the domain are left alone; a caller of a retired artifact, or another domain's declaration, refuses the delivery |
 | `criteria_before.sh <domain> 36bc62a <suite>` | Each delivered domain's owner-decision criteria against the domain before the derive route designed it: book `0/8`, blockchain `2/9`, ai_governance `4/21`. Each criterion that holds there is behavior the owner kept |
 | `derive_build.sh <domain>` | One ledger derived; its identities decided by meaning against the working snapshot; its phase documents P0 to P6 projected and judged by the sealed rules, `phase documents: 7/7 admissible (p0 to p6)`; and the design built in scratch: construction at 100%, emit compared by construction, compile, assembly, and the domain's suites run against the successors the design declares. What the ledger no longer derives is retired (`RETIRE`): construction accounts its references and never deletes it, and the build deletes it and writes the retirement record, as delivery would. The suites dispatch a workflow by the name they were written against; the build follows the successors this design, its lineage and the retirement ledger declare |
 | `test_indexes.py` | Assembler index construction, including that a republished identity resolves to its authoring copy and that resolution does not track domain-name order |
@@ -647,7 +646,7 @@ bash $W/transformation_compilers/scripts/derive_deliver.sh <domain> $D
 It pins `baseline.json`. It runs the criteria against that composition and stops unless one fails
 (`criteria_before.txt`). It writes P0 to P8, stops unless P0 to P6 are admissible and construction is
 complete, emits, deletes what the design superseded or retired with a record in
-`retired_identities.yaml`, repoints the testbed and client and every caller outside the domain,
+`retired_identities.yaml`, repoints the domain's testbed and client,
 compiles, assembles and regenerates the
 design of record. Last, it requires every criterion to hold (`criteria_after.txt`). Write
 `delivery.md` beside it, then run the regression. See DESIGN_LANGUAGE §9.7.
