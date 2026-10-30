@@ -35,7 +35,7 @@ in `.github` only:
   `transformation_compilers`.
 
 ### Build & Test Status
-- `regression.sh --all` (2026-10-29, working tree): REGRESSION_RESULT
+- `regression.sh --all` (2026-10-29, working tree): **PASSED, 99/99 steps as expected.**
 - `release.sh --check` (run earlier this session, before the doc edits): PREFLIGHT PASSED.
   - All 10 repos are on `dev/19`, with no tag collisions.
   - A clean rebuild and composition conformance passed (603 artifacts).
