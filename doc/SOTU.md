@@ -2,80 +2,81 @@
 
 Only the current handoff is kept here. Earlier handoffs are in git history: `git log -p -- doc/SOTU.md`.
 
-## SOTU Handoff — 2026-10-29 · The derive route is frozen; caller repointing is removed
+## SOTU Handoff — 2026-10-29 · Route frozen, docs cleaned; dev/19 is cut-ready
 
-### Why
-Caller repointing had never run on a real delivery. Replaying it in scratch over the nine
-owner-decided deliveries of 2026-10-29 showed it was wrong. The replay used the workspace as it
-stood before them, each change's real map from the retirement ledger, and the fix made by hand as
-the oracle.
-- **It would have refused 3 of 9 real deliveries.** Book cr_06 had 40 callers, blockchain cr_08 had
-  4 and ai_governance cr_04 had 32.
-- **Most of the refusals were false.**
-  - The flagged files are pinned to an older composition: the catalog fixtures `cr_01`–`cr_05` with
-    their own `baseline.json`, and the corpus and payloads judged against the frozen baseline. They
-    are history.
-  - Two platform declarations name blockchain workflows in prose, as illustrations.
-- **`apply` would have rewritten pinned fixtures** to successors their pin does not hold.
-- **One refusal was right:** `semantic_change_design_test.py` named a retired ai_governance artifact.
-- Root cause: a caller was "any file naming the artifact", where it should be "a file judged against
-  the live composition".
+### Changes Made
+Work is on `dev/19`. The session's work is committed in `transformation_compilers` `59902f3`,
+`software_governance` `5aaee8c`, `protocol_runtime` `2e494d7` and `.github` `8c88fbc`. Uncommitted
+in `.github` only:
+- `external_validation_nova/` (59 files) — deleted. The study is closed; the standard's revisions cite
+  its results, and published tags keep it.
+- `doc/PLAN_TYPED_REFERENCES_GENESIS.md` — deleted; the plan is done.
+- `doc/FINDINGS_DESIGN_REDUNDANCY.md` — deleted; shelved, and the result is in memory.
+- `process/RUNBOOK.md` — the row naming the missing `test_trace_path.py` now names only
+  `test_node_keyed_routing.py`.
+- `profile/README.md` — the public link to the standard's revisions now points to
+  `standards/blob/main/revisions.md`.
+- `doc/SOTU.md` — this file.
 
-The route had grown its own lifecycle: seals, judging its changes, where a change ends, repointing.
-The user chose to freeze it rather than retire it. Freezing is reversible, keeps the eleven
-delivered changes re-derivable, and stops the growth. `repoint_callers` was the one part both
-defective and unused, so it is removed.
+**What the session delivered, all committed:**
+- **P3 revision 2:** a change may reuse its own domain's artifacts (`own_domain`).
+- **The complete-at-P6 ruling** is in `lifecycle::CONSTITUTION_CHANGE_MGMT_V0`, under the dossier
+  `software_governance/dossiers/complete_at_governance_intent/`.
+- **The seed declares delivery** (P0 revision 2, optional register).
+  - An authored change ends at P6, and its verdict reads `Complete at P6`.
+  - P7 revision 6 refuses it (`AUTHORED_CHANGE_HAS_DESIGN`), realising
+    `lifecycle::INVARIANT_AUTHORED_CHANGE_HAS_NO_DESIGN_V0`.
+  - The design language honours a register schema's `required` list.
+- **The derive route is frozen:** defect fixes only.
+  - `repoint_callers` is removed. A replay over the nine real deliveries showed it would have refused
+    3 of 9 on false positives, and rewritten pinned fixtures.
+  - Callers outside a domain are repointed by hand.
+- **Broken doc references fixed** in `software_governance`, `protocol_runtime` and
+  `transformation_compilers`.
 
-### Changes made
-Work is on `dev/19`. The last commits are `transformation_compilers` `e6996da` and `.github`
-`1b58fb4`.
+### Build & Test Status
+- `regression.sh --all` (2026-10-29, working tree): REGRESSION_RESULT
+- `release.sh --check` (run earlier this session, before the doc edits): PREFLIGHT PASSED.
+  - All 10 repos are on `dev/19`, with no tag collisions.
+  - A clean rebuild and composition conformance passed (603 artifacts).
 
-**`transformation_compilers`**
-- Deleted `scripts/repoint_callers.py` and `scripts/testbed/repoint_callers_test.py`.
-- `scripts/derive_deliver.sh` and `scripts/derive_build.sh`: the check and apply steps are gone. A
-  note says callers outside the domain are repointed by hand, and a pinned file is history.
-- `doc/DESIGN_LANGUAGE.md`:
-  - §9: the route is frozen, defect fixes only;
-  - §9.7: callers are repointed by hand, and the regression names any stale one;
-  - §8: an absent register is a finding unless the schema does not require it. This corrects the
-    previous sweep.
-- `doc/ASSIMILATION_READINESS.md` and `CLAUDE.md`: the freeze, and when the route would be retired.
-- The route seal covers only `transformation/design/derive/`, so nothing was resealed.
-  `route_unsealed()` is None.
+### Open Issues
+- **Kept pending the user's call:**
+  - `.github/doc/AGENT_ARCHITECTURE_COMPARISON.md`, `BEHAVIOR_OUTSIDE_SNAPSHOT.md` and
+    `DOMAIN_BEHAVIOR_OUTSIDE_SNAPSHOT.md` (keep if the Inversion paper v2 is live);
+  - `.github/doc/DECISION_ACCOUNTING_DESIGN.md`;
+  - `business_domains/causal_language_model/doc/cr_sequence.md`.
+- **The derive route's future:** keep it frozen while work through a ledger (decision accounting) is on
+  the roadmap; otherwise retire it and keep the delivered changes (`transformation_compilers/CLAUDE.md`,
+  "The derive route is frozen").
+- **Parked while the route is frozen:**
+  - the seal requiring `AUTHORED`;
+  - mandatory `delivery`, which would need a `REGISTER_SCHEMA_P0_V1`;
+  - derived seeds declaring `CONSTRUCTED`.
+- **Before any publish, not a cut:**
+  - **the frozen e2e baseline needs `business_domains` `36bc62a`.** A fresh clone of the published
+    `main` lacks it (`transformation_compilers/scripts/testbed/e2e_phases_test.py:796`). Vendor the
+    frozen sources first.
+  - the blockchain web client has not been opened in a browser since its repointing;
+  - the ledger prose in blockchain and ai_governance is not owner-confirmed.
+- **Gaps in rules that nothing enforces**, none with current exposure:
+  - overlapping in-flight dossiers (`transformation_compilers/CLAUDE.md:372`);
+  - validation criteria drawn from P0 on the authored path (`CLAUDE.md:271`);
+  - governing generation (`.github/process/rulings.md:53`).
 
-**`.github`**
-- `process/regression.sh`, `expectations.yaml` and `RUNBOOK.md`: `repoint_callers_test` removed;
-  the delivery paragraph says the domain's testbed and client are repointed.
-- `doc/SOTU.md`: this file.
+### Architectural Concerns
+- **"Caller" is not defined anywhere.** It should mean a file judged against the live composition;
+  files judged against a pin are history. Only a failing regression enforces this today.
+- **Optional registers are now a language feature.** Keep it for declarations whose absence has a
+  stated meaning, as `delivery` has: "judged as before".
+- **The constitution was edited in place on V0**, prose and one rule line. This follows the precedent
+  of `8801cc8`.
 
-### Build & test status
-- `regression.sh --all` (2026-10-29, working tree): **PASSED, 99/99 steps as expected** (one test removed).
-- The replay harness is in the session scratchpad and is not in any repository.
-
-### Open issues
-- **Parked on dev/19, and off for good while the route is frozen:** the seal requiring `AUTHORED`,
-  mandatory `delivery` (a P0_V1 `$id`), and derived seeds declaring `CONSTRUCTED`. Each changes a
-  record's wording, not an outcome.
-- **Decide whether the route stays.** It stays while owner work through a ledger, such as decision
-  accounting, is on the roadmap. If none is, retire it: remove `derive/`, the decision compiler, the
-  derive scripts, the seals and the testbed ledgers, and record the six doctrine invariants' retirement
-  under a governance dossier. The delivered changes stay as history either way.
-- **The frozen corpus pin** `36bc62a` must survive any squash or published cut.
-- **The blockchain web client was not opened in a browser** after its repointing.
-- **The prose in the blockchain and ai_governance ledgers is not owner-confirmed.**
-
-### Architectural concerns
-- What a "caller" is should be stated once: a file judged against the live composition. Files judged
-  against a pin are history. The regression enforces this today by failing. Nothing states it as a
-  rule.
-
-### Next session should start with
-1. Commit (the user's step):
-   ```
-   cd transformation_compilers && git add -A scripts doc CLAUDE.md && git commit -m "derive route frozen; caller repointing removed after a replay over real deliveries showed false refusals"
-   cd ../.github && git add doc/SOTU.md process && git commit -m "regression: caller repointing removed; route frozen"
-   ```
-2. Next: decide the route's future against the roadmap, or take the next platform defect.
+### Next Session Should Start With
+1. Commit `.github`:
+   `cd .github && git add -A doc external_validation_nova process profile && git commit -m "docs cleanup: NOVA study, done plan and shelved finding removed; broken references fixed"`
+2. Decide the kept docs and the derive route's future against the roadmap. The code needs no work
+   before a cut (`bash .github/process/release.sh`, local only).
 
 **Priorities (the user):** fix platform defects and decision gaps first. Keep business-domain
 parking-lot items on hold unless the new compiler needs one to be assimilated fully and tested.

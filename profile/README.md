@@ -241,5 +241,5 @@ implementation demonstrates it.
 
 *A revision of the standard is **declared, not inferred** — proposed against a named predecessor,
 stating what it changes and what that invalidates. Every declared change is recorded in
-[`doc/revisions.md`](https://github.com/protocol-governed-computing/standards/blob/main/doc/revisions.md),
+[`revisions.md`](https://github.com/protocol-governed-computing/standards/blob/main/revisions.md),
 including the findings considered and declined.*
