@@ -127,16 +127,21 @@ steps:
     expect: ["book_library_mgmt: admitted", "blockchain: admitted", "ai_governance: admitted"]
   - id: route_seal_test
     section: checks
-    # the route is sealed whole; a changed or added building block refuses every derivation
-    expect: ["5/5 passed"]
+    # the route is sealed whole; a changed or added building block refuses every derivation; a seal is
+    # judged by the phases once one is
+    expect: ["8/8 passed"]
   - id: repoint_callers_test
     section: checks
     # delivery repoints callers outside the domain, never history, and refuses a caller it cannot repoint
     expect: ["6/6 passed"]
+  - id: reuse_own_domain_test
+    section: checks
+    # P3 revision 2: a change may reuse its own domain's artifacts; other platform domains stay ineligible
+    expect: ["3/3 passed"]
   - id: derive_meta
     section: checks
     # the route as it stands is the one a dossier sealed (readiness 3.6)
-    expect: ["doctrine: 9/9 rules cite an invariant", "route: sealed by dossiers/replaces_spent_across_versions", "DERIVE META PASSED"]
+    expect: ["doctrine: 9/9 rules cite an invariant", "route: sealed by dossiers/route_change_judged_by_phases", "DERIVE META PASSED"]
   - id: derive_selftest
     section: checks
     expect: ["25/25 answers outside their shapes refused"]

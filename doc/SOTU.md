@@ -2,88 +2,75 @@
 
 Only the current handoff is kept here. Earlier handoffs are in git history: `git log -p -- doc/SOTU.md`.
 
-## SOTU Handoff — 2026-10-29 · Platform tests no longer depend on a live business domain
+## SOTU Handoff — 2026-10-29 · A platform change may reuse its own domain's artifacts (P3 revision 2)
 
 ### Changes made
 Work is on `dev/19`. The last commits are `transformation_compilers` `1e35c7d`, `protocol_runtime`
-`2d2b14f`, `protocol_compiler` `8be7322` and `.github` `22cd9e0`. Everything below is uncommitted.
+`2d2b14f`, `protocol_compiler` `72caf69` and `.github` `958d05e`.
 
-**`protocol_runtime`**
-- `testbed/pgc/test_step_outcome.py`: runs on the Collatz workload instead of ai_governance's
-  reclaim. 8/8.
-  - The cases are an admission, transform steps, and a `CS_MUTABLE_JSON_V0` write whose answer is
-    replaced for one run.
-  - A termination check that will not load, or that breaks, is a fault and is never routed as a
-    verdict.
-  - The platform's own `CT_PURE_REQUIRE_TRUE_V0` refuses a sequence that did not terminate, and the
-    run routes to `EXIT_CONJECTURE_VIOLATED`.
+**Uncommitted from the two previous sweeps**
+- `transformation_compilers`, staged: platform fixtures off business domains (the corpus restored,
+  the frozen e2e baseline, the design test on the workload, construction acceptance skipping run
+  output).
+- `transformation_compilers`, unstaged: a route change judged by the phases (`seal.py`, `cli.py`,
+  `route_seals.yaml`, `route_seal_test.py`, `dossiers/route_change_judged_by_phases/`, the 3.6
+  readiness row, DESIGN_LANGUAGE §9.5).
+- `protocol_runtime`: `testbed/pgc/test_step_outcome.py` on the Collatz workload.
 
-**`protocol_compiler`**
-- `scripts/testbed/test_platform_vectors.py`: the domain compiled against the platform is the
-  Collatz workload. It carries `CT_PURE_REQUIRE_TRUE_V0` and `CS_MUTABLE_JSON_V0` from the surface.
-  3/3.
+**This sweep**
 
 **`transformation_compilers`**
-- `scripts/testbed/semantic_change_design_test.py`: its fixtures are the workload's artifacts:
-  - `CC_STORE_RESULTS_V0` and `WF_COLLATZ_CONJECTURE_V0` for referrer accounting;
-  - `CT_PURE_COLLATZ_STEP_V0` and `CC_COMPUTE_SEQUENCES_V0` for the transform and its contract.
-
-  24/24.
-- **The phase corpus is frozen on its neighbour (your choice).** The corpus cites a neighbouring
-  domain's artifacts as business reuse candidates, and Collatz is `reuse_visibility: internal`.
-  - `scripts/testbed/e2e_phases_test.py`: `design_baseline()` builds ai_governance from
-    `business_domains` `36bc62a`, the revision CR-1 was designed against. The build comes from git
-    into `traces/design_baseline_sources/`, with its own transforms on the import path, and the
-    live domain is no longer a source root.
-  - `scripts/testbed/corpus_p2`, `corpus_p3`, `corpus_p7`, `fixtures/catalog` and
-    `testbed/phases/test_payloads`: restored to their content at `8fb030b`. That undoes cr_04's
-    repointing, so the corpus cites ai_governance's artifacts as they were, and its prose is true
-    again.
-  - Case 84 expects three unbound inputs again.
-  - `build_fixtures.py` and `build_payloads.py --check` reproduce the corpus with no diff.
-  - `differential`, `effectivity_test` and `projection_test` pass.
-
-- `scripts/testbed/construction_acceptance.py`: does not read the workspace root's run output
-  (`data/`, `traces/`). It reported the frozen copy's design of record as uncovered.
+- `registry/schema/REGISTER_SCHEMA_P3_V0.json`: the `reuse_eligible` rule declares
+  `own_domain: true`. `tc phase revise p3` recorded **revision 2**: the change's own domain is
+  eligible. It widens the rule and refuses nothing it admitted.
+- `transformation/design/evaluate/constructs.py` (`_reuse_candidate_eligible`): with `own_domain`, a
+  candidate from the change's own domain is eligible, whatever plane the domain serves.
+- `registry/design/workflows/WF_P3_ANALYSIS_LOOP_ADMISSIBILITY_V0.md`: resealed in place by
+  `tc phase emit`. Transformation recompiled; the snapshot reassembled (602 artifacts).
+- `design/p7_design_intent_transformation_baseline.md`: the design of record carries `own_domain`.
+- `scripts/testbed/reuse_own_domain_test.py` (new, 3/3), on the route dossier's P3 with one REUSE row:
+  - a transformation change reusing `transformation::WF_P0_SEED_ADMISSIBILITY_V0` is admitted;
+  - the same row in a `book_library_mgmt` change is refused (`REUSE_CANDIDATE_NOT_ELIGIBLE`);
+  - a transformation change reusing `inspection::TE_SI_ARTIFACT_LIST_V0` is refused.
+- `doc/DESIGN_LANGUAGE.md`: the `reuse_eligible` row names `own_domain`.
 
 **`.github`**
-- `process/implementation_closure.py`: does not read the workspace root's run output. It reported
-  the frozen copy's two retired transforms as absent.
-- `process/RUNBOOK.md`: the design baseline's sources, and `test_step_outcome.py` on the workload.
+- `process/regression.sh`: runs `reuse_own_domain_test` after `repoint_callers_test`.
+- `process/expectations.yaml`: `reuse_own_domain_test` expects 3/3.
+- `process/RUNBOOK.md`: a row for the new test.
 - `doc/SOTU.md`: this file.
 
 ### Build & test status
-- `regression.sh --all` (2026-10-29, working tree): **PASSED, 98/98 steps as expected.**
-- No platform test or fixture now reads a live business domain. The corpus reads ai_governance
-  frozen at a revision, and the regression's own business steps run the domains by design.
+- `regression.sh --all` (2026-10-29, working tree): **PASSED, 99/99 steps as expected.**
 
 ### Open issues
-- **The frozen neighbour is rebuilt on every regression run,** because `traces/` is cleared. The
-  rebuild is one compile.
+- **The rule change has no dossier.** It follows the precedent of P7 revisions 4 and 5: a rule-set
+  revision is recorded by `tc phase revise`, not designed through P0–P6.
+- **The route dossier's P3 stays as delivered,** with AUTHOR_NEW rows only. It was admissible then
+  and is now; it is sealed history.
+- **`INVARIANT_REUSE_FROM_PERMITTING_DOMAIN_V0` is unchanged.** Its rationale protects other domains'
+  artifacts, which the revision still does.
+- **The ruling that an authored change is complete at P6 is not in the composition.** It lives in
+  `THE_SHAPE_OF_A_CHANGE_V0.md`; it belongs in `lifecycle::CONSTITUTION_CHANGE_MGMT_V0`.
+- **P2 to P6 of a route change are written by hand.** Only P1 is projected.
+- **The frozen corpus pin** `36bc62a` must survive any squash or published cut.
 - **Caller repointing has not run on a real delivery.**
-- **A route dossier is `change.md` and a seal,** not a P0–P8 dossier.
-- **Book's derived-design criteria were written while book was delivered.**
 - **The blockchain web client was not opened in a browser** after its repointing.
 - **The prose in the blockchain and ai_governance ledgers is not owner-confirmed.**
 
 ### Architectural concerns
-- **The corpus is pinned by revision, not by a sealed snapshot.** `36bc62a` must stay reachable in
-  `business_domains`' history. A squash or a published cut that drops it from the history would break
-  the e2e baseline, so the pin must move to a revision that survives it.
-- **The workload now carries the runtime's and the design test's platform properties.** A change to
-  Collatz's workflow reaches them, as it should, since Collatz exists to prove the platform.
+- Eligibility now has two grounds: the candidate's domain permits reuse, or it is the change's own
+  domain. The second reads the document's `domain` header, so a P3 must name its domain truthfully;
+  the P2 prior's header is judged with it.
 
 ### Next session should start with
-1. Commit (the user's step):
+1. Commit (the user's step; this includes the two previous sweeps):
    ```
-   cd transformation_compilers && git add -A scripts testbed && git commit -m "platform fixtures: design tests on the workload; the phase corpus frozen on its neighbour at 36bc62a"
+   cd transformation_compilers && git add -A design doc dossiers registry scripts testbed transformation && git commit -m "P3 revision 2: a change may reuse its own domain's artifacts; route changes judged by P0-P6; platform fixtures off business domains"
    cd ../protocol_runtime && git add testbed/pgc/test_step_outcome.py && git commit -m "step outcome test runs on the conformance workload"
-   cd ../protocol_compiler && git add scripts/testbed/test_platform_vectors.py && git commit -m "platform vectors test compiles the conformance workload"
-   cd ../.github && git add doc/SOTU.md process && git commit -m "platform tests independent of business domains; closure reads no run output"
+   cd ../.github && git add doc/SOTU.md process && git commit -m "regression: own-domain reuse test; route changes judged by the phases"
    ```
-2. Choose the next platform defect or decision gap. Candidates:
-   - judging a route change by the phases;
-   - running caller repointing on a real delivery.
+2. Next candidate: carry the complete-at-P6 ruling into the lifecycle constitution.
 
 **Priorities (the user):** fix platform defects and decision gaps first. Keep business-domain
 parking-lot items on hold unless the new compiler needs one to be assimilated fully and tested.

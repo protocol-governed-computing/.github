@@ -346,7 +346,8 @@ included; this table explains what each step proves and states no counts. The st
 | `si snapshot validate --strict` | Reads **the snapshot just assembled**, which `test_inspector.py` does not — that runs against fixtures. Every check holds at zero, advisory ones included: `--strict` fails the step on any finding. `republished_copies_agree` holds because a domain that runs a platform capability carries a copy recording exactly what the platform records; `bound_paths_declared_as_stores` holds because every path a runtime binding writes is a store its storage structure declares |
 | `domain_authoring.py` | Authors the smallest domain from scratch in a temporary directory, compiles it against the platform, composes, boots and executes it. This is the path `pgc_install/README.md` documents for a domain developer, run rather than described. A failure means the README is wrong, not the platform. It pins four things that were each wrong when that guide was first written: all five projection paths are required and their absence fails at S7 rather than early; `structure_scope` names the composed domain, so a generic value assembles and conforms under the wrong name; a domain composes without violating the claimed profile; and an unimportable domain returns `VIOLATION` with null outputs rather than raising |
 | `tc phase derive check`, `tc phase derive meta`, `tc phase derive selftest` | The Design Compiler's derive route admits each domain's ledger; its doctrine, ledger schema and catalog are each their last sealed revision, and every doctrine rule cites an invariant the composition holds or says why none states it; and each answer the self-test puts outside its shape is refused |
-| `route_seal_test.py` | `5/5 passed` — the route as it stands is one a dossier sealed; a changed or added building block refuses every derivation, and a seal whose dossier has no `change.md` is refused |
+| `route_seal_test.py` | `8/8 passed` — the route as it stands is one a dossier sealed; a changed or added building block refuses every derivation; a seal whose dossier says nothing is refused; once a seal is judged by the phases, a later seal without verdicts, or a judged seal missing a phase document, is refused; each phase's priors are its schema's |
+| `reuse_own_domain_test.py` | `3/3 passed` — P3 admits a platform change reusing its own domain's artifact, and still refuses a business change citing a platform service and a platform change citing another platform domain |
 | `repoint_callers_test.py` | `6/6 passed` — a caller outside the domain follows each successor; history, the domain itself and a short name in a file that does not name the domain are left alone; a caller of a retired artifact, or another domain's declaration, refuses the delivery |
 | `criteria_before.sh <domain> 36bc62a <suite>` | Each delivered domain's owner-decision criteria against the domain before the derive route designed it: book `0/8`, blockchain `2/9`, ai_governance `4/21`. Each criterion that holds there is behavior the owner kept |
 | `derive_build.sh <domain>` | One ledger derived; its identities decided by meaning against the working snapshot; its phase documents P0 to P6 projected and judged by the sealed rules, `phase documents: 7/7 admissible (p0 to p6)`; and the design built in scratch: construction at 100%, emit compared by construction, compile, assembly, and the domain's suites run against the successors the design declares. What the ledger no longer derives is retired (`RETIRE`): construction accounts its references and never deletes it, and the build deletes it and writes the retirement record, as delivery would. The suites dispatch a workflow by the name they were written against; the build follows the successors this design, its lineage and the retirement ledger declare |
@@ -656,12 +657,17 @@ A change to a module of `transformation/design/derive/`, or to its doctrine, led
 catalog, runs as its own dossier. Until a seal records it, every derivation is refused:
 
 ```bash
-mkdir $W/transformation_compilers/dossiers/<subject>            # write change.md: what and why
+D=$W/transformation_compilers/dossiers/<subject>
+mkdir $D && tc baseline show --snapshot $W/snapshot > $D/baseline.json   # the pin
+# write p0_business_problem_statement.md and p0_seed_transformation_design_v0.md (cr_type MODIFY)
+tc phase project $D/p0_seed_transformation_design_v0.md --phase p1 --out $D/p1_change_request_transformation_design_v0.md
+# write p2 to p6, checking each: tc phase check <doc> --phase pN --snapshot $W/snapshot --prior …
 tc phase derive revise <document> --change "…"                  # only if a sealed document changed
-tc phase derive seal $W/transformation_compilers/dossiers/<subject> --snapshot $W/snapshot --change "…"
+tc phase derive seal $D --snapshot $W/snapshot --change "…"
 ```
 
-The seal re-derives every ledger and records each outcome. A design of record that changes is
+The seal judges P0 to P6 against their priors, and refuses unless all seven are admissible. It
+re-derives every ledger and records each verdict and each outcome. A design of record that changes is
 delivered as a change request. See DESIGN_LANGUAGE §9.5.
 
 ## Serving a domain over HTTP
