@@ -28,7 +28,7 @@ steps:
     expect: ["SUPERSESSION AGREEMENT PASSED — 49 relation\\(s\\), 0 predecessor\\(s\\) present, 49 deleted by record"]
   - id: human_block_fidelity
     section: checks
-    expect: ["HUMAN BLOCK FIDELITY PASSED — 588 artifacts"]
+    expect: ["HUMAN BLOCK FIDELITY PASSED — 589 artifacts"]
   - id: evidence_determinism
     section: checks
     expect: ["EVIDENCE DETERMINISM PASSED"]
@@ -36,7 +36,7 @@ steps:
     section: checks
     # the P7 and P8 rule sets emitted from the design language: a type rule per structured and
     # citation column, the gated constraints, and the `document` header's derived rules
-    expect: ["p7\\s+284 rules", "p8\\s+39 rules"]
+    expect: ["p7\\s+285 rules", "p8\\s+39 rules"]
   - id: build_payloads
     section: checks
     expect: ["OK\\s+83 payload\\(s\\) agree"]
@@ -138,6 +138,10 @@ steps:
     section: checks
     # P3 revision 2: a change may reuse its own domain's artifacts; other platform domains stay ineligible
     expect: ["3/3 passed"]
+  - id: delivery_declared_test
+    section: checks
+    # P0 revision 2: the seed declares delivery; an authored change is complete at P6 and P7 refuses it
+    expect: ["5/5 passed"]
   - id: derive_meta
     section: checks
     # the route as it stands is the one a dossier sealed (readiness 3.6)
