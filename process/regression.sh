@@ -107,7 +107,7 @@ if [[ "$MODE" == "--build" || "$MODE" == "--all" ]]; then
   surface_unchanged "the multiworker platform compile"
   for d in conformance_workloads/workloads/collatz transformation_compilers snapshot_inspector \
            business_domains/ai_governance business_domains/book_library_mgmt \
-           business_domains/blockchain business_domains/causal_language_model; do
+           business_domains/blockchain business_domains/causal_language_model business_domains/webmail; do
     "$W/protocol_compiler/compile_domain.sh" "$W/$d" || rebuild_failed
     surface_unchanged "the $d compile"
   done
@@ -231,7 +231,7 @@ echo; echo "=== EXECUTION ==="
 echo "=== clearing data roots ==="
 rm -rf "$W/data/collatz" "$W/data/ai_governance" "$W/data/book_library_mgmt" \
        "$W/data/book_library_mgmt_works" "$W/data/blockchain" "$W/data/causal_language_model" \
-  "$W/data/causal_language_model_hosted"
+  "$W/data/causal_language_model_hosted" "$W/data/webmail"
 
 echo; echo "=== collatz ==="
 step collatz "$W/protocol_runtime/run.sh" run \
@@ -286,6 +286,10 @@ echo; echo "=== causal_language_model: hosted model ==="
 step clm_hosted_model python "$W/business_domains/causal_language_model/testbed/hosted_model/execution_validation.py" \
   --data-root "$W/data/causal_language_model_hosted"
 
+echo; echo "=== webmail: mailbox (the mail host against a local IMAP server) ==="
+step webmail_mailbox python "$W/business_domains/webmail/testbed/mailbox/execution_validation.py" \
+  --data-root "$W/data/webmail"
+
 # Every trace this block wrote, against the schema its constitution names. Scoped to the data roots
 # cleared above, so a stale trace from an earlier run is never what is judged.
 echo; echo "=== trace schema ==="
@@ -310,7 +314,7 @@ step demo_script bash "$W/.github/process/demo_script_check.sh"
 step trace_schema_conformance python "$W/.github/process/trace_schema_conformance.py" \
   "$W/data/collatz" "$W/data/ai_governance" "$W/data/book_library_mgmt" \
   "$W/data/book_library_mgmt_works" "$W/data/blockchain" "$W/data/causal_language_model" \
-  "$W/data/causal_language_model_hosted"
+  "$W/data/causal_language_model_hosted" "$W/data/webmail"
 
 step temp_hygiene bash -c 'left="$(ls -A "$1")"
   if [[ -n "$left" ]]; then echo "TEMP HYGIENE FAILED — steps left these in their TMPDIR:"; echo "$left"; exit 1; fi

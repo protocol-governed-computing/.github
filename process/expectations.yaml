@@ -28,7 +28,7 @@ steps:
     expect: ["SUPERSESSION AGREEMENT PASSED — 49 relation\\(s\\), 0 predecessor\\(s\\) present, 49 deleted by record"]
   - id: human_block_fidelity
     section: checks
-    expect: ["HUMAN BLOCK FIDELITY PASSED — 589 artifacts"]
+    expect: ["HUMAN BLOCK FIDELITY PASSED — 616 artifacts"]
   - id: evidence_determinism
     section: checks
     expect: ["EVIDENCE DETERMINISM PASSED"]
@@ -44,7 +44,7 @@ steps:
     section: checks
     # every designed root's design of record is the one its registry generates
     # and each determines its whole registry, measured as construction measures it
-    expect: ["BASELINE DESIGNS CURRENT — 0 stale", "BASELINE DESIGNS COMPLETE — 6/6 determine their registry"]
+    expect: ["BASELINE DESIGNS CURRENT — 0 stale", "BASELINE DESIGNS COMPLETE — 7/7 determine their registry"]
   - id: author_transport_contracts
     section: checks
     expect: ["OK\\s+42 contract\\(s\\) for 21 operations agree"]
@@ -80,7 +80,7 @@ steps:
     expect: ["PROJECTION PASSED"]
   - id: construction_acceptance
     section: checks
-    expect: ["298/298 artifacts reproduced across 6 domain\\(s\\)\\s+\\(0 field difference\\(s\\)\\)"]
+    expect: ["324/324 artifacts reproduced across 7 domain\\(s\\)\\s+\\(0 field difference\\(s\\)\\)"]
   - id: molecule_design_test
     section: checks
     expect: ["5/5 passed"]
@@ -114,7 +114,7 @@ steps:
   - id: implementation_closure
     section: checks
     # every transform module is named by an artifact, and every named module is on disk
-    expect: ["IMPLEMENTATION CLOSURE PASSED — 35 transform\\(s\\)"]
+    expect: ["IMPLEMENTATION CLOSURE PASSED — 38 transform\\(s\\)"]
   - id: test_inspector
     section: checks
     # si.behavior_logic.list names each workflow's nodes by key; si.execution.explain is covered
@@ -177,7 +177,7 @@ steps:
     expect: ["PASSED: 13/13"]
   - id: test_transform_conformance_evidence
     section: checks
-    expect: ["PASSED: 36/36"]
+    expect: ["PASSED: 40/40"]
   - id: test_compiler_atoms
     section: checks
     expect: ["PASSED: 9/9"]
@@ -354,6 +354,10 @@ steps:
     section: execution
     # Qwen3 8B's words are not determined, so the regression leaves it out; --qwen exercises it.
     expect: ["15/15 criteria hold  \\(1 not exercised\\)"]
+  - id: webmail_mailbox
+    section: execution
+    # the mail host against a local IMAP server; no record, event or trace holds mail content
+    expect: ["15/15 criteria hold"]
   - id: blockchain_routing_closure
     section: execution
     # a failed record ends identity's and wallet's acts as rejected
