@@ -1,0 +1,12 @@
+# When a replaced version is retained (`4e` SU-7, §6.1). Every check that once assumed retention
+# reads this file, and no check decides retention in its own code.
+#
+# Development is open: no stable baseline is declared, and nothing in the live tree is retained for
+# its own sake. A release keeps every identity it was sealed with, at its tag, and needs nothing
+# kept here.
+#
+# Declaring a stable baseline is an edit to this file, not to any check. It names the baseline and
+# lists the retention conditions that bind from then on. Each later deletion must then state, in
+# the ledger, that every listed condition does not hold.
+stable_baseline: null
+conditions: []

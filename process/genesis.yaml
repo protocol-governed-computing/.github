@@ -1,0 +1,7 @@
+# Whether the working composition is a genesis (`1b` §11). A genesis has no predecessor: every
+# identity is reset to `_V0`, the retirement ledger starts empty, and nothing in the composition is
+# compared with a sealed release for change of meaning. The rules of the ledger still hold.
+#
+# Declaring a genesis is an edit to this file. It is set back to `false` once the cut it declares
+# is sealed, so the next composition is measured against that release.
+genesis: true
