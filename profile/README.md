@@ -30,13 +30,13 @@ out.
 
 ## The standard
 
-The normative specification lives in **[`standards`](https://github.com/protocol-governed-computing/standards)** — thirty-two documents in seven parts, at revision `draft-3`, frozen. It states what a
+The normative specification lives in **[`standards`](https://github.com/protocol-governed-computing-standards/standards)** — thirty-two documents in seven parts, at revision `draft-3`, frozen. It states what a
 governed system must mean and do, independently of anything built here.
 
 **It is seeking critical review, not adoption.** What is claimed, what would falsify it, and what has
 not yet been established are stated in the
-[call for review](https://github.com/protocol-governed-computing/standards/blob/main/doc/call_for_review.md).
-[`0d`](https://github.com/protocol-governed-computing/standards/blob/v0/spec/0d_visual_representation_of_the_standard.md)
+[call for review](https://github.com/protocol-governed-computing-standards/standards/blob/main/doc/call_for_review.md).
+[`0d`](https://github.com/protocol-governed-computing-standards/standards/blob/v0/spec/0d_visual_representation_of_the_standard.md)
 draws the model in seven figures and is the shortest way in.
 
 **The specification governs; the realization demonstrates.** Where a document of the family and any
@@ -191,7 +191,7 @@ has since renamed to *phases* (P0–P8) to avoid collision with the compiler's o
 ## Repositories
 
 **These are the reference implementation.** The standard itself is not among them — it is
-[`standards`](https://github.com/protocol-governed-computing/standards), and it is authored against
+[`standards`](https://github.com/protocol-governed-computing-standards/standards), and it is authored against
 no implementation. The composition below is built from repositories that each own one concern. **A PGC platform is
 assembled from these components under a conformance profile; no single repository is the platform.**
 
@@ -241,5 +241,5 @@ implementation demonstrates it.
 
 *A revision of the standard is **declared, not inferred** — proposed against a named predecessor,
 stating what it changes and what that invalidates. Every declared change is recorded in
-[`revisions.md`](https://github.com/protocol-governed-computing/standards/blob/main/revisions.md),
+[`revisions.md`](https://github.com/protocol-governed-computing-standards/standards/blob/main/revisions.md),
 including the findings considered and declined.*
