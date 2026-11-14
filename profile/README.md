@@ -36,7 +36,7 @@ governed system must mean and do, independently of anything built here.
 **It is seeking critical review, not adoption.** What is claimed, what would falsify it, and what has
 not yet been established are stated in the
 [call for review](https://github.com/protocol-governed-computing-standards/standards/blob/main/doc/call_for_review.md).
-[`0d`](https://github.com/protocol-governed-computing-standards/standards/blob/v0/spec/0d_visual_representation_of_the_standard.md)
+[`0c`](https://github.com/protocol-governed-computing-standards/standards/blob/v1/spec/0c_visual_representation_of_the_standard.md)
 draws the model in seven figures and is the shortest way in.
 
 **The specification governs; the realization demonstrates.** Where a document of the family and any
