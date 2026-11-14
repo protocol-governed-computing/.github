@@ -30,7 +30,7 @@ out.
 
 ## The standard
 
-The normative specification lives in **[`standards`](https://github.com/protocol-governed-computing-standards/standards)** — thirty-two documents in seven parts, at revision `draft-3`, frozen. It states what a
+The normative specification lives in **[`standards`](https://github.com/protocol-governed-computing-standards/standards)** — thirty-two documents in seven parts, at revision `v1`. It states what a
 governed system must mean and do, independently of anything built here.
 
 **It is seeking critical review, not adoption.** What is claimed, what would falsify it, and what has
